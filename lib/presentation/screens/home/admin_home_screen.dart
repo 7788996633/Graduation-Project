@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/permission_bloc/permission_bloc.dart';
+import 'package:graduation/presentation/screens/permission_screen/permissionsScreen.dart';
+import 'package:graduation/presentation/screens/permission_screen/rolesScreen.dart';
 
 import '../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
@@ -70,6 +73,36 @@ class AdminHomeScreen extends StatelessWidget {
               builder: (_) => BlocProvider(
                 create: (_) => LawyerBloc(),
                 child: const AllLawyersScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Permission',
+        'icon': Icons.abc_outlined,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => PermissionBloc(),
+                child: const PermissionsScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Role',
+        'icon': Icons.abc_outlined,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => PermissionBloc(),
+                child: const RolesScreen(),
               ),
             ),
           );

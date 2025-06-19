@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/permission_bloc/permission_bloc.dart';
+import 'package:graduation/presentation/screens/permission_screen/assignPermissionsScreen.dart';
+import 'package:graduation/presentation/screens/permission_screen/permissionsScreen.dart';
 
 import '../../../blocs/auth_bloc/auth_bloc.dart';
 import '../../../blocs/user_bloc/user_bloc.dart';

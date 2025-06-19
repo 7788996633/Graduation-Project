@@ -38,7 +38,7 @@ class _EditIssueScreenState extends State<EditIssueScreen> {
     priorityController = TextEditingController(text: widget.issue.priority);
     startdateController = TextEditingController(text: widget.issue.startDate);
     // enddateController = TextEditingController(text: widget.issue.endDate);
-    totalcostController = TextEditingController(text: widget.issue.totalCost);
+    totalcostController = TextEditingController(text: widget.issue.totalCost.toString());
     numberofpaymentsController =
         TextEditingController(text: widget.issue.numberOfPayments.toString());
     opponentnameController =

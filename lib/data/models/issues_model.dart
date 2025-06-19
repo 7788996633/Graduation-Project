@@ -6,7 +6,7 @@ class IssuesModel {
   final String opponentName;
   final String courtName;
   final int numberOfPayments;
-  final String totalCost;
+  final double totalCost;
   // final String amountPaid;
   // final String description;
   final int userId;
