@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/constant.dart';
 import '../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
 import '../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../data/models/issue_request_model.dart';
@@ -42,25 +43,27 @@ class _AdminIssueRequestItemState extends State<AdminIssueRequestItem> {
             return CustomUserItem(
               userProfileModel: state.userProfileModel,
               subtitle: Text(widget.request.title),
-              trailing: PopupMenuButton(
-                onSelected: (value) {
-                  if (value == IssueRequestStatus.approved) {
-                    print("Approved");
-                  } else if (value == IssueRequestStatus.rejected) {
-                    print("Rejected");
-                  }
-                },
-                itemBuilder: (context) => const [
-                  PopupMenuItem(
-                    value: IssueRequestStatus.approved,
-                    child: Text("Approve"),
-                  ),
-                  PopupMenuItem(
-                    value: IssueRequestStatus.rejected,
-                    child: Text("Reject"),
-                  ),
-                ],
-              ),
+              trailing: myRole == "admin"
+                  ? PopupMenuButton(
+                      onSelected: (value) {
+                        if (value == IssueRequestStatus.approved) {
+                          print("Approved");
+                        } else if (value == IssueRequestStatus.rejected) {
+                          print("Rejected");
+                        }
+                      },
+                      itemBuilder: (context) => const [
+                        PopupMenuItem(
+                          value: IssueRequestStatus.approved,
+                          child: Text("Approve"),
+                        ),
+                        PopupMenuItem(
+                          value: IssueRequestStatus.rejected,
+                          child: Text("Reject"),
+                        ),
+                      ],
+                    )
+                  : SizedBox(),
               onTap: () {
                 Navigator.push(
                   context,

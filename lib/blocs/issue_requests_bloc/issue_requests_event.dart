@@ -16,6 +16,8 @@ class ShowIssueRequestsEvent extends IssueRequestsEvent {}
 
 class GetAllIssueRequestsEvent extends IssueRequestsEvent {}
 
+class GetMyIssueRequestsEvent extends IssueRequestsEvent {}
+
 class GetIssueRequestsByIdEvent extends IssueRequestsEvent {
   final int issueRequestsId;
 
@@ -49,4 +51,16 @@ class UpdateIssueRequestEventAsAnAdmin extends IssueRequestsEvent {
       {required this.issueRequestId,
       required this.adminNote,
       required this.status});
+}
+
+class StartIssueRequestReviewEvent extends IssueRequestsEvent {
+  final int issueRequestId;
+
+  StartIssueRequestReviewEvent({required this.issueRequestId});
+}
+
+class EndIssueRequestReviewEvent extends IssueRequestsEvent {
+  final int issueRequestId;
+
+  EndIssueRequestReviewEvent({required this.issueRequestId});
 }

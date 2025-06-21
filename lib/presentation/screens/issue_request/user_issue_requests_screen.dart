@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
 import '../../../blocs/issue_requests_bloc/issue_requests_event.dart';
 import '../../../blocs/issue_requests_bloc/issue_requests_state.dart';
-import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../../constant.dart';
 
 import '../../widgets/auth_widgets/issue_request_list_widget.dart';
@@ -12,22 +11,22 @@ import '../../widgets/custom_appbar_add.dart';
 import '../../widgets/refresh_button.dart';
 import 'add_issue_request.dart';
 
-class ListIssueRequestsScreen extends StatefulWidget {
-  const ListIssueRequestsScreen({super.key});
+class UserIssueRequestsScreen extends StatefulWidget {
+  const UserIssueRequestsScreen({super.key});
 
   @override
-  State<ListIssueRequestsScreen> createState() =>
-      _ListIssueRequestsScreenState();
+  State<UserIssueRequestsScreen> createState() =>
+      _UserIssueRequestsScreenState();
 }
 
-class _ListIssueRequestsScreenState extends State<ListIssueRequestsScreen> {
+class _UserIssueRequestsScreenState extends State<UserIssueRequestsScreen> {
   late IssueRequestsBloc bloc;
 
   @override
   void initState() {
     super.initState();
     bloc = BlocProvider.of<IssueRequestsBloc>(context);
-    bloc.add(GetAllIssueRequestsEvent());
+    bloc.add(GetMyIssueRequestsEvent());
   }
 
   @override
@@ -35,15 +34,15 @@ class _ListIssueRequestsScreenState extends State<ListIssueRequestsScreen> {
     return Scaffold(
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
-        title: 'List Issue Requests',
+        title: 'User Issue Requests',
         actionIcon: Icons.add_circle_rounded,
         tooltip: 'Add New Request',
         onActionPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => BlocProvider.value(
-                value: context.read<IssueRequestsBloc>(),
+              builder: (_) => BlocProvider(
+                create: (_) => IssueRequestsBloc(),
                 child: const AddIssueRequestScreen(),
               ),
             ),
@@ -63,11 +62,7 @@ class _ListIssueRequestsScreenState extends State<ListIssueRequestsScreen> {
                       child: CircularProgressIndicator(),
                     );
                   } else if (state is IssueRequestsListLoaded) {
-                    return BlocProvider(
-                      create: (context) => UserProfileBloc(),
-                      child:
-                          RequestListWidget(requests: state.issueRequestsList),
-                    );
+                    return RequestListWidget(requests: state.issueRequestsList);
                   } else if (state is IssueRequestsLoadedSuccessfully) {
                     return RequestListWidget(
                       requests: [state.issueRequest],
@@ -91,7 +86,7 @@ class _ListIssueRequestsScreenState extends State<ListIssueRequestsScreen> {
       floatingActionButton: RefreshButton(
         onPressed: () {
           bloc.add(
-            GetAllIssueRequestsEvent(),
+            GetMyIssueRequestsEvent(),
           );
         },
       ),

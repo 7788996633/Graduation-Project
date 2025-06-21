@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 String myToken = '';
 String myUrl = 'http://$ip:8000/api/';
 String myRole = '';
-String ip = "192.168.1.107";
- int myUserId=-1;
+String ip = "192.168.1.102";
+int myUserId = -1;
+
 class AppColors {
   static const Color white = Colors.white;
   static const Color success = Colors.green;

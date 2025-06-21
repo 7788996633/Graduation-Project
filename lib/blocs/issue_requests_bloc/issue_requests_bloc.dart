@@ -33,6 +33,19 @@ class IssueRequestsBloc extends Bloc<IssueRequestsEvent, IssueRequestsState> {
               ),
             );
           }
+        } else if (event is GetMyIssueRequestsEvent) {
+          emit(IssueRequestsLoading());
+          try {
+            List<IssueRequestModel> issueRequestsList =
+                await IssueRequestRepository().getMyIssueRequests();
+            emit(IssueRequestsListLoaded(issueRequestsList: issueRequestsList));
+          } catch (e) {
+            emit(
+              IssueRequestsFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
         } else if (event is GetIssueRequestsByIdEvent) {
           emit(
             IssueRequestsLoading(),
@@ -98,6 +111,43 @@ class IssueRequestsBloc extends Bloc<IssueRequestsEvent, IssueRequestsState> {
                 await IssueRequestsServices().updateIssueRequestAsAnAdmin(
               event.adminNote,
               event.status,
+              event.issueRequestId,
+            );
+            emit(
+              IssueRequestsSuccess(successmsg: value),
+            );
+          } catch (e) {
+            emit(
+              IssueRequestsFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is StartIssueRequestReviewEvent) {
+          emit(
+            IssueRequestsLoading(),
+          );
+          try {
+            String value =
+                await IssueRequestsServices().startIssueRequestReview(
+              event.issueRequestId,
+            );
+            emit(
+              IssueRequestsSuccess(successmsg: value),
+            );
+          } catch (e) {
+            emit(
+              IssueRequestsFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is EndIssueRequestReviewEvent) {
+          emit(
+            IssueRequestsLoading(),
+          );
+          try {
+            String value = await IssueRequestsServices().endIssueRequestReview(
               event.issueRequestId,
             );
             emit(

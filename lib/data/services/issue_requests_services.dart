@@ -36,6 +36,32 @@ class IssueRequestsServices {
     }
   }
 
+  Future<List> getMyIssueRequests() async {
+    var url = Uri.parse('${myUrl}myissue-requests');
+    http.Response response;
+
+    if (kIsWeb) {
+      var request = http.Request('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    } else {
+      var request = http.MultipartRequest('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    }
+
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return jsonResponse['data'];
+    } else {
+      return [];
+    }
+  }
+
   Future<IssueRequestModel> getIssueRequestById(int issueRequestId) async {
     var url = Uri.parse('${myUrl}issue-requests/$issueRequestId');
     http.Response response;
@@ -154,6 +180,46 @@ class IssueRequestsServices {
   Future<String> deleteIssueRequest(int issueRequestId) async {
     var url = Uri.parse('${myUrl}issue-requests/$issueRequestId');
     var request = http.MultipartRequest('DELETE', url);
+    request.headers.addAll(baseHeaders);
+
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return jsonResponse['message'];
+    } else {
+      return 'failed: ${jsonResponse['message']}';
+    }
+  }
+
+  Future<String> startIssueRequestReview(int issuerRequestId) async {
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('${myUrl}issue-requests/$issuerRequestId/lock'),
+    );
+
+    request.headers.addAll(baseHeaders);
+
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return jsonResponse['message'];
+    } else {
+      return 'failed: ${jsonResponse['message']}';
+    }
+  }
+
+  Future<String> endIssueRequestReview(int issuerRequestId) async {
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('${myUrl}issue-requests/$issuerRequestId/unlock'),
+    );
+
     request.headers.addAll(baseHeaders);
 
     var streamedResponse = await request.send();
