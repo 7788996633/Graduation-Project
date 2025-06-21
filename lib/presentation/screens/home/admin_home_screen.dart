@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:untitled27/blocs/required_document_bloc/required_document_bloc.dart';
+import 'package:untitled27/blocs/session_type_bloc/session_type_bloc.dart';
+import 'package:untitled27/presentation/screens/session_type/list_session_type_screen.dart';
 
 import '../../../blocs/furlough_request_bloc/furlough_request_bloc.dart';
 import '../../../blocs/issue_bloc/issues_bloc.dart';
@@ -14,6 +17,7 @@ import '../admin_screens/users_management_screens/modify_users_permissions_scree
 import '../all_lawyers_screen.dart';
 import '../furloughs/list_furloughs_screen.dart';
 import '../issue_request/list_issue_requests_screen.dart';
+import '../required_documents/list_required_document_screen.dart';
 
 class AdminHomeScreen extends StatelessWidget {
   const AdminHomeScreen({super.key});
@@ -87,6 +91,36 @@ class AdminHomeScreen extends StatelessWidget {
               builder: (_) => BlocProvider(
                 create: (_) => FurloughRequestsBloc(),
                 child: const ListFurloughsScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'All required decoument ',
+        'icon': Icons.group,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => RequiredDocumentsBloc(),
+                child: const ListRequiredDocumentsScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'All session type ',
+        'icon': Icons.group,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => SessionTypeBloc(),
+                child: const ListSessionTypesScreen(),
               ),
             ),
           );
