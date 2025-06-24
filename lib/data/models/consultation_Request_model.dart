@@ -1,3 +1,5 @@
+import 'package:graduation/data/models/user_model.dart';
+
 class ConsultationRequestModel {
   ConsultationRequestModel({
     required this.id,
@@ -17,7 +19,7 @@ class ConsultationRequestModel {
   final int userId;
   final DateTime? createdAt;
   final DateTime? updatedAt;
-  final User? user;
+  final UserModel? user;
 
   factory ConsultationRequestModel.fromJson(Map<String, dynamic> json){
     return ConsultationRequestModel(
@@ -28,37 +30,7 @@ class ConsultationRequestModel {
       userId: json["user_id"],
       createdAt: DateTime.tryParse(json["created_at"] ?? ""),
       updatedAt: DateTime.tryParse(json["updated_at"] ?? ""),
-      user: json["user"] == null ? null: User.fromJson(json["user"]),
-    );
-  }
-
-}
-
-class User {
-  User({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.roleId,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-
-  final int id;
-  final String name;
-  final String email;
-  final int? roleId;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
-
-  factory User.fromJson(Map<String, dynamic> json){
-    return User(
-      id: json["id"],
-      name: json["name"],
-      email: json["email"],
-      roleId: json["role_id"],
-      createdAt: DateTime.tryParse(json["created_at"] ?? ""),
-      updatedAt: DateTime.tryParse(json["updated_at"] ?? ""),
+      user: json["user"] == null ? null: UserModel.fromJson(json["user"]),
     );
   }
 

@@ -62,6 +62,41 @@ class HiringRequestsBloc
         } catch (e) {
           emit(HiringRequestsFail(errmsg: e.toString()));
         }
+      }else if (event is DeleteHiringRequest) {
+      emit(
+      HiringRequestsLoading(),
+      );
+      try {
+      String hiringRequestId =
+      await HiringRequestsServices().deleteHiringRequest(
+      event.id,
+      );
+
+      emit(
+        HiringRequestsSuccess(
+      successmsg: hiringRequestId,
+      ),
+      );
+      } catch (e) {
+      emit(HiringRequestsFail(errmsg: e.toString()));
+      }
+      }
+      else if (event is UpdateHiringRequest) {
+        emit(
+          HiringRequestsLoading(),
+        );
+        try {
+          String hiringRequestId =
+          await HiringRequestsServices().UpdateHiringRequest(event.status, event.id);
+
+          emit(
+            HiringRequestsSuccess(
+              successmsg: hiringRequestId,
+            ),
+          );
+        } catch (e) {
+          emit(HiringRequestsFail(errmsg: e.toString()));
+        }
       }
     });
   }

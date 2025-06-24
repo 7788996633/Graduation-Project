@@ -82,7 +82,63 @@ class HiringRequestsServices {
     if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
       return jsonResponse['data'];
     } else {
-      throw Exception('Failed to load lawyer');
+      throw Exception('Failed to load Hiring Request');
     }
   }
+  Future<String> deleteHiringRequest(int id)async{
+    var headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $myToken'
+    };
+
+    var request = http.MultipartRequest('DELETE', Uri.parse('${myUrl}hiring-requests/$id'));
+
+    request.headers.addAll(headers);
+
+    var streamedResponse = await request.send();
+
+    var response = await http.Response.fromStream(streamedResponse);
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode == 200) {
+      if (jsonResponse['status'] == 'success') {
+        return jsonResponse['message'];
+      } else {
+        return 'failed: ${jsonResponse['message']}';
+      }
+    } else {
+      return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+    }
+
+  }
+Future<String> UpdateHiringRequest (String status,int id)async{
+  var headers = {
+    'Accept': 'application/json',
+    'Authorization': 'Bearer $myToken'
+  };
+  var request = http.MultipartRequest('POST', Uri.parse('${myUrl}hiring-requests/status/$id'));
+  request.fields.addAll({
+    'status': status
+  });
+
+  request.headers.addAll(headers);
+  var streamedResponse = await request.send();
+  var response = await http.Response.fromStream(streamedResponse);
+  var jsonResponse = json.decode(response.body);
+  print(jsonResponse);
+  if (response.statusCode == 200) {
+    if (jsonResponse['status'] == 'success') {
+      return jsonResponse['message'];
+    } else {
+      return 'failed: ${jsonResponse['message']}';
+    }
+  } else {
+    return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+  }
+
+}
+
+
+
 }

@@ -13,7 +13,7 @@ class CreateHiringRequestsEvent extends HiringRequestsEvent {
   CreateHiringRequestsEvent({required this.jopTitle, required this.type, required this.description,});
 }
 
-class ShowHiringRequestsEvent extends HiringRequestsEvent {}
+//class ShowHiringRequestsEvent extends HiringRequestsEvent {}
 
 class GetAllHiringRequests extends HiringRequestsEvent {}
 
@@ -22,4 +22,16 @@ class GetHiringRequestsById extends HiringRequestsEvent {
   final int hiringRequestId;
 
   GetHiringRequestsById({required this.hiringRequestId});
+}
+class DeleteHiringRequest extends HiringRequestsEvent{
+  final int id;
+
+  DeleteHiringRequest({required this.id});
+
+}
+class UpdateHiringRequest extends HiringRequestsEvent{
+  final String status;
+  final int   id;
+
+  UpdateHiringRequest({required this.status, required this.id});
 }
