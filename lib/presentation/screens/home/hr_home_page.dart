@@ -1,9 +1,8 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:flutter/material.dart';
-
-import '../../../constant.dart';
-
 import 'hr_home_screen.dart';
+import '../../../constant.dart';
+import 'package:flutter/material.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:graduation/presentation/screens/employee_screens/add_employee_screen.dart';
 
 class HrHomePage extends StatefulWidget {
   const HrHomePage({super.key});
@@ -19,6 +18,7 @@ class _HrHomePageState extends State<HrHomePage> {
     const HrHomeScreen(),
     const StatisticsPage(),
     const MyTasksPage(),
+    AddEmployeeScreen(),
   ];
 
   @override
@@ -29,7 +29,7 @@ class _HrHomePageState extends State<HrHomePage> {
         backgroundColor: AppColors.white,
         color: AppColors.darkBlue,
         buttonBackgroundColor: AppColors.darkBlue,
-          animationDuration: const Duration(milliseconds: 300),
+        animationDuration: const Duration(milliseconds: 300),
         items: const <Widget>[
           Icon(Icons.home, size: 30, color: Colors.black54),
           Icon(Icons.bar_chart, size: 30, color: Colors.black54),
