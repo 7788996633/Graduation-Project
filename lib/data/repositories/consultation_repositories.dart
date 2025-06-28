@@ -1,0 +1,13 @@
+import 'package:graduation/data/models/consultation_model.dart';
+import 'package:graduation/data/services/consultation_services.dart';
+
+class ConsultationRepositories {
+  Future<List<ConsultationModel>> getAllConsultations() async {
+    var consultations = await ConsultationServices().getAllConsultations();
+    return consultations
+        .map(
+          (e) => ConsultationModel.fromJson(e),
+        )
+        .toList();
+  }
+}

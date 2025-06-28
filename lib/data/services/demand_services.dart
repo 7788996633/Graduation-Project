@@ -113,7 +113,10 @@ class DemandServices {
   }
 
   Future<String> deleteDemand(int idDemand, String date, String type) async {
-    var headers = {'Accept': 'application/json'};
+    var headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $myToken'
+    };
     var request =
         http.Request('DELETE', Uri.parse('localhost:8000/api/AttendDemand/3'));
     request.bodyFields = {'type': type, 'date': date};

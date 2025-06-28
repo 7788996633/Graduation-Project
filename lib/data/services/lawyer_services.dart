@@ -28,6 +28,9 @@ class LawyerServices {
     }
   }
 
+
+
+
   Future<String> deleteLawyer(int lawyerId) async {
     var headers = {
       'Accept': 'application/json',

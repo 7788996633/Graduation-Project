@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/presentation/screens/consultation_request/all_consultation_requests_page.dart';
 
 import '../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
@@ -25,7 +26,8 @@ class AdminHomeScreen extends StatelessWidget {
         'onTap': () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const ModifyUsersPermissionsScreen()),
+            MaterialPageRoute(
+                builder: (_) => const ModifyUsersPermissionsScreen()),
           );
         },
       },
@@ -59,7 +61,6 @@ class AdminHomeScreen extends StatelessWidget {
           );
         },
       },
-
       {
         'title': 'All Lawyers',
         'icon': Icons.group,
@@ -71,6 +72,18 @@ class AdminHomeScreen extends StatelessWidget {
                 create: (_) => LawyerBloc(),
                 child: const AllLawyersScreen(),
               ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'All Consultation Requests',
+        'icon': Icons.chat_rounded,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const AllConsultationRequestsPage(),
             ),
           );
         },

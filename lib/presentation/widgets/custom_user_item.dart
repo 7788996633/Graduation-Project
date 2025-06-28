@@ -26,23 +26,36 @@ class CustomUserItem extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => BlocProvider(
               create: (context) => UserProfileBloc(),
-              child: UserProfileScreen(userProfileModel: userProfileModel,
+              child: UserProfileScreen(
+                userProfileModel: userProfileModel,
               ),
             ),
           ),
         );
       },
-      child: Card(
-        elevation: 5,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+      child: Container(
+        margin: EdgeInsets.only(
+          bottom: 10,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(
+            25,
+          ),
+          border: Border.all(
+            color: Colors.grey,
+            width: 2,
+          ),
         ),
         child: ListTile(
           leading: CircleAvatar(
+            radius: 25,
             backgroundImage: NetworkImage(userProfileModel.image),
           ),
           title: Text(
             userProfileModel.name,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
           ),
           subtitle: subtitle,
           trailing: trailing,
