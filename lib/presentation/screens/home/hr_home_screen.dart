@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/hiring_requests/hiring_requests_block.dart';
+import '../../../blocs/job_application/job_application_bloc.dart';
 import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
 
 import '../../widgets/custom_app_drawer.dart';
 import '../../widgets/section_card.dart';
-import '../hr_screen/add_hiring_request_screen.dart';
-import '../hr_screen/list_hiring_requests_screen.dart';
+
+import '../hr_screen/job_application/job_application_list_screen.dart';
+import '../hr_screen/hiring_request/list_hiring_requests_screen.dart';
 import '../../widgets/custom_home_appbar.dart';
+
 import 'hr_home_page.dart';
 
 class HrHomeScreen extends StatelessWidget {
@@ -19,22 +22,7 @@ class HrHomeScreen extends StatelessWidget {
     final sections = [
       {
         'icon': Icons.assignment_ind,
-        'title': 'Add Hiring Request',
-        'onTap': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (_) => HiringRequestsBloc(),
-                child: const AddHiringRequestScreen(),
-              ),
-            ),
-          );
-        },
-      },
-      {
-        'icon': Icons.people,
-        'title': 'Hiring Requests',
+        'title': ' Hiring Requests ',
         'onTap': () {
           Navigator.push(
             context,
@@ -42,6 +30,21 @@ class HrHomeScreen extends StatelessWidget {
               builder: (_) => BlocProvider(
                 create: (_) => HiringRequestsBloc(),
                 child: const ListHiringRequestsScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'icon': Icons.people,
+        'title': 'Job Application',
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => JobApplicationBloc(),
+                child: const ListJobApplicationsScreen(),
               ),
             ),
           );

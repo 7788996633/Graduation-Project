@@ -64,8 +64,7 @@ class _UpdateFurloughScreenState extends State<UpdateFurloughScreen> {
                   endDate: widget.furlough.endDate,
                   covetByType: widget.furlough.covetByType,
                   covetById: widget.furlough.covetById,
-                  createdAt: widget.furlough.createdAt,
-                  updatedAt: widget.furlough.updatedAt,
+
                 ),
               );
             } else if (state is FurloughRequestsFail) {

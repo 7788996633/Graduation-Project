@@ -120,7 +120,7 @@ class SessionTypeServices {
         var streamedResponse = await request.send();
         response = await http.Response.fromStream(streamedResponse);
       } else {
-        var request = http.MultipartRequest('POST', url);
+        var request = http.MultipartRequest('PUT', url);
         request.fields.addAll(body);
         request.headers.addAll(baseHeaders);
         var streamedResponse = await request.send();

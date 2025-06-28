@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:untitled27/presentation/screens/furloughs/add_furlough_screen.dart';
 
+import '../../../blocs/furlough_request_bloc/furlough_request_bloc.dart';
 import '../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
 import '../../../blocs/sessions_bloc/sessions_bloc.dart';
@@ -41,6 +43,21 @@ class LawyerHomeScreen extends StatelessWidget {
               builder: (_) => BlocProvider(
                 create: (_) => SessionsBloc(),
                 child: const LawyerSessionsScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Add Furlough',
+        'icon': Icons.beach_access,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => FurloughRequestsBloc(),
+                child: const AddFurloughScreen(),
               ),
             ),
           );

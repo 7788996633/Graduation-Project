@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,7 +29,11 @@ class _LawyersInIssueListState extends State<LawyersInIssueList> {
       GetAllLawyersInIssuesEvent(issueId: widget.issueId),
     );
   }
-  Widget _buildLawyerList(List<LawyerModel> lawyers) {
+
+  Widget _buildLawyerList(
+      List<LawyerModel> lawyers,
+      double childAspectRatio,
+      ) {
     if (lawyers.isEmpty) {
       return const Center(
         child: Text("No lawyers found."),
@@ -39,21 +44,17 @@ class _LawyersInIssueListState extends State<LawyersInIssueList> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: lawyers.length,
-      padding: const EdgeInsets.all(4),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 4,
-        mainAxisSpacing: 4,
-        childAspectRatio: 4.1,
+      padding: const EdgeInsets.all(8),
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 250, // أقصى عرض للكارد الواحد
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        childAspectRatio: childAspectRatio,
       ),
       itemBuilder: (context, index) {
-        return SizedBox(
-          width: 100,
-          height: 100,
-          child: CustomLawyerItem(
-            lawyer: lawyers[index],
-            isSelected: selectedLawyerIds.contains(lawyers[index].id),
-          ),
+        return CustomLawyerItem(
+          lawyer: lawyers[index],
+          isSelected: selectedLawyerIds.contains(lawyers[index].id),
         );
       },
     );
@@ -68,7 +69,36 @@ class _LawyersInIssueListState extends State<LawyersInIssueList> {
         } else if (state is LawyerInIssuesListLoadedSuccessfully) {
           _allLawyers = state.lawyerInissues;
           selectedLawyerIds = _allLawyers.map((lawyer) => lawyer.id).toList();
-          return _buildLawyerList(_allLawyers);
+
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              double width = constraints.maxWidth;
+              double aspectRatio;
+
+              // ضبط نسبة العرض إلى الارتفاع بناءً على حجم الشاشة
+              if (kIsWeb) {
+                if (width >= 1400) {
+                  aspectRatio = 2.0;   // شاشات كبيرة جدًا (مثلاً دقة 4K أو شاشات كبيرة)
+                } else if (width >= 1200) {
+                  aspectRatio = 1.9;   // شاشات كبيرة (Desktop كبير)
+                } else if (width >= 1000) {
+                  aspectRatio = 1.7;   // شاشات متوسطة إلى كبيرة
+                } else if (width >= 900) {
+                  aspectRatio = 1.5;   // شاشات متوسطة (أقل من 1000 بيكسل)
+                } else {
+                  aspectRatio = 1.3;   // شاشات ويب صغيرة (مثل أجهزة التابلت الكبيرة أو النوافذ الصغيرة)
+                }
+              } else {
+                if (width >= 600) {
+                  aspectRatio = 1.6;   // موبايل كبير / تابلت
+                } else {
+                  aspectRatio = 1.4;   // موبايل صغير
+                }
+              }
+
+              return _buildLawyerList(_allLawyers, aspectRatio);
+            },
+          );
         } else if (state is LawyerInIssuesFail) {
           return Center(
             child: Text(

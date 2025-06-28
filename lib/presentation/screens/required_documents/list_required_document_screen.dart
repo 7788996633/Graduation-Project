@@ -33,19 +33,6 @@ class _ListRequiredDocumentsScreenState extends State<ListRequiredDocumentsScree
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
         title: 'List Required Documents',
-        actionIcon: Icons.add_circle_rounded,
-        tooltip: 'Add New Required Document',
-        onActionPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (_) => RequiredDocumentsBloc(),
-                child:AddRequiredDocumentScreen(issueId: requiredDocument.issueId,),
-              ),
-            ),
-         );
-        },
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

@@ -4,6 +4,7 @@ import 'package:untitled27/presentation/screens/required_documents/add_required_
 import '../../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../../blocs/lawyer_bloc/lawyer_bloc.dart';
 import '../../../../blocs/lawyer_in_issues_bloc/lawyer_in_issues_bloc.dart';
+import '../../../../blocs/required_document_bloc/required_document_bloc.dart';
 import '../../../../blocs/sessions_bloc/sessions_bloc.dart';
 import '../../../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../../../constant.dart';
@@ -13,6 +14,7 @@ import '../../../widgets/add_lawyers_to_issue_sheet.dart';
 import '../../../widgets/custom_appbar_add.dart';
 import '../../../widgets/lawyers_in_issue_list.dart';
 import '../../AttendDemand/all_attend_demand_screen.dart';
+import '../../required_documents/upload_required_documents.dart';
 import '../../session/list_session_screen.dart';
 
 class IssueScreen extends StatefulWidget {
@@ -200,14 +202,7 @@ class _IssueScreenState extends State<IssueScreen> {
                 icon: Icons.date_range,
                 title: "Start Date",
                 value: widget.issuesModel.startDate),
-            buildSectionCard(
-                icon: Icons.date_range,
-                title: "Created At",
-                value: widget.issuesModel.createdAt),
-            buildSectionCard(
-                icon: Icons.date_range,
-                title: "Updated At",
-                value: widget.issuesModel.updatedAt),
+            
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -272,17 +267,18 @@ class _IssueScreenState extends State<IssueScreen> {
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        AddRequiredDocumentScreen(issueId: widget.issuesModel.id),
-                  ),
-                );
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => BlocProvider(
+                        create: (_) => RequiredDocumentsBloc(),
+                        child: AddRequiredDocumentScreen(issueId: widget.issuesModel.id),
+                      ),
+                    ));
               },
               icon: const Icon(Icons.upload_file),
-              label: const Text('Add Required Document '),
+              label: const Text('Add Required Document ',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
+                backgroundColor: AppColors.darkBlue,
                 padding:
                 const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                 shape: RoundedRectangleBorder(
@@ -290,6 +286,31 @@ class _IssueScreenState extends State<IssueScreen> {
                 textStyle: const TextStyle(fontSize: 16),
               ),
             ),
+            const SizedBox(height: 30),const SizedBox(height: 30),
+            ElevatedButton.icon(
+              onPressed: () {
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                builder: (_) => BlocProvider(
+                create: (_) => RequiredDocumentsBloc(),
+                child: UploadDocumentScreen(issueId: widget.issuesModel.id),
+                ),
+                ));
+              },
+              icon: const Icon(Icons.upload_file),
+              label: const Text('Upload document ',
+                style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.darkBlue,
+                padding:
+                const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                textStyle: const TextStyle(fontSize: 16),
+              ),
+            ),
+
           ],
         ),
       ),

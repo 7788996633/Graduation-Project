@@ -34,7 +34,7 @@ class HiringRequestsBloc
         emit(HiringRequestsLoading());
         try {
           List<HiringRequestModel> hiringRequestsList =
-              await HiringRequestRepository().getHiringRequests();
+          await HiringRequestRepository().getHiringRequests();
           emit(
               HiringRequestsListLoaded(hiringRequestsList: hiringRequestsList));
         } catch (e) {
@@ -50,13 +50,48 @@ class HiringRequestsBloc
         );
         try {
           HiringRequestModel hiringRequestId =
-              await HiringRequestsServices().getHiringRequestById(
+          await HiringRequestsServices().getHiringRequestById(
             event.hiringRequestId,
           );
 
           emit(
             HiringRequestsLoadedSuccessfully(
               hiringRequestModel: hiringRequestId,
+            ),
+          );
+        } catch (e) {
+          emit(HiringRequestsFail(errmsg: e.toString()));
+        }
+      }else if (event is DeleteHiringRequest) {
+        emit(
+          HiringRequestsLoading(),
+        );
+        try {
+          String hiringRequestId =
+          await HiringRequestsServices().deleteHiringRequest(
+            event.hiringRequestId,
+          );
+
+          emit(
+            HiringRequestsSuccess(
+              successmsg: hiringRequestId,
+            ),
+          );
+        } catch (e) {
+          emit(HiringRequestsFail(errmsg: e.toString()));
+        }
+      }
+      else if (event is UpdateHiringRequest) {
+        emit(
+          HiringRequestsLoading(),
+        );
+        try {
+          String hiringRequestId =
+          await HiringRequestsServices().updateHiringRequest(event.status, event. hiringRequestId);
+
+          emit(
+            HiringRequestsSuccess(
+              successmsg: hiringRequestId,
             ),
           );
         } catch (e) {

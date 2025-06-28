@@ -3,16 +3,13 @@ class DocumentModel {
   final int sessionId;
   final String file;
   final String privacy;
-  final DateTime createdAt;
-  final DateTime updatedAt;
 
   DocumentModel({
     required this.id,
     required this.sessionId,
     required this.file,
     required this.privacy,
-    required this.createdAt,
-    required this.updatedAt,
+
   });
 
   factory DocumentModel.fromJson(Map<String, dynamic> json) {
@@ -21,8 +18,7 @@ class DocumentModel {
       sessionId: json['session_id'],
       file: json['file'],
       privacy: json['privacy'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+
     );
   }
 
@@ -32,8 +28,7 @@ class DocumentModel {
       'session_id': sessionId,
       'file': file,
       'privacy': privacy,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
+
     };
   }
 }

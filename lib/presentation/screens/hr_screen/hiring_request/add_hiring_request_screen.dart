@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../constant.dart';
+import '../../../../constant.dart';
 
 class AddHiringRequestScreen extends StatefulWidget {
   const AddHiringRequestScreen({super.key});
@@ -26,6 +26,12 @@ class _AddHiringRequestScreenState extends State<AddHiringRequestScreen> {
         _isLoading = false;
       });
 
+      // ✅ طباعة في الكونسول
+      print("✅ Hiring request submitted:");
+      print("Title: ${_jobTitleController.text}");
+      print("Type: ${_typeController.text}");
+      print("Description: ${_descriptionController.text}");
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Hiring request submitted successfully!"),
@@ -38,16 +44,21 @@ class _AddHiringRequestScreenState extends State<AddHiringRequestScreen> {
       _descriptionController.clear();
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 600;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFD9D9D9),
+      backgroundColor: const Color(0xFFF2F2F2), // ✅ رمادي فاتح
       appBar: AppBar(
-        title: const Text("Create Hiring Request"),
+        title: const Text(
+          "Create Hiring Request",
+          style: TextStyle(color: Colors.white), // ✅ أبيض غامق
+        ),
         backgroundColor: AppColors.darkBlue,
+        foregroundColor: Colors.white, // ✅ لون الأسهم والأيقونات
         elevation: 0,
       ),
       body: LayoutBuilder(
@@ -94,15 +105,14 @@ class _AddHiringRequestScreenState extends State<AddHiringRequestScreen> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             backgroundColor: Colors.transparent,
-                            shadowColor:
-                            Colors.deepPurple.withOpacity(0.5),
+                            shadowColor: Colors.blue.shade900.withOpacity(0.4),
                           ),
                           child: Ink(
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(
+                              gradient: LinearGradient(
                                 colors: [
-                                  Color(0xFFB8820E),
-                                  Color(0xFF523A06)
+                                  Colors.blue.shade800,
+                                  Colors.blue.shade900
                                 ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
@@ -111,8 +121,7 @@ class _AddHiringRequestScreenState extends State<AddHiringRequestScreen> {
                             ),
                             child: Container(
                               width: double.infinity,
-                              padding:
-                              const EdgeInsets.symmetric(vertical: 16),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
                               alignment: Alignment.center,
                               child: const Text(
                                 'Submit Request',

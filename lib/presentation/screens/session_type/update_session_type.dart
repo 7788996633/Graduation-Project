@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../blocs/session_type_bloc/session_type_bloc.dart';
 import '../../../blocs/session_type_bloc/session_type_event.dart';
 
+
 import '../../../constant.dart';
 import '../../../data/models/session_type_model.dart';
 import '../../widgets/custom_appbar_add.dart';
@@ -35,23 +36,38 @@ class _UpdateSessionTypeScreenState extends State<UpdateSessionTypeScreen> {
     super.dispose();
   }
 
+  void _submitUpdate() {
+    if (_formKey.currentState!.validate()) {
+      final points = int.tryParse(_pointsController.text.trim()) ?? 0;
+      print('Submitting updated points: $points');
+      BlocProvider.of<SessionTypeBloc>(context).add(
+        UpdateSessionTypeEvent(
+          sessionTypeId: widget.sessionType.id!,
+          points: points,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomActionAppBar(
-        title: ' update session type ',
+        title: 'Update Session Type',
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: BlocConsumer<SessionTypeBloc, SessionTypeState>(
           listener: (context, state) {
             if (state is SessionTypeSuccess) {
+              print('Updated SessionType: '
+                  'id=${widget.sessionType.id}, '
+                  'points=${_pointsController.text.trim()}');
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(
-                    state.successMsg,
-                    style: const TextStyle(fontSize: 16),
-                  ),
+                  content: Text(state.successMsg,
+                      style: const TextStyle(fontSize: 16)),
                   backgroundColor: Colors.green,
                 ),
               );
@@ -69,26 +85,17 @@ class _UpdateSessionTypeScreenState extends State<UpdateSessionTypeScreen> {
             } else if (state is SessionTypeFail) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(
-                    state.errMsg,
-                    style: const TextStyle(fontSize: 16),
-                  ),
+                  content: Text(state.errMsg,
+                      style: const TextStyle(fontSize: 16)),
                   backgroundColor: Colors.red,
-                ),
-              );
-            } else if (state is SessionTypeLoading) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    "Loading ...",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Colors.grey,
                 ),
               );
             }
           },
           builder: (context, state) {
+            if (state is SessionTypeLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
             return Form(
               key: _formKey,
               child: Column(
@@ -98,29 +105,22 @@ class _UpdateSessionTypeScreenState extends State<UpdateSessionTypeScreen> {
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(labelText: 'Points'),
                     validator: (value) =>
-                    value!.isEmpty ? 'Please enter points' : null,
+                    value == null || value.isEmpty ? 'Please enter points' : null,
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        BlocProvider.of<SessionTypeBloc>(context).add(
-                          UpdateSessionTypeEvent(
-                            sessionTypeId: widget.sessionType.id!,
-                            points:
-                            int.tryParse(_pointsController.text.trim()) ?? 0,
-                          ),
-                        );
-                      }
-                    },
+                    onPressed: _submitUpdate,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.darkBlue,
                     ),
-                    child: const Text('Update', style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),),
+                    child: const Text(
+                      'Update',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),

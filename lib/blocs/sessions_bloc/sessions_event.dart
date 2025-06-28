@@ -7,11 +7,13 @@ class CreateSessionsEvent extends SessionsEvent {
   final int sessionTypeId;
   final int lawyerId;
   final int issueId;
+  final int isAttend;
 
   CreateSessionsEvent({
     required this.sessionTypeId,
     required this.lawyerId,
     required this.issueId,
+    required this.isAttend,
   });
 }
 

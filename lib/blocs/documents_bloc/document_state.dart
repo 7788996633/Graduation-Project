@@ -1,6 +1,4 @@
-
 import 'package:meta/meta.dart';
-
 import '../../data/models/document_model.dart';
 
 @immutable
@@ -22,7 +20,20 @@ final class DocumentFail extends DocumentState {
   DocumentFail({required this.errmsg});
 }
 
-final class DocumentLoadedSuccessfully extends DocumentState{
+final class DocumentLoadedSuccessfully extends DocumentState {
   final DocumentModel document;
+
   DocumentLoadedSuccessfully({required this.document});
+}
+
+final class DocumentListLoaded extends DocumentState {
+  final List<DocumentModel> documentsList;
+
+  DocumentListLoaded({required this.documentsList});
+}
+
+final class DocumentIdLoaded extends DocumentState {
+  final DocumentModel document;
+
+  DocumentIdLoaded({required this.document});
 }

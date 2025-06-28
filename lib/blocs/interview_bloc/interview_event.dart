@@ -4,14 +4,11 @@ import 'package:meta/meta.dart';
 sealed class InterviewEvent {}
 
 class AddInterviewEvent extends InterviewEvent {
-  final String type;
-  final int points;
-  final String description;
+  final String date;
 
   AddInterviewEvent({
-    required this.type,
-    required this.points,
-    required this.description,
+    required this.date,
+
   });
 }
 
@@ -25,11 +22,21 @@ class GetAllInterviewsEvent extends InterviewEvent {}
 
 class UpdateInterviewEvent extends InterviewEvent {
   final int interviewId;
-  final int points;
+  final String date;
 
   UpdateInterviewEvent({
     required this.interviewId,
-    required this.points,
+    required this.date,
+  });
+}
+
+class UpdateInterviewResultEvent extends InterviewEvent {
+  final int interviewId;
+  final String result;
+
+  UpdateInterviewResultEvent({
+    required this.interviewId,
+    required this.result,
   });
 }
 

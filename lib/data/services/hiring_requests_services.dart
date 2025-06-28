@@ -6,16 +6,16 @@ import '../models/hiring_request_model.dart';
 
 class HiringRequestsServices {
   Future<String> creatHiringRequests(
-    String jopTitle,
-    String type,
-    String description,
-  ) async {
+      String jopTitle,
+      String type,
+      String description,
+      ) async {
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken',
     };
     var request =
-        http.MultipartRequest('POST', Uri.parse('${myUrl}hiring-requests'));
+    http.MultipartRequest('POST', Uri.parse('${myUrl}hiring-requests'));
     request.fields.addAll({
       'jopTitle': jopTitle,
       'type': type,
@@ -47,7 +47,7 @@ class HiringRequestsServices {
       'Authorization': 'Bearer $myToken'
     };
     var request =
-        http.MultipartRequest('GET', Uri.parse('${myUrl}hiring-requests'));
+    http.MultipartRequest('GET', Uri.parse('${myUrl}hiring-requests'));
     request.headers.addAll(headers);
     var streamedResponse = await request.send();
     var response = await http.Response.fromStream(streamedResponse);
@@ -82,7 +82,63 @@ class HiringRequestsServices {
     if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
       return jsonResponse['data'];
     } else {
-      throw Exception('Failed to load lawyer');
+      throw Exception('Failed to load Hiring Request');
     }
   }
+  Future<String> deleteHiringRequest(int hiringRequestId)async{
+    var headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $myToken'
+    };
+
+    var request = http.MultipartRequest('DELETE', Uri.parse('${myUrl}hiring-requests/$hiringRequestId'));
+
+    request.headers.addAll(headers);
+
+    var streamedResponse = await request.send();
+
+    var response = await http.Response.fromStream(streamedResponse);
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode == 200) {
+      if (jsonResponse['status'] == 'success') {
+        return jsonResponse['message'];
+      } else {
+        return 'failed: ${jsonResponse['message']}';
+      }
+    } else {
+      return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+    }
+
+  }
+  Future<String> updateHiringRequest (String status,int  hiringRequestId)async{
+    var headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $myToken'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse('${myUrl}hiring-requests/status/$hiringRequestId'));
+    request.fields.addAll({
+      'status': status
+    });
+
+    request.headers.addAll(headers);
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+    if (response.statusCode == 200) {
+      if (jsonResponse['status'] == 'success') {
+        return jsonResponse['message'];
+      } else {
+        return 'failed: ${jsonResponse['message']}';
+      }
+    } else {
+      return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+    }
+
+  }
+
+
+
 }

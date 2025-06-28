@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:untitled27/blocs/hiring_requests/hiring_requests_block.dart';
+import 'package:untitled27/presentation/screens/hr_screen/hiring_request/add_hiring_request_screen.dart';
 
 import '../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
+import '../../../blocs/job_application/job_application_bloc.dart';
 import '../../../blocs/sessions_bloc/sessions_bloc.dart';
 import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../widgets/custom_app_drawer.dart';
 import '../../widgets/section_card.dart';
+import '../hr_screen/job_application/add_job_application.dart';
+import '../hr_screen/job_application/my_application_job_list.dart';
 import '../issue_request/add_issue_request.dart';
 import '../settings/setting_screen.dart';
 import '../../widgets/custom_home_appbar.dart';
@@ -65,25 +70,34 @@ class UserHomeScreen extends StatelessWidget {
         },
       },
       {
-        'title': 'Request Legal Consultation',
+        'title': 'Add Job application ',
         'icon': Icons.contact_support,
         'onTap': () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const SettingsScreen()),
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => HiringRequestsBloc(),
+                child: const AddHiringRequestScreen(),
+              ),
+            ),
           );
         },
       },
-      {
-        'title': 'Legal Library',
-        'icon': Icons.library_books,
-        'onTap': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const SettingsScreen()),
-          );
-        },
-      },
+    {
+    'title': 'Add Job application ',
+    'icon': Icons.contact_support,
+    'onTap': () {
+    Navigator.push(
+    context,
+    MaterialPageRoute(
+    builder: (_) => BlocProvider(
+    create: (context) => JobApplicationBloc(),
+    child: const MyListJobApplicationsScreen(),
+    ),
+    ),
+    );
+    },},
       {
         'title': 'Submit Complaint',
         'icon': Icons.report_problem,

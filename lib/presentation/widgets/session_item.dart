@@ -30,13 +30,13 @@ class SessionItem extends StatelessWidget {
               DeleteSessionEvent(sessionId: sessionModel.sessionId),
             );
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.delete,
             color: Colors.red,
           ),
         ),
         title: Text("${sessionModel.sessionId}"),
-        subtitle: Text(sessionModel.type),
+        subtitle: Text(sessionModel.type ?? "No type available"),
       ),
     );
   }

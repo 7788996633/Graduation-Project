@@ -44,9 +44,7 @@ class CustomLawyerItem extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) => BlocProvider(
                 create: (context) => LawyerProfileBloc(),
-                child: LawyerDetailsScreen(
-                  lawyerId: lawyer.id,
-                ),
+                child: LawyerDetailsScreen(lawyerId: lawyer.id),
               ),
             ),
           );
@@ -54,41 +52,59 @@ class CustomLawyerItem extends StatelessWidget {
       },
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(16),
         ),
-        elevation: 6,
-        shadowColor: Colors.deepPurple.withOpacity(0.3),
+        elevation: isSelected ? 6 : 4,
+        shadowColor: Colors.deepPurple.withOpacity(0.2),
         color: isSelected ? AppColors.darkBlue : Colors.white,
-        child: ListTile(
-          leading: CircleAvatar(
-            backgroundImage: NetworkImage(
-              '${lawyer.image}?v=${DateTime.now().millisecondsSinceEpoch}',
-            ),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: EdgeInsets.symmetric(
+            vertical: isSelected ? 10 : 8,
+            horizontal: isSelected ? 10 : 10,
           ),
-          title: Text(
-            lawyer.name,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: isSelected ? Colors.white : const Color(0XFF472A0C),
-            ),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              InfoRow(
-                title: 'Experience:',
-                value: '${lawyer.experienceYears} years',
-                textColor: isSelected ? Colors.white70 : null,
+              CircleAvatar(
+                radius: isSelected ? 20 : 18,
+                backgroundImage: NetworkImage(
+                  '${lawyer.image}?v=${DateTime.now().millisecondsSinceEpoch}',
+                ),
               ),
-              InfoRow(
-                title: 'Specialization:',
-                value: '${lawyer.specialization} ',
-                textColor: isSelected ? Colors.white70 : null,
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      lawyer.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: isSelected ? 13.5 : 12,
+                        color: isSelected ? Colors.white : const Color(0XFF472A0C),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    InfoRow(
+                      title: 'Exp:',
+                      value: '${lawyer.experienceYears}y',
+                      textColor: isSelected ? Colors.white70 : Colors.black87,
+                      fontSize: isSelected ? 12 : 11,
+                    ),
+                    InfoRow(
+                      title: 'Spec:',
+                      value: lawyer.specialization,
+                      textColor: isSelected ? Colors.white70 : Colors.black87,
+                      fontSize: isSelected ? 12 : 11,
+                    ),
+                  ],
+                ),
               ),
+              if (trailing != null) trailing!,
             ],
           ),
-          trailing: trailing,
         ),
       ),
     );

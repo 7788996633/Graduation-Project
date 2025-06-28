@@ -52,7 +52,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF3F4F6),
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: AppColors.darkBlue,
         title: const Text(
           "Profile",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
@@ -126,7 +126,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           onTap: _pickImage,
                           child: const CircleAvatar(
                             radius: 18,
-                            backgroundColor: Colors.blue,
+                            backgroundColor: AppColors.darkBlue,
                             child: Icon(Icons.camera_alt,
                                 size: 20, color: Colors.white),
                           ),

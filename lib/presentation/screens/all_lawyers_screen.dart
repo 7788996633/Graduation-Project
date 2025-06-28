@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../blocs/lawyer_bloc/lawyer_bloc.dart';
 import '../../../blocs/lawyer_bloc/lawyer_event.dart';
 
+import '../../constant.dart';
 import '../../data/filters/filters_strategy.dart';
 import '../../data/models/lawyer_model.dart';
 import '../widgets/custom_search_bar.dart';
@@ -47,7 +48,7 @@ class _AllLawyersScreenState extends State<AllLawyersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F1F6),
+      backgroundColor: AppColors.darkBlue,
       appBar: AppBar(
         actions: [
           IconButton(

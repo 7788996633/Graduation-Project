@@ -34,22 +34,34 @@ class _SessionTypeSelectorState extends State<SessionTypeSelector> {
         if (state is SessionTypeLoading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is SessionTypeListLoaded) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: state.list.map((sessionType) {
-              return RadioListTile<int>(
-                title: Text(sessionType.type),
-                subtitle: Text(sessionType.description),
-                value: sessionType.id,
-                groupValue: selectedId,
-                onChanged: (value) {
-                  setState(() {
-                    selectedId = value;
-                  });
-                  widget.onSelected(value!, sessionType.type);
-                },
-              );
-            }).toList(),
+          return SingleChildScrollView(
+            child: Column(
+              children: state.list.map((sessionType) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
+                  child: Card(
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: RadioListTile<int>(
+                      contentPadding: const EdgeInsets.all(12),
+                      title: Text(sessionType.type,
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      subtitle: Text(sessionType.description),
+                      value: sessionType.id,
+                      groupValue: selectedId,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedId = value;
+                        });
+                        widget.onSelected(value!, sessionType.type);
+                      },
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
           );
         } else if (state is SessionTypeFail) {
           return Text("Error: ${state.errMsg}");

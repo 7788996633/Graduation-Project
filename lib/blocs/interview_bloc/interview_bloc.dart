@@ -1,13 +1,9 @@
 import 'dart:core';
-
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
-
-import 'package:untitled27/blocs/interview_bloc/interview_event.dart';
 import '../../data/models/interview_model.dart';
 import '../../data/repositories/interview_repository.dart';
-
 import '../../data/services/interview_services.dart';
+import 'interview_event.dart';
 import 'interviews_state.dart';
 
 class InterviewBloc extends Bloc<InterviewEvent, InterviewState> {
@@ -17,7 +13,7 @@ class InterviewBloc extends Bloc<InterviewEvent, InterviewState> {
         emit(InterviewLoading());
         try {
           String result = await InterviewServices()
-              .addInterview(event.type, event.points, event.description);
+              .addInterview(event.date);
           emit(InterviewSuccess(successMsg: result));
         } catch (e) {
           emit(InterviewFail(errMsg: e.toString()));
@@ -43,12 +39,23 @@ class InterviewBloc extends Bloc<InterviewEvent, InterviewState> {
         emit(InterviewLoading());
         try {
           String result = await InterviewServices()
-              .updateInterview(event.interviewId, event.points);
+              .updateInterview(event.interviewId,event.date);
           emit(InterviewSuccess(successMsg: result));
         } catch (e) {
           emit(InterviewFail(errMsg: e.toString()));
         }
-      } else if (event is DeleteInterviewEvent) {
+      }else if (event is UpdateInterviewResultEvent) {
+        emit(InterviewLoading());
+        try {
+          String result = await InterviewServices()
+              .updateInterviewResult(event.interviewId,event.result);
+          emit(InterviewSuccess(successMsg: result));
+        } catch (e) {
+          emit(InterviewFail(errMsg: e.toString()));
+        }
+      }
+
+      else if (event is DeleteInterviewEvent) {
         emit(InterviewLoading());
         try {
           String result =

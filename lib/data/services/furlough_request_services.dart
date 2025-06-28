@@ -73,8 +73,8 @@ class FurloughRequestsServices {
       });
       request.bodyFields = {
         'cause': cause,
-        'startDate': startDate,
-        'endDate': endDate,
+        'start_date': startDate,
+        'end_date': endDate,
       };
       var streamedResponse = await request.send();
       response = await http.Response.fromStream(streamedResponse);
@@ -82,8 +82,8 @@ class FurloughRequestsServices {
       var request = http.MultipartRequest('POST', Uri.parse('${myUrl}furloughs'));
       request.fields.addAll({
         'cause': cause,
-        'startDate': startDate,
-        'endDate': endDate,
+        'start_date': startDate,
+        'end_date': endDate,
       });
       request.headers.addAll(baseHeaders);
       var streamedResponse = await request.send();
@@ -118,7 +118,7 @@ class FurloughRequestsServices {
       var streamedResponse = await request.send();
       response = await http.Response.fromStream(streamedResponse);
     } else {
-      var request = http.MultipartRequest('POST', url);
+      var request = http.MultipartRequest('PUT', url);
       request.fields.addAll(body);
       request.headers.addAll(baseHeaders);
       var streamedResponse = await request.send();

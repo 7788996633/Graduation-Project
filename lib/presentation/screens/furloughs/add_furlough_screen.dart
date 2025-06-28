@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+
 import '../../../blocs/furlough_request_bloc/furlough_request_bloc.dart';
 import '../../../blocs/furlough_request_bloc/furlough_request_event.dart';
 import '../../../blocs/furlough_request_bloc/furlough_request_state.dart';
 import '../../widgets/build_custom_appbar_detials.dart';
 import '../../widgets/custom_text_field_add.dart';
 import '../../widgets/elevated_button_submit.dart';
-import 'package:intl/intl.dart';
 
 class AddFurloughScreen extends StatefulWidget {
   const AddFurloughScreen({super.key});
@@ -17,8 +18,26 @@ class AddFurloughScreen extends StatefulWidget {
 
 class _AddFurloughScreenState extends State<AddFurloughScreen> {
   final TextEditingController _causeController = TextEditingController();
+  late TextEditingController _startDateController;
+  late TextEditingController _endDateController;
+
   DateTime? _startDate;
   DateTime? _endDate;
+
+  @override
+  void initState() {
+    super.initState();
+    _startDateController = TextEditingController(text: 'Select Date');
+    _endDateController = TextEditingController(text: 'Select Date');
+  }
+
+  @override
+  void dispose() {
+    _causeController.dispose();
+    _startDateController.dispose();
+    _endDateController.dispose();
+    super.dispose();
+  }
 
   Future<void> _pickDate(BuildContext context, bool isStartDate) async {
     final DateTime? picked = await showDatePicker(
@@ -31,15 +50,17 @@ class _AddFurloughScreenState extends State<AddFurloughScreen> {
       setState(() {
         if (isStartDate) {
           _startDate = picked;
+          _startDateController.text = _formatDate(picked);
         } else {
           _endDate = picked;
+          _endDateController.text = _formatDate(picked);
         }
       });
     }
   }
 
-  String _formatDate(DateTime? date) {
-    return date != null ? DateFormat('yyyy-MM-dd').format(date) : 'Select Date';
+  String _formatDate(DateTime date) {
+    return DateFormat('yyyy-MM-dd').format(date);
   }
 
   @override
@@ -53,6 +74,8 @@ class _AddFurloughScreenState extends State<AddFurloughScreen> {
           listener: (context, state) {
             if (state is FurloughRequestsSuccess) {
               _causeController.clear();
+              _startDateController.text = 'Select Date';
+              _endDateController.text = 'Select Date';
               setState(() {
                 _startDate = null;
                 _endDate = null;
@@ -104,31 +127,25 @@ class _AddFurloughScreenState extends State<AddFurloughScreen> {
                       label: 'Cause',
                     ),
                     const SizedBox(height: 20),
-
-                    // Start Date
                     GestureDetector(
                       onTap: () => _pickDate(context, true),
                       child: AbsorbPointer(
                         child: CustomTextFieldAdd(
-                          controller: TextEditingController(text: _formatDate(_startDate)),
+                          controller: _startDateController,
                           label: 'Start Date',
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 20),
-
-                    // End Date
                     GestureDetector(
                       onTap: () => _pickDate(context, false),
                       child: AbsorbPointer(
                         child: CustomTextFieldAdd(
-                          controller: TextEditingController(text: _formatDate(_endDate)),
+                          controller: _endDateController,
                           label: 'End Date',
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 30),
                     state is FurloughRequestsLoading
                         ? const Center(child: CircularProgressIndicator())
@@ -150,8 +167,8 @@ class _AddFurloughScreenState extends State<AddFurloughScreen> {
                           BlocProvider.of<FurloughRequestsBloc>(context).add(
                             CreateFurloughRequestsEvent(
                               cause: _causeController.text,
-                              startDate: _formatDate(_startDate),
-                              endDate: _formatDate(_endDate),
+                              startDate: _formatDate(_startDate!),
+                              endDate: _formatDate(_endDate!),
                             ),
                           );
                         },

@@ -18,6 +18,7 @@ import '../all_lawyers_screen.dart';
 import '../furloughs/list_furloughs_screen.dart';
 import '../issue_request/list_issue_requests_screen.dart';
 import '../required_documents/list_required_document_screen.dart';
+import '../user_screens/user_profile_screens/create_user_profile_screen.dart';
 
 class AdminHomeScreen extends StatelessWidget {
   const AdminHomeScreen({super.key});
@@ -64,6 +65,7 @@ class AdminHomeScreen extends StatelessWidget {
             ),
           );
         },
+
       },
 
       {
@@ -121,6 +123,22 @@ class AdminHomeScreen extends StatelessWidget {
               builder: (_) => BlocProvider(
                 create: (_) => SessionTypeBloc(),
                 child: const ListSessionTypesScreen(),
+              ),
+            ),
+          );
+        },
+      },
+
+      {
+        'title': 'create profile',
+        'icon': Icons.group,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => UserProfileBloc(),
+                child: const CreateUserProfileScreen(),
               ),
             ),
           );

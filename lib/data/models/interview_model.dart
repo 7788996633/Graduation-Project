@@ -1,25 +1,22 @@
 class InterviewModel {
   final int id;
-  final int? points;
-  final String description;
+  final String result;
   final DateTime date;
-  final String type;
+  final String? note;
 
   InterviewModel({
     required this.id,
-    this.points,
-    required this.description,
+    required this.result,
     required this.date,
-    required this.type,
+    this.note,
   });
 
   factory InterviewModel.fromJson(Map<String, dynamic> data) {
     return InterviewModel(
       id: data['id'],
-      points: data['points'],
-      description: data['description'] ?? '',
+      result: data['result'] ?? '',
       date: DateTime.parse(data['date'] ?? DateTime.now().toIso8601String()),
-      type: data['type'] ?? '',
+      note: data['note'],
     );
   }
 }

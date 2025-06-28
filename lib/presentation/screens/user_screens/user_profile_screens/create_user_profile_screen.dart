@@ -57,7 +57,7 @@ class _AddUserProfileScreenState extends State<CreateUserProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("➕ Create Profile"),
+        title: const Text(" Create Profile"),
         backgroundColor: mainColor,
         centerTitle: true,
       ),
@@ -100,7 +100,7 @@ class _AddUserProfileScreenState extends State<CreateUserProfileScreen> {
               ),
               const SizedBox(height: 20),
 
-              // صورة البروفايل
+
               if (_pickedImage != null)
                 Container(
                   height: 150,
