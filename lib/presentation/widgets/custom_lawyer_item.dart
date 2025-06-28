@@ -6,6 +6,7 @@ import '../../data/models/lawyer_model.dart';
 import '../../constant.dart';
 import '../screens/lawyer_screens/lawyer_profile_screens/lawyer_details_screen.dart';
 import 'info_row.dart';
+import '../../../../themes.dart';
 
 class CustomLawyerItem extends StatelessWidget {
   const CustomLawyerItem({

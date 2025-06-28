@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../constant.dart';
+import '../../../../themes.dart';
 
 class LoginColumn extends StatelessWidget {
   const LoginColumn({super.key, this.onPressed});

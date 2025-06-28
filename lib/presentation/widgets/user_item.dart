@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../blocs/user_bloc/user_bloc.dart';
 import '../../../data/models/user_model.dart';
 import '../../blocs/user_profile_bloc/user_profile_bloc.dart';
+import '../../themes.dart';
 import 'custom_user_item.dart';
 
 class UserItem extends StatefulWidget {
@@ -31,6 +32,9 @@ class _UserItemState extends State<UserItem> {
           return CustomUserItem(
             userProfileModel: state.userProfileModel,
             subtitle: Text(
+              style: TextStyle(
+                color: getCurrentTheme()['NormalText'],
+              ),
               widget.userModel.roleName,
             ),
             trailing: widget.userModel.id == 1
@@ -74,9 +78,9 @@ class _UserItemState extends State<UserItem> {
                         }
                       }
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.settings,
-                      color: Colors.black,
+                      color: getCurrentTheme()['Icons'],
                     ),
                     itemBuilder: (context) =>
                         getPopupItems(widget.userModel.roleName),

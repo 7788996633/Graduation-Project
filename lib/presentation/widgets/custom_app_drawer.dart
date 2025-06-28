@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
-import '../../constant.dart';
+import '../../../../themes.dart';
 import '../screens/settings/setting_screen.dart';
 import '../screens/user_screens/user_profile_screens/user_profile_screen.dart';
 

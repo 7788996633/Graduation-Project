@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../constant.dart';
+import '../../../../themes.dart';
 
 class RegisterColumn extends StatelessWidget {
   final void Function()? onPressed;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:graduation/themes.dart';
 
-import '../../../constant.dart';
-
+ 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -11,7 +11,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   String selectedLanguage = 'العربية';
-  bool isDarkMode = false;
   bool is2FAEnabled = false;
 
   @override
@@ -27,7 +26,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         centerTitle: true,
         backgroundColor: isDark ? Colors.black : AppColors.darkBlue,
-
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -63,10 +61,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               icon: Icons.brightness_6,
               title: 'الوضع الليلي',
               trailing: Switch(
-                value: isDarkMode,
+                value: isLight,
                 onChanged: (val) {
                   setState(() {
-                    isDarkMode = val;
+                    isLight = val;
                   });
                 },
               ),
@@ -141,7 +139,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         leading: Icon(icon, color: Colors.black, size: 28),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600,color: Colors.black,)),
+        title: Text(title,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            )),
         trailing: trailing,
         onTap: onTap,
       ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../blocs/user_bloc/user_bloc.dart';
-import '../../../../constant.dart';
+import '../../../../themes.dart';
 import '../../../widgets/users_list.dart';
 
 class ModifyUsersPermissionsScreen extends StatefulWidget {
@@ -18,14 +18,14 @@ class _ModifyUsersPermissionsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: AppBar(
-        backgroundColor: AppColors.darkBlue,
+        backgroundColor: getCurrentTheme()['AppBar'],
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text(
+        title: Text(
           'Users',
           style: TextStyle(
-            color: Colors.white,
+            color: getCurrentTheme()['AppBarTitle'],
           ),
         ),
       ),

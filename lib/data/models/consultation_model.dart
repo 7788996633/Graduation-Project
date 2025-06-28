@@ -14,8 +14,8 @@ class ConsultationModel {
     return ConsultationModel(
       id: data['id'],
       resault: data['resault'],
-      lawyerId: data['lawyerId'],
-      consultationrRequestId: data['consultationrRequestId'],
+      lawyerId: data['lawyer_id'],
+      consultationrRequestId: data['consultation_req_id'],
     );
   }
 }

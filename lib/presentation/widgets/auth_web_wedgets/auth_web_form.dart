@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../blocs/auth_bloc/auth_bloc.dart';
-import '../../../constant.dart';
+import '../../../../themes.dart';
 import '../../../validator.dart';
 import '../auth_widgets/login_column.dart';
 import '../auth_widgets/register_column.dart';

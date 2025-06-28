@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../blocs/hiring_requests/hiring_requests_block.dart';
 import '../../../blocs/hiring_requests/hiring_requests_event.dart';
 import '../../../blocs/hiring_requests/hiring_requests_state.dart';
-import '../../../constant.dart';
+import '../../../../themes.dart';
 import '../../../data/models/hiring_request_model.dart';
 import 'add_hiring_request_screen.dart';
 

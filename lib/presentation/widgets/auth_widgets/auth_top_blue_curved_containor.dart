@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../constant.dart';
+import '../../../../themes.dart';
 
 class AuthTopBlueCurvedContainor extends StatelessWidget {
   const AuthTopBlueCurvedContainor({super.key});

@@ -5,6 +5,7 @@ import '../../../../blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
 import '../../../../constant.dart';
 import '../../../../data/models/lawyer_model.dart';
 import '../../../pdf_viewer_page.dart';
+import '../../../../themes.dart';
 
 class LawyerDetailsScreen extends StatefulWidget {
   const LawyerDetailsScreen({super.key, required this.lawyerId});

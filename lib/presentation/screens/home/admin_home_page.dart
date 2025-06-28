@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
-import '../../../constant.dart';
+import '../../../../themes.dart';
 import '../factories/role_screen.dart';
 import 'admin_home_screen.dart';
 

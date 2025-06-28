@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/consultations_bloc/consultation_bloc.dart';
 import 'package:graduation/blocs/sessions_bloc/sessions_bloc.dart';
+import 'package:graduation/presentation/screens/consultation/consultations_list_screen.dart';
 import 'package:graduation/presentation/screens/lawyer_screens/lawyer_issues_screens/lawyer_issues_list_screen.dart';
 import 'package:graduation/presentation/screens/lawyer_screens/lawyer_sessions_screen.dart/lawyer_sessions_screen.dart';
 import '../../../blocs/issue_bloc/issues_bloc.dart';
@@ -40,6 +42,21 @@ class LawyerHomeScreen extends StatelessWidget {
               builder: (_) => BlocProvider(
                 create: (_) => SessionsBloc(),
                 child: const LawyerSessionsScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Consultations',
+        'icon': Icons.chat,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => ConsultationBloc(),
+                child: const ConsultationsListScreen(),
               ),
             ),
           );
