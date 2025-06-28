@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/data/models/issue_request_model.dart';
 
 import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
 import '../../../blocs/issue_requests_bloc/issue_requests_event.dart';
 import '../../../blocs/issue_requests_bloc/issue_requests_state.dart';
-import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../../constant.dart';
 
 import '../../widgets/auth_widgets/issue_request_list_widget.dart';
@@ -22,14 +22,19 @@ class ListIssueRequestsScreen extends StatefulWidget {
 
 class _ListIssueRequestsScreenState extends State<ListIssueRequestsScreen> {
   late IssueRequestsBloc bloc;
+  bool _isInit = true; // حتى ما يعيد جلب البيانات كل مرة
 
   @override
-  void initState() {
-    super.initState();
-    bloc = BlocProvider.of<IssueRequestsBloc>(context);
-    bloc.add(GetAllIssueRequestsEvent());
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isInit) {
+      bloc = BlocProvider.of<IssueRequestsBloc>(context);
+      bloc.add(GetAllIssueRequestsEvent());
+      _isInit = false;
+    }
   }
 
+  List<IssueRequestModel> issueRequestsList = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,8 +43,8 @@ class _ListIssueRequestsScreenState extends State<ListIssueRequestsScreen> {
         title: 'List Issue Requests',
         actionIcon: Icons.add_circle_rounded,
         tooltip: 'Add New Request',
-        onActionPressed: () {
-          Navigator.push(
+        onActionPressed: () async {
+          await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (_) => BlocProvider.value(
@@ -48,6 +53,7 @@ class _ListIssueRequestsScreenState extends State<ListIssueRequestsScreen> {
               ),
             ),
           );
+          bloc.add(GetAllIssueRequestsEvent());
         },
       ),
       body: Padding(
@@ -59,19 +65,16 @@ class _ListIssueRequestsScreenState extends State<ListIssueRequestsScreen> {
               child: BlocBuilder<IssueRequestsBloc, IssueRequestsState>(
                 builder: (context, state) {
                   if (state is IssueRequestsLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return const Center(child: CircularProgressIndicator());
                   } else if (state is IssueRequestsListLoaded) {
-                    return BlocProvider(
-                      create: (context) => UserProfileBloc(),
-                      child:
-                          RequestListWidget(requests: state.issueRequestsList),
-                    );
-                  } else if (state is IssueRequestsLoadedSuccessfully) {
-                    return RequestListWidget(
-                      requests: [state.issueRequest],
-                    );
+                    issueRequestsList = state.issueRequestsList;
+                    return issueRequestsList.isEmpty
+                        ? const Center(child: Text('There Is No data '))
+                        : RequestListWidget(requests: issueRequestsList);
+                  } else if (state is IssueRequestsSuccess) {
+                    return issueRequestsList.isEmpty
+                        ? const Center(child: Text('There Is No data '))
+                        : RequestListWidget(requests: issueRequestsList);
                   } else if (state is IssueRequestsFail) {
                     return Center(
                       child: Text(
@@ -90,9 +93,7 @@ class _ListIssueRequestsScreenState extends State<ListIssueRequestsScreen> {
       ),
       floatingActionButton: RefreshButton(
         onPressed: () {
-          bloc.add(
-            GetAllIssueRequestsEvent(),
-          );
+          bloc.add(GetAllIssueRequestsEvent());
         },
       ),
     );

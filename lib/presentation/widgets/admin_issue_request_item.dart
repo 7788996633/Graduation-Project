@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/issue_requests_bloc/issue_requests_bloc.dart';
+import 'package:graduation/blocs/user_profile_bloc/user_profile_bloc.dart';
 import 'package:graduation/constant.dart';
-import '../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
-import '../../blocs/user_profile_bloc/user_profile_bloc.dart';
-import '../../data/models/issue_request_model.dart';
+import 'package:graduation/data/models/issue_request_model.dart';
+import 'package:graduation/presentation/widgets/custom_user_item.dart';
+
+import '../../blocs/issue_requests_bloc/issue_requests_event.dart';
 import '../screens/issue_request/issue_request_detials_screen.dart';
-import '../widgets/custom_user_item.dart';
 
 class AdminIssueRequestItem extends StatefulWidget {
   const AdminIssueRequestItem({
@@ -22,21 +24,25 @@ class AdminIssueRequestItem extends StatefulWidget {
 }
 
 class _AdminIssueRequestItemState extends State<AdminIssueRequestItem> {
+  late final UserProfileBloc userProfileBloc;
+
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<UserProfileBloc>(context).add(
-      ShowUserProfileByIdEvent(userId: widget.request.userId),
-    );
+    userProfileBloc = UserProfileBloc()
+      ..add(ShowUserProfileByIdEvent(userId: widget.request.userId));
+  }
+
+  @override
+  void dispose() {
+    userProfileBloc.close(); // مهم نغلق البلوك لما نخلص
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => UserProfileBloc()
-        ..add(
-          ShowUserProfileByIdEvent(userId: widget.request.userId),
-        ),
+    return BlocProvider.value(
+      value: userProfileBloc,
       child: BlocBuilder<UserProfileBloc, UserProfileState>(
         builder: (context, state) {
           if (state is UserProfileLoadedSuccessfully) {
@@ -63,9 +69,9 @@ class _AdminIssueRequestItemState extends State<AdminIssueRequestItem> {
                         ),
                       ],
                     )
-                  : SizedBox(),
-              onTap: () {
-                Navigator.push(
+                  : const SizedBox(),
+              onTap: () async {
+                await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => BlocProvider.value(
@@ -77,6 +83,7 @@ class _AdminIssueRequestItemState extends State<AdminIssueRequestItem> {
                     ),
                   ),
                 );
+                widget.bloc.add(GetAllIssueRequestsEvent());
               },
             );
           } else if (state is UserProfileFail) {
