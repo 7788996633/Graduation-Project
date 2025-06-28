@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/employee_bloc/employee_bloc.dart';
 import 'package:graduation/blocs/permission_bloc/permission_bloc.dart';
 import 'package:graduation/presentation/screens/permission_screen/permissionsScreen.dart';
 import 'package:graduation/presentation/screens/permission_screen/rolesScreen.dart';
@@ -14,6 +15,9 @@ import '../../widgets/section_card.dart';
 import '../admin_screens/issues_screens.dart/all_issues_screen.dart';
 import '../admin_screens/users_management_screens/modify_users_permissions_screen.dart';
 import '../all_lawyers_screen.dart';
+import '../employee_screens/employee_list_screen.dart';
+import '../employee_screens/employee_screen.dart';
+import '../employee_screens/get_employee_screen.dart';
 import '../issue_request/list_issue_requests_screen.dart';
 
 class AdminHomeScreen extends StatelessWidget {
@@ -103,6 +107,21 @@ class AdminHomeScreen extends StatelessWidget {
               builder: (_) => BlocProvider(
                 create: (_) => PermissionBloc(),
                 child: const RolesScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Employees',
+        'icon': Icons.person,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => EmployeeBloc(),
+                child:  EmployeeScreen(),
               ),
             ),
           );
