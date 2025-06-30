@@ -18,7 +18,7 @@ class ShowDocumentScreen extends StatelessWidget {
 
   Future<void> _openLocalFile(String fileName) async {
     final String path = '/storage/emulated/0/Download/$fileName';
-    final result = await OpenFilex.open(path); // ✅ تم التعديل
+    final result = await OpenFilex.open(path);
 
     if (result.type != ResultType.done) {
       debugPrint('Failed to open file: $path');

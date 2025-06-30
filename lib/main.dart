@@ -9,17 +9,10 @@ import 'blocs/auth_bloc/auth_bloc.dart';
 
 import 'presentation/screens/auth_screens/auth_screen.dart';
 import 'presentation/widgets/auth_web_wedgets/auth_web_screen.dart';
-
-import 'localnotification.dart';
-
 void main() async {
   Bloc.observer = MyBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
 
-  if (!kIsWeb) {
-    await LocalNotification.init();
-    LocalNotification.ensureConnected();
-  }
 
   runApp(const MyApp());
 }

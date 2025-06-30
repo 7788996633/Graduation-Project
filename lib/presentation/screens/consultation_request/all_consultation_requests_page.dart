@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../blocs/consultation_request_bloc/consultation_request_bloc.dart';
 
+import '../../../blocs/consultations_bloc/consultation_bloc.dart';
+import '../consultation/add_consultation_screen.dart';
 import 'edit_consultation_request_page.dart';
 
 
@@ -76,6 +78,24 @@ class AllConsultationRequestsPage extends StatelessWidget {
                               );
                             },
                           ),
+                          IconButton(
+                            icon: Icon(Icons.check_circle_outline, color: Colors.green),
+                            tooltip: 'إضافة نتيجة',
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BlocProvider.value(
+                                    value: BlocProvider.of<ConsultationBloc>(context),
+                                    child: AddConsultationScreen(
+                                      consultationRequestId: request.id,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+
                           IconButton(
                             icon: Icon(Icons.delete, color: Colors.red),
                             onPressed: () {
