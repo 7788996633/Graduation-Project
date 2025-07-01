@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../../../blocs/interview_bloc/interview_bloc.dart';
 import '../../../../blocs/job_application/job_application_bloc.dart';
-import '../../../../constant.dart';
 import '../../../../data/models/job_application_model.dart';
 import '../../../../themes.dart';
 import '../../../widgets/custom_appbar_add.dart';
+import '../interview/add_interview_screen.dart';
 import '../interview/list_interview_screen.dart';
 import 'update_job_application.dart';
 
@@ -137,6 +135,8 @@ class _JobApplicationDetailsScreenState extends State<JobApplicationDetailsScree
                   isLink: jobApplication.cvLink != null,
                 ),
                 const SizedBox(height: 24),
+
+                // ✅ زر المقابلات
                 ElevatedButton.icon(
                   onPressed: () {
                     Navigator.push(
@@ -163,11 +163,43 @@ class _JobApplicationDetailsScreenState extends State<JobApplicationDetailsScree
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
+
+                const SizedBox(height: 12),
+
+                // زر إضافة مقابلة د
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => BlocProvider(
+                          create: (_) =>  InterviewBloc(),
+                          child: AddInterviewScreen(
+                            jobAppId: jobApplication.id,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.event, size: 24),
+                  label: const Text(
+                    'Add Interview',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.darkBlue,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 5,
+                  ),
+                ),
               ],
             ),
           ),
         ),
-
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
