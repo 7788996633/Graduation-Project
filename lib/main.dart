@@ -1,3 +1,5 @@
+import 'package:graduation/blocs/notification_bloc/notification_bloc.dart';
+
 import 'blocs/my_bloc_observere.dart';
 import 'package:flutter/material.dart';
 import 'blocs/user_bloc/user_bloc.dart';
@@ -10,8 +12,9 @@ void main() async {
   Bloc.observer = MyBlocObserver();
   runApp(const MyApp());
   LocalNotification.init();
- LocalNotification.ensureConnected();
+  final NotificationBloc notificationBloc = NotificationBloc();
 
+  await LocalNotification.ensureConnected(notificationBloc);
 }
 
 class MyApp extends StatelessWidget {

@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:graduation/blocs/notification_bloc/notification_bloc.dart';
+import 'package:graduation/data/services/notifications_services.dart';
 
 import 'constant.dart';
 
@@ -66,11 +68,11 @@ class LocalNotification {
     );
   }
 
-  static Future<void> ensureConnected() async {
+  static Future<void> ensureConnected(NotificationBloc bloc) async {
     if (_socket == null) {
       _socket = await Socket.connect(ip, 4040);
       _socket!.listen(
-        _handleResponse,
+        (data) => _handleResponse(data, bloc),
         onError: (e) {
           print("Socket error: $e");
           _socket = null;
@@ -84,14 +86,36 @@ class LocalNotification {
   }
 
   // معالجة الرسائل المستقبلة من السيرفر
-  static void _handleResponse(List<int> data) {
-    final response = jsonDecode(utf8.decode(data));
-    if (response['type'] == 'message') {
-      showNotification(
-        title: 'From ${response['from']}',
-        body: response['content'],
-        payload: 'chat:${response['from']}',
-      );
+  static void _handleResponse(List<int> data, NotificationBloc bloc) async {
+    try {
+      final response = jsonDecode(utf8.decode(data));
+
+      if (response['type'] == 'message') {
+        final from = response['from'];
+        final content = response['content'];
+        final notificationId = response['notification_id'];
+
+        // 1. إظهار إشعار محلي
+        showNotification(
+          title: 'From $from',
+          body: content,
+          payload: 'chat:$from',
+        );
+
+        // 2. تحديث Bloc (إذا أردت مثلًا إعادة تحميل القائمة)
+        bloc.add(UnReadNotificationEvent());
+
+        // 3. تعليم كمقروء مباشرة (اختياري)
+        if (notificationId != null) {
+          try {
+            await NotificationsServices().markNotificationRead(notificationId);
+          } catch (e) {
+            print("فشل تعليم الإشعار كمقروء: $e");
+          }
+        }
+      }
+    } catch (e) {
+      print("خطأ في معالجة رسالة السوكت: $e");
     }
   }
 }
