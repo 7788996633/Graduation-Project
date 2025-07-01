@@ -45,10 +45,10 @@ class _LawyersInIssueListState extends State<LawyersInIssueList> {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: lawyers.length,
       padding: const EdgeInsets.all(8),
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 266, // أقصى عرض للكارد الواحد
-        crossAxisSpacing: 8,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2, // دائمًا 2 كارد في السطر
         mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
         childAspectRatio: childAspectRatio,
       ),
       itemBuilder: (context, index) {
@@ -75,25 +75,11 @@ class _LawyersInIssueListState extends State<LawyersInIssueList> {
               double width = constraints.maxWidth;
               double aspectRatio;
 
-              // ضبط نسبة العرض إلى الارتفاع بناءً على حجم الشاشة
-              if (kIsWeb) {
-                if (width >= 1400) {
-                  aspectRatio = 2.0;   // شاشات كبيرة جدًا (مثلاً دقة 4K أو شاشات كبيرة)
-                } else if (width >= 1200) {
-                  aspectRatio = 1.9;   // شاشات كبيرة (Desktop كبير)
-                } else if (width >= 1000) {
-                  aspectRatio = 1.7;   // شاشات متوسطة إلى كبيرة
-                } else if (width >= 900) {
-                  aspectRatio = 1.5;   // شاشات متوسطة (أقل من 1000 بيكسل)
-                } else {
-                  aspectRatio = 1.3;   // شاشات ويب صغيرة (مثل أجهزة التابلت الكبيرة أو النوافذ الصغيرة)
-                }
+              // تقدر تعدل الـ aspectRatio حسب العرض عشان الكارد يطلع مرتب
+              if (width >= 600) {
+                aspectRatio = 2.0;
               } else {
-                if (width >= 600) {
-                  aspectRatio = 1.6;   // موبايل كبير / تابلت
-                } else {
-                  aspectRatio = 1.4;   // موبايل صغير
-                }
+                aspectRatio = 1.5;
               }
 
               return _buildLawyerList(_allLawyers, aspectRatio);

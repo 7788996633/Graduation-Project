@@ -167,6 +167,7 @@ class _JobApplicationDetailsScreenState extends State<JobApplicationDetailsScree
             ),
           ),
         ),
+
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {

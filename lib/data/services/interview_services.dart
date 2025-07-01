@@ -10,9 +10,9 @@ class InterviewServices {
     'Authorization': 'Bearer $myToken',
   };
 
-  Future<List> getInterviews() async {
+  Future<List> getInterviews(int jobAPPId) async {
     try {
-      var url = Uri.parse('${myUrl}interviews/application/2');
+      var url = Uri.parse('${myUrl}interviews/application/$jobAPPId');
       http.Response response;
 
       if (kIsWeb) {
@@ -71,11 +71,11 @@ class InterviewServices {
     }
   }
 
-  Future<String> addInterview(String date) async {
+  Future<String> addInterview(int jobAppId,String date) async {
     try {
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('${myUrl}interviews'),
+        Uri.parse('${myUrl}interviews/$jobAppId'),
       );
       request.fields.addAll({
         'date': date,

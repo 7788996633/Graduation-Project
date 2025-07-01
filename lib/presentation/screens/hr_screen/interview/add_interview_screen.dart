@@ -10,7 +10,8 @@ import '../../../widgets/custom_text_field_add.dart';
 import '../../../widgets/elevated_button_submit.dart';
 
 class AddInterviewScreen extends StatefulWidget {
-  const AddInterviewScreen({super.key});
+  final int jobAppId;
+   const AddInterviewScreen({super.key, required this. jobAppId});
 
   @override
   State<AddInterviewScreen> createState() => _AddInterviewScreenState();
@@ -88,6 +89,7 @@ class _AddInterviewScreenState extends State<AddInterviewScreen> {
                         onPressed: () {
                           BlocProvider.of<InterviewBloc>(context).add(
                             AddInterviewEvent(
+                              jobAppId: widget.jobAppId,
                              date: _dateController.text,
                             ),
                           );

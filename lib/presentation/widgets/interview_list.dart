@@ -3,26 +3,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../blocs/interview_bloc/interview_bloc.dart';
 import '../../blocs/interview_bloc/interview_event.dart';
-
 import '../../blocs/interview_bloc/interviews_state.dart';
 import '../../data/models/interview_model.dart';
 import 'interview_item.dart';
 
 class InterviewList extends StatefulWidget {
-  const InterviewList({super.key, required this.bloc});
+  const InterviewList({
+    super.key,
+    required this.bloc,
+    required this.jobAppId,
+  });
+
   final InterviewBloc bloc;
+  final int jobAppId;
 
   @override
   State<InterviewList> createState() => _InterviewListState();
 }
 
 class _InterviewListState extends State<InterviewList> {
-  @override
-  void initState() {
-    super.initState();
-    widget.bloc.add(GetAllInterviewsEvent());
-  }
-
   List<InterviewModel> interviewList = [];
 
   @override
@@ -39,7 +38,7 @@ class _InterviewListState extends State<InterviewList> {
               backgroundColor: Colors.green,
             ),
           );
-          widget.bloc.add(GetAllInterviewsEvent());
+          widget.bloc.add(GetAllInterviewsEvent(widget.jobAppId)); // ✅
         } else if (state is InterviewFail) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

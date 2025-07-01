@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +8,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../blocs/documents_bloc/document_bloc.dart';
 import '../../../blocs/documents_bloc/document_event.dart';
 import '../../../blocs/documents_bloc/document_state.dart';
-import '../../../constant.dart';
+
 import '../../../themes.dart';
 
 class AddDocumentScreen extends StatefulWidget {
@@ -23,7 +21,7 @@ class AddDocumentScreen extends StatefulWidget {
 }
 
 class _AddDocumentScreenState extends State<AddDocumentScreen> {
-  dynamic selectedFile; // يمكن أن يكون File أو Uint8List
+  dynamic selectedFile;
   String? fileName;
   String privacy = 'public';
 
@@ -51,7 +49,7 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
       return;
     }
 
-    print('✅ Session ID: ${widget.sessionId}');
+    print(' Session ID: ${widget.sessionId}');
     BlocProvider.of<DocumentBloc>(context).add(
       AddDocumentEvent(
         file: selectedFile,

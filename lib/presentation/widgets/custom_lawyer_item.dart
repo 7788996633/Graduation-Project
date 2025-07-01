@@ -59,54 +59,60 @@ class CustomLawyerItem extends StatelessWidget {
         ),
         elevation: 4,
         shadowColor: Colors.deepPurple.withOpacity(0.3),
-        color: isSelected ? AppColors.darkBlue : Colors.white,
+        color: Colors.lightBlue[50], // سماوي فاتح
         child: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Row(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              CircleAvatar(
-                radius: 24,
-                backgroundImage: NetworkImage(
-                  '${lawyer.image}?v=${DateTime.now().millisecondsSinceEpoch}',
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      lawyer.name,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: isSelected ? Colors.white : const Color(0XFF472A0C),
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 24,
+                    backgroundImage: NetworkImage(
+                      '${lawyer.image}?v=${DateTime.now().millisecondsSinceEpoch}',
                     ),
-                    const SizedBox(height: 4),
-                    InfoRow(
-                      title: 'Experience:',
-                      value: '${lawyer.experienceYears} yrs',
-                      textColor: isSelected ? Colors.white70 : null,
-                      fontSize: 13,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          lawyer.name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            color: Colors.indigo[900], // أزرق غامق مناسب
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        InfoRow(
+                          title: 'Experience:',
+                          value: '${lawyer.experienceYears} yrs',
+                          textColor: Colors.blueGrey[700], // لون هادئ وواضح
+                          fontSize: 10,
+                        ),
+                      ],
                     ),
-                    InfoRow(
-                      title: 'Specialization:',
-                      value: lawyer.specialization,
-                      textColor: isSelected ? Colors.white70 : null,
-                      fontSize: 13,
-                    ),
+                  ),
+                  if (trailing != null) ...[
+                    const SizedBox(width: 8),
+                    trailing!,
                   ],
-                ),
+                ],
               ),
-              if (trailing != null) ...[
-                const SizedBox(width: 8),
-                trailing!,
-              ],
+              const SizedBox(height: 12),
+              InfoRow(
+                title: 'Specialization:',
+                value: lawyer.specialization,
+                textColor: Colors.blueGrey[800], // نفس لون النصوص الأخرى
+                fontSize: 10,
+              ),
             ],
           ),
         ),

@@ -5,11 +5,12 @@ sealed class InterviewEvent {}
 
 class AddInterviewEvent extends InterviewEvent {
   final String date;
-
+  final int jobAppId;
   AddInterviewEvent({
     required this.date,
-
+    required this.jobAppId,
   });
+
 }
 
 class GetInterviewByIdEvent extends InterviewEvent {
@@ -17,8 +18,10 @@ class GetInterviewByIdEvent extends InterviewEvent {
 
   GetInterviewByIdEvent({required this.interviewId});
 }
-
-class GetAllInterviewsEvent extends InterviewEvent {}
+class GetAllInterviewsEvent extends InterviewEvent {
+  final int jobAppId;
+  GetAllInterviewsEvent(this.jobAppId);
+}
 
 class UpdateInterviewEvent extends InterviewEvent {
   final int interviewId;

@@ -13,7 +13,7 @@ class InterviewBloc extends Bloc<InterviewEvent, InterviewState> {
         emit(InterviewLoading());
         try {
           String result = await InterviewServices()
-              .addInterview(event.date);
+              .addInterview(event.jobAppId,event.date,);
           emit(InterviewSuccess(successMsg: result));
         } catch (e) {
           emit(InterviewFail(errMsg: e.toString()));
@@ -30,7 +30,7 @@ class InterviewBloc extends Bloc<InterviewEvent, InterviewState> {
       } else if (event is GetAllInterviewsEvent) {
         emit(InterviewLoading());
         try {
-          List<InterviewModel> data = await InterviewRepository().getInterviews();
+          List<InterviewModel> data = await InterviewRepository().getInterviews(event.jobAppId);
           emit(InterviewListLoaded(list: data));
         } catch (e) {
           emit(InterviewFail(errMsg: e.toString()));
