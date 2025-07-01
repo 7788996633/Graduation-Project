@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../constant.dart';
+
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -24,7 +26,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: isDark ? Colors.black : const Color(0xFF4B4C4C), //3B3D3D
+        backgroundColor: isDark ? Colors.black : AppColors.darkBlue,
 
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -139,7 +141,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         leading: Icon(icon, color: Colors.black, size: 28),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600,color: Colors.black,)),
         trailing: trailing,
         onTap: onTap,
       ),

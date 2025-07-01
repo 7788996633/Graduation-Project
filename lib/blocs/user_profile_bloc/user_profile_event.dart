@@ -32,9 +32,14 @@ class UpdateUserProfileEvent extends UserProfileEvent {
       {required this.phone,
       required this.address,
       required this.age,
-      required this.scientificLevel,required this.imagePath});
+      required this.scientificLevel,
+      required this.imagePath});
 }
 
-class ShowUserProfileEvent extends UserProfileEvent {
-  ShowUserProfileEvent();
+class ShowUserProfileEvent extends UserProfileEvent {}
+
+class ShowUserProfileByIdEvent extends UserProfileEvent {
+  final int userId;
+
+  ShowUserProfileByIdEvent({required this.userId});
 }

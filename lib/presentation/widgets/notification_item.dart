@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../blocs/notification_bloc/notification_bloc.dart';
 import '../../../data/models/notification_model.dart';
+import '../../../blocs/notification_bloc/notification_bloc.dart';
 
 class NotificationItem extends StatelessWidget {
   const NotificationItem({super.key, required this.notificationModel});
@@ -35,7 +35,7 @@ class NotificationItem extends StatelessWidget {
               color: notificationModel.isRead ? Colors.black : Colors.black87,
             ),
           ),
-          subtitle: Text(notificationModel.message),
+          subtitle: Text(notificationModel.body),
           trailing: IconButton(
             icon: const Icon(Icons.delete, color: Colors.red),
             onPressed: () {

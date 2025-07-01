@@ -1,4 +1,3 @@
-
 class IssueRequestModel {
   final int id;
   final int userId;
@@ -9,7 +8,6 @@ class IssueRequestModel {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-
   IssueRequestModel({
     required this.id,
     required this.userId,
@@ -19,7 +17,6 @@ class IssueRequestModel {
     required this.adminNote,
     required this.createdAt,
     required this.updatedAt,
-
   });
 
   factory IssueRequestModel.fromJson(json) {
@@ -32,7 +29,11 @@ class IssueRequestModel {
       adminNote: json['admin_note'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
-
     );
   }
+}
+
+enum IssueRequestStatus {
+  approved,
+  rejected,
 }

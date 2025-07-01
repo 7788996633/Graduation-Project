@@ -7,70 +7,111 @@ import 'issue_requests_state.dart';
 
 class IssueRequestsBloc extends Bloc<IssueRequestsEvent, IssueRequestsState> {
   IssueRequestsBloc() : super(IssueRequestsInitial()) {
-    on<IssueRequestsEvent>((event, emit) async {
-      if (event is CreateIssueRequestsEvent) {
-        emit(IssueRequestsLoading());
-        try {
-          String value = await IssueRequestsServices().addIssueRequest(
-            event.title,
-            event.description,
-          );
-          emit(IssueRequestsSuccess(successmsg: value));
-        } catch (e) {
-          emit(IssueRequestsFail(errmsg: e.toString()));
-        }
-      } else if (event is GetAllIssueRequestsEvent) {
-        emit(IssueRequestsLoading());
-        try {
-          List<IssueRequestModel> issueRequestsList =
-              await IssueRequestRepository().getIssueRequests();
-          emit(IssueRequestsListLoaded(issueRequestsList: issueRequestsList));
-        } catch (e) {
-          emit(IssueRequestsFail(errmsg: e.toString()));
-        }
-      } else if (event is GetIssueRequestsByIdEvent) {
-        emit(
-          IssueRequestsLoading(),
-        );
-        try {
-          IssueRequestModel issueRequest = await IssueRequestsServices()
-              .getIssueRequestById(event.issueRequestsId);
+    on<IssueRequestsEvent>(
+      (event, emit) async {
+        if (event is CreateIssueRequestsEvent) {
+          emit(IssueRequestsLoading());
+          try {
+            String value = await IssueRequestsServices().addIssueRequest(
+              event.title,
+              event.description,
+            );
+            emit(IssueRequestsSuccess(successmsg: value));
+          } catch (e) {
+            emit(IssueRequestsFail(errmsg: e.toString()));
+          }
+        } else if (event is GetAllIssueRequestsEvent) {
+          emit(IssueRequestsLoading());
+          try {
+            List<IssueRequestModel> issueRequestsList =
+                await IssueRequestRepository().getIssueRequests();
+            emit(IssueRequestsListLoaded(issueRequestsList: issueRequestsList));
+          } catch (e) {
+            emit(
+              IssueRequestsFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is GetIssueRequestsByIdEvent) {
           emit(
-            IssueRequestsLoadedSuccessfully(
-              issueRequestModel: issueRequest,
-            ),
+            IssueRequestsLoading(),
           );
-        } catch (e) {
-          emit(IssueRequestsFail(errmsg: e.toString()));
-        }
-      } else if (event is DeleteIssueRequestEvent) {
-        emit(IssueRequestsLoading());
-        try {
-          String successMsg = await IssueRequestsServices()
-              .deleteIssueRequest(event.issueRequestId);
+          try {
+            IssueRequestModel issueRequest = await IssueRequestsServices()
+                .getIssueRequestById(event.issueRequestsId);
+            emit(
+              IssueRequestsLoadedSuccessfully(
+                issueRequest: issueRequest,
+              ),
+            );
+          } catch (e) {
+            emit(
+              IssueRequestsFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is DeleteIssueRequestEvent) {
           emit(
-            IssueRequestsSuccess(
-              successmsg: successMsg,
-            ),
+            IssueRequestsLoading(),
           );
-        } catch (e) {
-          emit(IssueRequestsFail(
-            errmsg: e.toString(),
-          ));
-        }
-      } else if (event is UpdateIssueRequestEvent) {
-        emit(IssueRequestsLoading());
-        try {
-          String value = await IssueRequestsServices().updateIssueRequest(
-            event.title,
-            event.description,
-            event.issueRequestId,
+          try {
+            String successMsg = await IssueRequestsServices()
+                .deleteIssueRequest(event.issueRequestId);
+            emit(
+              IssueRequestsSuccess(
+                successmsg: successMsg,
+              ),
+            );
+          } catch (e) {
+            emit(IssueRequestsFail(
+              errmsg: e.toString(),
+            ));
+          }
+        } else if (event is UpdateIssueRequestEvent) {
+          emit(
+            IssueRequestsLoading(),
           );
-          emit(IssueRequestsSuccess(successmsg: value));
-        } catch (e) {
-          emit(IssueRequestsFail(errmsg: e.toString()));
+          try {
+            String value = await IssueRequestsServices().updateIssueRequest(
+              event.title,
+              event.description,
+              event.issueRequestId,
+            );
+            emit(
+              IssueRequestsSuccess(successmsg: value),
+            );
+          } catch (e) {
+            emit(
+              IssueRequestsFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is UpdateIssueRequestEventAsAnAdmin) {
+          emit(
+            IssueRequestsLoading(),
+          );
+          try {
+            String value =
+                await IssueRequestsServices().updateIssueRequestAsAnAdmin(
+              event.adminNote,
+              event.status,
+              event.issueRequestId,
+            );
+            emit(
+              IssueRequestsSuccess(successmsg: value),
+            );
+          } catch (e) {
+            emit(
+              IssueRequestsFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
         }
-      }
-    });
+      },
+    );
   }
 }

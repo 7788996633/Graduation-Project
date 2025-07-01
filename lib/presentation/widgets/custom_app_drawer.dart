@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
+import '../../constant.dart';
 import '../screens/settings/setting_screen.dart';
 import '../screens/user_screens/user_profile_screens/user_profile_screen.dart';
 
@@ -71,7 +72,7 @@ class CustomAppDrawer extends StatelessWidget {
                   );
                 } else {
                   return const DrawerHeader(
-                    decoration: BoxDecoration(color: Color(0XFF472A0C)),
+                    decoration: BoxDecoration(color: AppColors.darkBlue),
                     child: Center(
                       child: CircularProgressIndicator(color: Colors.white),
                     ),

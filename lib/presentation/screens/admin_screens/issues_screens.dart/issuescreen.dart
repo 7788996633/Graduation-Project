@@ -1,30 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/issue_bloc/issues_bloc.dart';
+import 'package:graduation/blocs/lawyer_bloc/lawyer_bloc.dart';
+import 'package:graduation/blocs/user_profile_bloc/user_profile_bloc.dart';
+import 'package:graduation/data/models/user_profile_model.dart';
+import 'package:graduation/presentation/widgets/add_lawyers_to_issue_sheet.dart';
 
-import '../../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../../data/models/issues_model.dart';
 import 'edit_issue_screen.dart';
 
 class IssueScreen extends StatefulWidget {
-  const IssueScreen({super.key, required this.issueId});
-  final int issueId;
+  const IssueScreen({super.key, required this.issuesModel});
+  final IssuesModel issuesModel;
   @override
   State<IssueScreen> createState() => _IssueScreenState();
 }
 
 class _IssueScreenState extends State<IssueScreen> {
+  @override
+  void initState() {
+    BlocProvider.of<UserProfileBloc>(context).add(
+      ShowUserProfileByIdEvent(
+        userId: widget.issuesModel.userId,
+      ),
+    );
+    super.initState();
+  }
+
+  late UserProfileModel userProfileModel;
   final Color customColor = const Color(0xFF472A0C);
   final Color valueColor = const Color(0xFF0F6829);
 
-  @override
-  void initState() {
-    super.initState();
-    BlocProvider.of<IssuesBloc>(context).add(
-      IssueShowbyId(id:  widget.issueId),
-    );
-  }
-
-  late IssuesModel issue;
   Widget buildInfoTile(IconData icon, String label, String value) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -71,42 +77,69 @@ class _IssueScreenState extends State<IssueScreen> {
             ),
           ],
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircleAvatar(
-              radius: 45,
-              backgroundColor: customColor,
-              child: const Icon(Icons.person, size: 50, color: Colors.white),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              "Lawyer Certificate",
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              BlocBuilder<UserProfileBloc, UserProfileState>(
+                builder: (context, state) {
+                  if (state is UserProfileLoadedSuccessfully) {
+                    userProfileModel = state.userProfileModel;
+                    return Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 45,
+                          backgroundImage: NetworkImage(userProfileModel.image),
+                        ),
+                        Text(
+                          userProfileModel.name,
+                        ),
+                      ],
+                    );
+                  } else if (state is UserProfileFail) {
+                    return Text(state.errmsg);
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                },
               ),
-            ),
-            const SizedBox(height: 20),
-            buildInfoTile(Icons.title, "Title", issue.title),
-            buildInfoTile(Icons.numbers, "Issue Number", issue.issueNumber),
-            buildInfoTile(Icons.category, "Category", issue.category),
-            buildInfoTile(Icons.title, "Court Name", issue.courtName),
-            buildInfoTile(Icons.numbers, "Number Of Payments",
-                issue.numberOfPayments.toString()),
-            buildInfoTile(
-                Icons.numbers, "total Cost", issue.totalCost.toString()),
-            // buildInfoTile(Icons.numbers, "Amount Paid", issue.amountPaid),
-            // buildInfoTile(Icons.title, "Description", issue.description),
-            buildInfoTile(Icons.title, "Court Name", issue.courtName),
-            buildInfoTile(Icons.title, "Status", issue.status),
-            buildInfoTile(Icons.numbers, "Priority", issue.priority),
-            buildInfoTile(Icons.date_range, "Start Date", issue.startDate),
-            // buildInfoTile(Icons.date_range, "End Date", issue.endDate),
-            buildInfoTile(Icons.date_range, "Start Date", issue.createdAt),
-            buildInfoTile(Icons.date_range, "End Date", issue.updatedAt),
-          ],
+              const SizedBox(height: 20),
+              const Text(
+                "Lawyer Certificate",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 20),
+              buildInfoTile(Icons.title, "Title", widget.issuesModel.title),
+              buildInfoTile(Icons.numbers, "Issue Number",
+                  widget.issuesModel.issueNumber),
+              buildInfoTile(
+                  Icons.category, "Category", widget.issuesModel.category),
+              buildInfoTile(
+                  Icons.title, "Court Name", widget.issuesModel.courtName),
+              buildInfoTile(Icons.numbers, "Number Of Payments",
+                  widget.issuesModel.numberOfPayments.toString()),
+              buildInfoTile(Icons.numbers, "total Cost",
+                  widget.issuesModel.totalCost.toString()),
+              // buildInfoTile(Icons.numbers, "Amount Paid", issue.amountPaid),
+              // buildInfoTile(Icons.title, "Description", issue.description),
+              buildInfoTile(
+                  Icons.title, "Court Name", widget.issuesModel.courtName),
+              buildInfoTile(Icons.title, "Status", widget.issuesModel.status),
+              buildInfoTile(
+                  Icons.numbers, "Priority", widget.issuesModel.priority),
+              buildInfoTile(
+                  Icons.date_range, "Start Date", widget.issuesModel.startDate),
+              // buildInfoTile(Icons.date_range, "End Date", issue.endDate),
+              buildInfoTile(
+                  Icons.date_range, "Start Date", widget.issuesModel.createdAt),
+              buildInfoTile(
+                  Icons.date_range, "End Date", widget.issuesModel.updatedAt),
+            ],
+          ),
         ),
       ),
     );
@@ -123,7 +156,7 @@ class _IssueScreenState extends State<IssueScreen> {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => EditIssueScreen(
-                    issue: issue,
+                    issue: widget.issuesModel,
                   ),
                 ),
               );
@@ -143,42 +176,31 @@ class _IssueScreenState extends State<IssueScreen> {
         centerTitle: true,
         elevation: 4,
       ),
-      body: BlocBuilder<IssuesBloc, IssuesState>(
-        builder: (context, state) {
-          if (state is IssuesLoadedSuccessFully) {
-            issue = state.issue;
-            return buildProfileUI();
-          } else if (state is IssuesFail) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    "There is an error:",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            buildProfileUI(),
+            Builder(
+              builder: (innerContext) => ElevatedButton(
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: innerContext,
+                    builder: (context) => BlocProvider(
+                      create: (context) => LawyerBloc(),
+                      child: BlocProvider(
+                        create: (context) => IssuesBloc(),
+                        child: AddLawyersToIssueSheet(
+                          issueId: widget.issuesModel.id,
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    state.errmsg,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+                  );
+                },
+                child: const Text("Add Lawyers"),
               ),
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
+            ),
+          ],
+        ),
       ),
     );
   }

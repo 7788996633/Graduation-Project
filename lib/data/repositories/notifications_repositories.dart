@@ -10,4 +10,14 @@ class NotificationsRepositories {
         )
         .toList();
   }
+
+  Future<List<NotificationModel>> getUnReadNotifications() async {
+    var notificationsList =
+        await NotificationsServices().getUnReadlNotifications();
+    return notificationsList
+        .map(
+          (e) => NotificationModel.fromJson(e),
+        )
+        .toList();
+  }
 }

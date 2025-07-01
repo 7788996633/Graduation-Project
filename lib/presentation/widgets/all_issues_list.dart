@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/issue_bloc/issues_bloc.dart';
-import 'package:graduation/data/models/issues_model.dart';
-import 'package:graduation/presentation/widgets/issue_item.dart';
+
+import '../../blocs/issue_bloc/issues_bloc.dart';
+import '../../data/models/issues_model.dart';
+import 'issue_item.dart';
 
 class AllIssuesList extends StatefulWidget {
   const AllIssuesList({super.key});

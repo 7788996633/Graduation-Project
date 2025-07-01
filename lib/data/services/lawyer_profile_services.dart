@@ -98,17 +98,33 @@ class LawyerProfileServices {
     String experienceYears,
     String specialization,
     String certificatePath,
+    String phone,
+    String imagePath,
+    String address,
+    String age,
   ) async {
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken',
       'Content-Type': 'application/x-www-form-urlencoded'
     };
-    var request = http.Request('PUT', Uri.parse('${myUrl}lawyers/profile'));
-    request.bodyFields = {
-      'salary': '7899.9',
-      'certificate': 'updated/certificate.pdf'
-    };
+    var request =
+        http.MultipartRequest('PUT', Uri.parse('${myUrl}lawyers/profile'));
+    request.fields.addAll(
+      {
+        'certificate': certificatePath,
+        'age': age,
+        'specialization': specialization,
+        'phone': phone,
+        'experience_years': experienceYears,
+        'address': address,
+        'license_number': licenseNumber,
+      },
+    );
+    request.files.add(await http.MultipartFile.fromPath(
+      'image',
+      imagePath,
+    ));
 
     request.headers.addAll(headers);
 

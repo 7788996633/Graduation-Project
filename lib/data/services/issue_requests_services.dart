@@ -100,6 +100,34 @@ class IssueRequestsServices {
     }
   }
 
+  Future<String> updateIssueRequestAsAnAdmin(
+      String adminNote, String status, int issueRequestId) async {
+    var headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer $myToken',
+    };
+
+    var request = http.Request(
+        'POST', Uri.parse('${myUrl}admin/issue-requests/$issueRequestId'));
+    request.bodyFields = {
+      'admin_note': adminNote,
+      'status': status,
+    };
+
+    request.headers.addAll(headers);
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return jsonResponse['message'];
+    } else {
+      return 'failed: ${jsonResponse['message']}';
+    }
+  }
+
   Future<String> deleteIssueRequest(int issueRequestId) async {
     var headers = {
       'Accept': 'application/json',

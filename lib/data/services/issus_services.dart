@@ -17,12 +17,16 @@ class IssusServices {
     String totalCost,
     int numberOfPayments,
     String opponentName,
+    int userId,
+    int amoountPaid,
+    String description,
   ) async {
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('${myUrl}issues/5'));
+    var request =
+        http.MultipartRequest('POST', Uri.parse('${myUrl}issues/$userId'));
     request.fields.addAll({
       'title': title,
       'issue_number': issueNumber,
@@ -34,7 +38,9 @@ class IssusServices {
       'end_date': endDate,
       'total_cost': totalCost,
       'number_of_payments': numberOfPayments.toString(),
-      'opponent_name': opponentName
+      'opponent_name': opponentName,
+      'amount_paid': amoountPaid.toString(),
+      'description': description
     });
 
     request.headers.addAll(headers);
@@ -74,6 +80,36 @@ class IssusServices {
       'Authorization': 'Bearer $myToken'
     };
     var request = http.Request('PUT', Uri.parse('${myUrl}issues/$id'));
+
+    request.headers.addAll(headers);
+
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+    if (response.statusCode == 200) {
+      if (jsonResponse['status'] == 'success') {
+        return jsonResponse['message'];
+      } else {
+        return 'failed: ${jsonResponse['message']}';
+      }
+    } else {
+      return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+    }
+  }
+
+  Future<String> issuePriorityUpdateService(
+    int id,
+    String priority,
+  ) async {
+    var headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer $myToken'
+    };
+    var request =
+        http.MultipartRequest('POST', Uri.parse('${myUrl}issues/$id/priority'));
+    request.fields.addAll({'priority': priority});
 
     request.headers.addAll(headers);
 
@@ -165,6 +201,36 @@ class IssusServices {
       }
     } else {
       return [];
+    }
+  }
+
+  Future<String> addLawyerToIssueService(
+    int issueId,
+    List<int> lawyerIds,
+  ) async {
+    var headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer $myToken'
+    };
+    var request =
+        http.Request('POST', Uri.parse('${myUrl}issues/$issueId/assign'));
+    request.body = json.encode({"lawyer_ids": lawyerIds});
+
+    request.headers.addAll(headers);
+
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+    if (response.statusCode == 200) {
+      if (jsonResponse['status'] == 'success') {
+        return jsonResponse['message'];
+      } else {
+        return 'failed: ${jsonResponse['message']}';
+      }
+    } else {
+      return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
     }
   }
 }

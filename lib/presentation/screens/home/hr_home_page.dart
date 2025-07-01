@@ -1,6 +1,9 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:graduation/presentation/screens/home/hr_home_screen.dart';
+
+import '../../../constant.dart';
+
+import 'hr_home_screen.dart';
 
 class HrHomePage extends StatefulWidget {
   const HrHomePage({super.key});
@@ -23,10 +26,10 @@ class _HrHomePageState extends State<HrHomePage> {
     return Scaffold(
       body: _pages[_pageIndex],
       bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.transparent, //B8820E
-        color: const Color(0xFFB8820E),
-        buttonBackgroundColor: const Color(0xFFB8820E),
-        animationDuration: const Duration(milliseconds: 300),
+        backgroundColor: AppColors.white,
+        color: AppColors.darkBlue,
+        buttonBackgroundColor: AppColors.darkBlue,
+          animationDuration: const Duration(milliseconds: 300),
         items: const <Widget>[
           Icon(Icons.home, size: 30, color: Colors.black54),
           Icon(Icons.bar_chart, size: 30, color: Colors.black54),

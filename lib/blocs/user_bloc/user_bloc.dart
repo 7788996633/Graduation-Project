@@ -40,7 +40,30 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         //     );
         //   }
         // }
-        if (event is GetAllUsers) {
+        if (event is GetAllClients) {
+          emit(
+            UserLoading(),
+          );
+          try {
+            List<UserModel> value = await UsersRepositories().getAllUsers();
+            List<UserModel> clientList = value
+                .where(
+                  (element) => element.roleName.toLowerCase() == 'user',
+                )
+                .toList();
+            emit(
+              UsersListLoaded(
+                usersList: clientList,
+              ),
+            );
+          } catch (e) {
+            emit(
+              UserFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is GetAllUsers) {
           emit(
             UserLoading(),
           );

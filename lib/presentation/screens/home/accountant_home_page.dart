@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:graduation/presentation/screens/home/accountan_home_screen.dart';
+import '../../../constant.dart';
 
+
+import 'accountan_home_screen.dart';
 import 'hr_home_page.dart';
 
 class AccountantHomePage extends StatefulWidget {
@@ -25,8 +27,8 @@ class _AccountantHomePageState extends State<AccountantHomePage> {
       body: _pages[_currentIndex],
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: const Color(0xFFF2FDF6),
-        color: const Color(0xFF62D284),
-        buttonBackgroundColor: const Color(0xFF50B76D),
+        color: AppColors.darkBlue ,
+        buttonBackgroundColor: AppColors.darkBlue ,
         animationDuration: const Duration(milliseconds: 300),
         items: const [
           Icon(Icons.home, size: 30, color: Colors.white),

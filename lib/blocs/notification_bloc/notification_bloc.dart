@@ -87,6 +87,25 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
             ),
           );
         }
+      } else if (event is UnReadNotificationEvent) {
+        emit(
+          NotificationLoading(),
+        );
+        try {
+          List<NotificationModel> value =
+              await NotificationsRepositories().getUnReadNotifications();
+          emit(
+            NotificationsListLoaded(
+              notificationsList: value,
+            ),
+          );
+        } catch (e) {
+          emit(
+            NotificationFail(
+              errmsg: e.toString(),
+            ),
+          );
+        }
       }
     });
   }

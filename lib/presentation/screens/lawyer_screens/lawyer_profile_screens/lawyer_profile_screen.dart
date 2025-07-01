@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:http/http.dart' as http; // استيراد مكتبة http لتحميل الملفات
 import '../../../../blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
 import '../../../../constant.dart';
 import '../../../../data/models/lawyer_model.dart';
 import '../../../pdf_viewer_page.dart';
+import 'edit_lawyer_profile_screen.dart';
 
 class LawyerProfileScreen extends StatefulWidget {
   const LawyerProfileScreen({super.key});
@@ -14,6 +16,7 @@ class LawyerProfileScreen extends StatefulWidget {
 }
 
 class _LawyerProfileScreenState extends State<LawyerProfileScreen> {
+  late LawyerModel lawyerProfile;
   final Color customColor = const Color(0xFF472A0C);
   final Color valueColor = const Color(0xFF0F6829);
 
@@ -135,7 +138,14 @@ class _LawyerProfileScreenState extends State<LawyerProfileScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              // Navigate to Edit Lawyer Profile Screen
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => BlocProvider(
+                    create: (context) => LawyerProfileBloc(),
+                    child: EditLawyerProfileScreen(lawyer: lawyerProfile),
+                  ),
+                ),
+              );
             },
             icon: const Icon(Icons.edit, color: Colors.white),
           ),
@@ -154,6 +164,7 @@ class _LawyerProfileScreenState extends State<LawyerProfileScreen> {
           if (state is LawyerProfileLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is LawyerProfileLoadedSuccessfully) {
+            lawyerProfile = state.lawyerModel;
             return buildProfileUI(state.lawyerModel, context);
           } else if (state is LawyerProfileFail) {
             return Center(

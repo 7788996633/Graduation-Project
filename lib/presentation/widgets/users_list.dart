@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/user_profile_bloc/user_profile_bloc.dart';
 
 import '../../blocs/user_bloc/user_bloc.dart';
 import '../../data/models/user_model.dart';
@@ -27,8 +28,11 @@ class _UserListState extends State<UsersList> {
       itemCount: usersList.length,
       shrinkWrap: true,
       physics: const ClampingScrollPhysics(),
-      itemBuilder: (context, index) => UserItem(
-        userModel: usersList[index],
+      itemBuilder: (context, index) => BlocProvider(
+        create: (context) => UserProfileBloc(),
+        child: UserItem(
+          userModel: usersList[index],
+        ),
       ),
     );
   }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../constant.dart';
+
 class CustomTextFeild extends StatelessWidget {
   const CustomTextFeild({
     super.key,
@@ -29,7 +31,7 @@ class CustomTextFeild extends StatelessWidget {
           prefixIcon: icon != null ? Icon(icon) : null,
           hintText: text,
           hintStyle: const TextStyle(
-            color: Colors.white,
+            color: AppColors.darkBlue,
           ),
           border: const OutlineInputBorder(),
         ),

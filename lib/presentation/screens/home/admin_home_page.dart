@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
+import '../../../constant.dart';
 import '../factories/role_screen.dart';
 import 'admin_home_screen.dart';
 
@@ -22,7 +23,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
   final List<Widget> _pages = [
     // الصفحة الرئيسية
-    AdminHomeScreen(),
+    const AdminHomeScreen(),
     // المفضلات
     const Center(child: Text('مفضلتي')),
     // المواعيد
@@ -47,25 +48,25 @@ class _AdminHomePageState extends State<AdminHomePage> {
           SalomonBottomBarItem(
             icon: const Icon(Icons.home),
             title: const Text("الرئيسية"),
-            selectedColor: const Color(0XFF472A0C),
+            selectedColor: AppColors.darkBlue,
           ),
           // المفضلات
           SalomonBottomBarItem(
             icon: const Icon(Icons.favorite),
             title: const Text("المفضلة"),
-            selectedColor: const Color(0XFF472A0C),
+            selectedColor: AppColors.darkBlue,
           ),
           // المواعيد
           SalomonBottomBarItem(
             icon: const Icon(Icons.schedule),
             title: const Text("مواعيدي"),
-            selectedColor: const Color(0XFF472A0C),
+            selectedColor: AppColors.darkBlue,
           ),
 
           SalomonBottomBarItem(
             icon: const Icon(Icons.new_releases),
             title: const Text("الأخبار القانونية"),
-            selectedColor: const Color(0XFF472A0C),
+            selectedColor: AppColors.darkBlue,
           ),
         ],
       ),

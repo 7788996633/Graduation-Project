@@ -1,7 +1,6 @@
 class UserProfileModel {
   final String name;
   final String email;
-
   final String address;
   final String phone;
   final String scientificLevel;

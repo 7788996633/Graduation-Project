@@ -9,56 +9,97 @@ import 'lawyer_state.dart';
 
 class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
   LawyerBloc() : super(LawyerInitial()) {
-    on<LawyerEvent>((event, emit) async {
-      if (event is GetAllLawyersEvent) {
-        emit(
-          LawyerLoading(),
-        );
-        try {
-          List<LawyerModel> lawyersList =
-              await LawyerRepository().getAllLawyers();
+    List<LawyerModel> allLawyers = [];
+    on<LawyerEvent>(
+      (event, emit) async {
+        if (event is GetAllLawyersEvent) {
           emit(
-            LawyersListLoaded(
-              lawyersList: lawyersList,
-            ),
+            LawyerLoading(),
           );
-        } catch (e) {
+          try {
+            allLawyers = await LawyerRepository().getAllLawyers();
+            emit(
+              LawyersListLoaded(
+                lawyersList: allLawyers,
+              ),
+            );
+          } catch (e) {
+            emit(
+              LawyerFail(
+                errorMsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is DeleteLawyerByIdEvent) {
           emit(
-            LawyerFail(
-              errorMsg: e.toString(),
-            ),
+            LawyerLoading(),
           );
-        }
-      } else if (event is DeleteLawyerByIdEvent) {
-        emit(
-          LawyerLoading(),
-        );
 
-        try {
-          String successMsg =
-              await UsersServices().deleteUserById(event.lawyerId);
+          try {
+            String successMsg =
+                await UsersServices().deleteUserById(event.lawyerId);
+            emit(
+              LawyerSuccess(
+                successMsg: successMsg,
+              ),
+            );
+          } catch (e) {
+            emit(
+              LawyerFail(
+                errorMsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is SearchLawyersByNameEvent) {
+          emit(LawyerLoading());
+
+          try {
+            final query = event.name.trim().toLowerCase();
+
+            List<LawyerModel> filteredLawyers = allLawyers.where(
+              (lawyer) {
+                return lawyer.name.toLowerCase().contains(query);
+              },
+            ).toList();
+
+            emit(
+              LawyersListLoaded(
+                lawyersList: filteredLawyers,
+              ),
+            );
+          } catch (e) {
+            emit(
+              LawyerFail(
+                errorMsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is FilterLawyers) {
           emit(
-            LawyerSuccess(
-              successMsg: successMsg,
-            ),
+            LawyerLoading(),
           );
-        } catch (e) {
-          emit(
-            LawyerFail(
-              errorMsg: e.toString(),
-            ),
-          );
+          try {
+            final filtered = allLawyers
+                .where(
+                  (lawyer) => event.filter.apply(
+                    lawyer,
+                  ),
+                )
+                .toList();
+            emit(
+              LawyersListLoaded(
+                lawyersList: filtered,
+              ),
+            );
+          } catch (e) {
+            emit(
+              LawyerFail(
+                errorMsg: e.toString(),
+              ),
+            );
+          }
         }
-      }
-      // else if (event is GetLawyerById) {
-      //   emit(LawyerLoading());
-      //   try {
-      //     LawyerModel lawyer = await LawyerServices().getLawyerById(event.lawyerId);
-      //     emit(LawyerInfoByIdLoaded(lawyerModel: lawyer));
-      //   } catch (e) {
-      //     emit(LawyerFail(errorMsg: e.toString()));
-      //   }
-      // }
-    });
+      },
+    );
   }
 }

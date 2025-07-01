@@ -18,3 +18,5 @@ class DeleteNotificationEvent extends NotificationEvent {
 
   DeleteNotificationEvent({required this.notificationId});
 }
+
+class UnReadNotificationEvent extends NotificationEvent {}

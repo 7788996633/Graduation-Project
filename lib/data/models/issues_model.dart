@@ -57,3 +57,28 @@ class IssuesModel {
         updatedAt: json['updated_at']);
   }
 }
+
+enum IssuePriority { low, medium, high , critical }
+enum IssueStatus { open, in_Progress, closed }
+
+String priorityToString(IssuePriority p) {
+  return p.name[0].toUpperCase() + p.name.substring(1);
+}
+
+String statusToString(IssueStatus s) {
+  return s.name[0].toUpperCase() + s.name.substring(1).replaceAll('_', ' ');
+}
+
+IssuePriority stringToPriority(String s) {
+  return IssuePriority.values.firstWhere(
+    (e) => e.name.toLowerCase() == s.toLowerCase(),
+    orElse: () => IssuePriority.low,
+  );
+}
+
+IssueStatus stringToStatus(String s) {
+  return IssueStatus.values.firstWhere(
+    (e) => e.name.toLowerCase() == s.toLowerCase(),
+    orElse: () => IssueStatus.open,
+  );
+}

@@ -10,9 +10,4 @@ class HiringRequestRepository {
         .toList();
   }
 
-  Future<HiringRequestModel> getHiringRequestById(int hiringRequestId) async {
-    var hiringRequestData = await HiringRequestsServices().getHiringRequestById(hiringRequestId);
-    return HiringRequestModel.fromJson(hiringRequestData);
-
-  }
 }

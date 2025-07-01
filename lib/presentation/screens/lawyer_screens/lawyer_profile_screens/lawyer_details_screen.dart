@@ -97,7 +97,9 @@ class _LawyerDetailsScreenState extends State<LawyerDetailsScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               CircleAvatar(
-                  radius: 45, backgroundImage: NetworkImage(lawyer.image)),
+                radius: 45,
+                backgroundImage: NetworkImage(lawyer.image),
+              ),
               const SizedBox(height: 10),
               Text("Lawyer ${lawyer.name}",
                   style: const TextStyle(

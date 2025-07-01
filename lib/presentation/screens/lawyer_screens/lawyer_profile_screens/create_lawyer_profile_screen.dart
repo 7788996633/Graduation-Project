@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:graduation/presentation/screens/lawyer_screens/lawyer_profile_screens/lawyer_profile_screen.dart';
+
 import 'package:path/path.dart';
 
 import '../../../../blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
+import 'lawyer_profile_screen.dart';
 
 class CreateLawyerProfileScreen extends StatefulWidget {
   const CreateLawyerProfileScreen({super.key});

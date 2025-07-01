@@ -7,7 +7,6 @@ import 'package:meta/meta.dart';
 import '../../data/models/user_profile_model.dart';
 import '../../data/services/user_profile_services.dart';
 
-
 part 'user_profile_event.dart';
 part 'user_profile_state.dart';
 
@@ -19,8 +18,8 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
           UserProfileLoading(),
         );
         try {
-          String value = await UserProfileServices().createProfile(
-              event.phone, event.address, event.age, event.scientificLevel,event.imagePath);
+          String value = await UserProfileServices().createProfile(event.phone,
+              event.address, event.age, event.scientificLevel, event.imagePath);
 
           emit(UserProfileSuccess(successmsg: value));
         } catch (e) {
@@ -36,6 +35,24 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
         );
         try {
           UserProfileModel value = await UserProfileServices().showProfile();
+
+          emit(
+            UserProfileLoadedSuccessfully(userProfileModel: value),
+          );
+        } catch (e) {
+          emit(
+            UserProfileFail(
+              errmsg: e.toString(),
+            ),
+          );
+        }
+      } else if (event is ShowUserProfileByIdEvent) {
+        emit(
+          UserProfileLoading(),
+        );
+        try {
+          UserProfileModel value =
+              await UserProfileServices().showProfileById(event.userId);
 
           emit(
             UserProfileLoadedSuccessfully(userProfileModel: value),
