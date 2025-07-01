@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../blocs/hiring_requests/hiring_requests_block.dart';
+import '../../../../blocs/hiring_requests/hiring_requests_event.dart';
+import '../../../../blocs/hiring_requests/hiring_requests_state.dart';
+
 import '../../../widgets/build_custom_appbar_detials.dart';
 import '../../../widgets/custom_text_field_add.dart';
 import '../../../widgets/elevated_button_submit.dart';
@@ -15,41 +21,10 @@ class _AddHiringRequestScreenState extends State<AddHiringRequestScreen> {
   final TextEditingController _typeController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  bool _isLoading = false;
-
-  void _submitRequest() {
-    if (_jobTitleController.text.isEmpty ||
-        _typeController.text.isEmpty ||
-        _descriptionController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please fill in all fields."),
-          backgroundColor: Colors.orange,
-        ),
-      );
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    Future.delayed(const Duration(seconds: 2), () {
-      setState(() {
-        _isLoading = false;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Hiring request submitted successfully!"),
-          backgroundColor: Colors.green,
-        ),
-      );
-
-      _jobTitleController.clear();
-      _typeController.clear();
-      _descriptionController.clear();
-    });
+  void _clearFields() {
+    _jobTitleController.clear();
+    _typeController.clear();
+    _descriptionController.clear();
   }
 
   @override
@@ -59,60 +34,99 @@ class _AddHiringRequestScreenState extends State<AddHiringRequestScreen> {
       appBar: buildCustomAppBar("Add Hiring Request"),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 12,
-                  offset: Offset(0, 4),
+        child: BlocConsumer<HiringRequestsBloc, HiringRequestsState>(
+          listener: (context, state) {
+            if (state is HiringRequestsSuccess) {
+              _clearFields();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.successmsg),
+                  backgroundColor: Colors.green,
                 ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Text(
-                  "Create New Hiring Request",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.center,
+              );
+            } else if (state is HiringRequestsFail) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errmsg),
+                  backgroundColor: Colors.red,
                 ),
-                const SizedBox(height: 25),
-                CustomTextFieldAdd(
-                  controller: _jobTitleController,
-                  label: 'Job Title',
+              );
+            }
+          },
+          builder: (context, state) {
+            return SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 12,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 20),
-                CustomTextFieldAdd(
-                  controller: _typeController,
-                  label: 'Type',
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text(
+                      "Create New Hiring Request",
+                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 25),
+                    CustomTextFieldAdd(
+                      controller: _jobTitleController,
+                      label: 'Job Title',
+                    ),
+                    const SizedBox(height: 20),
+                    CustomTextFieldAdd(
+                      controller: _typeController,
+                      label: 'Type',
+                    ),
+                    const SizedBox(height: 20),
+                    CustomTextFieldAdd(
+                      controller: _descriptionController,
+                      label: 'Description',
+                      maxLines: 4,
+                    ),
+                    const SizedBox(height: 30),
+                    state is HiringRequestsLoadedSuccessfully
+                        ? const Center(child: CircularProgressIndicator())
+                        : SizedBox(
+                      height: 50,
+                      child: CustomElevatedButtonSubmit(
+                        label: "Submit Request",
+                        onPressed: () {
+                          if (_jobTitleController.text.isEmpty ||
+                              _typeController.text.isEmpty ||
+                              _descriptionController.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Please fill in all fields."),
+                                backgroundColor: Colors.orange,
+                              ),
+                            );
+                            return;
+                          }
+
+                          BlocProvider.of<HiringRequestsBloc>(context).add(
+                            CreateHiringRequestsEvent(
+                              jopTitle: _jobTitleController.text,
+                              type: _typeController.text,
+                              description: _descriptionController.text,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 20),
-                CustomTextFieldAdd(
-                  controller: _descriptionController,
-                  label: 'Description',
-                  maxLines: 4,
-                ),
-                const SizedBox(height: 30),
-                _isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : SizedBox(
-                  height: 50,
-                  child: CustomElevatedButtonSubmit(
-                    label: "Submit Request",
-                    onPressed: _submitRequest,
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
