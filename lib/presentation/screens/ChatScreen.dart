@@ -24,8 +24,42 @@ class _ChatScreenState extends State<ChatScreen> {
     _reverbService.connect(
       'ws://$ip:7000/app/abc123def456xyz789?protocol=7&client=js&version=7.0&flash=false',
     );
-    _sendMessage();
     _fetchMessages();
+    _listenToMessages();
+  }
+
+  void _listenToMessages() {
+    _reverbService.stream.listen((data) {
+      print("📩 البيانات المستلمة من WebSocket: $data");
+
+      try {
+        final decoded = jsonDecode(data);
+
+        // التأكد من أن الحدث هو الحدث المطلوب من Laravel
+        if (decoded['event'] == 'new.message') {
+          // data نفسها عبارة عن String (داخل JSON)
+          final innerData = jsonDecode(decoded['data']);
+
+          // الرسالة موجودة داخل مفتاح 'message'
+          final messageJson = innerData['message'];
+
+          // تحويل البيانات إلى ChatModel وإضافتها إلى القائمة
+          setState(() {
+            _messages.add(ChatModel.fromJson(messageJson));
+          });
+
+          print("✅ تم استقبال رسالة جديدة من WebSocket");
+        } else {
+          print("⚠️ تم استقبال حدث غير متوقع: ${decoded['event']}");
+        }
+      } catch (e) {
+        print('❌ خطأ في تحليل الرسالة من WebSocket: $e');
+      }
+    }, onError: (error) {
+      print("❌ خطأ في WebSocket: $error");
+    }, onDone: () {
+      print("🔌 تم إغلاق الاتصال بـ WebSocket.");
+    });
   }
 
   Future<void> _fetchMessages() async {
