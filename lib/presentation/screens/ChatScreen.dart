@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:graduation/constant.dart';
 import 'package:graduation/data/models/chat_model.dart';
 import 'package:graduation/reverbService.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -23,43 +24,58 @@ class _ChatScreenState extends State<ChatScreen> {
     _reverbService.connect(
       'ws://$ip:7000/app/abc123def456xyz789?protocol=7&client=js&version=7.0&flash=false',
     );
-    _listenToMessages();
+    _sendMessage();
+    _fetchMessages();
   }
 
-  void _listenToMessages() {
-    _reverbService.stream.listen((data) {
-      print("📩 البيانات المستلمة: $data");
-      try {
-        final decoded = jsonDecode(data);
+  Future<void> _fetchMessages() async {
+    final url = Uri.parse('http://$ip:8000/api/messages/1'); // 1 هو userId
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonData = jsonDecode(response.body);
+        final List<ChatModel> loadedMessages = jsonData.map((item) {
+          return ChatModel.fromJson(item);
+        }).toList();
 
-        if (decoded['event'] == 'new.message') {
-          final innerData = jsonDecode(decoded['data']);
-          final messageJson = innerData['message'];
-
-          setState(() {
-            _messages.add(ChatModel.fromJson(messageJson));
-          });
-        }
-      } catch (e) {
-        print('❌ خطأ في تحليل الرسالة: $e');
+        setState(() {
+          _messages.addAll(loadedMessages);
+        });
+      } else {
+        print("❌ فشل في تحميل الرسائل: ${response.body}");
       }
-    }, onError: (error) {
-      print("❌ خطأ في WebSocket: $error");
-    }, onDone: () {
-      print("🔌 الاتصال تم إغلاقه.");
-    });
+    } catch (e) {
+      print("❌ خطأ في تحميل الرسائل: $e");
+    }
   }
 
-  void _sendMessage() {
+  void _sendMessage() async {
     final text = _messageController.text.trim();
     if (text.isNotEmpty) {
       final message = {
-        'sender': 'Flutter',
+        'sender_id': 1,
+        'receiver_id': 2,
         'content': text,
-        'timestamp': DateTime.now().toIso8601String(),
       };
-      _reverbService.sendMessage(message);
-      _messageController.clear();
+
+      final url = Uri.parse('http://$ip:8000/api/messages'); // Laravel API
+
+      try {
+        final response = await http.post(
+          url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(message),
+        );
+
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          print("✅ الرسالة أُرسلت وتم بثها");
+          _messageController.clear();
+        } else {
+          print("❌ فشل في الإرسال: ${response.body}");
+        }
+      } catch (e) {
+        print("❌ خطأ أثناء الإرسال: $e");
+      }
     }
   }
 
