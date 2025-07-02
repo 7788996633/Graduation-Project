@@ -50,6 +50,7 @@ dependencies:
   salomon_bottom_bar: ^3.3.2
   flutter_pdfview: ^1.4.0+1
   flutter_local_notifications: ^19.3.0
+  web_socket_channel: ^3.0.3
 
 dev_dependencies:
   flutter_test:
