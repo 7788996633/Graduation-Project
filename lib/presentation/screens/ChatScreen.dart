@@ -1,13 +1,22 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:graduation/constant.dart';
-import 'package:graduation/data/models/chat_model.dart';
-import 'package:graduation/reverbService.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:graduation/constant.dart';
+import 'package:graduation/reverbService.dart';
+import 'package:graduation/data/models/chat_model.dart';
 
 class ChatScreen extends StatefulWidget {
+  final int myUserId;
+  final int receiverId;
+  final String receiverName;
+
+  ChatScreen({
+    required this.myUserId,
+    required this.receiverId,
+    required this.receiverName,
+  });
+
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
@@ -30,27 +39,16 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _listenToMessages() {
     _reverbService.stream.listen((data) {
-      print("📩 البيانات المستلمة من WebSocket: $data");
-
       try {
         final decoded = jsonDecode(data);
 
-        // التأكد من أن الحدث هو الحدث المطلوب من Laravel
         if (decoded['event'] == 'new.message') {
-          // data نفسها عبارة عن String (داخل JSON)
           final innerData = jsonDecode(decoded['data']);
-
-          // الرسالة موجودة داخل مفتاح 'message'
           final messageJson = innerData['message'];
 
-          // تحويل البيانات إلى ChatModel وإضافتها إلى القائمة
           setState(() {
             _messages.add(ChatModel.fromJson(messageJson));
           });
-
-          print("✅ تم استقبال رسالة جديدة من WebSocket");
-        } else {
-          print("⚠️ تم استقبال حدث غير متوقع: ${decoded['event']}");
         }
       } catch (e) {
         print('❌ خطأ في تحليل الرسالة من WebSocket: $e');
@@ -63,7 +61,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _fetchMessages() async {
-    final url = Uri.parse('http://$ip:8000/api/messages/1'); // 1 هو userId
+    final url = Uri.parse('http://$ip:8000/api/messages/${widget.receiverId}');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -87,12 +85,12 @@ class _ChatScreenState extends State<ChatScreen> {
     final text = _messageController.text.trim();
     if (text.isNotEmpty) {
       final message = {
-        'sender_id': 1,
-        'receiver_id': 2,
+        'sender_id': widget.myUserId,
+        'receiver_id': widget.receiverId,
         'content': text,
       };
 
-      final url = Uri.parse('http://$ip:8000/api/messages'); // Laravel API
+      final url = Uri.parse('http://$ip:8000/api/messages');
 
       try {
         final response = await http.post(
@@ -102,7 +100,6 @@ class _ChatScreenState extends State<ChatScreen> {
         );
 
         if (response.statusCode == 200 || response.statusCode == 201) {
-          print("✅ الرسالة أُرسلت وتم بثها");
           _messageController.clear();
         } else {
           print("❌ فشل في الإرسال: ${response.body}");
@@ -123,37 +120,87 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('الدردشة')),
+      appBar: AppBar(
+        title: Text('المحادثة مع ${widget.receiverName}'),
+      ),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
+              padding: EdgeInsets.all(8),
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 final message = _messages[index];
-                return ListTile(
-                  title: Text(message.message),
-                  subtitle: Text(message.senderId.toString()),
-                  trailing: Text(
-                    DateFormat('HH:mm').format(message.createdAt!),
+                final isMe = message.senderId == widget.myUserId;
+
+                return Align(
+                  alignment:
+                      isMe ? Alignment.centerRight : Alignment.centerLeft,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 4),
+                    padding: EdgeInsets.all(12),
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.7,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isMe ? Colors.blue[200] : Colors.grey[300],
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12),
+                        bottomLeft:
+                            isMe ? Radius.circular(12) : Radius.circular(0),
+                        bottomRight:
+                            isMe ? Radius.circular(0) : Radius.circular(12),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: isMe
+                          ? CrossAxisAlignment.end
+                          : CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          message.message,
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          DateFormat('HH:mm').format(message.createdAt!),
+                          style: TextStyle(fontSize: 12, color: Colors.black54),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    decoration: InputDecoration(hintText: 'أدخل رسالة...'),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    child: TextField(
+                      controller: _messageController,
+                      decoration: InputDecoration(
+                        hintText: 'أدخل رسالة...',
+                        border: InputBorder.none,
+                      ),
+                    ),
                   ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: _sendMessage,
+                SizedBox(width: 8),
+                CircleAvatar(
+                  backgroundColor: Colors.blue,
+                  child: IconButton(
+                    icon: Icon(Icons.send, color: Colors.white),
+                    onPressed: _sendMessage,
+                  ),
                 ),
               ],
             ),
