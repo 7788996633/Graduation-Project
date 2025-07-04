@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'constant.dart';
+import 'package:graduation/NavigationService.dart';
 import 'package:graduation/data/services/notifications_services.dart';
 import 'package:graduation/blocs/notification_bloc/notification_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -37,8 +38,11 @@ class LocalNotification {
       initializationSettings,
       onDidReceiveNotificationResponse: (details) {
         if (details.payload != null) {
-          print('Notification clicked: ${details.payload}');
-          // يمكن التنقل داخل التطبيق بناءً على الـ payload
+          final payload = details.payload!;
+          print('Notification clicked: $payload');
+
+          // فتح الرابط (بافتراض أنه route داخل التطبيق)
+          NavigationService.navigateTo(payload);
         }
       },
     );
