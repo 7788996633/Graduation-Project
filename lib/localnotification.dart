@@ -1,10 +1,9 @@
 import 'dart:io';
 import 'dart:convert';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:graduation/blocs/notification_bloc/notification_bloc.dart';
-import 'package:graduation/data/services/notifications_services.dart';
-
 import 'constant.dart';
+import 'package:graduation/data/services/notifications_services.dart';
+import 'package:graduation/blocs/notification_bloc/notification_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class LocalNotification {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -70,7 +69,7 @@ class LocalNotification {
 
   static Future<void> ensureConnected(NotificationBloc bloc) async {
     if (_socket == null) {
-      _socket = await Socket.connect(ip, 4040);
+      _socket = await Socket.connect(ip, 8000);
       _socket!.listen(
         (data) => _handleResponse(data, bloc),
         onError: (e) {
