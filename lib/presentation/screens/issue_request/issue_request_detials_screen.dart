@@ -29,14 +29,21 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
   void initState() {
     super.initState();
     bloc = context.read<IssueRequestsBloc>();
-    bloc.add(
-        StartIssueRequestReviewEvent(issueRequestId: widget.issueRequest.id));
+    print(myRole);
+
+    if (myRole == 'admin') {
+      bloc.add(
+          StartIssueRequestReviewEvent(issueRequestId: widget.issueRequest.id));
+      print(myRole);
+    }
   }
 
   @override
   void dispose() {
-    bloc.add(
-        EndIssueRequestReviewEvent(issueRequestId: widget.issueRequest.id));
+    if (myRole == 'admin') {
+      bloc.add(
+          EndIssueRequestReviewEvent(issueRequestId: widget.issueRequest.id));
+    }
     super.dispose();
   }
 

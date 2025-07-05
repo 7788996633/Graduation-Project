@@ -52,8 +52,6 @@ class _AllIssuesScreenState extends State<AllIssuesScreen> {
           );
         },
       ),
-
-
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: BlocBuilder<IssuesBloc, IssuesState>(
@@ -63,6 +61,11 @@ class _AllIssuesScreenState extends State<AllIssuesScreen> {
               return allIssuesList.isEmpty
                   ? const Center(child: Text('There is no issues'))
                   : buildIssuesList();
+            } else if (state is IssuesSuccess) {
+              BlocProvider.of<IssuesBloc>(context).add(
+                GetAllIssuesEvent(),
+              );
+              return SizedBox();
             } else if (state is IssuesFail) {
               debugPrint(" Error: ${state.errmsg}");
               return Center(

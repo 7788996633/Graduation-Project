@@ -83,7 +83,9 @@ class _AdminIssueRequestItemState extends State<AdminIssueRequestItem> {
                     ),
                   ),
                 );
-                widget.bloc.add(GetAllIssueRequestsEvent());
+                (myRole == 'admin')
+                    ? widget.bloc.add(GetAllIssueRequestsEvent())
+                    : widget.bloc.add(GetMyIssueRequestsEvent());
               },
             );
           } else if (state is UserProfileFail) {

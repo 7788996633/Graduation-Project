@@ -32,15 +32,17 @@ class AllAttendDemandScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          BlocProvider(
-            create: (context) => AttendDemandBloc(),
-            child: AttendDemandList(
-              issueId: issueId,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            BlocProvider(
+              create: (context) => AttendDemandBloc(),
+              child: AttendDemandList(
+                issueId: issueId,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

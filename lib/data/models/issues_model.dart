@@ -7,7 +7,7 @@ class IssuesModel {
   final String courtName;
   final int numberOfPayments;
   final String totalCost;
-  // final String amountPaid;
+  final String amountPaid;
   // final String description;
   final int userId;
   final String status;
@@ -26,7 +26,7 @@ class IssuesModel {
       required this.courtName,
       required this.numberOfPayments,
       required this.totalCost,
-      // required this.amountPaid,
+      required this.amountPaid,
       // required this.description,
       required this.userId,
       required this.status,
@@ -46,7 +46,7 @@ class IssuesModel {
         courtName: json['court_name'],
         numberOfPayments: json['number_of_payments'],
         totalCost: json['total_cost'],
-        // amountPaid: json['amount_paid'],
+        amountPaid: json['amount_paid'],
         // description: json['description'],
         userId: json['user_id'],
         status: json['status'],
