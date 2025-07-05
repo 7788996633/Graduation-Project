@@ -1,6 +1,6 @@
 class ChatModel {
   ChatModel({
-    required this.id,
+    //required this.id,
     required this.senderId,
     required this.receiverId,
     required this.message,
@@ -9,7 +9,7 @@ class ChatModel {
     required this.updatedAt,
   });
 
-  final int id;
+  //final int id;
   final int senderId;
   final int receiverId;
   final String message;
@@ -19,7 +19,7 @@ class ChatModel {
 
   factory ChatModel.fromJson(Map<String, dynamic> json) {
     return ChatModel(
-      id: json["id"],
+      //   id: json["id"],
       senderId: json["sender_id"],
       receiverId: json["receiver_id"],
       message: json["message"],
@@ -27,5 +27,15 @@ class ChatModel {
       createdAt: DateTime.tryParse(json["created_at"] ?? ""),
       updatedAt: DateTime.tryParse(json["updated_at"] ?? ""),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'sender_id': senderId,
+      'sender_role_id': senderId,
+      'receiver_id': receiverId,
+      'message': message,
+      'created_at': createdAt
+    };
   }
 }

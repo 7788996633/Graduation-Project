@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/constant.dart';
+import 'package:graduation/presentation/screens/ChatScreen.dart';
 import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../widgets/custom_app_drawer.dart';
 import '../../widgets/section_card.dart';
@@ -69,6 +71,19 @@ class UserHomeScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const SettingsScreen()),
+          );
+        },
+      },
+      {
+        'title': 'chat with the company',
+        'icon': Icons.school,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => ChatScreen(
+                      myUserId: myUserId,
+                    )),
           );
         },
       },
