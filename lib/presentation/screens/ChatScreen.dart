@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:graduation/constant.dart';
 import 'package:graduation/data/models/chat_model.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -59,10 +60,10 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   String getSenderName(ChatModel message) {
-    if (message.senderId != 2) {
+    if (myRole != 2) {
       return "اسم الشركة";
     } else {
-      return "العميل ${message.senderId}";
+      return "العميل ";
     }
   }
 
