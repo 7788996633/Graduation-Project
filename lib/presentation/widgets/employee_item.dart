@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../blocs/employee_bloc/employee_bloc.dart';
+import '../../blocs/employee_bloc/employee_event.dart';
+import '../../data/models/employee_model.dart';
 
-import '../../blocs/hiring_requests/hiring_requests_block.dart';
-import '../../blocs/hiring_requests/hiring_requests_event.dart';
-import '../../data/models/hiring_request_model.dart';
+import '../screens/hr_screen/employee_screens/employee_detials_screen.dart';
 
-import '../screens/hr_screen/hiring_request/hiring_request_detials.dart';
-
-
-class HiringRequestItem extends StatelessWidget {
-  const HiringRequestItem({super.key, required this.hiringRequestModel});
-  final HiringRequestModel hiringRequestModel;
+class EmployeeItem extends StatelessWidget {
+  const EmployeeItem({super.key, required this.employeeModel});
+  final EmployeeModel employeeModel;
 
   @override
   Widget build(BuildContext context) {
@@ -24,22 +22,22 @@ class HiringRequestItem extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => HiringRequestDetailsScreen(
-                hiringRequestModel: hiringRequestModel,
+              builder: (context) => EmployeeDetailsScreen(
+                employeeModel: employeeModel,
               ),
             ),
           );
         },
         leading: IconButton(
           onPressed: () {
-            BlocProvider.of<HiringRequestsBloc>(context).add(
-              DeleteHiringRequest(hiringRequestId: hiringRequestModel.id),
+            BlocProvider.of<EmployeeBloc>(context).add(
+              DeleteEmployeeEvent(employeeId: employeeModel.id),
             );
           },
           icon: const Icon(Icons.delete, color: Colors.red),
         ),
         title: Text(
-          "Request #${hiringRequestModel.id}",
+          "Employee #${employeeModel.id}",
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
@@ -49,9 +47,9 @@ class HiringRequestItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 4),
-            Text("jop Title: ${hiringRequestModel.jopTitle}"),
-            Text("type: ${hiringRequestModel.type}"),
-            Text("status: ${hiringRequestModel.status}"),
+            Text("name: ${employeeModel.name}"),
+            Text("email: ${employeeModel.email}"),
+
           ],
         ),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),

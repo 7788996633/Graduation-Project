@@ -37,7 +37,7 @@ class JobApplicationItem extends StatelessWidget {
           icon: const Icon(Icons.delete, color: Colors.red),
         ),
         title: Text(
-          "Application #${jobApplication.id}",
+          "Application id (${jobApplication.id})",
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
@@ -47,10 +47,9 @@ class JobApplicationItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 4),
-            Text("id: ${jobApplication.id}"),
+
             Text("job Title: ${jobApplication.jobTitle}"),
-            Text("cv Link: ${jobApplication.cvLink}"),
-            Text("job Title: ${jobApplication.jobTitle}"),
+
           ],
         ),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),

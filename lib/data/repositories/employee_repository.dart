@@ -1,13 +1,13 @@
-
 import '../models/employee_model.dart';
 import '../services/employee_services.dart';
 
 class EmployeeRepository {
-  Future<List<EmployeeModel>>getAllEmployees()async{
-    var employeesList = await EmployeeServices ().getAllEmployee();
-    return  employeesList
+  Future<List<EmployeeModel>> getEmployees() async {
+    var employeeList = await EmployeeServices().getEmployees();
+    return employeeList
         .map(
-          (e) => EmployeeModel.fromJson(e),)
+          (e) => EmployeeModel.fromJson(e),
+    )
         .toList();
   }
 }

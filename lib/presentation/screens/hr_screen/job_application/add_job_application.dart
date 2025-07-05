@@ -92,9 +92,14 @@ class _AddJobApplicationScreenState extends State<AddJobApplicationScreen> {
 
                     ElevatedButton.icon(
                       icon: const Icon(Icons.upload_file),
-                      label: Text(_cvFile != null ? "CV Selected" : "Select CV (PDF)"),
+                      label: Text(
+                        _cvFile != null
+                            ? _cvFile!.path.split('/').last
+                            : "Select CV (PDF)",
+                      ),
                       onPressed: _pickCVFile,
                     ),
+
 
                     const SizedBox(height: 30),
                     state is JobApplicationLoading

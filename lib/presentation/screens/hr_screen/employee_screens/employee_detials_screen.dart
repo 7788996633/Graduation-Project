@@ -1,35 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../blocs/employee_bloc/employee_bloc.dart';
+import '../../../../blocs/job_application/job_application_bloc.dart';
 
-import '../../../blocs/session_type_bloc/session_type_bloc.dart';
-import '../../../constant.dart';
-import '../../../data/models/session_type_model.dart';
-import '../../../themes.dart';
-import '../../widgets/custom_appbar_add.dart';
-import 'update_session_type.dart';
+import '../../../../data/models/employee_model.dart';
+import '../../../../themes.dart';
 
-class SessionTypeDetailsScreen extends StatefulWidget {
-  final SessionTypeModel sessionTypeModel;
+import '../../../widgets/custom_appbar_add.dart';
+import '../job_application/add_job_application.dart';
+import 'update_employee_screen.dart';
 
-  const SessionTypeDetailsScreen({super.key, required this.sessionTypeModel});
+class EmployeeDetailsScreen extends StatefulWidget {
+  final EmployeeModel employeeModel;
+
+  const EmployeeDetailsScreen({super.key, required this.employeeModel});
 
   @override
-  State<SessionTypeDetailsScreen> createState() =>
-      _SessionTypeDetailsScreenState();
+  State<EmployeeDetailsScreen> createState() => _EmployeeDetailsScreenState();
 }
 
-class _SessionTypeDetailsScreenState extends State<SessionTypeDetailsScreen> {
-  late SessionTypeModel sessionType;
+class _EmployeeDetailsScreenState extends State<EmployeeDetailsScreen> {
+  late EmployeeModel employee;
 
   @override
   void initState() {
     super.initState();
-    sessionType = widget.sessionTypeModel;
+    employee = widget.employeeModel;
   }
 
-  void refreshData(SessionTypeModel updated) {
+  void refreshData(EmployeeModel updated) {
     setState(() {
-      sessionType = updated;
+      employee = updated;
     });
   }
 
@@ -68,7 +69,7 @@ class _SessionTypeDetailsScreenState extends State<SessionTypeDetailsScreen> {
     return Scaffold(
       backgroundColor: Colors.deepPurple.shade50,
       appBar: CustomActionAppBar(
-        title: 'Session Type Details',
+        title: 'Employee Details',
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
@@ -85,7 +86,7 @@ class _SessionTypeDetailsScreenState extends State<SessionTypeDetailsScreen> {
               children: [
                 Center(
                   child: Icon(
-                    Icons.event_note_outlined,
+                    Icons.assignment_ind_outlined,
                     size: 80,
                     color: AppColors.darkBlue,
                     shadows: [
@@ -98,14 +99,42 @@ class _SessionTypeDetailsScreenState extends State<SessionTypeDetailsScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                _buildInfoRow('ID', sessionType.id.toString()),
+                _buildInfoRow('ID', employee.id.toString()),
                 Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
-                _buildInfoRow('Type', sessionType.type),
+                _buildInfoRow('name', employee.name),
                 Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
-                _buildInfoRow('Points', sessionType.points.toString(),
-                    valueColor: AppColors.darkBlue),
-                Divider(color: Colors.blueAccent.shade100, thickness: 1.5),
-                _buildInfoRow('Description', sessionType.description),
+                _buildInfoRow('Type', employee.type),
+                Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
+                _buildInfoRow('email', employee.email),
+
+                const SizedBox(height: 30),
+
+                Center(
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.send),
+                    label: const Text("Apply for Job"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => BlocProvider(
+                            create: (_) => JobApplicationBloc(),
+                            child: AddJobApplicationScreen(
+                              hiringReqId: employee.id,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
           ),
@@ -113,19 +142,18 @@ class _SessionTypeDetailsScreenState extends State<SessionTypeDetailsScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          final result = await Navigator.push<SessionTypeModel>(
+          final result = await Navigator.push<EmployeeModel>(
             context,
-
-          MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) => SessionTypeBloc(),
-              child: UpdateSessionTypeScreen(sessionType: sessionType),
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => EmployeeBloc(),
+                child:  UpdateEmployeeInfoScreen(employee: employee),
+              ),
             ),
-          ),
           );
 
           if (result != null) {
-            refreshData(result); // Update view with new model
+            refreshData(result);
           }
         },
         icon: const Icon(Icons.edit),

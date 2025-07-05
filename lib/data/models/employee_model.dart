@@ -1,28 +1,43 @@
 class EmployeeModel {
-  EmployeeModel({
-    required this.id,
-    required this.salary,
-    required this.certificate,
-    required this.hireDate,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-
   final int id;
+  final String name;
+  final String type;
+  final String email;
+  final String status;
   final int salary;
   final String certificate;
-  final DateTime? hireDate;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
+
+  EmployeeModel({
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.email,
+    required this.status,
+    required this.salary,
+    required this.certificate,
+  });
 
   factory EmployeeModel.fromJson(Map<String, dynamic> json) {
     return EmployeeModel(
-      id: json["id"],
-      salary: json["salary"],
-      certificate: json["certificate"],
-      hireDate: DateTime.tryParse(json["hire_date"] ?? ""),
-      createdAt: DateTime.tryParse(json["created_at"] ?? ""),
-      updatedAt: DateTime.tryParse(json["updated_at"] ?? ""),
+      id: json['id'],
+      name: json['name'],
+      type: json['type'],
+      email: json['email'],
+      status: json['status'],
+      salary: json['salary'],
+      certificate: json['certificate'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'type': type,
+      'email': email,
+      'status': status,
+      'salary': salary,
+      'certificate': certificate,
+    };
   }
 }

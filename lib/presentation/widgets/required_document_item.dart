@@ -64,13 +64,10 @@ class RequiredDocumentItem extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    _infoRow(Icons.confirmation_number_outlined, 'Issue ID: ${requiredDocument.issueId}'),
+
                     _infoRow(Icons.insert_drive_file_outlined, 'Type: ${requiredDocument.requireFileType}'),
                     _infoRow(Icons.verified_user_outlined, 'Status: ${requiredDocument.status}'),
-                    if (requiredDocument.note != null && requiredDocument.note!.isNotEmpty)
-                      _infoRow(Icons.note_alt_outlined, 'Note: ${requiredDocument.note}'),
-                    if (requiredDocument.file != null && requiredDocument.file!.isNotEmpty)
-                      _infoRow(Icons.link, 'File: ${requiredDocument.file!.split('/').last}'),
+
                   ],
                 ),
               ),

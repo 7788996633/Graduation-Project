@@ -25,12 +25,14 @@ class _RequiredDocumentListState extends State<RequiredDocumentList> {
   List<RequiredDocumentModel> documentList = [];
 
   Widget buildDocumentListView() {
-    return ListView.builder(
-      itemCount: documentList.length,
-      shrinkWrap: true,
-      physics: const ClampingScrollPhysics(),
-      itemBuilder: (context, index) => RequiredDocumentItem(
-        requiredDocument: documentList[index],
+    return Expanded(
+      child: ListView.builder(
+        itemCount: documentList.length,
+        shrinkWrap: true,
+        physics: const ClampingScrollPhysics(),
+        itemBuilder: (context, index) => RequiredDocumentItem(
+          requiredDocument: documentList[index],
+        ),
       ),
     );
   }

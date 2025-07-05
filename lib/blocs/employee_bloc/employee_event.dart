@@ -1,42 +1,48 @@
-part of 'employee_bloc.dart';
+import 'package:meta/meta.dart';
 
 @immutable
 sealed class EmployeeEvent {}
 
-class AddEmployeeEvent extends EmployeeEvent {
-  final String salary;
-  final int id;
-  final File file;
-
+class CreateEmployeeEvent extends EmployeeEvent {
+  final int userId;
+  final int salary;
+  final String hireDate;
+  final String certificate;
   final String type;
 
-  AddEmployeeEvent(
-      {required this.salary,
-      required this.id,
-      required this.file,
-      required this.type});
+
+  CreateEmployeeEvent({
+    required this.userId,
+    required this.salary,
+    required this.hireDate,
+    required this.certificate,
+    required this.type,
+
+  });
 }
-class EditEmployeeEvent extends EmployeeEvent {
-  final String salary;
-  final File file;
+
+class GetAllEmployeesEvent extends EmployeeEvent {}
+
+class GetEmployeeByIdEvent extends EmployeeEvent {
   final int employeeId;
 
-  EditEmployeeEvent({required this.salary, required this.file, required this.employeeId});
-
+  GetEmployeeByIdEvent({required this.employeeId});
 }
-class GetEmployeeEvent extends EmployeeEvent {
-  final int employeeId;
 
-  GetEmployeeEvent({required this.employeeId});
-
-
-}
 class DeleteEmployeeEvent extends EmployeeEvent {
   final int employeeId;
 
   DeleteEmployeeEvent({required this.employeeId});
-
-
-
 }
-class GetAllEmployeeEvent extends EmployeeEvent {}
+
+class UpdateEmployeeEvent extends EmployeeEvent {
+  final int salary;
+  final String certificate;
+  final int employeeId;
+
+  UpdateEmployeeEvent({
+    required this.salary,
+    required this.certificate,
+    required this.employeeId,
+  });
+}

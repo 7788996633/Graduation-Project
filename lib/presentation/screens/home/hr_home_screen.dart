@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../../../blocs/employee_bloc/employee_bloc.dart';
 import '../../../blocs/hiring_requests/hiring_requests_block.dart';
 import '../../../blocs/job_application/job_application_bloc.dart';
+import '../../../blocs/user_bloc/user_bloc.dart';
 import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
-
 import '../../widgets/custom_app_drawer.dart';
 import '../../widgets/section_card.dart';
-
+import '../hr_screen/employee_screens/list_employee_screen.dart';
+import '../hr_screen/employee_screens/list_user_screen.dart';
 import '../hr_screen/hiring_request/list_hiring_requests_screen.dart';
 import '../hr_screen/job_application/job_application_list_screen.dart';
-
 import '../../widgets/custom_home_appbar.dart';
-import 'hr_home_page.dart';
 
 class HrHomeScreen extends StatelessWidget {
   const HrHomeScreen({super.key});
@@ -50,18 +49,7 @@ class HrHomeScreen extends StatelessWidget {
           );
         },
       },
-      {
-        'icon': Icons.person_add,
-        'title': 'Add Employee Data',
-        'onTap': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const AddEmployeeDataPage(),
-            ),
-          );
-        },
-      },
+
       {
         'icon': Icons.event_available,
         'title': 'Schedule Interviews',
@@ -69,7 +57,26 @@ class HrHomeScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => const ScheduleInterviewsPage(),
+              builder: (_) => BlocProvider(
+                create: (_) => EmployeeBloc(),
+                child: const ListEmployeesScreen(),
+              ),
+            ),
+          );
+        },
+      },
+
+      {
+        'icon': Icons.event_available,
+        'title': 'Add Employee',
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => UserBloc(),
+                child: const ListUsersScreen(),
+              ),
             ),
           );
         },

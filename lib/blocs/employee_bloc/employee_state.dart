@@ -1,4 +1,6 @@
-part of 'employee_bloc.dart';
+import 'package:meta/meta.dart';
+
+import '../../data/models/employee_model.dart';
 
 @immutable
 sealed class EmployeeState {}
@@ -8,25 +10,31 @@ final class EmployeeInitial extends EmployeeState {}
 final class EmployeeLoading extends EmployeeState {}
 
 final class EmployeeSuccess extends EmployeeState {
-  final String successmsg;
+  final String successMsg;
 
-  EmployeeSuccess({required this.successmsg});
+  EmployeeSuccess({required this.successMsg});
 }
-final class EmployeeLoadedSuccessFully extends EmployeeState{
-  final EmployeeModel employee;
 
-  EmployeeLoadedSuccessFully({required this.employee});
+final class EmployeeLoadedSuccessfully extends EmployeeState {
+  final EmployeeModel employeeModel;
 
+  EmployeeLoadedSuccessfully({required this.employeeModel});
 }
-final class EmployeeListLoadedSuccessFully extends EmployeeState{
+
+final class EmployeeFail extends EmployeeState {
+  final String errMsg;
+
+  EmployeeFail({required this.errMsg});
+}
+
+final class EmployeeListLoaded extends EmployeeState {
   final List<EmployeeModel> employeeList;
 
-  EmployeeListLoadedSuccessFully({required this.employeeList});
-
-
+  EmployeeListLoaded({required this.employeeList});
 }
-final class EmployeeFail extends EmployeeState {
-  final String errmsg;
 
-  EmployeeFail({required this.errmsg});
+final class EmployeeIdLoaded extends EmployeeState {
+  final EmployeeModel employeeModel;
+
+  EmployeeIdLoaded({required this.employeeModel});
 }

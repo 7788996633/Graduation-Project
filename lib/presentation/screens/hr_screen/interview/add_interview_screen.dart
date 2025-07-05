@@ -11,7 +11,8 @@ import '../../../widgets/elevated_button_submit.dart';
 
 class AddInterviewScreen extends StatefulWidget {
   final int jobAppId;
-   const AddInterviewScreen({super.key, required this. jobAppId});
+
+  const AddInterviewScreen({super.key, required this.jobAppId});
 
   @override
   State<AddInterviewScreen> createState() => _AddInterviewScreenState();
@@ -19,6 +20,19 @@ class AddInterviewScreen extends StatefulWidget {
 
 class _AddInterviewScreenState extends State<AddInterviewScreen> {
   final TextEditingController _dateController = TextEditingController();
+
+  Future<void> _selectDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (picked != null) {
+      _dateController.text = picked.toString().split(' ')[0]; // yyyy-MM-dd
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,9 +90,10 @@ class _AddInterviewScreenState extends State<AddInterviewScreen> {
                     const SizedBox(height: 25),
                     CustomTextFieldAdd(
                       controller: _dateController,
-                      label: 'date',
+                      label: 'Date',
+                      readOnly: true,
+                      onTap: _selectDate,
                     ),
-
                     const SizedBox(height: 30),
                     state is InterviewLoading
                         ? const Center(child: CircularProgressIndicator())
@@ -90,7 +105,7 @@ class _AddInterviewScreenState extends State<AddInterviewScreen> {
                           BlocProvider.of<InterviewBloc>(context).add(
                             AddInterviewEvent(
                               jobAppId: widget.jobAppId,
-                             date: _dateController.text,
+                              date: _dateController.text,
                             ),
                           );
                         },

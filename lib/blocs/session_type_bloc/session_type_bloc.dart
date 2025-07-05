@@ -1,9 +1,6 @@
 import 'dart:core';
-
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-
-
 import '../../data/models/session_type_model.dart';
 import '../../data/repositories/session_type_repository.dart';
 import '../../data/services/session_type_service.dart';
