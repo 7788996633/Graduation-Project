@@ -30,31 +30,56 @@ class ClientRequestsTable extends StatelessWidget {
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12), // تقليل الحشو
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
               'Client Requests',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // تصغير الخط
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12), // تقليل الفراغ
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: DataTable(
+                columnSpacing: 12, // تقليل المسافة بين الأعمدة
+                dataRowHeight: 36, // تقليل ارتفاع الصف
+                headingRowHeight: 36, // تقليل ارتفاع رأس الجدول
                 columns: const [
-                  DataColumn(label: Text('Client')),
-                  DataColumn(label: Text('Request Type')),
-                  DataColumn(label: Text('Date')),
-                  DataColumn(label: Text('Status')),
+                  DataColumn(
+                    label: Text(
+                      'Client',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'Request Type',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'Date',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'Status',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ),
                 ],
                 rows: requests.map((request) {
-                  return DataRow(cells: [
-                    DataCell(Text(request['client']!)),
-                    DataCell(Text(request['type']!)),
-                    DataCell(Text(request['date']!)),
-                    DataCell(_buildStatusChip(request['status']!)),
-                  ]);
+                  return DataRow(
+                    cells: [
+                      DataCell(Text(request['client']!, style: const TextStyle(fontSize: 13))),
+                      DataCell(Text(request['type']!, style: const TextStyle(fontSize: 13))),
+                      DataCell(Text(request['date']!, style: const TextStyle(fontSize: 13))),
+                      DataCell(_buildStatusChip(request['status']!)),
+                    ],
+                  );
                 }).toList(),
               ),
             ),
@@ -81,8 +106,13 @@ class ClientRequestsTable extends StatelessWidget {
     }
 
     return Chip(
-      label: Text(status, style: const TextStyle(color: Colors.white)),
+      label: Text(
+        status,
+        style: const TextStyle(color: Colors.white, fontSize: 12), // تصغير الخط داخل الشيب
+      ),
       backgroundColor: color,
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 0), // تقليل padding داخل الشيب
+      visualDensity: VisualDensity.compact, // لجعل الشيب مضغوط
     );
   }
 }

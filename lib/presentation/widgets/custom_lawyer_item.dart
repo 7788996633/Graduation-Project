@@ -59,7 +59,7 @@ class CustomLawyerItem extends StatelessWidget {
         ),
         elevation: 4,
         shadowColor: Colors.deepPurple.withOpacity(0.3),
-        color: Colors.lightBlue[50], // سماوي فاتح
+        color: AppColors.scaffold, // سماوي فاتح
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
@@ -84,7 +84,7 @@ class CustomLawyerItem extends StatelessWidget {
                           lawyer.name,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 13,
+                            fontSize: 19,
                             color: Colors.indigo[900], // أزرق غامق مناسب
                           ),
                           maxLines: 1,
@@ -95,7 +95,14 @@ class CustomLawyerItem extends StatelessWidget {
                           title: 'Experience:',
                           value: '${lawyer.experienceYears} yrs',
                           textColor: Colors.blueGrey[700], // لون هادئ وواضح
-                          fontSize: 10,
+                          fontSize: 17,
+                        ),
+                        const SizedBox(height: 4),
+                        InfoRow(
+                          title: 'Specialization:',
+                          value: lawyer.specialization,
+                          textColor: Colors.blueGrey[800], // نفس لون النصوص الأخرى
+                          fontSize: 17,
                         ),
                       ],
                     ),
@@ -106,13 +113,7 @@ class CustomLawyerItem extends StatelessWidget {
                   ],
                 ],
               ),
-              const SizedBox(height: 12),
-              InfoRow(
-                title: 'Specialization:',
-                value: lawyer.specialization,
-                textColor: Colors.blueGrey[800], // نفس لون النصوص الأخرى
-                fontSize: 10,
-              ),
+
             ],
           ),
         ),

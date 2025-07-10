@@ -5,6 +5,7 @@ import '../../../blocs/auth_bloc/auth_bloc.dart';
 import '../../../blocs/user_bloc/user_bloc.dart';
 import '../../../blocs/user_profile_bloc/user_profile_bloc.dart'; // استيراد البلوك الجديد
 import '../../../constant.dart';
+import '../../../themes.dart';
 import '../../widgets/auth_widgets/auth_form.dart';
 import '../../widgets/auth_widgets/auth_top_blue_curved_containor.dart';
 import '../../widgets/custom_error_dialog.dart';
@@ -78,7 +79,7 @@ class _AuthScreenState extends State<AuthScreen> {
       ],
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) => Scaffold(
-          backgroundColor: Colors.grey[200],
+          backgroundColor: AppColors.scaffold,
           body: const Stack(
             children: [
               AuthTopBlueCurvedContainor(),

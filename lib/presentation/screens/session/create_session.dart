@@ -7,29 +7,20 @@ import '../../../blocs/session_type_bloc/session_type_event.dart';
 import '../../../blocs/sessions_bloc/sessions_bloc.dart';
 import '../../../blocs/sessions_bloc/sessions_state.dart';
 import '../../widgets/add_lawyer_to_session_sheet.dart';
-import '../../widgets/build_custom_appbar_detials.dart';
 import '../../widgets/custom_appbar_add.dart';
-import '../../widgets/custom_text_field_add.dart';
 import '../../widgets/session_type_selector.dart';
-import 'attend_radio.dart';
 
 class CreateSessionScreen extends StatefulWidget {
   const CreateSessionScreen({super.key, required this.issueId});
   final int issueId;
+
   @override
   State<CreateSessionScreen> createState() => _CreateSessionScreenState();
 }
+
 class _CreateSessionScreenState extends State<CreateSessionScreen> {
   int? selectedSessionTypeId;
   String? selectedSessionTypeName;
-
-  AttendStatus? _selectedAttendStatus;
-
-  int? get isAttendValue {
-    if (_selectedAttendStatus == AttendStatus.attend) return 1;
-    if (_selectedAttendStatus == AttendStatus.absent) return 0;
-    return null;
-  }
 
   void _showSessionTypeSelector() {
     showModalBottomSheet(
@@ -42,7 +33,7 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
               selectedSessionTypeId = id;
               selectedSessionTypeName = name;
             });
-            Navigator.pop(context); // لإغلاق الـ BottomSheet
+            Navigator.pop(context);
           },
         ),
       ),
@@ -52,9 +43,9 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomActionAppBar(
-        title: 'Add New Sessions',),
-
+      appBar: CustomActionAppBar(
+        title: 'Add New Sessions',
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: BlocConsumer<SessionsBloc, SessionsState>(
@@ -101,7 +92,6 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 25),
-
                     Text(
                       "Session Type:",
                       style: TextStyle(fontWeight: FontWeight.bold),
@@ -113,9 +103,7 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                         selectedSessionTypeName ?? "Select Session Type",
                       ),
                     ),
-
                     const SizedBox(height: 20),
-
                     ElevatedButton(
                       onPressed: () {
                         if (selectedSessionTypeId != null) {
@@ -142,10 +130,6 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                       },
                       child: const Text("Select Lawyer"),
                     ),
-
-                    const SizedBox(height: 20),
-
-                    // Submit button placeholder or use as needed
                   ],
                 ),
               ),

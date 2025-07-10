@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
-
+import '../../themes.dart';
 import '../screens/lawyer_screens/lawyer_profile_screens/lawyer_profile_screen.dart';
 import '../screens/settings/setting_screen.dart';
+import '../screens/lawyer_screens/lawyer_profile_screens/create_lawyer_profile_screen.dart';
 
 class CustomDrawerLawyer extends StatelessWidget {
   const CustomDrawerLawyer({super.key});
@@ -22,7 +23,7 @@ class CustomDrawerLawyer extends StatelessWidget {
                 if (state is LawyerProfileFail) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('فشل تحميل الملف الشخصي: ${state.errmsg}'),
+                      content: Text('Failed to load profile: ${state.errmsg}'),
                       backgroundColor: Colors.red,
                     ),
                   );
@@ -39,7 +40,7 @@ class CustomDrawerLawyer extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (_) => BlocProvider(
-                            create: (context) => LawyerProfileBloc(),
+                            create: (_) => LawyerProfileBloc(),
                             child: LawyerProfileScreen(
                               lawyerModel: lawyerModel,
                             ),
@@ -48,30 +49,54 @@ class CustomDrawerLawyer extends StatelessWidget {
                       );
                     },
                     child: UserAccountsDrawerHeader(
-                      decoration: const BoxDecoration(color: Color(0XFF472A0C)),
+                      decoration: const BoxDecoration(color: AppColors.darkBlue),
                       accountName: Text(lawyerModel.name),
                       accountEmail: Text(lawyerModel.email),
                       currentAccountPicture: CircleAvatar(
                         radius: 30,
                         backgroundImage: lawyerModel.image.isNotEmpty
                             ? NetworkImage(
-                                '${lawyerModel.image}?v=${DateTime.now().millisecondsSinceEpoch}',
-                              )
+                          '${lawyerModel.image}?v=${DateTime.now().millisecondsSinceEpoch}',
+                        )
                             : const AssetImage('assets/default_image.png')
-                                as ImageProvider,
+                        as ImageProvider,
                       ),
                     ),
                   );
                 } else if (state is LawyerProfileFail) {
-                  return const DrawerHeader(
-                    decoration: BoxDecoration(color: Color(0XFF472A0C)),
-                    child: Center(
-                      child: Icon(Icons.error, color: Colors.white),
+                  return DrawerHeader(
+                    decoration: const BoxDecoration(color: AppColors.darkBlue),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.error, color: Colors.white),
+                        const SizedBox(height: 10),
+                        const Text(
+                          'No profile found',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => BlocProvider(
+                                  create: (_) => LawyerProfileBloc(),
+                                  child: const CreateLawyerProfileScreen(),
+                                ),
+                              ),
+                            );
+                          },
+                          child: const Text('Create New Account'),
+                        ),
+                      ],
                     ),
                   );
                 } else {
                   return const DrawerHeader(
-                    decoration: BoxDecoration(color: Color(0XFF472A0C)),
+                    decoration: BoxDecoration(color: AppColors.darkBlue),
                     child: Center(
                       child: CircularProgressIndicator(color: Colors.white),
                     ),

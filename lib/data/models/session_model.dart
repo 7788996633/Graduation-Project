@@ -8,7 +8,7 @@ class SessionModel {
     required this.issueId,
     required this.isAttend,
     required this.sessionTypeId,
-    this.createdAt,
+
   });
 
   final int sessionId;
@@ -18,7 +18,7 @@ class SessionModel {
   final int issueId;
   final int isAttend;
   final int sessionTypeId;
-  final DateTime? createdAt;
+
 
   factory SessionModel.fromJson(Map<String, dynamic> json) {
     return SessionModel(
@@ -29,9 +29,7 @@ class SessionModel {
       issueId: json['issue_id'] ?? 0,
       isAttend: json['is_attend'] ?? 0,
       sessionTypeId: json['session_type_id'] ?? 0,
-      createdAt: json['created_at'] != null
-          ? DateTime.tryParse(json['created_at'])
-          : null,
+
     );
   }
 }

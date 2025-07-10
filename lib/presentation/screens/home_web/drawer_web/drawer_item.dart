@@ -43,7 +43,7 @@ class DrawerItem extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.transparent,
+          color: isSelected ? AppColors.scaffold : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(

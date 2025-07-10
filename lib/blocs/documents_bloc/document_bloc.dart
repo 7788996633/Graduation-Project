@@ -59,7 +59,16 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
      emit(DocumentFail(errmsg: e.toString()));
     }
    }
+   else if (event is GetDocumentsSessionEvent) {
+    emit(DocumentLoading());
+    try {
 
+     List<DocumentModel> docs = await DocumentServices().getDocumentsSession(event.sessionId,event.documentId);
+     emit(DocumentListLoaded(documentsList: docs, ));
+    } catch (e) {
+     emit(DocumentFail(errmsg: e.toString()));
+    }
+   }
    else if (event is GetAllDocumentsEvent) {
     emit(DocumentLoading());
     try {

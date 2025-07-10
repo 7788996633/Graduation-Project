@@ -166,7 +166,21 @@ class _IssueScreenState extends State<IssueScreen> {
               create: (context) => LawyerInIssuesBloc(),
               child: LawyersInIssueList(issueId: widget.issuesModel.id),
             ),
-
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Details issue: ",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+            ),
             buildSectionCard(
                 icon: Icons.title,
                 title: "Title",

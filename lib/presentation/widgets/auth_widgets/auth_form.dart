@@ -23,7 +23,7 @@ class _AuthFormState extends State<AuthForm> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
-      TextEditingController();
+  TextEditingController();
   final GlobalKey<FormState> myKey = GlobalKey<FormState>();
 
   void handleLogin() {
@@ -61,23 +61,21 @@ class _AuthFormState extends State<AuthForm> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        setState(
-          () => isSubmitting = state is AuthLoading,
-        );
+        setState(() => isSubmitting = state is AuthLoading);
       },
       child: Form(
         key: myKey,
         child: Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Colors.white, // ← لون خلفية الفورم
             borderRadius: BorderRadius.circular(30),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
                 blurRadius: 10,
                 offset: const Offset(0, 5),
-              )
+              ),
             ],
           ),
           child: Column(
@@ -85,27 +83,29 @@ class _AuthFormState extends State<AuthForm> {
             children: [
               Text(
                 isLogin ? "Login" : "Register",
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 16),
               if (!isLogin)
                 CustomTextFeild(
-                  color: Colors.grey[200]!,
+                  color: AppColors.scaffold,
                   validator: Validator.nameValidator,
                   controller: nameController,
                   text: "Name",
                 ),
               if (!isLogin) const SizedBox(height: 12),
               CustomTextFeild(
-                color: Colors.grey[200]!,
+                color: AppColors.scaffold,
                 validator: Validator.emailValidator,
                 controller: emailController,
                 text: "Email",
               ),
               const SizedBox(height: 12),
               CustomTextFeild(
-                color: Colors.grey[200]!,
+                color: AppColors.scaffold,
                 validator: Validator.passwordValidator,
                 controller: passwordController,
                 text: "Password",
@@ -128,8 +128,8 @@ class _AuthFormState extends State<AuthForm> {
                   onPressed: isSubmitting
                       ? null
                       : isLogin
-                          ? handleLogin
-                          : handleRegister,
+                      ? handleLogin
+                      : handleRegister,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.darkBlue,
                     padding: const EdgeInsets.symmetric(vertical: 14),
@@ -141,30 +141,32 @@ class _AuthFormState extends State<AuthForm> {
                     isSubmitting
                         ? "Loading..."
                         : (isLogin ? "Login" : "Register"),
-                    style: const TextStyle(fontSize: 16,color: AppColors.white,fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: AppColors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 10),
               isLogin
                   ? LoginColumn(
-                      onPressed: () {
-                        setState(() {
-                          isLogin = false;
-                          clearControllers();
-                        });
-                      },
-                    )
+                onPressed: () {
+                  setState(() {
+                    isLogin = false;
+                    clearControllers();
+                  });
+                },
+              )
                   : RegisterColumn(
-                      onPressed: () {
-                        setState(
-                          () {
-                            isLogin = true;
-                            clearControllers();
-                          },
-                        );
-                      },
-                    ),
+                onPressed: () {
+                  setState(() {
+                    isLogin = true;
+                    clearControllers();
+                  });
+                },
+              ),
             ],
           ),
         ),

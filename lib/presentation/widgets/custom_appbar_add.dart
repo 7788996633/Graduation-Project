@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart'; // لازم نستوردها لاستخدام kIsWeb
+import 'package:flutter/foundation.dart'; // لاستخدام kIsWeb
+import 'package:easy_localization/easy_localization.dart'; // لإضافة tr()
+
 import '../../constant.dart';
 import '../../themes.dart';
 
@@ -34,7 +36,7 @@ class CustomActionAppBar extends StatelessWidget implements PreferredSizeWidget 
 
     return AppBar(
       title: Text(
-        title,
+        title.tr(), // <-- استخدم الترجمة هنا
         style: TextStyle(
           color: textColor,
           fontWeight: FontWeight.bold,

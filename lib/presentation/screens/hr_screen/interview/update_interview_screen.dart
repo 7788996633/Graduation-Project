@@ -72,7 +72,8 @@ class _UpdateInterviewScreenState extends State<UpdateInterviewScreen> {
                   id: widget.interview.id,
                   result: widget.interview.result,
                   note: widget.interview.note,
-                  date: selectedDate,
+                  date: selectedDate, jobAppId:widget.interview.jobAppId, userId: widget.interview.userId ,
+                  
                 ),
               );
             } else if (state is InterviewFail) {

@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
+
+import 'package:easy_localization/easy_localization.dart';
+
 import '../settings/setting_screen.dart';
 
 class CustomMainAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String selectedLanguage;
   final bool isDarkMode;
   final VoidCallback onToggleTheme;
-  final void Function(String) onSelectLanguage;
   final GlobalKey languageKey;
 
   const CustomMainAppBar({
     super.key,
-    required this.selectedLanguage,
     required this.isDarkMode,
     required this.onToggleTheme,
-    required this.onSelectLanguage,
     required this.languageKey,
   });
 
-  void _showLanguageMenu(BuildContext context) async {
-    final RenderBox renderBox = languageKey.currentContext!.findRenderObject() as RenderBox;
+  void _showLanguageMenu(BuildContext context, GlobalKey key) async {
+    final RenderBox renderBox = key.currentContext!.findRenderObject() as RenderBox;
     final Offset position = renderBox.localToGlobal(Offset.zero);
 
-    await showMenu(
+    final selected = await showMenu<String>(
       context: context,
       position: RelativeRect.fromLTRB(
         position.dx,
@@ -31,20 +30,22 @@ class CustomMainAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       items: const [
         PopupMenuItem<String>(
-          value: 'Arabic',
-          child: Text('Arabic'),
+          value: 'ar',
+          child: Text('العربية'),
         ),
         PopupMenuItem<String>(
-          value: 'English',
+          value: 'en',
           child: Text('English'),
         ),
       ],
-    ).then((selected) {
-      if (selected != null) {
-        onSelectLanguage(selected);
-      }
-    });
+    );
+
+    if (selected != null) {
+      final locale = Locale(selected);
+      await context.setLocale(locale);
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -55,10 +56,10 @@ class CustomMainAppBar extends StatelessWidget implements PreferredSizeWidget {
         height: 45,
         child: Row(
           children: [
-            const Expanded(
+            Expanded(
               child: Text(
-                'Home Page',
-                style: TextStyle(
+                tr('home_page'), // ترجم النص بدل كتابته ثابت
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black87,
                   fontWeight: FontWeight.bold,
@@ -66,26 +67,26 @@ class CustomMainAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
             IconButton(
-              tooltip: 'Notifications',
+              tooltip: tr('notifications'),
               icon: const Icon(Icons.notifications, size: 18, color: Colors.black87),
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('No new notifications')),
+                  SnackBar(content: Text(tr('no_notifications'))),
                 );
               },
             ),
             const SizedBox(width: 8),
             TextButton(
               key: languageKey,
-              onPressed: () => _showLanguageMenu(context),
+              onPressed: () => _showLanguageMenu(context, languageKey),
               child: Text(
-                'Change Language - $selectedLanguage',
+                tr('change_language'),
                 style: const TextStyle(fontSize: 13, color: Colors.black87),
               ),
             ),
             const SizedBox(width: 8),
             IconButton(
-              tooltip: isDarkMode ? 'Dark Mode' : 'Light Mode',
+              tooltip: isDarkMode ? tr('dark_mode') : tr('light_mode'),
               icon: Icon(
                 isDarkMode ? Icons.dark_mode : Icons.light_mode,
                 size: 18,
@@ -95,7 +96,7 @@ class CustomMainAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             const SizedBox(width: 8),
             IconButton(
-              tooltip: 'Settings',
+              tooltip: tr('settings'),
               icon: const Icon(Icons.settings, size: 18, color: Colors.black87),
               onPressed: () {
                 Navigator.push(
@@ -106,11 +107,11 @@ class CustomMainAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             const SizedBox(width: 8),
             IconButton(
-              tooltip: 'Logout',
+              tooltip: tr('logout'),
               icon: const Icon(Icons.logout, size: 18, color: Colors.black87),
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Logged out')),
+                  SnackBar(content: Text(tr('logged_out'))),
                 );
               },
             ),

@@ -10,6 +10,7 @@ import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../widgets/custom_app_drawer.dart';
 import '../../widgets/section_card.dart';
 
+import '../hr_screen/job_application/job_application_list_screen.dart';
 import '../hr_screen/job_application/my_application_job_list.dart';
 import '../issue_request/add_issue_request.dart';
 import '../settings/setting_screen.dart';
@@ -70,6 +71,20 @@ class UserHomeScreen extends StatelessWidget {
       },
 
 
+      {
+        'title': 'list Job application ',
+        'icon': Icons.contact_support,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => JobApplicationBloc(),
+                child: const ListJobApplicationsScreen(),
+              ),
+            ),
+          );
+        },},
       {
         'title': 'my Job application ',
         'icon': Icons.contact_support,

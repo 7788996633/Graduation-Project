@@ -15,14 +15,14 @@ class SessionTypeItem extends StatelessWidget {
     return Card(
       child: ListTile(
         onTap: () {
-          Navigator.push(
+         Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => SessionTypeDetailsScreen(
                 sessionTypeModel: sessionTypeModel,
               ),
             ),
-          );
+         );
         },
         leading: IconButton(
           onPressed: () {

@@ -40,6 +40,39 @@ class HiringRequestsServices {
       return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
     }
   }
+  Future<String> setSalaryByLawyerId(
+      int lawyerId,
+      int salary,
+      ) async {
+    var headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $myToken',
+    };
+    var request =
+    http.MultipartRequest('POST', Uri.parse('${myUrl}lawyers/$lawyerId/salary'));
+    request.fields.addAll({
+      'salary': salary.toString(),
+
+    });
+
+    request.headers.addAll(headers);
+
+    var streamedResponse = await request.send();
+
+    var response = await http.Response.fromStream(streamedResponse);
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode == 200) {
+      if (jsonResponse['status'] == 'success') {
+        return jsonResponse['message'];
+      } else {
+        return 'failed: ${jsonResponse['message']}';
+      }
+    } else {
+      return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+    }
+  }
 
   Future<List> getHiringRequests() async {
     var headers = {
@@ -48,6 +81,29 @@ class HiringRequestsServices {
     };
     var request =
     http.MultipartRequest('GET', Uri.parse('${myUrl}hiring-requests'));
+    request.headers.addAll(headers);
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+    if (response.statusCode == 200) {
+      if (jsonResponse['status'] == 'success') {
+        return jsonResponse['data'];
+      } else {
+        return [];
+      }
+    } else {
+      return [];
+    }
+  }
+
+  Future<List> getHiringRequestsPublished() async {
+    var headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $myToken'
+    };
+    var request =
+    http.MultipartRequest('GET', Uri.parse('${myUrl}/hiring-requests/published'));
     request.headers.addAll(headers);
     var streamedResponse = await request.send();
     var response = await http.Response.fromStream(streamedResponse);

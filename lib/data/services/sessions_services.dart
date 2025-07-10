@@ -133,7 +133,7 @@ class SessionServices {
       int sessionTypeId,
       int lawyerId,
       int issueId,
-      int isAttend
+
       ) async {
     var headers = {
       'Accept': 'application/json',
@@ -152,7 +152,7 @@ class SessionServices {
       request.bodyFields = {
         'session_type_id': sessionTypeId.toString(),
         'lawyer_id': lawyerId.toString(),
-        'is_attend': isAttend.toString(),
+
       };
 
       var streamed = await request.send();
@@ -163,7 +163,7 @@ class SessionServices {
       request.fields.addAll({
         'session_type_id': sessionTypeId.toString(),
         'lawyer_id': lawyerId.toString(),
-        'is_attend': isAttend.toString(),
+
       });
 
       var streamed = await request.send();

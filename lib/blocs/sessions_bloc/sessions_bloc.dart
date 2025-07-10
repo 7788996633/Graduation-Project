@@ -18,7 +18,7 @@ class SessionsBloc extends Bloc<SessionsEvent, SessionsState> {
               event.sessionTypeId,
               event.lawyerId,
               event.issueId,
-              event.isAttend
+
             );
             emit(
               SessionsSuccess(

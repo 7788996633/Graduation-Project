@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../blocs/dashboard_bloc/dashboard_bloc.dart';
+import '../../../blocs/dashboard_bloc/dashboard_event.dart';
+import '../../../blocs/case_type_percentages_bloc/case_type_percentages_bloc.dart';
+
+import '../../../themes.dart';
 import 'client_requests_table.dart';
 import 'custom_main_app_bar.dart';
-import 'line_chart.dart';
+import 'revenue_bar_chart.dart';
 import 'orders_table.dart';
 import 'pie_chart.dart';
 import 'recent_activity.dart';
@@ -15,9 +23,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  String selectedLanguage = 'العربية';
   bool isDarkMode = false;
-
   final GlobalKey _languageKey = GlobalKey();
 
   void toggleTheme() {
@@ -26,51 +32,15 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  void selectLanguage(String language) {
-    setState(() {
-      selectedLanguage = language;
-    });
-  }
-
-  void _showLanguageMenu(BuildContext context) async {
-    final RenderBox renderBox = _languageKey.currentContext!.findRenderObject() as RenderBox;
-    final Offset position = renderBox.localToGlobal(Offset.zero);
-
-    await showMenu(
-      context: context,
-      position: RelativeRect.fromLTRB(
-        position.dx,
-        position.dy + renderBox.size.height,
-        position.dx + renderBox.size.width,
-        position.dy,
-      ),
-      items: const [
-        PopupMenuItem<String>(
-          value: 'العربية',
-          child: Text('العربية'),
-        ),
-        PopupMenuItem<String>(
-          value: 'الإنجليزية',
-          child: Text('English'),
-        ),
-      ],
-    ).then((selected) {
-      if (selected != null) {
-        selectLanguage(selected);
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: AppColors.scaffold,
       appBar: CustomMainAppBar(
-        selectedLanguage: selectedLanguage,
         isDarkMode: isDarkMode,
         onToggleTheme: toggleTheme,
-        onSelectLanguage: selectLanguage,
         languageKey: _languageKey,
       ),
       body: SingleChildScrollView(
@@ -78,53 +48,59 @@ class _MainScreenState extends State<MainScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Dashboard Overview",
-              style: TextStyle(
+            Text(
+              "dashboard_title".tr(),
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 20),
-            const SummaryCards(),
+            BlocProvider(
+              create: (context) => DashboardBloc()..add(FetchDashboardData()),
+              child: const SummaryCards(),
+            ),
             const SizedBox(height: 20),
-
-            // ⚙️ Responsive charts layout
             screenWidth > 800
                 ? Row(
-              children: const [
+              children: [
                 Expanded(
                   child: SizedBox(
                     height: 250,
-                    child:  LineChartWidget(),
+                    child: const RevenueBarChart(),
                   ),
                 ),
-                SizedBox(width: 20),
+                const SizedBox(width: 20),
                 Expanded(
                   child: SizedBox(
                     height: 250,
-                    child: TrafficPieChart(),
+                    child: BlocProvider(
+                      create: (context) => CaseTypeBloc(),
+                      child: const CaseTypePercentagesScreen(),
+                    ),
                   ),
                 ),
               ],
             )
                 : Column(
-              children: const [
+              children: [
                 SizedBox(
                   height: 250,
-                  child: LineChartWidget(),
+                  child: const RevenueBarChart(),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 SizedBox(
                   height: 250,
-                  child: TrafficPieChart(),
+                  child: BlocProvider(
+                    create: (context) => CaseTypeBloc(),
+                    child: const CaseTypePercentagesScreen(),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 20),
             const RecentActivity(),
             const SizedBox(height: 20),
-// جعل OrdersTable و ClientRequestsTable جنبًا إلى جنب في الشاشات الكبيرة
             screenWidth > 800
                 ? Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,7 +117,6 @@ class _MainScreenState extends State<MainScreen> {
                 ClientRequestsTable(),
               ],
             ),
-
           ],
         ),
       ),

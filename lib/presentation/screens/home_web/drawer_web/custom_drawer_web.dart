@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../constant.dart';
 import '../../../../themes.dart';
@@ -48,10 +49,10 @@ class _CustomDrawerWebState extends State<CustomDrawerWeb> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    'yaghmour',
+                    tr('Yaghmur'), // تم تغييرها لاستخدام الترجمة
                     style: const TextStyle(
                       fontFamily: 'Barrio',
-                      color: Colors.white,
+                      color: AppColors.scaffold,
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
@@ -66,49 +67,49 @@ class _CustomDrawerWebState extends State<CustomDrawerWeb> {
           DrawerItem.build(
             index: 0,
             icon: Icons.home,
-            title: 'Home',
+            title: context.tr('home'), // استخدام context.tr()
             isSelected: selectedIndex == 0,
             onTap: () => _handleTap(0),
           ),
           DrawerItem.build(
             index: 1,
             icon: Icons.gavel,
-            title: 'Issues',
+            title: context.tr('issues'),
             isSelected: selectedIndex == 1,
             onTap: () => _handleTap(1),
           ),
           DrawerItem.build(
             index: 2,
             icon: Icons.request_page_outlined,
-            title: 'Issue Request',
+            title: context.tr('issue_request'),
             isSelected: selectedIndex == 2,
             onTap: () => _handleTap(2),
           ),
           DrawerItem.build(
             index: 3,
             icon: Icons.beach_access_outlined,
-            title: 'Furloughs',
+            title: context.tr('furloughs'),
             isSelected: selectedIndex == 3,
             onTap: () => _handleTap(3),
           ),
           DrawerItem.build(
             index: 4,
             icon: Icons.category_outlined,
-            title: 'Session Type',
+            title: context.tr('session_type'),
             isSelected: selectedIndex == 4,
             onTap: () => _handleTap(4),
           ),
           DrawerItem.build(
             index: 5,
             icon: Icons.assignment_turned_in_outlined,
-            title: 'Required Documents',
+            title: context.tr('required_documents'),
             isSelected: selectedIndex == 5,
             onTap: () => _handleTap(5),
           ),
           DrawerItem.build(
             index: 6,
             icon: Icons.description_outlined,
-            title: ' Documents',
+            title: context.tr('documents'),
             isSelected: selectedIndex == 6,
             onTap: () => _handleTap(6),
           ),

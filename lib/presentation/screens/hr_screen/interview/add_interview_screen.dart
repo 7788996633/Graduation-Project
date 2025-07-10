@@ -21,16 +21,34 @@ class AddInterviewScreen extends StatefulWidget {
 class _AddInterviewScreenState extends State<AddInterviewScreen> {
   final TextEditingController _dateController = TextEditingController();
 
-  Future<void> _selectDate() async {
-    final DateTime? picked = await showDatePicker(
+  Future<void> _selectDateTime() async {
+    final DateTime? pickedDate = await
+    showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
 
-    if (picked != null) {
-      _dateController.text = picked.toString().split(' ')[0]; // yyyy-MM-dd
+    if (pickedDate != null) {
+      final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+
+      if (pickedTime != null) {
+        final DateTime fullDateTime = DateTime(
+          pickedDate.year,
+          pickedDate.month,
+          pickedDate.day,
+          pickedTime.hour,
+          pickedTime.minute,
+        );
+
+        // Format: yyyy-MM-dd HH:mm
+        _dateController.text =
+            "${fullDateTime.toLocal()}".split('.').first.substring(0, 16);
+      }
     }
   }
 
@@ -90,9 +108,9 @@ class _AddInterviewScreenState extends State<AddInterviewScreen> {
                     const SizedBox(height: 25),
                     CustomTextFieldAdd(
                       controller: _dateController,
-                      label: 'Date',
+                      label: 'Date & Time',
                       readOnly: true,
-                      onTap: _selectDate,
+                      onTap: _selectDateTime,
                     ),
                     const SizedBox(height: 30),
                     state is InterviewLoading

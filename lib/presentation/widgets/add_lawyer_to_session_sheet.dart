@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 import '../../blocs/lawyer_in_issues_bloc/lawyer_in_issues_bloc.dart';
 import '../../blocs/sessions_bloc/sessions_bloc.dart';
 import '../../blocs/sessions_bloc/sessions_event.dart';
 import '../../blocs/sessions_bloc/sessions_state.dart';
-import '../screens/session/attend_radio.dart';
 import 'select_lawyer_for_session_list.dart';
-
 
 class AddLawyerToSessionSheet extends StatefulWidget {
   const AddLawyerToSessionSheet({
@@ -27,13 +24,6 @@ class AddLawyerToSessionSheet extends StatefulWidget {
 
 class _AddLawyerToSessionSheetState extends State<AddLawyerToSessionSheet> {
   int? selectedUserId;
-  AttendStatus? selectedAttendStatus;
-
-  int? get isAttend {
-    if (selectedAttendStatus == AttendStatus.attend) return 1;
-    if (selectedAttendStatus == AttendStatus.absent) return 0;
-    return null;
-  }
 
   late LawyerInIssuesBloc bloc;
 
@@ -55,7 +45,6 @@ class _AddLawyerToSessionSheetState extends State<AddLawyerToSessionSheet> {
           const Text("Select Lawyer", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
 
-
           SelectLawyerForSessionList(
             onLawyerSelected: (id) {
               setState(() => selectedUserId = id);
@@ -63,17 +52,6 @@ class _AddLawyerToSessionSheetState extends State<AddLawyerToSessionSheet> {
           ),
 
           const SizedBox(height: 16),
-
-
-          AttendRadio(
-            selectedStatus: selectedAttendStatus,
-            onChanged: (status) {
-              setState(() => selectedAttendStatus = status);
-            },
-          ),
-
-          const SizedBox(height: 16),
-
 
           BlocConsumer<SessionsBloc, SessionsState>(
             listener: (context, state) {
@@ -97,10 +75,10 @@ class _AddLawyerToSessionSheetState extends State<AddLawyerToSessionSheet> {
             builder: (context, state) {
               return ElevatedButton(
                 onPressed: () {
-                  if (selectedUserId == null || isAttend == null) {
+                  if (selectedUserId == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text("Please select a lawyer and attend status."),
+                        content: Text("Please select a lawyer."),
                       ),
                     );
                     return;
@@ -111,7 +89,6 @@ class _AddLawyerToSessionSheetState extends State<AddLawyerToSessionSheet> {
                       sessionTypeId: widget.sessionTypeId,
                       issueId: widget.issueId,
                       lawyerId: selectedUserId!,
-                      isAttend: isAttend!,
                     ),
                   );
                 },

@@ -52,7 +52,7 @@ class _UpdateInterviewResultScreenState extends State<UpdateInterviewResultScree
                   id: widget.interview.id,
                   result: selectedResult,
                   note: widget.interview.note,
-                  date: widget.interview.date,
+                  date: widget.interview.date, jobAppId: widget.interview.jobAppId, userId:widget.interview.userId,
                 ),
               );
             } else if (state is InterviewFail) {

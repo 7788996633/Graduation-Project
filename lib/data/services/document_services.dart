@@ -101,6 +101,34 @@ class DocumentServices {
     }
   }
 
+
+
+  Future<List<DocumentModel>> getDocumentsSession(int sessionId,int documentId) async {
+    final url = Uri.parse('${myUrl}sessions/$sessionId/documents/$documentId'); // عدّل الرابط حسب الـ API
+    http.Response response;
+
+    if (kIsWeb) {
+      var request = http.Request('GET', url)..headers.addAll(baseHeaders);
+      var streamed = await request.send();
+      response = await http.Response.fromStream(streamed);
+    } else {
+      var request = http.MultipartRequest('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamed = await request.send();
+      response = await http.Response.fromStream(streamed);
+    }
+
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      List data = jsonResponse['data'];
+      return data.map((e) => DocumentModel.fromJson(e)).toList();
+    } else {
+      return [];
+    }
+  }
+
   /// تعديل مستند
   Future<String> updateDocument({
     required int documentId,

@@ -116,12 +116,12 @@ class _SessionTypeDetailsScreenState extends State<SessionTypeDetailsScreen> {
           final result = await Navigator.push<SessionTypeModel>(
             context,
 
-          MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) => SessionTypeBloc(),
-              child: UpdateSessionTypeScreen(sessionType: sessionType),
+            MaterialPageRoute(
+              builder: (context) => BlocProvider(
+                create: (context) => SessionTypeBloc(),
+                child: UpdateSessionTypeScreen(sessionType: sessionType),
+              ),
             ),
-          ),
           );
 
           if (result != null) {

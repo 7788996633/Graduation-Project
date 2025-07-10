@@ -9,6 +9,7 @@ import '../../widgets/custom_app_drawer.dart';
 import '../../widgets/section_card.dart';
 import '../hr_screen/employee_screens/list_employee_screen.dart';
 import '../hr_screen/employee_screens/list_user_screen.dart';
+import '../hr_screen/hiring_request/hiring_requests_published_screen.dart';
 import '../hr_screen/hiring_request/list_hiring_requests_screen.dart';
 import '../hr_screen/job_application/job_application_list_screen.dart';
 import '../../widgets/custom_home_appbar.dart';
@@ -76,6 +77,21 @@ class HrHomeScreen extends StatelessWidget {
               builder: (_) => BlocProvider(
                 create: (_) => UserBloc(),
                 child: const ListUsersScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'icon': Icons.event_available,
+        'title': 'Add Employee',
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => HiringRequestsBloc(),
+                child: const ListHiringRequestsPublishScreen(),
               ),
             ),
           );

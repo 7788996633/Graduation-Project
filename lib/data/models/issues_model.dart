@@ -7,54 +7,47 @@ class IssuesModel {
   final String courtName;
   final int numberOfPayments;
   final String totalCost;
-  // final String amountPaid;
-  // final String description;
   final int userId;
   final String status;
   final String priority;
   final String startDate;
-  // final String endDate;
   final String createdAt;
   final String updatedAt;
 
-  IssuesModel(
-      {required this.id,
-        required this.title,
-        required this.issueNumber,
-        required this.category,
-        required this.opponentName,
-        required this.courtName,
-        required this.numberOfPayments,
-        required this.totalCost,
-        // required this.amountPaid,
-        // required this.description,
-        required this.userId,
-        required this.status,
-        required this.priority,
-        required this.startDate,
-        // required this.endDate,
-        required this.createdAt,
-        required this.updatedAt});
+  IssuesModel({
+    required this.id,
+    required this.title,
+    required this.issueNumber,
+    required this.category,
+    required this.opponentName,
+    required this.courtName,
+    required this.numberOfPayments,
+    required this.totalCost,
+    required this.userId,
+    required this.status,
+    required this.priority,
+    required this.startDate,
+    required this.createdAt,
+    required this.updatedAt,
+  });
 
   factory IssuesModel.fromJson(Map<String, dynamic> json) {
     return IssuesModel(
-        id: json['id'],
-        title: json['title'],
-        issueNumber: json['issue_number'],
-        category: json['category'],
-        opponentName: json['opponent_name'],
-        courtName: json['court_name'],
-        numberOfPayments: json['number_of_payments'],
-        totalCost: json['total_cost'],
-        // amountPaid: json['amount_paid'],
-        // description: json['description'],
-        userId: json['user_id'],
-        status: json['status'],
-        priority: json['priority'],
-        startDate: json['start_date'],
-        // endDate: json['end_date'],
-        createdAt: json['created_at'],
-        updatedAt: json['updated_at']);
+      id: json['id'] ?? 0,
+      title: json['title'] ?? '',
+      issueNumber: json['issue_number'] ?? '',
+      category: json['category'] ?? '',
+      opponentName: json['opponent_name'] ?? '',
+      courtName: json['court_name'] ?? '',
+      numberOfPayments: json['number_of_payments'] ?? 0,
+      totalCost: json['total_cost']?.toString() ?? '',
+      userId: json['user_id'] ?? 0,
+      status: json['status'] ?? '',
+      priority: json['priority'] ?? '',
+      startDate: json['start_date'] ?? '',
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
+    );
   }
 }
 

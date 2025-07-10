@@ -30,36 +30,6 @@ class _LawyersInIssueListState extends State<LawyersInIssueList> {
     );
   }
 
-  Widget _buildLawyerList(
-      List<LawyerModel> lawyers,
-      double childAspectRatio,
-      ) {
-    if (lawyers.isEmpty) {
-      return const Center(
-        child: Text("No lawyers found."),
-      );
-    }
-
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: lawyers.length,
-      padding: const EdgeInsets.all(8),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2, // دائمًا 2 كارد في السطر
-        mainAxisSpacing: 8,
-        crossAxisSpacing: 8,
-        childAspectRatio: childAspectRatio,
-      ),
-      itemBuilder: (context, index) {
-        return CustomLawyerItem(
-          lawyer: lawyers[index],
-          isSelected: selectedLawyerIds.contains(lawyers[index].id),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LawyerInIssuesBloc, LawyerInIssuesState>(
@@ -74,15 +44,34 @@ class _LawyersInIssueListState extends State<LawyersInIssueList> {
             builder: (context, constraints) {
               double width = constraints.maxWidth;
               double aspectRatio;
+              int crossAxisCount;
 
-              // تقدر تعدل الـ aspectRatio حسب العرض عشان الكارد يطلع مرتب
-              if (width >= 600) {
-                aspectRatio = 2.0;
+              if (kIsWeb) {
+                crossAxisCount = 2;     // ✅ سطر يحتوي على محاميين في الويب
+                aspectRatio = 4;       // ✅ كارد بعرض أصغر وطول مناسب
               } else {
-                aspectRatio = 1.5;
+                crossAxisCount = 2;     // ✅ على الموبايل أيضًا سطرين
+                aspectRatio = 2.2;
               }
 
-              return _buildLawyerList(_allLawyers, aspectRatio);
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _allLawyers.length,
+                padding: const EdgeInsets.all(8),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                  childAspectRatio: aspectRatio,
+                ),
+                itemBuilder: (context, index) {
+                  return CustomLawyerItem(
+                    lawyer: _allLawyers[index],
+                    isSelected: selectedLawyerIds.contains(_allLawyers[index].id),
+                  );
+                },
+              );
             },
           );
         } else if (state is LawyerInIssuesFail) {

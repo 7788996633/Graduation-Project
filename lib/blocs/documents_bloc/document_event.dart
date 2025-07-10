@@ -19,6 +19,14 @@ class AddDocumentEvent extends DocumentEvent {
 }
 
 class GetAllDocumentsEvent extends DocumentEvent {}
+class GetDocumentsSessionEvent extends DocumentEvent {
+  final int sessionId;
+ final int documentId;
+  GetDocumentsSessionEvent({
+    required this.sessionId,
+    required this.documentId,
+  });
+}
 
 class ShowDocumentByIdEvent extends DocumentEvent {
   final int documentId;

@@ -39,7 +39,7 @@ class _ListFurloughsScreenState extends State<ListFurloughsScreen> {
     return Scaffold(
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
-        title: 'List Furloughs',
+        title: 'list_furloughs',
         actionIcon: Icons.add_circle_rounded,
         tooltip: 'Add New Furlough',
         onActionPressed: () {

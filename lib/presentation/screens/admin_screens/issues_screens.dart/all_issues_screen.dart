@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../../data/models/issues_model.dart';
+import '../../../../themes.dart';
 import '../../../widgets/custom_appbar_add.dart';
 import '../../../widgets/issue_item.dart';
 import 'create_issue_screen.dart';
@@ -35,7 +36,7 @@ class _AllIssuesScreenState extends State<AllIssuesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
+      backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
         title: 'List Issue ',
         actionIcon: Icons.add_circle_rounded,
