@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/consultation_request_bloc/consultation_request_bloc.dart';
 import 'package:graduation/blocs/issue_requests_bloc/issue_requests_bloc.dart';
+import 'package:graduation/presentation/screens/consultation_request/submit_consultation_request_screen.dart';
 import 'package:graduation/presentation/screens/issue_request/add_issue_request.dart';
 import 'package:graduation/presentation/screens/issue_request/user_issue_requests_screen.dart';
 import 'package:graduation/presentation/screens/user_screens/user_issues_screens/user_issues_screens.dart';
@@ -10,6 +12,7 @@ import '../../../blocs/sessions_bloc/sessions_bloc.dart';
 import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../widgets/custom_app_drawer.dart';
 import '../../widgets/section_card.dart';
+import '../consultation_request/all_consultation_requests_page.dart';
 import '../settings/setting_screen.dart';
 import '../../widgets/custom_home_appbar.dart';
 
@@ -85,7 +88,24 @@ class UserHomeScreen extends StatelessWidget {
         'onTap': () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const SettingsScreen()),
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => ConsultationRequestBloc(),
+                child: const SubmitConsultationRequestScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Consultation Requests',
+        'icon': Icons.chat_rounded,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const AllConsultationRequestsPage(),
+            ),
           );
         },
       },

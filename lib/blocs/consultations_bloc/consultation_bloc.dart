@@ -65,6 +65,40 @@ class ConsultationBloc extends Bloc<ConsultationEvent, ConsultationState> {
               ),
             );
           }
+        } else if (event is StartConsultationRequestReview) {
+          emit(ConsultationLoading());
+          try {
+            String value = await ConsultationServices()
+                .startConsultationRequestReview(event.consultationRequestId);
+            emit(
+              ConsultationSuccess(
+                successmsg: value,
+              ),
+            );
+          } catch (e) {
+            emit(
+              ConsultationFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is EndConsultationRequestReview) {
+          emit(ConsultationLoading());
+          try {
+            String value = await ConsultationServices()
+                .endConsultationRequestReview(event.consultationRequestId);
+            emit(
+              ConsultationSuccess(
+                successmsg: value,
+              ),
+            );
+          } catch (e) {
+            emit(
+              ConsultationFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
         }
       },
     );

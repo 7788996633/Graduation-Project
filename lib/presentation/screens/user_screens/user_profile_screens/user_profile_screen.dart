@@ -6,12 +6,13 @@ import 'package:file_picker/file_picker.dart';
 import '../../../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../../../constant.dart';
 import '../../../../data/models/user_profile_model.dart';
+import '../../../../themes.dart';
 import '../../../widgets/delete_profile_button.dart';
 import '../../../widgets/edit_profile_button.dart';
 
 class UserProfileScreen extends StatefulWidget {
-  const UserProfileScreen({super.key, required this.userProfileModel});
-  final UserProfileModel userProfileModel;
+  const UserProfileScreen({super.key, required this.userId});
+  final int userId;
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
@@ -25,30 +26,89 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   late TextEditingController scientificLevelController;
   bool isEditing = false;
 
-  late final UserProfileBloc bloc;
+  late UserProfileBloc bloc;
   File? _pickedImage;
-
+  late UserProfileModel userProfileModel;
   @override
   void initState() {
     super.initState();
     bloc = BlocProvider.of<UserProfileBloc>(context);
-    nameController = TextEditingController(text: widget.userProfileModel.name);
-    emailController =
-        TextEditingController(text: widget.userProfileModel.email);
-    phoneController =
-        TextEditingController(text: widget.userProfileModel.phone);
-    addressController =
-        TextEditingController(text: widget.userProfileModel.address);
-    ageController =
-        TextEditingController(text: widget.userProfileModel.age.toString());
-    scientificLevelController =
-        TextEditingController(text: widget.userProfileModel.scientificLevel);
+    bloc.add(ShowUserProfileByIdEvent(userId: widget.userId));
+    nameController = TextEditingController();
+    emailController = TextEditingController();
+    phoneController = TextEditingController();
+    addressController = TextEditingController();
+    ageController = TextEditingController();
+    scientificLevelController = TextEditingController();
   }
+
+  bool isMyProfile = false;
 
   @override
   Widget build(BuildContext context) {
-    final bool isMyProfile = widget.userProfileModel.userId == myUserId;
+    return BlocBuilder<UserProfileBloc, UserProfileState>(
+      builder: (context, state) {
+        if (state is UserProfileLoadedSuccessfully) {
+          userProfileModel = state.userProfileModel;
+          nameController.text = userProfileModel.name;
+          emailController.text = userProfileModel.email;
+          phoneController.text = userProfileModel.phone;
+          addressController.text = userProfileModel.address;
+          ageController.text = userProfileModel.age.toString();
+          scientificLevelController.text = userProfileModel.scientificLevel;
+          isMyProfile = userProfileModel.userId == myUserId;
+          print(isMyProfile);
+          return profileScaffold();
+        } else if (state is UserProfileSuccess) {
+          return profileScaffold();
+        } else if (state is UserProfileFail) {
+          return Scaffold(
+            backgroundColor: const Color(0xFFF3F4F6),
+            appBar: AppBar(
+              backgroundColor: Colors.blue,
+              title: const Text(
+                "Profile",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              centerTitle: true,
+              elevation: 4,
+              shape: const RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(20)),
+              ),
+            ),
+            body: Text(
+              state.errmsg,
+            ),
+          );
+        } else {
+          return Scaffold(
+            backgroundColor: const Color(0xFFF3F4F6),
+            appBar: AppBar(
+              backgroundColor: Colors.blue,
+              title: const Text(
+                "Profile",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              centerTitle: true,
+              elevation: 4,
+              shape: const RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(20)),
+              ),
+            ),
+            body: Center(
+              child: CircularProgressIndicator(
+                color: AppColors.darkBlue,
+              ),
+            ),
+          );
+        }
+      },
+    );
+  }
 
+  Widget profileScaffold() {
     return Scaffold(
       backgroundColor: const Color(0xFFF3F4F6),
       appBar: AppBar(
@@ -74,8 +134,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       address: addressController.text,
                       age: ageController.text,
                       scientificLevel: scientificLevelController.text,
-                      imagePath:
-                          _pickedImage?.path ?? widget.userProfileModel.image,
+                      imagePath: _pickedImage?.path ?? userProfileModel.image,
                     ));
                     bloc.add(ShowUserProfileEvent());
                   }
@@ -117,7 +176,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       radius: 50,
                       backgroundImage: _pickedImage != null
                           ? FileImage(_pickedImage!)
-                          : NetworkImage(widget.userProfileModel.image),
+                          : NetworkImage(userProfileModel.image),
                       backgroundColor: Colors.grey[300],
                     ),
                     if (isEditing && isMyProfile)
@@ -136,7 +195,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  widget.userProfileModel.name,
+                  userProfileModel.name,
                   style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,

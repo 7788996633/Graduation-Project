@@ -53,15 +53,20 @@ class CustomLawyerItem extends StatelessWidget {
           );
         }
       },
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(
+            color: isSelected ? AppColors.darkBlue : Colors.grey,
+            width: 2,
+          ),
+          borderRadius: BorderRadius.circular(
+            25,
+          ),
         ),
-        elevation: 6,
-        shadowColor: Colors.deepPurple.withOpacity(0.3),
-        color: isSelected ? AppColors.darkBlue : Colors.white,
         child: ListTile(
           leading: CircleAvatar(
+            radius: 25,
             backgroundImage: NetworkImage(
               '${lawyer.image}?v=${DateTime.now().millisecondsSinceEpoch}',
             ),
@@ -71,7 +76,7 @@ class CustomLawyerItem extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
-              color: isSelected ? Colors.white : const Color(0XFF472A0C),
+              color: Colors.black,
             ),
           ),
           subtitle: Column(

@@ -65,7 +65,9 @@ class _UserListState extends State<UsersList> {
             ),
           );
         } else {
-          CircularProgressIndicator();
+          Center(
+            child: CircularProgressIndicator(),
+          );
         }
       },
       child: BlocBuilder<UserBloc, UserState>(
@@ -97,7 +99,9 @@ class _UserListState extends State<UsersList> {
               ],
             );
           } else {
-            return const CircularProgressIndicator();
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
         },
       ),

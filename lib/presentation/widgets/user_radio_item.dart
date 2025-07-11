@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../data/models/user_model.dart';
 import 'custom_user_item.dart';
 
@@ -25,33 +22,15 @@ class UserRadioItem extends StatefulWidget {
 
 class _UserRadioItemState extends State<UserRadioItem> {
   @override
-  void initState() {
-    super.initState();
-    BlocProvider.of<UserProfileBloc>(context).add(
-      ShowUserProfileByIdEvent(userId: widget.userModel.id),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserProfileBloc, UserProfileState>(
-      builder: (context, state) {
-        if (state is UserProfileLoadedSuccessfully) {
-          return CustomUserItem(
-            userProfileModel: state.userProfileModel,
-            subtitle: widget.subtitle,
-            trailing: Radio<int>(
-              value: widget.userModel.id,
-              groupValue: widget.groupValue,
-              onChanged: widget.onChanged,
-            ),
-          );
-        } else if (state is UserProfileFail) {
-          return Text(state.errmsg);
-        } else {
-          return const Text("");
-        }
-      },
+    return CustomUserItem(
+      userModel: widget.userModel,
+      subtitle: widget.subtitle,
+      trailing: Radio<int>(
+        value: widget.userModel.id,
+        groupValue: widget.groupValue,
+        onChanged: widget.onChanged,
+      ),
     );
   }
 }

@@ -43,7 +43,7 @@ class CustomAppDrawer extends StatelessWidget {
                           builder: (_) => BlocProvider(
                             create: (context) => UserProfileBloc(),
                             child: UserProfileScreen(
-                              userProfileModel: userProfileModel,
+                              userId: userProfileModel.userId,
                             ),
                           ),
                         ),

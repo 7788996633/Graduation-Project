@@ -10,6 +10,7 @@ import '../../../blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
 import '../../widgets/custom_lawyer_drawer.dart';
 import '../../widgets/section_card.dart';
 import '../../widgets/custom_home_appbar.dart';
+import '../consultation_request/all_consultation_requests_page.dart';
 
 class LawyerHomeScreen extends StatelessWidget {
   const LawyerHomeScreen({super.key});
@@ -58,6 +59,18 @@ class LawyerHomeScreen extends StatelessWidget {
                 create: (_) => ConsultationBloc(),
                 child: const ConsultationsListScreen(),
               ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'All Consultation Requests',
+        'icon': Icons.chat_rounded,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const AllConsultationRequestsPage(),
             ),
           );
         },

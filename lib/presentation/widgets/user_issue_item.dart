@@ -148,7 +148,7 @@ class _UserIssueItemState extends State<UserIssueItem> {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

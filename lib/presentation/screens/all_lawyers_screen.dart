@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/themes.dart';
 
 import '../../../blocs/lawyer_bloc/lawyer_bloc.dart';
 import '../../../blocs/lawyer_bloc/lawyer_event.dart';
@@ -73,7 +74,7 @@ class _AllLawyersScreenState extends State<AllLawyersScreen> {
         ),
         centerTitle: true,
         elevation: 8,
-        backgroundColor: const Color(0XFF472A0C),
+        backgroundColor: AppColors.darkBlue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

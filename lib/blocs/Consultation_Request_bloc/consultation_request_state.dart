@@ -13,13 +13,13 @@ final class  ConsultationRequestSuccess extends ConsultationRequestState {
 }
 
 final class  ConsultationRequestSuccessFully extends ConsultationRequestState {
-  final ConsultationRequestModel consultationRequest;
+  final ConsReqModel consultationRequest;
 
   ConsultationRequestSuccessFully({required this.consultationRequest});
 }
 
 final class  ConsultationRequestListLoadedSuccessFully extends ConsultationRequestState {
-  final List<ConsultationRequestModel> consultationRequest;
+  final List<ConsReqModel> consultationRequest;
 
   ConsultationRequestListLoadedSuccessFully({required this.consultationRequest});
 }

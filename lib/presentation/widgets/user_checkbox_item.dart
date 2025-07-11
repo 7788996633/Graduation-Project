@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../data/models/user_model.dart';
 import 'custom_user_item.dart';
+
 class UserCheckboxItem extends StatefulWidget {
   const UserCheckboxItem({
     super.key,
@@ -24,33 +22,14 @@ class UserCheckboxItem extends StatefulWidget {
 
 class _UserCheckboxItemState extends State<UserCheckboxItem> {
   @override
-  void initState() {
-    super.initState();
-    BlocProvider.of<UserProfileBloc>(context).add(
-      ShowUserProfileByIdEvent(userId: widget.userModel.id),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserProfileBloc, UserProfileState>(
-      builder: (context, state) {
-        if (state is UserProfileLoadedSuccessfully) {
-          return CustomUserItem(
-            userProfileModel: state.userProfileModel,
-            subtitle: widget.subtitle,
-            trailing: Checkbox(
-              value: widget.selected,
-              onChanged: widget.onChanged,
-            ),
-          );
-        } else if (state is UserProfileFail) {
-          return Text(state.errmsg);
-        } else {
-          return const SizedBox.shrink(); // Empty widget
-        }
-      },
+    return CustomUserItem(
+      userModel: widget.userModel,
+      subtitle: widget.subtitle,
+      trailing: Checkbox(
+        value: widget.selected,
+        onChanged: widget.onChanged,
+      ),
     );
   }
 }
-

@@ -3,8 +3,7 @@ import 'package:graduation/data/repositories/consultation_request_repository.dar
 import 'package:graduation/data/services/consultation_request_services.dart';
 import 'package:meta/meta.dart';
 
-import '../../data/models/consultation_Request_model.dart';
-
+import '../../data/models/cons_req_model.dart';
 
 part 'consultation_request_event.dart';
 part 'consultation_request_state.dart';
@@ -56,7 +55,7 @@ class ConsultationRequestBloc
           ConsultationRequestLoading(),
         );
         try {
-          ConsultationRequestModel value = await ConsultationRequestServices()
+          ConsReqModel value = await ConsultationRequestServices()
               .getConsultationRequest(event.id);
           emit(
             ConsultationRequestSuccessFully(
@@ -75,8 +74,24 @@ class ConsultationRequestBloc
           ConsultationRequestLoading(),
         );
         try {
-          List<ConsultationRequestModel> value =
+          List<ConsReqModel> value =
               await ConsultationRequestRepository().getALLConsultationRequest();
+          emit(ConsultationRequestListLoadedSuccessFully(
+              consultationRequest: value));
+        } catch (e) {
+          emit(
+            ConsultationRequestFail(
+              errmsg: e.toString(),
+            ),
+          );
+        }
+      } else if (event is GetUserConsultationRequestStatusEvent) {
+        emit(
+          ConsultationRequestLoading(),
+        );
+        try {
+          List<ConsReqModel> value = await ConsultationRequestRepository()
+              .getUserConsultationRequest();
           emit(ConsultationRequestListLoadedSuccessFully(
               consultationRequest: value));
         } catch (e) {

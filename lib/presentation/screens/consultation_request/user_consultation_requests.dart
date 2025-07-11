@@ -1,27 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/presentation/widgets/consultation_request_list.dart';
-import 'package:graduation/themes.dart';
 
 import '../../../blocs/consultation_request_bloc/consultation_request_bloc.dart';
+import '../../../themes.dart';
+import '../../widgets/consultation_request_list.dart';
 
-class AllConsultationRequestsPage extends StatefulWidget {
-  const AllConsultationRequestsPage({super.key});
+class UserConsultationRequests extends StatefulWidget {
+  const UserConsultationRequests({super.key});
 
   @override
-  State<AllConsultationRequestsPage> createState() =>
-      _AllConsultationRequestsPageState();
+  State<UserConsultationRequests> createState() => _UserConsultationRequestsState();
 }
 
-class _AllConsultationRequestsPageState
-    extends State<AllConsultationRequestsPage> {
-  @override
+class _UserConsultationRequestsState extends State<UserConsultationRequests> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'All Consultation Requests',
+          'User Consultation Requests',
           style: TextStyle(
             color: AppColors.white,
           ),

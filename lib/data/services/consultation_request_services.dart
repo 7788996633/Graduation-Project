@@ -3,8 +3,7 @@ import 'dart:convert';
 import 'package:graduation/constant.dart';
 import 'package:http/http.dart' as http;
 
-import '../models/consultation_Request_model.dart';
-
+import '../models/cons_req_model.dart';
 
 class ConsultationRequestServices {
   Future<String> addConsultationRequest(String subject, String details) async {
@@ -32,7 +31,7 @@ class ConsultationRequestServices {
     }
   }
 
-  Future<ConsultationRequestModel> getConsultationRequest(int id) async {
+  Future<ConsReqModel> getConsultationRequest(int id) async {
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken'
@@ -48,7 +47,7 @@ class ConsultationRequestServices {
     print(jsonResponse);
     if (response.statusCode == 200) {
       if (jsonResponse['status'] == 'success') {
-        return ConsultationRequestModel.fromJson(
+        return ConsReqModel.fromJson(
           jsonResponse['data'],
         );
       } else {
@@ -67,6 +66,32 @@ class ConsultationRequestServices {
     };
     var request = http.MultipartRequest(
         'GET', Uri.parse('${myUrl}consultation_requests'));
+
+    request.headers.addAll(headers);
+    var streamedResponse = await request.send();
+
+    var response = await http.Response.fromStream(streamedResponse);
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode == 200) {
+      if (jsonResponse['status'] == 'success') {
+        return jsonResponse['data'];
+      } else {
+        return [];
+      }
+    } else {
+      return [];
+    }
+  }
+
+  Future<List> getUserConsultationRequest() async {
+    var headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $myToken'
+    };
+    var request = http.MultipartRequest(
+        'GET', Uri.parse('${myUrl}consultation_requests/showMyRequests'));
 
     request.headers.addAll(headers);
     var streamedResponse = await request.send();

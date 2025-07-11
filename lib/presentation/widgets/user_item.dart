@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/user_bloc/user_bloc.dart';
 import '../../../data/models/user_model.dart';
-import '../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../themes.dart';
 import 'custom_user_item.dart';
 
@@ -19,79 +18,66 @@ class _UserItemState extends State<UserItem> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<UserProfileBloc>(context).add(
-      ShowUserProfileByIdEvent(userId: widget.userModel.id),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserProfileBloc, UserProfileState>(
-      builder: (context, state) {
-        if (state is UserProfileLoadedSuccessfully) {
-          return CustomUserItem(
-            userProfileModel: state.userProfileModel,
-            subtitle: Text(
-              style: TextStyle(
-                color: getCurrentTheme()['NormalText'],
-              ),
-              widget.userModel.roleName,
-            ),
-            trailing: widget.userModel.id == 1
-                ? const Text("")
-                : PopupMenuButton<String>(
-                    onSelected: (value) async {
-                      final confirmed = await showDialog<bool>(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text("Confirm Role Change"),
-                          content: Text(
-                              "Are you sure you want to change the role to '$value'?"),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, false),
-                              child: const Text("Cancel"),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, true),
-                              child: const Text("Confirm"),
-                            ),
-                          ],
-                        ),
-                      );
-
-                      // التأكد إذا كان الـ context لسه موجود
-                      if (!context.mounted) return;
-
-                      if (confirmed == true) {
-                        if (value == 'Delete') {
-                          BlocProvider.of<UserBloc>(context).add(
-                            DeleteUserById(userId: widget.userModel.id),
-                          );
-                        } else {
-                          BlocProvider.of<UserBloc>(context).add(
-                            ChangeUserRole(
-                              userId: widget.userModel.id,
-                              role: value.toLowerCase(),
-                            ),
-                          );
-                        }
-                      }
-                    },
-                    icon: Icon(
-                      Icons.settings,
-                      color: getCurrentTheme()['Icons'],
-                    ),
-                    itemBuilder: (context) =>
-                        getPopupItems(widget.userModel.roleName),
+    return CustomUserItem(
+      userModel: widget.userModel,
+      subtitle: Text(
+        style: TextStyle(
+          color: getCurrentTheme()['NormalText'],
+        ),
+        widget.userModel.roleName,
+      ),
+      trailing: widget.userModel.id == 1
+          ? const Text("")
+          : PopupMenuButton<String>(
+              onSelected: (value) async {
+                final confirmed = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text("Confirm Role Change"),
+                    content: Text(
+                        "Are you sure you want to change the role to '$value'?"),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text("Cancel"),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: const Text("Confirm"),
+                      ),
+                    ],
                   ),
-          );
-        } else if (state is UserProfileFail) {
-          return Text(state.errmsg);
-        } else {
-          return const Text("");
-        }
-      },
+                );
+
+                // التأكد إذا كان الـ context لسه موجود
+                if (!context.mounted) return;
+
+                if (confirmed == true) {
+                  if (value == 'Delete') {
+                    BlocProvider.of<UserBloc>(context).add(
+                      DeleteUserById(userId: widget.userModel.id),
+                    );
+                  } else {
+                    BlocProvider.of<UserBloc>(context).add(
+                      ChangeUserRole(
+                        userId: widget.userModel.id,
+                        role: value.toLowerCase(),
+                      ),
+                    );
+                  }
+                }
+              },
+              icon: Icon(
+                Icons.settings,
+                color: getCurrentTheme()['Icons'],
+              ),
+              itemBuilder: (context) =>
+                  getPopupItems(widget.userModel.roleName),
+            ),
     );
   }
 

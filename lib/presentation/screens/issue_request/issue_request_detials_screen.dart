@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation/blocs/issue_requests_bloc/issue_requests_event.dart';
-import 'package:graduation/data/models/user_profile_model.dart';
-import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
+import 'package:graduation/data/models/user_model.dart';
+ import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
 import '../../../constant.dart';
 import '../../../data/models/issue_request_model.dart';
 import '../../../themes.dart';
@@ -13,9 +13,9 @@ import 'update_issue_request_screen.dart';
 
 class IssueRequestDetailsScreen extends StatefulWidget {
   final IssueRequestModel issueRequest;
-  final UserProfileModel userProfileModel;
+  final UserModel userModel;
   const IssueRequestDetailsScreen(
-      {super.key, required this.issueRequest, required this.userProfileModel});
+      {super.key, required this.issueRequest, required this.userModel});
 
   @override
   State<IssueRequestDetailsScreen> createState() =>
@@ -67,10 +67,10 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(widget.userProfileModel.name),
+              Text(widget.userModel.name),
               CircleAvatar(
                 backgroundImage: NetworkImage(
-                  widget.userProfileModel.image,
+                  widget.userModel.profileModel.image,
                 ),
               ),
               const SizedBox(height: 20),
@@ -83,7 +83,7 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
                   Icons.description, "description", request.description),
               buildInfoTile(Icons.verified, "status", request.status),
               const SizedBox(height: 30),
-              if (myUserId == widget.userProfileModel.userId)
+              if (myUserId == widget.userModel.id)
                 EditButton(
                   destinationScreen: BlocProvider.value(
                     value: IssueRequestsBloc(),

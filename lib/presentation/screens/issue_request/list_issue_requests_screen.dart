@@ -65,15 +65,21 @@ class _ListIssueRequestsScreenState extends State<ListIssueRequestsScreen> {
               child: BlocBuilder<IssueRequestsBloc, IssueRequestsState>(
                 builder: (context, state) {
                   if (state is IssueRequestsLoading) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   } else if (state is IssueRequestsListLoaded) {
                     issueRequestsList = state.issueRequestsList;
                     return issueRequestsList.isEmpty
-                        ? const Center(child: Text('There Is No data '))
+                        ? const Center(
+                            child: Text('There Is No data '),
+                          )
                         : RequestListWidget(requests: issueRequestsList);
                   } else if (state is IssueRequestsSuccess) {
                     return issueRequestsList.isEmpty
-                        ? const Center(child: Text('There Is No data '))
+                        ? const Center(
+                            child: Text('There Is No data '),
+                          )
                         : RequestListWidget(requests: issueRequestsList);
                   } else if (state is IssueRequestsFail) {
                     return Center(

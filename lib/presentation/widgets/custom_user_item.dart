@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation/blocs/user_profile_bloc/user_profile_bloc.dart';
+import 'package:graduation/data/models/user_model.dart';
 import 'package:graduation/presentation/screens/user_screens/user_profile_screens/user_profile_screen.dart';
-import '../../data/models/user_profile_model.dart';
 import '../../themes.dart';
 
 class CustomUserItem extends StatelessWidget {
   const CustomUserItem({
     super.key,
-    required this.userProfileModel,
     this.subtitle,
     this.trailing,
     this.onTap,
+    required this.userModel,
   });
-
-  final UserProfileModel userProfileModel;
+  final UserModel userModel;
   final Widget? subtitle;
   final Widget? trailing;
   final void Function()? onTap;
@@ -28,7 +27,7 @@ class CustomUserItem extends StatelessWidget {
             builder: (context) => BlocProvider(
               create: (context) => UserProfileBloc(),
               child: UserProfileScreen(
-                userProfileModel: userProfileModel,
+                userId: userModel.id,
               ),
             ),
           ),
@@ -50,10 +49,10 @@ class CustomUserItem extends StatelessWidget {
         child: ListTile(
           leading: CircleAvatar(
             radius: 25,
-            backgroundImage: NetworkImage(userProfileModel.image),
+            backgroundImage: NetworkImage(userModel.profileModel.image),
           ),
           title: Text(
-            userProfileModel.name,
+            userModel.name,
             style: TextStyle(
               color: getCurrentTheme()['BoldText'],
               fontWeight: FontWeight.bold,
