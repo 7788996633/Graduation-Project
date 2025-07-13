@@ -33,7 +33,7 @@ class _ListRequiredDocumentsScreenState extends State<ListRequiredDocumentsScree
     return Scaffold(
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
-        title: 'List Required Documents',
+        title: 'Required_Documents',
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

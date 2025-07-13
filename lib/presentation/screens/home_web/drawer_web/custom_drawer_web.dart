@@ -27,7 +27,7 @@ class _CustomDrawerWebState extends State<CustomDrawerWeb> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 188,
+      width: 190,
       color: AppColors.darkBlue,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +109,7 @@ class _CustomDrawerWebState extends State<CustomDrawerWeb> {
           DrawerItem.build(
             index: 6,
             icon: Icons.description_outlined,
-            title: context.tr('documents'),
+            title: context.tr('Consultation_Requests'),
             isSelected: selectedIndex == 6,
             onTap: () => _handleTap(6),
           ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../blocs/consultation_request_bloc/consultation_request_bloc.dart';
 
+import '../../../themes.dart';
+import '../../widgets/custom_appbar_add.dart';
 import 'edit_consultation_request_page.dart';
 
 
@@ -13,9 +15,9 @@ class AllConsultationRequestsPage extends StatelessWidget {
     return BlocProvider(
       create: (_) => ConsultationRequestBloc()..add(GetAllConsultationRequestStatusEvent()),
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('جميع الاستشارات القانونية'),
-          backgroundColor: Colors.brown,
+        backgroundColor: AppColors.scaffold,
+        appBar: CustomActionAppBar(
+          title: 'Consultation_Requests',
         ),
         body: BlocConsumer<ConsultationRequestBloc, ConsultationRequestState>(
           listener: (context, state) {
@@ -23,7 +25,7 @@ class AllConsultationRequestsPage extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("✅ ${state.successmsg}")),
               );
-              // إعادة تحميل القائمة بعد الحذف
+
               BlocProvider.of<ConsultationRequestBloc>(context)
                   .add(GetAllConsultationRequestStatusEvent());
             } else if (state is ConsultationRequestFail) {

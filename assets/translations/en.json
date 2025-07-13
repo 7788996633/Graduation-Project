@@ -15,5 +15,10 @@
   "required_documents": "Required Documents",
   "documents": "Documents",
   "Yaghmur": "Yaghmur",
-  "list_furloughs": "List Furloughs"
+  "list_furloughs": "List Furloughs",
+  "Issues": "Issues",
+  "Session_Types": "Session Types",
+  "Required_Documents": "Required Documents",
+  "Consultation_Requests": "Consultation Requests"
+
 }

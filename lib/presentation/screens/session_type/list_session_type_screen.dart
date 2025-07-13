@@ -34,7 +34,7 @@ class _ListSessionTypesScreenState extends State<ListSessionTypesScreen> {
     return Scaffold(
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
-        title: 'List Session Types',
+        title: 'Session_Types',
         actionIcon: Icons.add_circle_rounded,
         tooltip: 'Add New Session Type',
         onActionPressed: () {

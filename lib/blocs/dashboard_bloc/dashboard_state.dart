@@ -19,8 +19,8 @@ final class DashboardSuccess extends DashboardState {
   });
 }
 
-final class DashboardFailure extends DashboardState {
-  final String error;
+final class DashboardFail extends DashboardState {
+  final String errMsg;
 
-  DashboardFailure({required this.error});
+  DashboardFail({required this.errMsg});
 }

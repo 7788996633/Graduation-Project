@@ -44,7 +44,7 @@ class DrawerItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.scaffold : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(15),
         ),
         child: Row(
           children: [
@@ -58,7 +58,7 @@ class DrawerItem extends StatelessWidget {
               title,
               style: TextStyle(
                 color: isSelected ? AppColors.darkBlue : Colors.white70,
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),

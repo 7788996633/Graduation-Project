@@ -14,17 +14,22 @@ class SessionTypeItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        onTap: () {
-         Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SessionTypeDetailsScreen(
-                sessionTypeModel: sessionTypeModel,
-              ),
-            ),
-         );
-        },
-        leading: IconButton(
+         onTap: () {
+    Navigator.push(
+    context,
+    MaterialPageRoute(
+    builder: (_) => BlocProvider(
+    create: (_) => SessionTypeBloc(),
+    child: SessionTypeDetailsScreen(
+    sessionTypeModel: sessionTypeModel,
+    ),
+    ),
+    ),
+    );
+    },
+
+
+      leading: IconButton(
           onPressed: () {
             BlocProvider.of<SessionTypeBloc>(context).add(
               DeleteSessionTypeEvent(sessionTypeId: sessionTypeModel.id),

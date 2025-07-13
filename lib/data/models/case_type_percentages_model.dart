@@ -4,25 +4,42 @@ class CaseType {
   CaseType({required this.name});
 
   factory CaseType.fromJson(Map<String, dynamic> json) {
-    return CaseType(name: json['name'] as String);
+    return CaseType(
+      name: json['name'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+    };
   }
 }
 
-// موديل النسبة مع قائمة أنواع القضايا
 class CaseTypePercentage {
   final List<CaseType> type;
   final double percentage;
 
-  CaseTypePercentage({required this.type, required this.percentage});
+  CaseTypePercentage({
+    required this.type,
+    required this.percentage,
+  });
 
   factory CaseTypePercentage.fromJson(Map<String, dynamic> json) {
-    var typeList = (json['type'] as List)
+    var types = (json['type'] as List)
         .map((e) => CaseType.fromJson(e))
         .toList();
 
     return CaseTypePercentage(
-      type: typeList,
+      type: types,
       percentage: (json['percentage'] as num).toDouble(),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type.map((e) => e.toJson()).toList(),
+      'percentage': percentage,
+    };
   }
 }

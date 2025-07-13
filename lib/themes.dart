@@ -10,6 +10,8 @@ class AppColors {
   static const Color softGray = Color(0xFFC4D7FF);
   static const Color scaffold = Color(0xFFE6ECF5);
   static const Color textGrey= Color(0xFF6B7280);
+  static  const Color cardColor = Color(0xFFF0F0F0);
+
 }
 
 Map<String, Color> currentTheme = {

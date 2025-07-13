@@ -57,10 +57,12 @@ class _MainScreenState extends State<MainScreen> {
             ),
             const SizedBox(height: 20),
             BlocProvider(
-              create: (context) => DashboardBloc()..add(FetchDashboardData()),
+              create: (context) => DashboardBloc(),
               child: const SummaryCards(),
             ),
             const SizedBox(height: 20),
+
+
             screenWidth > 800
                 ? Row(
               children: [
@@ -73,7 +75,7 @@ class _MainScreenState extends State<MainScreen> {
                 const SizedBox(width: 20),
                 Expanded(
                   child: SizedBox(
-                    height: 250,
+                    height: 350, // ارتفاع كافي لـ CaseTypePercentagesScreen
                     child: BlocProvider(
                       create: (context) => CaseTypeBloc(),
                       child: const CaseTypePercentagesScreen(),
@@ -90,7 +92,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
-                  height: 250,
+                  height: 350, // نفس الارتفاع في الوضع الضيق
                   child: BlocProvider(
                     create: (context) => CaseTypeBloc(),
                     child: const CaseTypePercentagesScreen(),
@@ -98,6 +100,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ],
             ),
+
             const SizedBox(height: 20),
             const RecentActivity(),
             const SizedBox(height: 20),

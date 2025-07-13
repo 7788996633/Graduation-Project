@@ -38,7 +38,7 @@ class _EditConsultationPageState extends State<EditConsultationPage> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("✅ ${state.successmsg}")),
               );
-              Navigator.pop(context); // الرجوع للقائمة بعد التعديل
+              Navigator.pop(context);
             } else if (state is ConsultationRequestFail) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("❌ ${state.errmsg}")),

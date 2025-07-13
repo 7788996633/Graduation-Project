@@ -1,20 +1,19 @@
 import 'package:bloc/bloc.dart';
 
-import '../../data/services/dashboard_service.dart';
+import '../../data/repositories/dashboard_repository.dart';
 import 'dashboard_event.dart';
 import 'dashboard_state.dart';
 
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
-  DashboardBloc() : super(DashboardInitial()) {
-    final DashboardServices _services = DashboardServices();
+  final DashboardRepository _repository = DashboardRepository();
 
+  DashboardBloc() : super(DashboardInitial()) {
     on<FetchDashboardData>((event, emit) async {
       emit(DashboardLoading());
-
       try {
-        final int openCases = await _services.fetchOpenIssuesCount();
-        final int totalClients = await _services.fetchClientCount();
-        final int sessionsThisMonth = await _services.fetchThisMonthSessionCount();
+        final openCases = await _repository.getOpenIssuesCount();
+        final totalClients = await _repository.getClientCount();
+        final sessionsThisMonth = await _repository.getThisMonthSessionCount();
 
         emit(DashboardSuccess(
           openCases: openCases,
@@ -22,7 +21,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           sessionsThisMonth: sessionsThisMonth,
         ));
       } catch (e) {
-        emit(DashboardFailure(error: e.toString()));
+        emit(DashboardFail(errMsg: e.toString()));
       }
     });
   }

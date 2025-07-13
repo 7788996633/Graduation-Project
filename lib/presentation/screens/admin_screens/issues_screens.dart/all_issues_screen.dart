@@ -38,7 +38,7 @@ class _AllIssuesScreenState extends State<AllIssuesScreen> {
     return Scaffold(
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
-        title: 'List Issue ',
+        title: 'Issues',
         actionIcon: Icons.add_circle_rounded,
         tooltip: 'Add New Issue',
         onActionPressed: () {

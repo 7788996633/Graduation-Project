@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/consultation_request_bloc/consultation_request_bloc.dart';
+import '../../../themes.dart';
 import 'all_consultation_requests_page.dart';
 
 class ConsultationFormPage extends StatefulWidget {
@@ -20,7 +21,7 @@ class _ConsultationFormPageState extends State<ConsultationFormPage> {
     return BlocProvider(
       create: (_) => ConsultationRequestBloc(),
       child: Scaffold(
-        backgroundColor: Color(0xFF6B6840),
+        backgroundColor: AppColors.darkBlue,
         body: SafeArea(
           child: Center(
             child: Container(

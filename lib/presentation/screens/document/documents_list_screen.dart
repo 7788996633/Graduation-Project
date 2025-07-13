@@ -36,7 +36,7 @@ class _ListDocumentsScreenState extends State<ListDocumentsScreen> {
     return Scaffold(
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
-        title: 'List Documents',
+        title: 'List_Documents',
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

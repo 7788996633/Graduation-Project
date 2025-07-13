@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../blocs/notification_bloc/notification_bloc.dart';
+import '../../widgets/notifications_list.dart';
 import '../settings/setting_screen.dart';
 
 class CustomMainAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -70,11 +73,18 @@ class CustomMainAppBar extends StatelessWidget implements PreferredSizeWidget {
               tooltip: tr('notifications'),
               icon: const Icon(Icons.notifications, size: 18, color: Colors.black87),
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(tr('no_notifications'))),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider(
+                      create: (_) => NotificationBloc(),
+                      child: const NotificationsList(),
+                    ),
+                  ),
                 );
               },
             ),
+
             const SizedBox(width: 8),
             TextButton(
               key: languageKey,

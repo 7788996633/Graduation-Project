@@ -3,67 +3,61 @@ import 'package:http/http.dart' as http;
 import '../../constant.dart';
 
 class DashboardServices {
-  final headers = {
+  final Map<String, String> headers = {
     'Accept': 'application/json',
     'Authorization': 'Bearer $myToken',
   };
 
   /// عدد القضايا المفتوحة
   Future<int> fetchOpenIssuesCount() async {
-    var request = http.MultipartRequest(
-      'GET',
+    final response = await http.get(
       Uri.parse('${myUrl}issues/open/count'),
+      headers: headers,
     );
-    request.headers.addAll(headers);
 
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
-    var jsonResponse = json.decode(response.body);
+    final jsonResponse = json.decode(response.body);
     print(jsonResponse);
 
     if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
       return jsonResponse['data'];
     } else {
+      print('Response error: ${response.body}');
       throw Exception('فشل في تحميل عدد القضايا المفتوحة');
     }
   }
 
   /// عدد العملاء
   Future<int> fetchClientCount() async {
-    var request = http.MultipartRequest(
-      'GET',
+    final response = await http.get(
       Uri.parse('${myUrl}clients/count'),
+      headers: headers,
     );
-    request.headers.addAll(headers);
 
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
-    var jsonResponse = json.decode(response.body);
+    final jsonResponse = json.decode(response.body);
     print(jsonResponse);
 
     if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
       return jsonResponse['data'];
     } else {
+      print('Response error: ${response.body}');
       throw Exception('فشل في تحميل عدد العملاء');
     }
   }
 
   /// عدد الجلسات في هذا الشهر
   Future<int> fetchThisMonthSessionCount() async {
-    var request = http.MultipartRequest(
-      'GET',
+    final response = await http.get(
       Uri.parse('${myUrl}sessions/this-month'),
+      headers: headers,
     );
-    request.headers.addAll(headers);
 
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
-    var jsonResponse = json.decode(response.body);
+    final jsonResponse = json.decode(response.body);
     print(jsonResponse);
 
     if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
       return jsonResponse['data'];
     } else {
+      print('Response error: ${response.body}');
       throw Exception('فشل في تحميل عدد الجلسات لهذا الشهر');
     }
   }
