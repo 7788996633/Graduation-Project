@@ -60,6 +60,30 @@ class RequiredDocumentServices {
     }
   }
 
+  Future<RequiredDocumentModel>  getMyRequiredDocUp(
+      int issueId) async {
+    var url = Uri.parse('${myUrl}required-documents/$issueId');
+    http.Response response;
+
+    if (kIsWeb) {
+      var request = http.Request('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    } else {
+      response = await http.get(url, headers: baseHeaders);
+    }
+
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return RequiredDocumentModel.fromJson(jsonResponse['data']);
+    } else {
+      throw Exception('failed: ${jsonResponse['message']}');
+    }
+  }
+
   Future<String> addRequiredDocument(int issueId, String requireFileType,
       String note,) async {
     var request = http.MultipartRequest(

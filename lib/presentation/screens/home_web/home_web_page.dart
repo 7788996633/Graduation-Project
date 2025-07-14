@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
+import '../../../blocs/categories/categories_bloc.dart';
+import '../../../blocs/common_consultation_bloc/common _consultation_bloc.dart';
 import '../../../blocs/documents_bloc/document_bloc.dart';
 import '../../../blocs/furlough_request_bloc/furlough_request_bloc.dart';
 import '../../../blocs/issue_bloc/issues_bloc.dart';
@@ -10,6 +12,8 @@ import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
 import '../../../blocs/required_document_bloc/required_document_bloc.dart';
 import '../../../blocs/session_type_bloc/session_type_bloc.dart';
 import '../admin_screens/issues_screens.dart/all_issues_screen.dart';
+import '../categories_screen/issue_categories_screen.dart';
+import '../common_consulation/list_common_consul.dart';
 import '../consultation_request/all_consultation_requests_page.dart';
 import '../document/documents_list_screen.dart';
 import '../furloughs/list_furloughs_screen.dart';
@@ -55,6 +59,14 @@ class _HomeWebPageState extends State<HomeWebPage> {
       child: const  AllConsultationRequestsPage(),
     ),
 
+    BlocProvider(
+      create: (context) => CommonConsultationBloc(),
+      child: const  ListCommonConsultationsScreen(),
+    ),
+    BlocProvider(
+      create: (context) => CategoriesBloc(),
+      child: const  ListIssueCategoriesScreen(),
+    ),
   ];
 
   void _onDrawerItemSelected(int index) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../blocs/common_consultation_bloc/common _consultation_bloc.dart';
 import '../../../blocs/hiring_requests/hiring_requests_block.dart';
 import '../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
@@ -10,6 +11,7 @@ import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../widgets/custom_app_drawer.dart';
 import '../../widgets/section_card.dart';
 
+import '../common_consulation/list_common_consul.dart';
 import '../hr_screen/job_application/job_application_list_screen.dart';
 import '../hr_screen/job_application/my_application_job_list.dart';
 import '../issue_request/add_issue_request.dart';
@@ -85,6 +87,22 @@ class UserHomeScreen extends StatelessWidget {
             ),
           );
         },},
+
+      {
+        'title': 'Common Consultations',
+        'icon': Icons.question_answer_rounded,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => CommonConsultationBloc(),
+                child: const ListCommonConsultationsScreen(),
+              ),
+            ),
+          );
+        },
+      },
       {
         'title': 'my Job application ',
         'icon': Icons.contact_support,

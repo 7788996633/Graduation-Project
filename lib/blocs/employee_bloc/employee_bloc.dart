@@ -13,9 +13,9 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
         String value = await EmployeeServices().createEmployee(
           event.userId,
           event.salary,
-          event.type,
           event.hireDate,
           event.certificate,
+          event.type,
 
         );
         emit(EmployeeSuccess(successMsg: value));

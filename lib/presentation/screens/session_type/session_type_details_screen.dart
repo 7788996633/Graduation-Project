@@ -52,7 +52,7 @@ class _SessionTypeDetailsScreenState extends State<SessionTypeDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    // طلب تحميل البيانات الجديدة
+
     BlocProvider.of<SessionTypeBloc>(context).add(
       GetSessionTypeByIdEvent(sessionTypeId: widget.sessionTypeModel.id),
     );

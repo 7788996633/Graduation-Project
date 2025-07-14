@@ -20,6 +20,12 @@ class GetRequiredDocumentsById extends RequiredDocumentsEvent {
 
   GetRequiredDocumentsById({required this.requiredDocumentId});
 }
+
+class GetMyRequiredDocUp extends RequiredDocumentsEvent {
+  final int issueId;
+
+  GetMyRequiredDocUp({required this.issueId});
+}
 class UpdateRequiredDocumentsEvent extends RequiredDocumentsEvent {
   final int requiredDocumentId;
   final String status;

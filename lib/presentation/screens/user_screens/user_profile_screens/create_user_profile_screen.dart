@@ -12,8 +12,7 @@ class CreateUserProfileScreen extends StatefulWidget {
   const CreateUserProfileScreen({super.key});
 
   @override
-  State<CreateUserProfileScreen> createState() =>
-      _CreateUserProfileScreenState();
+  State<CreateUserProfileScreen> createState() => _CreateUserProfileScreenState();
 }
 
 class _CreateUserProfileScreenState extends State<CreateUserProfileScreen> {
@@ -22,18 +21,31 @@ class _CreateUserProfileScreenState extends State<CreateUserProfileScreen> {
   final TextEditingController ageController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-  final TextEditingController scientificLevelController =
-  TextEditingController();
+  final TextEditingController scientificLevelController = TextEditingController();
 
   File? _pickedImage;
   final ImagePicker _picker = ImagePicker();
 
+  // ✅ اختيار الصورة من المعرض
   Future<void> _pickImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      setState(() {
-        _pickedImage = File(image.path);
-      });
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 85,
+      );
+      if (image != null) {
+        setState(() {
+          _pickedImage = File(image.path);
+        });
+      }
+    } catch (e) {
+      print("Image pick error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("حدث خطأ أثناء اختيار الصورة"),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -58,8 +70,7 @@ class _CreateUserProfileScreenState extends State<CreateUserProfileScreen> {
     return Scaffold(
       backgroundColor: AppColors.scaffold,
       appBar: AppBar(
-        title: const Text("Create User Profile",
-            style: TextStyle(color: Colors.white)),
+        title: const Text("Create User Profile", style: TextStyle(color: Colors.white)),
         centerTitle: true,
         backgroundColor: AppColors.darkBlue,
         elevation: 0,
@@ -73,7 +84,7 @@ class _CreateUserProfileScreenState extends State<CreateUserProfileScreen> {
             children: [
               const SizedBox(height: 10),
 
-              // صورة البروفايل
+              // ✅ صورة البروفايل
               Center(
                 child: GestureDetector(
                   onTap: _pickImage,
@@ -83,12 +94,9 @@ class _CreateUserProfileScreenState extends State<CreateUserProfileScreen> {
                       CircleAvatar(
                         radius: 60,
                         backgroundColor: AppColors.darkBlue.withOpacity(0.2),
-                        backgroundImage: _pickedImage != null
-                            ? FileImage(_pickedImage!)
-                            : null,
+                        backgroundImage: _pickedImage != null ? FileImage(_pickedImage!) : null,
                         child: _pickedImage == null
-                            ? const Icon(Icons.camera_alt,
-                            size: 30, color: Colors.white)
+                            ? const Icon(Icons.camera_alt, size: 30, color: Colors.white)
                             : null,
                       ),
                     ],
@@ -131,13 +139,13 @@ class _CreateUserProfileScreenState extends State<CreateUserProfileScreen> {
               ),
               const SizedBox(height: 25),
 
+              // ✅ زر الإنشاء
               BlocConsumer<UserProfileBloc, UserProfileState>(
                 listener: (context, state) {
                   if (state is UserProfileSuccess) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(state.successmsg,
-                            style: const TextStyle(fontSize: 16)),
+                        content: Text(state.successmsg, style: const TextStyle(fontSize: 16)),
                         backgroundColor: Colors.green,
                       ),
                     );
@@ -149,8 +157,7 @@ class _CreateUserProfileScreenState extends State<CreateUserProfileScreen> {
                   } else if (state is UserProfileFail) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(state.errmsg,
-                            style: const TextStyle(fontSize: 16)),
+                        content: Text(state.errmsg, style: const TextStyle(fontSize: 16)),
                         backgroundColor: Colors.red,
                       ),
                     );

@@ -29,9 +29,9 @@ class _AuthScreenState extends State<AuthScreen> {
               setState(() {
                 myToken = state.token;
               });
-              // بعد تسجيل الدخول بنجاح، نطلب جلب دور المستخدم
+
               BlocProvider.of<UserBloc>(context).add(GetUserRole());
-              // ونطلب جلب بيانات البروفايل الحالي
+
               BlocProvider.of<UserProfileBloc>(context)
                   .add(ShowUserProfileEvent());
             } else if (state is AuthFail) {

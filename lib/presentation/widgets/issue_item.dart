@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../blocs/issue_bloc/issues_bloc.dart';
+import '../../blocs/required_document_bloc/required_document_bloc.dart';
 import '../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../data/models/issues_model.dart';
 import '../screens/admin_screens/issues_screens.dart/issuescreen.dart';
+
+
+import '../screens/required_documents/my_required_doc_up_screen.dart';
 
 class IssueItem extends StatefulWidget {
   final IssuesModel issuesModel;
@@ -53,23 +57,23 @@ class _IssueItemState extends State<IssueItem> {
                 const Text("Priority: "),
                 isEditing
                     ? DropdownButton<IssuePriority>(
-                        value: selectedPriority,
-                        items: IssuePriority.values.map((value) {
-                          return DropdownMenuItem<IssuePriority>(
-                            value: value,
-                            child: Text(
-                              priorityToString(value),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (newValue) {
-                          if (newValue != null) {
-                            setState(() {
-                              selectedPriority = newValue;
-                            });
-                          }
-                        },
-                      )
+                  value: selectedPriority,
+                  items: IssuePriority.values.map((value) {
+                    return DropdownMenuItem<IssuePriority>(
+                      value: value,
+                      child: Text(
+                        priorityToString(value),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
+                    if (newValue != null) {
+                      setState(() {
+                        selectedPriority = newValue;
+                      });
+                    }
+                  },
+                )
                     : Text(priorityToString(selectedPriority)),
               ],
             ),
@@ -79,24 +83,43 @@ class _IssueItemState extends State<IssueItem> {
                 const Text("Status: "),
                 isEditing
                     ? DropdownButton<IssueStatus>(
-                        value: selectedStatus,
-                        items: IssueStatus.values.map((value) {
-                          return DropdownMenuItem<IssueStatus>(
-                            value: value,
-                            child: Text(statusToString(value)),
-                          );
-                        }).toList(),
-                        onChanged: (newValue) {
-                          if (newValue != null) {
-                            setState(() {
-                              selectedStatus = newValue;
-                            });
-                          }
-                        },
-                      )
+                  value: selectedStatus,
+                  items: IssueStatus.values.map((value) {
+                    return DropdownMenuItem<IssueStatus>(
+                      value: value,
+                      child: Text(statusToString(value)),
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
+                    if (newValue != null) {
+                      setState(() {
+                        selectedStatus = newValue;
+                      });
+                    }
+                  },
+                )
                     : Text(statusToString(selectedStatus)),
               ],
             ),
+
+
+            const SizedBox(height: 12),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider(
+                      create: (_) => RequiredDocumentsBloc(),
+                      child: MyRequiredDocUp(issueId: widget.issuesModel.id),
+                    ),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.document_scanner),
+              label: const Text('Required Documents'),
+            ),
+
             if (isEditing)
               ElevatedButton(
                 onPressed: () {},
@@ -139,7 +162,7 @@ class _IssueItemState extends State<IssueItem> {
                       UpdateIssuePriorityEvent(
                         issueId: widget.issuesModel.id,
                         priority:
-                            priorityToString(selectedPriority).toLowerCase(),
+                        priorityToString(selectedPriority).toLowerCase(),
                       ),
                     );
                   }

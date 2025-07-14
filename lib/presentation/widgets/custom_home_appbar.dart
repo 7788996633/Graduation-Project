@@ -32,10 +32,10 @@ class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
 
         const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8),
+          padding: EdgeInsets.symmetric(horizontal: 15),
           child: CircleAvatar(
-            radius: 18,
-            backgroundImage: AssetImage('images/grad.jpg'),
+            radius: 17,
+            backgroundImage: AssetImage('assets/images/grad.jpg'),
           ),
         ),
 

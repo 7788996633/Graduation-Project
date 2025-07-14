@@ -70,6 +70,17 @@ class RequiredDocumentsBloc extends Bloc<RequiredDocumentsEvent, RequiredDocumen
           emit(RequiredDocumentsFail(errmsg: e.toString()));
         }
       }
+      else if (event is GetMyRequiredDocUp) {
+        emit(RequiredDocumentsLoading());
+        try {
+          RequiredDocumentModel requiredDocumentId =
+          await RequiredDocumentServices().getMyRequiredDocUp(event.issueId);
+
+          emit(RequiredDocumentsLoadedSuccessfully(requiredDocumentModel: requiredDocumentId));
+        } catch (e) {
+          emit(RequiredDocumentsFail(errmsg: e.toString()));
+        }
+      }
     });
   }
 }

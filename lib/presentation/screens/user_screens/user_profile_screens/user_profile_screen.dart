@@ -12,6 +12,7 @@ import '../../../widgets/edit_profile_button.dart';
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key, required this.userProfileModel});
   final UserProfileModel userProfileModel;
+
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
@@ -33,16 +34,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     super.initState();
     bloc = BlocProvider.of<UserProfileBloc>(context);
     nameController = TextEditingController(text: widget.userProfileModel.name);
-    emailController =
-        TextEditingController(text: widget.userProfileModel.email);
-    phoneController =
-        TextEditingController(text: widget.userProfileModel.phone);
-    addressController =
-        TextEditingController(text: widget.userProfileModel.address);
-    ageController =
-        TextEditingController(text: widget.userProfileModel.age.toString());
-    scientificLevelController =
-        TextEditingController(text: widget.userProfileModel.scientificLevel);
+    emailController = TextEditingController(text: widget.userProfileModel.email);
+    phoneController = TextEditingController(text: widget.userProfileModel.phone);
+    addressController = TextEditingController(text: widget.userProfileModel.address);
+    ageController = TextEditingController(text: widget.userProfileModel.age.toString());
+    scientificLevelController = TextEditingController(text: widget.userProfileModel.scientificLevel);
   }
 
   @override
@@ -74,8 +70,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       address: addressController.text,
                       age: ageController.text,
                       scientificLevel: scientificLevelController.text,
-                      imagePath:
-                          _pickedImage?.path ?? widget.userProfileModel.image,
+                      imagePath: _pickedImage?.path ?? widget.userProfileModel.image,
                     ));
                     bloc.add(ShowUserProfileEvent());
                   }
@@ -86,9 +81,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           if (isMyProfile)
             DeleteProfileButton(
               onDelete: () {
-                bloc.add(
-                  DeleteUserProfileEvent(),
-                );
+                bloc.add(DeleteUserProfileEvent());
               },
             ),
         ],
@@ -115,10 +108,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   children: [
                     CircleAvatar(
                       radius: 50,
+                      backgroundColor: Colors.grey[300],
                       backgroundImage: _pickedImage != null
                           ? FileImage(_pickedImage!)
-                          : NetworkImage(widget.userProfileModel.image),
-                      backgroundColor: Colors.grey[300],
+                          : (widget.userProfileModel.image.isNotEmpty
+                          ? NetworkImage(widget.userProfileModel.image)
+                          : null) as ImageProvider<Object>?,
+                      child: (_pickedImage == null &&
+                          (widget.userProfileModel.image == '' ||
+                              widget.userProfileModel.image.isEmpty))
+                          ? const Icon(Icons.person, size: 40, color: Colors.white)
+                          : null,
                     ),
                     if (isEditing && isMyProfile)
                       Positioned(
@@ -145,39 +145,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
                 const Divider(height: 30, thickness: 1.2),
                 _buildInfoRow(Icons.email, "Email", emailController, false),
-                _buildInfoRow(Icons.phone, "Phone", phoneController,
-                    isEditing && isMyProfile),
-                _buildInfoRow(Icons.location_on, "Address", addressController,
-                    isEditing && isMyProfile),
-                _buildInfoRow(
-                    Icons.cake, "Age", ageController, isEditing && isMyProfile),
-                _buildInfoRow(Icons.school, "Scientific Level",
-                    scientificLevelController, isEditing && isMyProfile),
+                _buildInfoRow(Icons.phone, "Phone", phoneController, isEditing && isMyProfile),
+                _buildInfoRow(Icons.location_on, "Address", addressController, isEditing && isMyProfile),
+                _buildInfoRow(Icons.cake, "Age", ageController, isEditing && isMyProfile),
+                _buildInfoRow(Icons.school, "Scientific Level", scientificLevelController, isEditing && isMyProfile),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildErrorContent(String errorMessage) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            "Error occurred:",
-            style: TextStyle(
-                fontSize: 30, color: Colors.red, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            errorMessage,
-            style: const TextStyle(fontSize: 20, color: Colors.black87),
-            textAlign: TextAlign.center,
-          ),
-        ],
       ),
     );
   }
@@ -205,27 +180,23 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 const SizedBox(height: 5),
                 editable
                     ? TextFormField(
-                        controller: controller,
-                        style:
-                            const TextStyle(fontSize: 16, color: Colors.black),
-                        decoration: const InputDecoration(
-                          isDense: true,
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.blue, width: 1),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.blueAccent, width: 2),
-                          ),
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      )
+                  controller: controller,
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                  decoration: const InputDecoration(
+                    isDense: true,
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue, width: 1),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blueAccent, width: 2),
+                    ),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                )
                     : Text(
-                        controller.text,
-                        style: const TextStyle(
-                            fontSize: 16, color: Colors.black54),
-                      ),
+                  controller.text,
+                  style: const TextStyle(fontSize: 16, color: Colors.black54),
+                ),
               ],
             ),
           ),

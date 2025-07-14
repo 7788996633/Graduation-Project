@@ -49,7 +49,7 @@ class _CustomDrawerWebState extends State<CustomDrawerWeb> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    tr('Yaghmur'), // تم تغييرها لاستخدام الترجمة
+                    tr('Yaghmur'),
                     style: const TextStyle(
                       fontFamily: 'Barrio',
                       color: AppColors.scaffold,
@@ -67,7 +67,7 @@ class _CustomDrawerWebState extends State<CustomDrawerWeb> {
           DrawerItem.build(
             index: 0,
             icon: Icons.home,
-            title: context.tr('home'), // استخدام context.tr()
+            title: context.tr('home'),
             isSelected: selectedIndex == 0,
             onTap: () => _handleTap(0),
           ),
@@ -108,10 +108,24 @@ class _CustomDrawerWebState extends State<CustomDrawerWeb> {
           ),
           DrawerItem.build(
             index: 6,
-            icon: Icons.description_outlined,
+            icon: Icons.forum_outlined,
             title: context.tr('Consultation_Requests'),
             isSelected: selectedIndex == 6,
             onTap: () => _handleTap(6),
+          ),
+          DrawerItem.build(
+            index: 7,
+            icon: Icons.question_answer_rounded,
+            title: context.tr('Common_Consultation'),
+            isSelected: selectedIndex == 7,
+            onTap: () => _handleTap(7),
+          ),
+          DrawerItem.build(
+            index: 8,
+            icon: Icons.question_answer_rounded,
+            title: context.tr('Issue_categories '),
+            isSelected: selectedIndex == 8,
+            onTap: () => _handleTap(8),
           ),
         ],
       ),

@@ -97,6 +97,21 @@ class HrHomeScreen extends StatelessWidget {
           );
         },
       },
+      {
+        'icon': Icons.event_available,
+        'title': 'Employees',
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => EmployeeBloc(),
+                child: const ListEmployeesScreen(),
+              ),
+            ),
+          );
+        },
+      },
     ];
 
     return Scaffold(
