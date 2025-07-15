@@ -116,8 +116,7 @@ class ShowDocumentScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 15),
-                          _buildDetailRow('Created At:', doc.createdAt.toString(), theme),
+
                         ],
                       ),
                     ),

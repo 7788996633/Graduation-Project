@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
+
 import 'package:intl/intl.dart';
 
+import '../../blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
 import '../../data/models/demand_model.dart';
 import '../screens/AttendDemand/demand_details_screen.dart';
 

@@ -1,150 +1,127 @@
-// import 'package:flutter/material.dart';
-// import 'client_requests_table.dart';
-// import 'custom_main_app_bar.dart';
-// import 'line_chart.dart';
-// import 'orders_table.dart';
-// import 'pie_chart.dart';
-// import 'recent_activity.dart';
-// import 'summary_cards.dart';
+import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-// class MainScreen extends StatefulWidget {
-//   const MainScreen({super.key});
+import '../../../blocs/dashboard_bloc/dashboard_bloc.dart';
+import '../../../blocs/case_type_percentages_bloc/case_type_percentages_bloc.dart';
 
-//   @override
-//   State<MainScreen> createState() => _MainScreenState();
-// }
+import '../../../themes.dart';
+import 'client_requests_table.dart';
+import 'custom_main_app_bar.dart';
+import 'revenue_bar_chart.dart';
+import 'orders_table.dart';
+import 'pie_chart.dart';
+import 'recent_activity.dart';
+import 'summary_cards.dart';
 
-// class _MainScreenState extends State<MainScreen> {
-//   String selectedLanguage = 'العربية';
-//   bool isDarkMode = false;
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
 
-//   final GlobalKey _languageKey = GlobalKey();
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
 
-//   void toggleTheme() {
-//     setState(() {
-//       isDarkMode = !isDarkMode;
-//     });
-//   }
+class _MainScreenState extends State<MainScreen> {
+  bool isDarkMode = false;
+  final GlobalKey _languageKey = GlobalKey();
 
-//   void selectLanguage(String language) {
-//     setState(() {
-//       selectedLanguage = language;
-//     });
-//   }
+  void toggleTheme() {
+    setState(() {
+      isDarkMode = !isDarkMode;
+    });
+  }
 
-//   void _showLanguageMenu(BuildContext context) async {
-//     final RenderBox renderBox = _languageKey.currentContext!.findRenderObject() as RenderBox;
-//     final Offset position = renderBox.localToGlobal(Offset.zero);
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
 
-//     await showMenu(
-//       context: context,
-//       position: RelativeRect.fromLTRB(
-//         position.dx,
-//         position.dy + renderBox.size.height,
-//         position.dx + renderBox.size.width,
-//         position.dy,
-//       ),
-//       items: const [
-//         PopupMenuItem<String>(
-//           value: 'العربية',
-//           child: Text('العربية'),
-//         ),
-//         PopupMenuItem<String>(
-//           value: 'الإنجليزية',
-//           child: Text('English'),
-//         ),
-//       ],
-//     ).then((selected) {
-//       if (selected != null) {
-//         selectLanguage(selected);
-//       }
-//     });
-//   }
+    return Scaffold(
+      backgroundColor: AppColors.scaffold,
+      appBar: CustomMainAppBar(
+        isDarkMode: isDarkMode,
+        onToggleTheme: toggleTheme,
+        languageKey: _languageKey,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "dashboard_title".tr(),
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 20),
+            BlocProvider(
+              create: (context) => DashboardBloc(),
+              child: const SummaryCards(),
+            ),
+            const SizedBox(height: 20),
 
-//   @override
-//   Widget build(BuildContext context) {
-//     final screenWidth = MediaQuery.of(context).size.width;
-//     return Scaffold(
-//       backgroundColor: Colors.grey[200],
-//       appBar: CustomMainAppBar(
-//         selectedLanguage: selectedLanguage,
-//         isDarkMode: isDarkMode,
-//         onToggleTheme: toggleTheme,
-//         onSelectLanguage: selectLanguage,
-//         languageKey: _languageKey,
-//       ),
-//       body: SingleChildScrollView(
-//         padding: const EdgeInsets.all(20),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             const Text(
-//               "Dashboard Overview",
-//               style: TextStyle(
-//                 fontSize: 24,
-//                 fontWeight: FontWeight.bold,
-//               ),
-//             ),
-//             const SizedBox(height: 20),
-//             const SummaryCards(),
-//             const SizedBox(height: 20),
 
-//             // ⚙️ Responsive charts layout
-//             screenWidth > 800
-//                 ? Row(
-//               children: const [
-//                 Expanded(
-//                   child: SizedBox(
-//                     height: 250,
-//                     child:  LineChartWidget(),
-//                   ),
-//                 ),
-//                 SizedBox(width: 20),
-//                 Expanded(
-//                   child: SizedBox(
-//                     height: 250,
-//                     child: TrafficPieChart(),
-//                   ),
-//                 ),
-//               ],
-//             )
-//                 : Column(
-//               children: const [
-//                 SizedBox(
-//                   height: 250,
-//                   child: LineChartWidget(),
-//                 ),
-//                 SizedBox(height: 20),
-//                 SizedBox(
-//                   height: 250,
-//                   child: TrafficPieChart(),
-//                 ),
-//               ],
-//             ),
-//             const SizedBox(height: 20),
-//             const RecentActivity(),
-//             const SizedBox(height: 20),
-// // جعل OrdersTable و ClientRequestsTable جنبًا إلى جنب في الشاشات الكبيرة
-//             screenWidth > 800
-//                 ? Row(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: const [
-//                 Expanded(child: OrdersTable()),
-//                 SizedBox(width: 20),
-//                 Expanded(child: ClientRequestsTable()),
-//               ],
-//             )
-//                 : Column(
-//               children: const [
-//                 OrdersTable(),
-//                 SizedBox(height: 20),
-//                 ClientRequestsTable(),
-//               ],
-//             ),
+            screenWidth > 800
+                ? Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 250,
+                    child: const RevenueBarChart(),
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: SizedBox(
+                    height: 350, // ارتفاع كافي لـ CaseTypePercentagesScreen
+                    child: BlocProvider(
+                      create: (context) => CaseTypeBloc(),
+                      child: const CaseTypePercentagesScreen(),
+                    ),
+                  ),
+                ),
+              ],
+            )
+                : Column(
+              children: [
+                SizedBox(
+                  height: 250,
+                  child: const RevenueBarChart(),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  height: 350, // نفس الارتفاع في الوضع الضيق
+                  child: BlocProvider(
+                    create: (context) => CaseTypeBloc(),
+                    child: const CaseTypePercentagesScreen(),
+                  ),
+                ),
+              ],
+            ),
 
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+            const SizedBox(height: 20),
+            const RecentActivity(),
+            const SizedBox(height: 20),
+            screenWidth > 800
+                ? Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Expanded(child: OrdersTable()),
+                SizedBox(width: 20),
+                Expanded(child: ClientRequestsTable()),
+              ],
+            )
+                : Column(
+              children: const [
+                OrdersTable(),
+                SizedBox(height: 20),
+                ClientRequestsTable(),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

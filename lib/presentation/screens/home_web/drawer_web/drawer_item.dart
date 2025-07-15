@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../themes.dart';
-
 class DrawerItem extends StatelessWidget {
   final int index;
   final IconData icon;
@@ -43,8 +42,8 @@ class DrawerItem extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
+          color: isSelected ? AppColors.scaffold : Colors.transparent,
+          borderRadius: BorderRadius.circular(15),
         ),
         child: Row(
           children: [
@@ -58,7 +57,7 @@ class DrawerItem extends StatelessWidget {
               title,
               style: TextStyle(
                 color: isSelected ? AppColors.darkBlue : Colors.white70,
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),

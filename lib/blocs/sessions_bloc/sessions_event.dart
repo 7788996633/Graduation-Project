@@ -4,14 +4,15 @@ import 'package:meta/meta.dart';
 abstract class SessionsEvent {}
 
 class CreateSessionsEvent extends SessionsEvent {
-  final String type;
+  final int sessionTypeId;
   final int lawyerId;
   final int issueId;
 
   CreateSessionsEvent({
-    required this.type,
+    required this.sessionTypeId,
     required this.lawyerId,
     required this.issueId,
+
   });
 }
 

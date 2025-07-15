@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/attend_Demand_bloc/attend_demand_bloc.dart';
-import 'package:graduation/blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
-import 'package:graduation/constant.dart';
-import 'package:graduation/presentation/screens/AttendDemand/updat_attend_damand_result_screen.dart';
-import 'package:graduation/presentation/screens/AttendDemand/update_attend_demand_screen.dart';
+
 import 'package:intl/intl.dart';
 
+import '../../../blocs/attend_Demand_bloc/attend_demand_bloc.dart';
+import '../../../blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
+import '../../../constant.dart';
 import '../../../data/models/demand_model.dart';
+import 'updat_attend_damand_result_screen.dart';
+import 'update_attend_demand_screen.dart';
 
 class DemandDetailsScreen extends StatefulWidget {
   const DemandDetailsScreen({super.key, required this.demandModel});

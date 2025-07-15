@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/attend_Demand_bloc/attend_demand_bloc.dart';
-import 'package:graduation/data/models/demand_model.dart';
+
 import 'package:intl/intl.dart';
+
+import '../../../blocs/attend_Demand_bloc/attend_demand_bloc.dart';
+import '../../../data/models/demand_model.dart';
 
 class UpdateAttendDemandScreen extends StatefulWidget {
   const UpdateAttendDemandScreen({super.key, required this.demandModel});

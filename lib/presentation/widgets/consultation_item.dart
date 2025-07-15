@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:graduation/data/models/consultation_model.dart';
 
+import '../../data/models/consultation_model.dart';
 import '../screens/consultation/consultation_details_screen.dart';
 
 class ConsultationItem extends StatelessWidget {

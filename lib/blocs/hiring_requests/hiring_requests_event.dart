@@ -12,14 +12,35 @@ class CreateHiringRequestsEvent extends HiringRequestsEvent {
 
   CreateHiringRequestsEvent({required this.jopTitle, required this.type, required this.description,});
 }
+class SetSalaryByLawyerId extends HiringRequestsEvent {
+  final int lawyerId;
+  final int salary;
 
-class ShowHiringRequestsEvent extends HiringRequestsEvent {}
+  SetSalaryByLawyerId({
+    required this.lawyerId,
+    required this.salary,});
+}
+
+//class ShowHiringRequestsEvent extends HiringRequestsEvent {}
 
 class GetAllHiringRequests extends HiringRequestsEvent {}
 
+class GetHiringRequestsPublished extends HiringRequestsEvent {}
 
 class GetHiringRequestsById extends HiringRequestsEvent {
   final int hiringRequestId;
 
   GetHiringRequestsById({required this.hiringRequestId});
+}
+class DeleteHiringRequest extends HiringRequestsEvent{
+  final int hiringRequestId;
+
+  DeleteHiringRequest({required this.hiringRequestId});
+
+}
+class UpdateHiringRequest extends HiringRequestsEvent{
+  final String status;
+  final int    hiringRequestId;
+
+  UpdateHiringRequest({required this.status, required this. hiringRequestId});
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:graduation/data/models/consultation_model.dart';
-import 'package:graduation/presentation/widgets/consultation_item.dart';
+
+import '../../data/models/consultation_model.dart';
+import 'consultation_item.dart';
 
 class ConsultationList extends StatelessWidget {
   const ConsultationList({super.key, required this.consultations});

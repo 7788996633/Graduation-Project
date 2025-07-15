@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/presentation/screens/AttendDemand/add_attend_demand_screen.dart';
 
 import '../../../blocs/attend_Demand_bloc/attend_demand_bloc.dart';
 import '../../widgets/attend_demand_list.dart';
+import 'add_attend_demand_screen.dart';
 
 class AllAttendDemandScreen extends StatelessWidget {
   const AllAttendDemandScreen({super.key, required this.issueId});
@@ -32,17 +32,15 @@ class AllAttendDemandScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            BlocProvider(
-              create: (context) => AttendDemandBloc(),
-              child: AttendDemandList(
-                issueId: issueId,
-              ),
+      body: Column(
+        children: [
+          BlocProvider(
+            create: (context) => AttendDemandBloc(),
+            child: AttendDemandList(
+              issueId: issueId,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

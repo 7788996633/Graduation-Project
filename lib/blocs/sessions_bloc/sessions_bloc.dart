@@ -15,9 +15,10 @@ class SessionsBloc extends Bloc<SessionsEvent, SessionsState> {
           );
           try {
             String result = await SessionServices().createSession(
-              event.type,
+              event.sessionTypeId,
               event.lawyerId,
               event.issueId,
+
             );
             emit(
               SessionsSuccess(

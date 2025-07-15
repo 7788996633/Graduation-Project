@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/auth_bloc/auth_bloc.dart';
+import '../../../constant.dart';
+import '../../screens/home_web/home_web_page.dart';
 import '../../widgets/auth_widgets/auth_form.dart';
 import '../../widgets/custom_error_dialog.dart';
 
@@ -37,13 +39,13 @@ class _AuthWebScreenState extends State<AuthWebScreen> {
                 builder: (_) => CustomErrorDialog(errorMsg: state.errmsg),
               );
             } else if (state is AuthSuccess) {
-              // Navigator.of(context).pop();
-              // setState(() {
-              //   myToken = state.token;
-              // });
-              // Navigator.of(context).pushReplacement(
-              //   MaterialPageRoute(builder: (_) => const HomeWebPage()),
-              // );
+              Navigator.of(context).pop();
+              setState(() {
+                myToken = state.token;
+              });
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => const HomeWebPage()),
+              );
             }
           },
         ),
@@ -51,17 +53,17 @@ class _AuthWebScreenState extends State<AuthWebScreen> {
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
           return Scaffold(
-            backgroundColor: const Color(0xFFF5F5F5),
+            backgroundColor: Color(0xFFDDE7EC),
             body: Center(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(48),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 1000),
           child: Card(
-          color: Colors.white,
+          color: Color(0xFFCFD8DC),
          elevation: 24,
          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-         shadowColor: Colors.black.withOpacity(0.3),
+         shadowColor: Colors.black,
          child: Padding(
          padding: const EdgeInsets.all(32.0),
          child: LayoutBuilder(
@@ -93,7 +95,8 @@ class _AuthWebScreenState extends State<AuthWebScreen> {
                                     borderRadius: BorderRadius.circular(16),
                                     child: Image.asset(
                                       'assets/images/grad.jpg',
-                                      height: 350,
+                                      height: 380,
+
                                       fit: BoxFit.cover,
                                     ),
                                   ),

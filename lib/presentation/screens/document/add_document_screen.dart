@@ -1,14 +1,19 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+
 import '../../../blocs/documents_bloc/document_bloc.dart';
 import '../../../blocs/documents_bloc/document_event.dart';
 import '../../../blocs/documents_bloc/document_state.dart';
 
+import '../../../themes.dart';
+
 class AddDocumentScreen extends StatefulWidget {
   final int sessionId;
+
   const AddDocumentScreen({super.key, required this.sessionId});
 
   @override
@@ -16,33 +21,43 @@ class AddDocumentScreen extends StatefulWidget {
 }
 
 class _AddDocumentScreenState extends State<AddDocumentScreen> {
-  File? selectedFile;
+  dynamic selectedFile;
+  String? fileName;
   String privacy = 'public';
 
   void pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
-    if (result != null && result.files.single.path != null) {
+    if (result != null) {
       setState(() {
-        selectedFile = File(result.files.single.path!);
+        fileName = result.files.single.name;
+
+        if (kIsWeb) {
+          selectedFile = result.files.single.bytes; // Uint8List
+        } else {
+          selectedFile = File(result.files.single.path!); // File
+        }
       });
     }
   }
 
   void submit() {
-    if (selectedFile != null) {
-      BlocProvider.of<DocumentBloc>(context).add(
-        AddDocumentEvent(
-          file: selectedFile!,
-          privacy: privacy,
-          sessionId: widget.sessionId,
-        ),
-      );
-    } else {
+    if (selectedFile == null || fileName == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select a file')),
       );
+      return;
     }
+
+    print(' Session ID: ${widget.sessionId}');
+    BlocProvider.of<DocumentBloc>(context).add(
+      AddDocumentEvent(
+        file: selectedFile,
+        fileName: fileName!,
+        privacy: privacy,
+        sessionId: widget.sessionId,
+      ),
+    );
   }
 
   @override
@@ -51,13 +66,17 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Document', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Add Document',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
         centerTitle: true,
-        backgroundColor: Colors.deepPurple.shade400,
+        backgroundColor: AppColors.darkBlue,
         elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Container(
-        color: Colors.deepPurple.shade50,
+        color: Colors.grey.shade200,
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(20),
@@ -88,25 +107,32 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          'Document Details',
+                          'Add Document',
                           textAlign: TextAlign.center,
                           style: theme.textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 20),
+
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.deepPurple,
+                            backgroundColor: Colors.blue.shade700,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             padding: const EdgeInsets.symmetric(vertical: 14),
                           ),
-                          icon: const Icon(LucideIcons.uploadCloud),
+                          icon: const Icon(LucideIcons.uploadCloud, color: Colors.white),
                           onPressed: pickFile,
                           label: Text(
-                            selectedFile == null ? 'Choose File' : 'File Selected',
-                            style: const TextStyle(fontSize: 16),
+                            fileName ?? 'Choose File',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
+
                         const SizedBox(height: 20),
+
                         InputDecorator(
                           decoration: InputDecoration(
                             labelText: 'Privacy',
@@ -124,16 +150,21 @@ class _AddDocumentScreenState extends State<AddDocumentScreen> {
                             ),
                           ),
                         ),
+
                         const SizedBox(height: 30),
+
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
+                            backgroundColor: Colors.green.shade700,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             padding: const EdgeInsets.symmetric(vertical: 14),
                           ),
-                          icon: const Icon(Icons.send),
+                          icon: const Icon(Icons.send, color: Colors.white),
                           onPressed: submit,
-                          label: const Text('Submit', style: TextStyle(fontSize: 16)),
+                          label: const Text(
+                            'Submit',
+                            style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ],
                     ),

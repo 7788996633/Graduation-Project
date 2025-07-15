@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../themes.dart';
+import '../../../themes.dart';
 
 class AuthWelcomeColumn extends StatelessWidget {
   final bool isMobile;

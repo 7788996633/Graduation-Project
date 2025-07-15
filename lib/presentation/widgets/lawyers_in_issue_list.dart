@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,10 +12,10 @@ class LawyersInIssueList extends StatefulWidget {
     required this.issueId,
   });
 
+  final int issueId;
+
   @override
   State<LawyersInIssueList> createState() => _LawyersInIssueListState();
-
-  final int issueId;
 }
 
 class _LawyersInIssueListState extends State<LawyersInIssueList> {
@@ -29,40 +30,50 @@ class _LawyersInIssueListState extends State<LawyersInIssueList> {
     );
   }
 
-  Widget _buildLawyerList(List<LawyerModel> lawyers) {
-    if (lawyers.isEmpty) {
-      return const Center(
-        child: Text("No lawyers found."),
-      );
-    }
-
-    return ListView.builder(
-      itemCount: lawyers.length,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) {
-        return CustomLawyerItem(
-          lawyer: lawyers[index],
-          isSelected: selectedLawyerIds.contains(
-            lawyers[index].id,
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LawyerInIssuesBloc, LawyerInIssuesState>(
       builder: (context, state) {
         if (state is LawyerInIssuesLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         } else if (state is LawyerInIssuesListLoadedSuccessfully) {
           _allLawyers = state.lawyerInissues;
           selectedLawyerIds = _allLawyers.map((lawyer) => lawyer.id).toList();
-          return _buildLawyerList(_allLawyers);
+
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              double width = constraints.maxWidth;
+              double aspectRatio;
+              int crossAxisCount;
+
+              if (kIsWeb) {
+                crossAxisCount = 2;     // ✅ سطر يحتوي على محاميين في الويب
+                aspectRatio = 4;       // ✅ كارد بعرض أصغر وطول مناسب
+              } else {
+                crossAxisCount = 2;     // ✅ على الموبايل أيضًا سطرين
+                aspectRatio = 2.2;
+              }
+
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _allLawyers.length,
+                padding: const EdgeInsets.all(8),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                  childAspectRatio: aspectRatio,
+                ),
+                itemBuilder: (context, index) {
+                  return CustomLawyerItem(
+                    lawyer: _allLawyers[index],
+                    isSelected: selectedLawyerIds.contains(_allLawyers[index].id),
+                  );
+                },
+              );
+            },
+          );
         } else if (state is LawyerInIssuesFail) {
           return Center(
             child: Text(

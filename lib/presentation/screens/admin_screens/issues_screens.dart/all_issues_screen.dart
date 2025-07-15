@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../../data/models/issues_model.dart';
+import '../../../../themes.dart';
 import '../../../widgets/custom_appbar_add.dart';
 import '../../../widgets/issue_item.dart';
 import 'create_issue_screen.dart';
@@ -17,12 +18,11 @@ class _AllIssuesScreenState extends State<AllIssuesScreen> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<IssuesBloc>(context).add(
-      GetAllIssuesEvent(),
-    );
+    BlocProvider.of<IssuesBloc>(context).add(GetAllIssuesEvent());
   }
 
   List<IssuesModel> allIssuesList = [];
+
   Widget buildIssuesList() {
     return ListView.builder(
       itemCount: allIssuesList.length,
@@ -35,9 +35,9 @@ class _AllIssuesScreenState extends State<AllIssuesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
+      backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
-        title: 'List Issue ',
+        title: 'Issues',
         actionIcon: Icons.add_circle_rounded,
         tooltip: 'Add New Issue',
         onActionPressed: () {
@@ -61,11 +61,11 @@ class _AllIssuesScreenState extends State<AllIssuesScreen> {
               return allIssuesList.isEmpty
                   ? const Center(child: Text('There is no issues'))
                   : buildIssuesList();
-            } else if (state is IssuesSuccess) {
-              BlocProvider.of<IssuesBloc>(context).add(
-                GetAllIssuesEvent(),
-              );
-              return SizedBox();
+            }
+
+            else if (state is IssuesSuccess) {
+              BlocProvider.of<IssuesBloc>(context).add(GetAllIssuesEvent());
+              return const SizedBox();
             } else if (state is IssuesFail) {
               debugPrint(" Error: ${state.errmsg}");
               return Center(

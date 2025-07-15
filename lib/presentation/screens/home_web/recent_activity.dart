@@ -46,7 +46,7 @@ class RecentActivity extends StatelessWidget {
         children: [
           const Text('Recent Activities', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           const SizedBox(height: 10),
-          ...activities.map((activity) => activityWidget(activity)),
+          ...activities.map((activity) => activityWidget(activity)).toList(),
         ],
       ),
     );

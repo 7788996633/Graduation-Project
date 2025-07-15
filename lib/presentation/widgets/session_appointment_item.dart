@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:graduation/presentation/screens/appiontment_session_screen/appointment_session_details_screen.dart';
+
 import 'package:intl/intl.dart';
 
 import '../../data/models/session_appointement_model.dart';
+import '../screens/appiontment_session_screen/appointment_session_details_screen.dart';
 
 class SessionAppointmentItem extends StatelessWidget {
   const SessionAppointmentItem(

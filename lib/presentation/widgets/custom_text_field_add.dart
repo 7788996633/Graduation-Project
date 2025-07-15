@@ -9,6 +9,8 @@ class CustomTextFieldAdd extends StatelessWidget {
   final String? Function(String?)? validator;
   final bool filled;
   final Color? fillColor;
+  final VoidCallback? onTap;       // إضافة onTap اختيارية
+  final bool readOnly;             // إضافة readOnly اختيارية مع قيمة افتراضية false
 
   const CustomTextFieldAdd({
     super.key,
@@ -20,6 +22,8 @@ class CustomTextFieldAdd extends StatelessWidget {
     this.validator,
     this.filled = false,
     this.fillColor = Colors.white,
+    this.onTap,                  // onTap اختياري
+    this.readOnly = false,       // readOnly اختياري، افتراضي false
   });
 
   @override
@@ -28,7 +32,9 @@ class CustomTextFieldAdd extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
-      maxLines: maxLines ?? 1, // Default to single line if maxLines is not provided
+      maxLines: maxLines ?? 1,
+      readOnly: readOnly,       // تطبيق readOnly
+      onTap: onTap,             // تطبيق onTap
       decoration: InputDecoration(
         labelText: label,
         labelStyle: const TextStyle(color: Colors.grey),

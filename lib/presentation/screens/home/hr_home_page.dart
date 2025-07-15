@@ -31,9 +31,9 @@ class _HrHomePageState extends State<HrHomePage> {
         buttonBackgroundColor: AppColors.darkBlue,
           animationDuration: const Duration(milliseconds: 300),
         items: const <Widget>[
-          Icon(Icons.home, size: 30, color: Colors.black54),
-          Icon(Icons.bar_chart, size: 30, color: Colors.black54),
-          Icon(Icons.task, size: 30, color: Colors.black54),
+          Icon(Icons.home, size: 30, color: AppColors.white),
+          Icon(Icons.bar_chart, size: 30, color: AppColors.white),
+          Icon(Icons.task, size: 30, color: AppColors.white),
         ],
         onTap: (index) {
           setState(() {

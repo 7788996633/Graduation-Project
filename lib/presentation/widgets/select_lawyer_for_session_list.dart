@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/lawyer_in_issues_bloc/lawyer_in_issues_bloc.dart';
-import 'package:graduation/presentation/widgets/lawyer_radio_item.dart';
 
+import '../../blocs/lawyer_in_issues_bloc/lawyer_in_issues_bloc.dart';
 import '../../data/models/lawyer_model.dart';
+import 'lawyer_radio_item.dart';
 
 class SelectLawyerForSessionList extends StatefulWidget {
   const SelectLawyerForSessionList({super.key, this.onLawyerSelected});

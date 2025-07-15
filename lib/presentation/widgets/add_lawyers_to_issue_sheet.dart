@@ -56,7 +56,7 @@ class _AddLawyersToIssueSheetState extends State<AddLawyersToIssueSheet> {
               if (state is IssuesSuccess) {
                 showDialog(
                   context: context,
-                  barrierDismissible: false, // منع إغلاقه بالنقر خارج الصندوق
+                  barrierDismissible: false,
                   builder: (context) => AlertDialog(
                     content: Text(
                       state.successmsg,
@@ -66,7 +66,7 @@ class _AddLawyersToIssueSheetState extends State<AddLawyersToIssueSheet> {
                   ),
                 );
 
-                // إغلاق الرسالة بعد 2 ثانية و إغلاق الـ Bottom Sheet
+
                 Future.delayed(const Duration(seconds: 2), () {
                   Navigator.of(context).pop(); // إغلاق الـ AlertDialog
                   Navigator.of(context).pop(); // إغلاق الـ Bottom Sheet

@@ -7,8 +7,11 @@ class AppColors {
   static const Color success = Colors.green;
   static const Color danger = Colors.red;
   static const Color darkBlue = Color(0xFF0D47A1);
-  static const Color softGray = Color(0xFFE0E0E6);
-  static const Color scaffold = Color(0xFFF1F1F6);
+  static const Color softGray = Color(0xFFC4D7FF);
+  static const Color scaffold = Color(0xFFE6ECF5);
+  static const Color textGrey= Color(0xFF6B7280);
+  static  const Color cardColor = Color(0xFFF0F0F0);
+
 }
 
 Map<String, Color> currentTheme = {

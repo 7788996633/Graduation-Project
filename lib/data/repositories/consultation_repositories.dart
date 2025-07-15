@@ -1,5 +1,6 @@
-import 'package:graduation/data/models/consultation_model.dart';
-import 'package:graduation/data/services/consultation_services.dart';
+
+import '../models/consultation_model.dart';
+import '../services/consultation_services.dart';
 
 class ConsultationRepositories {
   Future<List<ConsultationModel>> getAllConsultations() async {

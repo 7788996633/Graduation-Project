@@ -1,36 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/lawyer_in_issues_bloc/lawyer_in_issues_bloc.dart';
-import 'package:graduation/presentation/widgets/add_lawyer_to_session_sheet.dart';
+
+import '../../../blocs/lawyer_in_issues_bloc/lawyer_in_issues_bloc.dart';
+import '../../../blocs/session_type_bloc/session_type_bloc.dart';
+import '../../../blocs/session_type_bloc/session_type_event.dart';
 import '../../../blocs/sessions_bloc/sessions_bloc.dart';
 import '../../../blocs/sessions_bloc/sessions_state.dart';
-import '../../widgets/build_custom_appbar_detials.dart';
-import '../../widgets/custom_text_field_add.dart';
-import 'attend_radio.dart';
+import '../../widgets/add_lawyer_to_session_sheet.dart';
+import '../../widgets/custom_appbar_add.dart';
+import '../../widgets/session_type_selector.dart';
 
 class CreateSessionScreen extends StatefulWidget {
   const CreateSessionScreen({super.key, required this.issueId});
   final int issueId;
+
   @override
   State<CreateSessionScreen> createState() => _CreateSessionScreenState();
 }
 
 class _CreateSessionScreenState extends State<CreateSessionScreen> {
-  final TextEditingController _typeController = TextEditingController();
+  int? selectedSessionTypeId;
+  String? selectedSessionTypeName;
 
-  AttendStatus? _selectedAttendStatus;
-
-  int? get isAttendValue {
-    if (_selectedAttendStatus == AttendStatus.attend) return 1;
-    if (_selectedAttendStatus == AttendStatus.absent) return 0;
-    return null;
+  void _showSessionTypeSelector() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => BlocProvider(
+        create: (context) => SessionTypeBloc()..add(GetAllSessionTypesEvent()),
+        child: SessionTypeSelector(
+          onSelected: (id, name) {
+            setState(() {
+              selectedSessionTypeId = id;
+              selectedSessionTypeName = name;
+            });
+            Navigator.pop(context);
+          },
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
-      appBar: buildCustomAppBar("Create Session"),
+      appBar: CustomActionAppBar(
+        title: 'Add New Sessions',
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: BlocConsumer<SessionsBloc, SessionsState>(
@@ -77,56 +92,44 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 25),
-                    CustomTextFieldAdd(
-                      controller: _typeController,
-                      label: 'Type',
+                    Text(
+                      "Session Type:",
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
+                    const SizedBox(height: 10),
                     ElevatedButton(
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (context) => MultiBlocProvider(
-                            providers: [
-                              BlocProvider(
-                                create: (context) => LawyerInIssuesBloc(),
-                              ),
-                              BlocProvider(
-                                create: (context) => SessionsBloc(),
-                              ),
-                            ],
-                            child: AddLawyerToSessionSheet(
-                              type: _typeController.text,
-                              issueId: widget.issueId,
-                            ),
-                          ),
-                        );
-                      },
+                      onPressed: _showSessionTypeSelector,
                       child: Text(
-                        "Select Lawyer",
+                        selectedSessionTypeName ?? "Select Session Type",
                       ),
                     ),
                     const SizedBox(height: 20),
-                    // if (state is IssueRequestsLoading)
-                    //   const Center(
-                    //     child: CircularProgressIndicator(),
-                    //   )
-                    // else
-                    //   SizedBox(
-                    //     height: 50,
-                    //     child: CustomElevatedButtonSubmit(
-                    //       label: "Submit",
-                    //       onPressed: () {
-                    //         BlocProvider.of<SessionsBloc>(context).add(
-                    //           CreateSessionsEvent(
-                    //             type: _typeController.text,
-                    //             lawyerId: 0,
-                    //             isAttend: isAttendValue ?? 0,
-                    //             sessionId: 0,
-                    //           ),
-                    //         );
-                    //       },
-                    //     ),
-                    //   ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (selectedSessionTypeId != null) {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) => MultiBlocProvider(
+                              providers: [
+                                BlocProvider(create: (_) => LawyerInIssuesBloc()),
+                                BlocProvider(create: (_) => SessionsBloc()),
+                              ],
+                              child: AddLawyerToSessionSheet(
+                                sessionTypeId: selectedSessionTypeId!,
+                                issueId: widget.issueId,
+                              ),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Please select a session type first."),
+                            ),
+                          );
+                        }
+                      },
+                      child: const Text("Select Lawyer"),
+                    ),
                   ],
                 ),
               ),
