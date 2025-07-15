@@ -7,12 +7,12 @@ class IssuesModel {
   final String courtName;
   final int numberOfPayments;
   final String totalCost;
-  final String amountPaid;     // ✅ جديد
+  final String amountPaid;
   final int userId;
   final String status;
   final String priority;
   final String startDate;
-  final String endDate;        // ✅ جديد
+  final String endDate;
   final String createdAt;
   final String updatedAt;
 
@@ -25,12 +25,12 @@ class IssuesModel {
     required this.courtName,
     required this.numberOfPayments,
     required this.totalCost,
-    required this.amountPaid,  // ✅ جديد
+    required this.amountPaid,
     required this.userId,
     required this.status,
     required this.priority,
     required this.startDate,
-    required this.endDate,     // ✅ جديد
+    required this.endDate,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -45,21 +45,23 @@ class IssuesModel {
       courtName: json['court_name'] ?? '',
       numberOfPayments: json['number_of_payments'] ?? 0,
       totalCost: json['total_cost']?.toString() ?? '',
-      amountPaid: json['amount_paid']?.toString() ?? '',   // ✅ جديد
+      amountPaid: json['amount_paid']?.toString() ?? '',
       userId: json['user_id'] ?? 0,
       status: json['status'] ?? '',
       priority: json['priority'] ?? '',
       startDate: json['start_date'] ?? '',
-      endDate: json['end_date'] ?? '',                      // ✅ جديد
+      endDate: json['end_date'] ?? '',
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
     );
   }
 }
 
-enum IssuePriority { low, medium, high , critical }
+// Enums
+enum IssuePriority { low, medium, high, critical }
 enum IssueStatus { open, in_Progress, closed }
 
+// Enum <-> String Helpers
 String priorityToString(IssuePriority p) {
   return p.name[0].toUpperCase() + p.name.substring(1);
 }
