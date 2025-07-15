@@ -5,10 +5,12 @@ import '../../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart'
 import '../../../blocs/categories/categories_bloc.dart';
 import '../../../blocs/common_consultation_bloc/common _consultation_bloc.dart';
 import '../../../blocs/documents_bloc/document_bloc.dart';
+import '../../../blocs/employee_bloc/employee_bloc.dart';
 import '../../../blocs/furlough_request_bloc/furlough_request_bloc.dart';
 import '../../../blocs/issue_bloc/issues_bloc.dart';
 
 import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
+import '../../../blocs/permission_bloc/permission_bloc.dart';
 import '../../../blocs/required_document_bloc/required_document_bloc.dart';
 import '../../../blocs/session_type_bloc/session_type_bloc.dart';
 import '../admin_screens/issues_screens.dart/all_issues_screen.dart';
@@ -18,7 +20,9 @@ import '../consultation_request/all_consultation_requests_page.dart';
 import '../document/documents_list_screen.dart';
 import '../furloughs/list_furloughs_screen.dart';
 import '../home_web/main_page_web.dart';
+import '../hr_screen/employee_screens/list_employee_screen.dart';
 import '../issue_request/list_issue_requests_screen.dart';
+import '../permission_screen/list_permission_screen.dart';
 import '../required_documents/list_required_document_screen.dart';
 import '../session_type/list_session_type_screen.dart';
 import 'drawer_web/custom_drawer_web.dart';
@@ -32,6 +36,15 @@ class _HomeWebPageState extends State<HomeWebPage> {
 
   final List<Widget> pages = [
     const MainScreen(),
+    //employee
+    BlocProvider(
+      create: (context) => EmployeeBloc(),
+      child: const  ListEmployeesScreen(),
+    ),
+    BlocProvider(
+      create: (context) => PermissionBloc(),
+      child: const  ListPermissionsScreen(),
+    ),
     //issue
     BlocProvider(
       create: (context) => IssuesBloc(),

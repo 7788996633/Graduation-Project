@@ -11,7 +11,7 @@ class CaseTypePercentagesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // إرسال حدث لجلب البيانات عند بناء الشاشة
+    // Dispatch event to fetch data when the screen builds
     context.read<CaseTypeBloc>().add(FetchCaseTypePercentages());
 
     return Padding(
@@ -97,7 +97,7 @@ class CaseTypePercentagesScreen extends StatelessWidget {
                     const SizedBox(height: 20),
                     if (hasNonZero && topThree.isNotEmpty) ...[
                       const Text(
-                        'أعلى 3 أنواع:',
+                        'Top 3 Types:',
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                       const SizedBox(height: 10),

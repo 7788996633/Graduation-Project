@@ -1,50 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../blocs/required_document_bloc/required_document_bloc.dart';
-import '../../../blocs/required_document_bloc/required_document_event.dart';
-import '../../../blocs/required_document_bloc/required_document_state.dart';
-import '../../../themes.dart';
+import '../../../blocs/permission_bloc/permission_bloc.dart';
+import '../../../blocs/permission_bloc/permission_event.dart';
 import '../../widgets/build_custom_appbar_detials.dart';
-import '../../widgets/custom_appbar_add.dart';
 import '../../widgets/custom_text_field_add.dart';
 import '../../widgets/elevated_button_submit.dart';
 
-class AddRequiredDocumentScreen extends StatefulWidget {
-  final int issueId;
-  const AddRequiredDocumentScreen({super.key, required this.issueId});
+class AddPermissionScreen extends StatefulWidget {
+  const AddPermissionScreen({super.key});
 
   @override
-  State<AddRequiredDocumentScreen> createState() => _AddRequiredDocumentScreenState();
+  State<AddPermissionScreen> createState() => _AddPermissionScreenState();
 }
 
-class _AddRequiredDocumentScreenState extends State<AddRequiredDocumentScreen> {
-  final TextEditingController _requireFileTypeController = TextEditingController();
-  final TextEditingController _noteController = TextEditingController();
+class _AddPermissionScreenState extends State<AddPermissionScreen> {
+  final TextEditingController _nameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.scaffold,
-      appBar: CustomActionAppBar(  title: 'Add Require Document',),
+      backgroundColor: const Color(0xFFF5F7FA),
+      appBar: buildCustomAppBar("Add Permission"),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: BlocConsumer<RequiredDocumentsBloc, RequiredDocumentsState>(
+        child: BlocConsumer<PermissionBloc, PermissionState>(
           listener: (context, state) {
-            if (state is RequiredDocumentsSuccess) {
-              _requireFileTypeController.clear();
-              _noteController.clear();
-
+            if (state is PermissionSuccess) {
+              _nameController.clear();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text("Success: ${state.successmsg}"),
+                  content: Text("Success: ${state.successMsg}"),
                   backgroundColor: Colors.green,
                 ),
               );
-            } else if (state is RequiredDocumentsFail) {
+            } else if (state is PermissionFail) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text("Failed: ${state.errmsg}"),
+                  content: Text("Failed: ${state.errMsg}"),
                   backgroundColor: Colors.red,
                 ),
               );
@@ -69,7 +61,7 @@ class _AddRequiredDocumentScreenState extends State<AddRequiredDocumentScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const Text(
-                      "Create New Required Document",
+                      "Create New Permission",
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w600,
@@ -78,30 +70,20 @@ class _AddRequiredDocumentScreenState extends State<AddRequiredDocumentScreen> {
                     ),
                     const SizedBox(height: 25),
                     CustomTextFieldAdd(
-                      controller: _requireFileTypeController,
-                      label: 'Require File Type',
+                      controller: _nameController,
+                      label: 'Name',
                     ),
-                    const SizedBox(height: 20),
-                    CustomTextFieldAdd(
-                      controller: _noteController,
-                      label: 'Note',
-                    ),
-
                     const SizedBox(height: 30),
-                    state is RequiredDocumentsLoading
+                    state is PermissionLoading
                         ? const Center(child: CircularProgressIndicator())
                         : SizedBox(
                       height: 50,
                       child: CustomElevatedButtonSubmit(
                         label: "Submit",
                         onPressed: () {
-                          BlocProvider.of<RequiredDocumentsBloc>(context).add(
-                            CreateRequiredDocumentsEvent(
-
-                              issueId: widget.issueId,
-                              requireFileType: _requireFileTypeController.text,
-                              note: _noteController.text,
-
+                          BlocProvider.of<PermissionBloc>(context).add(
+                            AddPermissionEvent(
+                              name: _nameController.text.trim(),
                             ),
                           );
                         },

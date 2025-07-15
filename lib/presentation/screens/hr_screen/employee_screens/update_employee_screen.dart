@@ -60,10 +60,8 @@ class _UpdateEmployeeInfoScreenState extends State<UpdateEmployeeInfoScreen> {
                   id: widget.employee.id,
                   salary: int.parse(_salaryController.text.trim()),
                   certificate: _certificateController.text.trim(),
-                  name: widget.employee.name,
-                  type: widget.employee.type,
-                  email: widget.employee.email,
-                  status: widget.employee.status,
+                  hireDate: widget.employee.hireDate,  // نحتفظ بالقيمة الأصلية
+                  userId: widget.employee.userId,      // نحتفظ بالقيمة الأصلية
                 ),
               );
             } else if (state is EmployeeFail) {
@@ -79,6 +77,9 @@ class _UpdateEmployeeInfoScreenState extends State<UpdateEmployeeInfoScreen> {
             }
           },
           builder: (context, state) {
+            if (state is EmployeeLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
             return Form(
               key: _formKey,
               child: Column(

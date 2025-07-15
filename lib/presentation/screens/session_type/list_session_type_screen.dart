@@ -10,6 +10,8 @@ import '../../widgets/custom_appbar_add.dart';
 import '../../widgets/refresh_button.dart';
 import '../../widgets/session_type_list.dart';
 
+import '../../widgets/custom_search_bar.dart';  // إضافة ويدجت البحث
+
 import 'add_session_type.dart';
 
 class ListSessionTypesScreen extends StatefulWidget {
@@ -27,6 +29,14 @@ class _ListSessionTypesScreenState extends State<ListSessionTypesScreen> {
     super.initState();
     bloc = BlocProvider.of<SessionTypeBloc>(context);
     bloc.add(GetAllSessionTypesEvent());
+  }
+
+  void _onSearch(String type) {
+    if (type.trim().isNotEmpty) {
+      bloc.add(SearchSessionTypesByTypeEvent(type: type));
+    } else {
+      bloc.add(GetAllSessionTypesEvent());
+    }
   }
 
   @override
@@ -53,6 +63,10 @@ class _ListSessionTypesScreenState extends State<ListSessionTypesScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            CustomSearchBar(          // إضافة شريط البحث هنا
+              hint: 'Search by Type',
+              onSearch: _onSearch,
+            ),
             const SizedBox(height: 20),
             SessionTypeList(bloc: bloc),
           ],

@@ -63,8 +63,7 @@ class RequiredDocumentDetailsScreen extends StatelessWidget {
                   ),
                 ),
 
-                _buildInfoRow(Icons.confirmation_number, 'ID', requiredDocument.id.toString()),
-                const Divider(),
+
 
                 _buildInfoRow(Icons.file_present, 'Type', requiredDocument.requireFileType),
                 const Divider(),

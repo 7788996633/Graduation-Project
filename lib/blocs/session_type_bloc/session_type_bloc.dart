@@ -6,8 +6,11 @@ import '../../data/repositories/session_type_repository.dart';
 import '../../data/services/session_type_service.dart';
 import 'session_type_event.dart';
 part 'session_type_state.dart';
+
 class SessionTypeBloc extends Bloc<SessionTypeEvent, SessionTypeState> {
   SessionTypeBloc() : super(SessionTypeInitial()) {
+    List<SessionTypeModel> allSessionTypes = [];
+
     on<SessionTypeEvent>((event, emit) async {
       if (event is AddSessionTypeEvent) {
         emit(SessionTypeLoading());
@@ -19,34 +22,37 @@ class SessionTypeBloc extends Bloc<SessionTypeEvent, SessionTypeState> {
           emit(SessionTypeFail(errMsg: e.toString()));
         }
       } else if (event is GetSessionTypeByIdEvent) {
-        emit(
-          SessionTypeLoading(),
-        );
+        emit(SessionTypeLoading());
         try {
           SessionTypeModel session = await SessionTypeServices()
               .getSessionTypeById(event.sessionTypeId);
-
-          emit(
-            SessionTypeLoaded(
-              session: session,
-            ),
-          );
+          emit(SessionTypeLoaded(session: session));
         } catch (e) {
-          emit(
-            SessionTypeFail(
-              errMsg: e.toString(),
-            ),
-          );
+          emit(SessionTypeFail(errMsg: e.toString()));
+        }
+      } else if (event is GetAllSessionTypesEvent) {
+        emit(SessionTypeLoading());
+        try {
+          allSessionTypes = await SessionTypeRepository().getSessionTypes();
+          emit(SessionTypeListLoaded(list: allSessionTypes));
+        } catch (e) {
+          emit(SessionTypeFail(errMsg: e.toString()));
         }
       }
-      else if (event is GetAllSessionTypesEvent) {
-      emit(SessionTypeLoading());
-      try {
-      List<SessionTypeModel> data = await SessionTypeRepository().getSessionTypes();
-      emit(SessionTypeListLoaded(list: data));
-      } catch (e) {
-      emit(SessionTypeFail(errMsg: e.toString()));
-      }
+      else if (event is SearchSessionTypesByTypeEvent) {
+        emit(SessionTypeLoading());
+        try {
+          final typeLower = event.type.trim().toLowerCase();
+
+          final filteredList = allSessionTypes.where((sessionType) {
+            final type = sessionType.type.toLowerCase();
+            return type.contains(typeLower);
+          }).toList();
+
+          emit(SessionTypeListLoaded(list: filteredList));
+        } catch (e) {
+          emit(SessionTypeFail(errMsg: e.toString()));
+        }
       }
       else if (event is UpdateSessionTypeEvent) {
         emit(SessionTypeLoading());

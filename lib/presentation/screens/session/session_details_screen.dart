@@ -90,7 +90,7 @@ class SessionDetailsScreen extends StatelessWidget {
                                             const SizedBox(height: 10),
                                             Text(
                                               'Session #${sessionModel.sessionId}',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -119,9 +119,13 @@ class SessionDetailsScreen extends StatelessWidget {
                                       _buildInfoRow(Icons.category, 'Session Type',
                                           sessionType.type, 22, 16),
                                       const SizedBox(height: 30),
-                                      _buildAddDocButton(context),
-                                      const SizedBox(height: 12),
-                                      _buildAppointmentsButton(context),
+                                      Row(
+                                        children: [
+                                          Expanded(child: _buildAddDocButton(context)),
+                                          const SizedBox(width: 12),
+                                          Expanded(child: _buildAppointmentsButton(context)),
+                                        ],
+                                      ),
                                     ],
                                   ),
                                 ),

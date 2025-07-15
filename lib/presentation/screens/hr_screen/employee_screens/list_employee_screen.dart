@@ -36,8 +36,7 @@ class _ListEmployeesScreenState extends State<ListEmployeesScreen> {
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
         title: 'List Employees',
-
-          ),
+      ),
 
 
       body: Padding(

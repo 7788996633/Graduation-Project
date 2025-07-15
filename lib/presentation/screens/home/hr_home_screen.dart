@@ -82,21 +82,7 @@ class HrHomeScreen extends StatelessWidget {
           );
         },
       },
-      {
-        'icon': Icons.event_available,
-        'title': 'Add Employee',
-        'onTap': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (_) => HiringRequestsBloc(),
-                child: const ListHiringRequestsPublishScreen(),
-              ),
-            ),
-          );
-        },
-      },
+
       {
         'icon': Icons.event_available,
         'title': 'Employees',

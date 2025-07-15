@@ -31,9 +31,10 @@ class _CommonConsultationDetailsScreenState extends State<CommonConsultationDeta
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar:CustomActionAppBar(
-        title: 'Common Consultation details',),
+      backgroundColor: AppColors.scaffold,
+      appBar: CustomActionAppBar(
+        title: 'Common Consultation details',
+      ),
       body: BlocBuilder<CommonConsultationBloc, CommonConsultationState>(
         builder: (context, state) {
           if (state is CommonConsultationLoading) {
@@ -43,110 +44,145 @@ class _CommonConsultationDetailsScreenState extends State<CommonConsultationDeta
 
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  // Consultation Details Card
-                  Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+              child: Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // حذف Consultation ID وحافظنا على نوع الاستشارة
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          // Consultation ID and Tag
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Consultation ID: ${consultation.id}',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.darkBlue,
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: AppColors.darkBlue.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: const Text(
-                                  'General Consultation',
-                                  style: TextStyle(
-                                    color: AppColors.darkBlue,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Question Section
-                          const Text(
-                            'Question:',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.darkBlue,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
                           Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(12),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade50,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.grey.shade200),
+                              color: AppColors.darkBlue.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                            child: Text(
-                              consultation.question,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Colors.black87,
-                                height: 1.5,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Answer Section
-                          const Text(
-                            'Answer:',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.darkBlue,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade50,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.grey.shade200),
-                            ),
-                            child: Text(
-                              consultation.answer.isEmpty ? 'No answer yet' : consultation.answer,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Colors.black87,
-                                height: 1.5,
+                            child: const Text(
+                              'General Consultation',
+                              style: TextStyle(
+                                color: AppColors.darkBlue,
+                                fontSize: 14,
                               ),
                             ),
                           ),
                         ],
                       ),
-                    ),
+                      const SizedBox(height: 16),
+
+                      // السؤال مع الصورة في bubble
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: Image.asset(
+                              'assets/images/download.jpeg', // استبدل بالمسار المناسب لصورة السؤال
+                              height: 40,
+                              width: 40,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Question:',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.darkBlue,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.lightBlue.shade50,
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(16),
+                                      topRight: Radius.circular(16),
+                                      bottomRight: Radius.circular(16),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    consultation.question,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black87,
+                                      height: 1.5,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+
+                      // الإجابة مع الصورة في bubble
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: Image.asset(
+                              'assets/images/grad.jpg', // استبدل بالمسار المناسب لصورة الإجابة
+                              height: 40,
+                              width: 40,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Answer:',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.darkBlue,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade200,
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(16),
+                                      topRight: Radius.circular(16),
+                                      bottomLeft: Radius.circular(16),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    consultation.answer.isEmpty ? 'No answer yet' : consultation.answer,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black87,
+                                      height: 1.5,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             );
           } else if (state is CommonConsultationFail) {

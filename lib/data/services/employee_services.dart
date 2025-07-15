@@ -1,16 +1,22 @@
 import 'dart:convert';
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'dart:io';
 
 import '../../constant.dart';
 import '../models/employee_model.dart';
 
 class EmployeeServices {
+  final Map<String, String> baseHeaders = {
+    'Accept': 'application/json',
+    'Authorization': 'Bearer $myToken',
+  };
+
   Future<String> createEmployee(
       int userId,
       int salary,
       String hireDate,
-      String certificate,
+      String certificatePath,
       String type,
       ) async {
     print('--- Creating Employee ---');
@@ -18,162 +24,196 @@ class EmployeeServices {
     print('Salary: $salary');
     print('Hire Date: $hireDate');
     print('Type: $type');
-    print('Certificate Path: $certificate');
+    print('Certificate Path: $certificatePath');
 
-    // تحقق من وجود الملف
-    final certFile = File(certificate);
+    final certFile = File(certificatePath);
     if (!certFile.existsSync()) {
       return 'failed: Certificate file not found';
     }
 
-    // تحقق من صيغة التاريخ (yyyy-MM-dd)
     try {
       DateTime.parse(hireDate);
     } catch (e) {
       return 'failed: Invalid hire date format. Expected yyyy-MM-dd';
     }
 
-    // تحقق من صحة نوع الموظف
     final validTypes = ['hr', 'accountant', 'lawyer'];
     if (!validTypes.contains(type)) {
       return 'failed: Invalid employee type';
     }
 
-    var headers = {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $myToken',
-    };
+    var url = Uri.parse('${myUrl}employees/create/$userId');
 
-    var request = http.MultipartRequest(
-      'POST',
-      Uri.parse('${myUrl}employees/create/$userId'),
-    );
+    if (kIsWeb) {
+      // على الويب لا يمكن استخدام MultipartFile من الملف، فقط نرسل الحقول بدون ملف أو تحتاج طريقة أخرى للرفع
+      var request = http.Request('POST', url);
+      request.headers.addAll(baseHeaders);
+      request.bodyFields = {
+        'salary': salary.toString(),
+        'hire_date': hireDate,
+        'type': type,
+        // لا يمكن ارسال ملف مباشرة في الويب بنفس الطريقة، تحتاج رفع بطريقة مختلفة (مثلاً base64)
+      };
 
-    request.fields.addAll({
-      'salary': salary.toString(),
-      'hire_date': hireDate,
-      'type': type,
-      'certificate': certificate,
-    });
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
-
-
-    request.headers.addAll(headers);
-
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
-
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
-    if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
-      if (jsonResponse['status'] == 'success') {
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
         return jsonResponse['message'];
       } else {
         return 'failed: ${jsonResponse['message']}';
       }
     } else {
-      return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+      // على الأجهزة العادية (Android, iOS)
+      var request = http.MultipartRequest('POST', url);
+      request.headers.addAll(baseHeaders);
+      request.fields.addAll({
+        'salary': salary.toString(),
+        'hire_date': hireDate,
+        'type': type,
+      });
+      request.files.add(await http.MultipartFile.fromPath('certificate', certificatePath));
+
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      var jsonResponse = json.decode(response.body);
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+        return jsonResponse['message'];
+      } else {
+        return 'failed: ${jsonResponse['message']}';
+      }
     }
   }
 
   Future<List> getEmployees() async {
-    var headers = {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $myToken'
-    };
-    var request = http.MultipartRequest('GET', Uri.parse('${myUrl}employees'));
-    request.headers.addAll(headers);
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
+    var url = Uri.parse('${myUrl}employees');
+    http.Response response;
+
+    if (kIsWeb) {
+      var request = http.Request('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    } else {
+      var request = http.MultipartRequest('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    }
+
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
-    if (response.statusCode == 200) {
-      if (jsonResponse['status'] == 'success') {
-        return jsonResponse['data'];
-      } else {
-        return [];
-      }
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return jsonResponse['data'];
     } else {
       return [];
     }
   }
 
   Future<EmployeeModel> getEmployeeById(int employeeId) async {
-    var headers = {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $myToken',
-    };
+    var url = Uri.parse('${myUrl}employees/$employeeId');
+    http.Response response;
 
-    var request =
-    http.MultipartRequest('GET', Uri.parse('${myUrl}employees/$employeeId'));
-    request.headers.addAll(headers);
+    if (kIsWeb) {
+      var request = http.Request('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    } else {
+      var request = http.MultipartRequest('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    }
 
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
 
     if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
       return EmployeeModel.fromJson(jsonResponse['data']);
     } else {
-      throw Exception('Failed to load Employee');
+      throw Exception('failed: ${jsonResponse['message']}');
     }
   }
 
   Future<String> deleteEmployee(int employeeId) async {
-    var headers = {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $myToken'
-    };
+    var url = Uri.parse('${myUrl}employees/$employeeId');
 
-    var request =
-    http.MultipartRequest('DELETE', Uri.parse('${myUrl}employees/$employeeId'));
-
-    request.headers.addAll(headers);
-
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
-    var jsonResponse = json.decode(response.body);
-    print(jsonResponse);
-
-    if (response.statusCode == 200) {
-      if (jsonResponse['status'] == 'success') {
+    if (kIsWeb) {
+      var request = http.Request('DELETE', url);
+      request.headers.addAll(baseHeaders);
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
         return jsonResponse['message'];
       } else {
         return 'failed: ${jsonResponse['message']}';
       }
     } else {
-      return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+      var request = http.MultipartRequest('DELETE', url);
+      request.headers.addAll(baseHeaders);
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+        return jsonResponse['message'];
+      } else {
+        return 'failed: ${jsonResponse['message']}';
+      }
     }
   }
 
-  Future<String> updateEmployee(int salary, String certificate, int employeeId) async {
-    var headers = {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $myToken'
-    };
-    var request = http.MultipartRequest(
-        'POST', Uri.parse('${myUrl}employees/$employeeId'));
-    request.fields.addAll({
-      'salary': salary.toString(),
-      'certificate': certificate,
-    });
+  Future<String> updateEmployee(int salary, String certificatePath, int employeeId) async {
+    var url = Uri.parse('${myUrl}employees/$employeeId');
 
-    request.headers.addAll(headers);
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
-    var jsonResponse = json.decode(response.body);
-    print(jsonResponse);
-    if (response.statusCode == 200) {
-      if (jsonResponse['status'] == 'success') {
+    if (kIsWeb) {
+      var body = {
+        'salary': salary.toString(),
+        'certificate': certificatePath, // قد تحتاج تغيير لرفع ملف على الويب (مثلاً base64)
+      };
+      var request = http.Request('POST', url);
+      request.headers.addAll({
+        ...baseHeaders,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      });
+      request.bodyFields = body;
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
         return jsonResponse['message'];
       } else {
         return 'failed: ${jsonResponse['message']}';
       }
     } else {
-      return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+      var request = http.MultipartRequest('POST', url);
+      request.headers.addAll(baseHeaders);
+      request.fields.addAll({
+        'salary': salary.toString(),
+      });
+      if (certificatePath.isNotEmpty) {
+        request.files.add(await http.MultipartFile.fromPath('certificate', certificatePath));
+      }
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+        return jsonResponse['message'];
+      } else {
+        return 'failed: ${jsonResponse['message']}';
+      }
     }
   }
 }

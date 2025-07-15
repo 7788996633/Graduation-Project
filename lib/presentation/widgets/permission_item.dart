@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../blocs/session_type_bloc/session_type_bloc.dart';
-import '../../blocs/session_type_bloc/session_type_event.dart';
-import '../../data/models/session_type_model.dart';
+import '../../blocs/permission_bloc/permission_bloc.dart';
+import '../../blocs/permission_bloc/permission_event.dart';
+import '../../data/models/permission_model.dart';
 import '../../themes.dart';
-import '../screens/session_type/session_type_details_screen.dart';
+import '../screens/permission_screen/permission_detials_screen.dart';
 
-class SessionTypeItem extends StatelessWidget {
-  const SessionTypeItem({super.key, required this.sessionTypeModel});
-  final SessionTypeModel sessionTypeModel;
+class PermissionItem extends StatelessWidget {
+  const PermissionItem({super.key, required this.permissionModel});
+  final PermissionModel permissionModel;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class SessionTypeItem extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
           side: BorderSide(
-            color: Colors.grey.shade400, // الحواف بلون أزرق غامق
+            color: Colors.grey.shade400,
             width: 2,
           ),
         ),
@@ -32,9 +32,9 @@ class SessionTypeItem extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (_) => BlocProvider(
-                  create: (_) => SessionTypeBloc(),
-                  child: SessionTypeDetailsScreen(
-                    sessionTypeModel: sessionTypeModel,
+                  create: (_) => PermissionBloc(),
+                  child: PermissionDetailsScreen(
+                    permissionModel: permissionModel,
                   ),
                 ),
               ),
@@ -47,8 +47,8 @@ class SessionTypeItem extends StatelessWidget {
             ),
             child: IconButton(
               onPressed: () {
-                BlocProvider.of<SessionTypeBloc>(context).add(
-                  DeleteSessionTypeEvent(sessionTypeId: sessionTypeModel.id),
+                BlocProvider.of<PermissionBloc>(context).add(
+                  DeletePermissionEvent(permissionId: permissionModel.id),
                 );
               },
               icon: Icon(
@@ -56,11 +56,11 @@ class SessionTypeItem extends StatelessWidget {
                 color: AppColors.darkBlue,
                 size: 28,
               ),
-              tooltip: 'Delete Session Type',
+              tooltip: 'Delete Permission',
             ),
           ),
           title: Text(
-            sessionTypeModel.type,
+            permissionModel.name,  // تم التغيير هنا ليعرض الاسم
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w700,
@@ -69,7 +69,7 @@ class SessionTypeItem extends StatelessWidget {
             ),
           ),
           subtitle: Text(
-            'Session Type',
+            'Permission (App Route ID: ${permissionModel.appRouteId})', // عرض app_route_id كمثال
             style: TextStyle(
               fontSize: 14,
               color: AppColors.darkBlue.withOpacity(0.6),

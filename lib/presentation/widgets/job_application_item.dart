@@ -12,47 +12,65 @@ class JobApplicationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 3,
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(16),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => JobApplicationDetailsScreen(
-                jobApplication: jobApplication,
-              ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.white, Colors.grey.shade100],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
             ),
-          );
-        },
-        leading: IconButton(
-          onPressed: () {
-            BlocProvider.of<JobApplicationBloc>(context).add(
-              DeleteJobApplicationEvent(jobApplicationId: jobApplication.id),
+          ],
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => JobApplicationDetailsScreen(
+                  jobApplication: jobApplication,
+                ),
+              ),
             );
           },
-          icon: const Icon(Icons.delete, color: Colors.red),
-        ),
-        title: Text(
-          "Application id (${jobApplication.id})",
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
+          leading: CircleAvatar(
+            radius: 24,
+            backgroundColor: Colors.red.withOpacity(0.1),
+            child: IconButton(
+              onPressed: () {
+                BlocProvider.of<JobApplicationBloc>(context).add(
+                  DeleteJobApplicationEvent(jobApplicationId: jobApplication.id),
+                );
+              },
+              icon: const Icon(Icons.delete_forever, color: Colors.red, size: 24),
+              tooltip: 'Delete Application',
+            ),
+          ),
+          title: Text(
+            jobApplication.jobTitle,
+            style: const TextStyle(
+              fontWeight: FontWeight.w800,
+              fontSize: 18,
+              color: Color(0xFF1A237E),
+              letterSpacing: 0.5,
+            ),
+          ),
+          trailing: const Icon(
+            Icons.arrow_forward_ios_rounded,
+            color: Color(0xFF1A237E),
+            size: 20,
           ),
         ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 4),
-
-            Text("job Title: ${jobApplication.jobTitle}"),
-
-          ],
-        ),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
       ),
     );
   }

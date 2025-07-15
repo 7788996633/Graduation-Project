@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../blocs/common_consultation_bloc/common _consultation_bloc.dart';
 import '../../../blocs/common_consultation_bloc/common _consultation_event.dart';
-
-import '../../../constant.dart';
-
 import '../../../themes.dart';
 import '../../widgets/common_consul_list.dart';
 import '../../widgets/custom_appbar_add.dart';
-
 import '../../widgets/refresh_button.dart';
+import '../../widgets/custom_search_bar.dart';
 
 import 'add_common_consul.dart';
-
 
 class ListCommonConsultationsScreen extends StatefulWidget {
   const ListCommonConsultationsScreen({super.key});
@@ -29,9 +24,15 @@ class _ListCommonConsultationsScreenState extends State<ListCommonConsultationsS
   void initState() {
     super.initState();
     bloc = BlocProvider.of<CommonConsultationBloc>(context);
-    bloc.add(
-      GetAllCommonConsultation(),
-    );
+    bloc.add(GetAllCommonConsultation());
+  }
+
+  void _onSearch(String question) {
+    if (question.trim().isNotEmpty) {
+      bloc.add(SearchCommonConsultationsByQuestionEvent(question: question));
+    } else {
+      bloc.add(GetAllCommonConsultation());
+    }
   }
 
   @override
@@ -58,6 +59,10 @@ class _ListCommonConsultationsScreenState extends State<ListCommonConsultationsS
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            CustomSearchBar(
+              hint: 'Search by Question',
+              onSearch: _onSearch,
+            ),
             const SizedBox(height: 20),
             CommonConsultationList(bloc: bloc),
           ],
@@ -65,9 +70,7 @@ class _ListCommonConsultationsScreenState extends State<ListCommonConsultationsS
       ),
       floatingActionButton: RefreshButton(
         onPressed: () {
-          bloc.add(
-            GetAllCommonConsultation(),
-          );
+          bloc.add(GetAllCommonConsultation());
         },
       ),
     );

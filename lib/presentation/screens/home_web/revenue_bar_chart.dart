@@ -15,8 +15,8 @@ class RevenueBarChart extends StatelessWidget {
     ];
 
     final List<String> months = [
-      "ينا", "فبر", "مار", "أبر", "ماي", "يون",
-      "يول", "آغس", "سبت", "أكت", "نوف", "ديس"
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     ];
 
     return AspectRatio(
@@ -29,9 +29,9 @@ class RevenueBarChart extends StatelessWidget {
             enabled: true,
             touchTooltipData: BarTouchTooltipData(
               getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                String label = rodIndex == 0 ? "الإيرادات" : "التكاليف";
+                String label = rodIndex == 0 ? "Revenue" : "Expenses";
                 return BarTooltipItem(
-                  '${months[group.x]} \n$label: ${rod.toY.toStringAsFixed(1)} م',
+                  '${months[group.x]} \n$label: ${rod.toY.toStringAsFixed(1)} M',
                   const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -58,7 +58,7 @@ class RevenueBarChart extends StatelessWidget {
                 reservedSize: 40,
                 getTitlesWidget: (value, meta) {
                   return Text(
-                    '${value.toInt()} م',
+                    '${value.toInt()} M',
                     style: const TextStyle(fontSize: 12),
                   );
                 },
@@ -78,15 +78,15 @@ class RevenueBarChart extends StatelessWidget {
                 (index) => BarChartGroupData(
               x: index,
               barRods: [
-                // العمود البرتقالي بدرجات برتقالي فاتح
+                // Orange bar with a light orange gradient
                 BarChartRodData(
                   toY: revenues[index],
                   width: 12,
                   borderRadius: BorderRadius.circular(4),
                   gradient: const LinearGradient(
                     colors: [
-                      Color(0xFFFFB74D), // برتقالي فاتح
-                      Color(0xFFFFA726), // برتقالي متوسط
+                      Color(0xFFFFB74D), // Light orange
+                      Color(0xFFFFA726), // Medium orange
                     ],
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
@@ -97,15 +97,15 @@ class RevenueBarChart extends StatelessWidget {
                     color: Colors.grey.shade200,
                   ),
                 ),
-                // العمود الأزرق مع اللون 8DAEF2 (أزرق فاتح)
+                // Blue bar with color #8DAEF2 (light blue)
                 BarChartRodData(
                   toY: expenses[index],
                   width: 12,
                   borderRadius: BorderRadius.circular(4),
                   gradient: const LinearGradient(
                     colors: [
-                      Color(0xFF8DAEF2), // اللون المطلوب #8DAEF2
-                      Color(0xFF527BDF), // أزرق أغمق قليلًا
+                      Color(0xFF8DAEF2), // Light blue #8DAEF2
+                      Color(0xFF527BDF), // Slightly darker blue
                     ],
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,

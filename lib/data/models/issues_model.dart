@@ -7,10 +7,12 @@ class IssuesModel {
   final String courtName;
   final int numberOfPayments;
   final String totalCost;
+  final String amountPaid;     // ✅ جديد
   final int userId;
   final String status;
   final String priority;
   final String startDate;
+  final String endDate;        // ✅ جديد
   final String createdAt;
   final String updatedAt;
 
@@ -23,10 +25,12 @@ class IssuesModel {
     required this.courtName,
     required this.numberOfPayments,
     required this.totalCost,
+    required this.amountPaid,  // ✅ جديد
     required this.userId,
     required this.status,
     required this.priority,
     required this.startDate,
+    required this.endDate,     // ✅ جديد
     required this.createdAt,
     required this.updatedAt,
   });
@@ -41,10 +45,12 @@ class IssuesModel {
       courtName: json['court_name'] ?? '',
       numberOfPayments: json['number_of_payments'] ?? 0,
       totalCost: json['total_cost']?.toString() ?? '',
+      amountPaid: json['amount_paid']?.toString() ?? '',   // ✅ جديد
       userId: json['user_id'] ?? 0,
       status: json['status'] ?? '',
       priority: json['priority'] ?? '',
       startDate: json['start_date'] ?? '',
+      endDate: json['end_date'] ?? '',                      // ✅ جديد
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
     );

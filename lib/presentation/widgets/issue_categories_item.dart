@@ -40,7 +40,6 @@ class IssueCategoryItem extends StatelessWidget {
       child: isLeaf
           ? ListTile(
         title: Text(category.name),
-        subtitle: Text('ID: ${category.id}'),
         onTap: () {
           Navigator.push(
             context,
@@ -58,7 +57,6 @@ class IssueCategoryItem extends StatelessWidget {
           category.name,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text('ID: ${category.id}'),
         children: category.children
             .map((child) => _buildCategory(context, child, depth + 1))
             .toList(),

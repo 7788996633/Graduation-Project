@@ -23,6 +23,13 @@ class GetSessionTypeByIdEvent extends SessionTypeEvent {
 
 class GetAllSessionTypesEvent extends SessionTypeEvent {}
 
+
+class SearchSessionTypesByTypeEvent extends SessionTypeEvent {
+  final String type;
+
+  SearchSessionTypesByTypeEvent({required this.type});
+}
+
 class UpdateSessionTypeEvent extends SessionTypeEvent {
   final int sessionTypeId;
   final int points;
@@ -30,7 +37,6 @@ class UpdateSessionTypeEvent extends SessionTypeEvent {
   UpdateSessionTypeEvent({
     required this.sessionTypeId,
     required this.points,
-
   });
 }
 
@@ -39,5 +45,5 @@ class DeleteSessionTypeEvent extends SessionTypeEvent {
 
   DeleteSessionTypeEvent({
     required this.sessionTypeId,
-  });}
-
+  });
+}

@@ -1,43 +1,53 @@
 class EmployeeModel {
   final int id;
-  final String name;
-  final String type;
-  final String email;
-  final String status;
   final int salary;
   final String certificate;
+  final DateTime hireDate;
+  final int userId;
 
   EmployeeModel({
     required this.id,
-    required this.name,
-    required this.type,
-    required this.email,
-    required this.status,
     required this.salary,
     required this.certificate,
+    required this.hireDate,
+    required this.userId,
   });
 
   factory EmployeeModel.fromJson(Map<String, dynamic> json) {
+    int parseInt(dynamic value) {
+      if (value == null) return 0;
+      if (value is int) return value;
+      if (value is String) return int.tryParse(value) ?? 0;
+      return 0;
+    }
+
+    DateTime parseDate(String? dateStr) {
+      if (dateStr == null || dateStr.isEmpty) {
+        return DateTime(1970); // تاريخ افتراضي أو يمكنك رمي استثناء
+      }
+      try {
+        return DateTime.parse(dateStr);
+      } catch (e) {
+        return DateTime(1970);
+      }
+    }
+
     return EmployeeModel(
-      id: json['id'],
-      name: json['name'],
-      type: json['type'],
-      email: json['email'],
-      status: json['status'],
-      salary: json['salary'],
-      certificate: json['certificate'],
+      id: parseInt(json['id']),
+      salary: parseInt(json['salary']),
+      certificate: json['certificate'] ?? '',
+      hireDate: parseDate(json['hire_date']),
+      userId: parseInt(json['user_id']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
-      'type': type,
-      'email': email,
-      'status': status,
       'salary': salary,
       'certificate': certificate,
+      'hire_date': hireDate.toIso8601String(),
+      'user_id': userId,
     };
   }
 }
