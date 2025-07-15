@@ -52,3 +52,5 @@ class AddDemandEvent extends AttendDemandEvent {
 
   AddDemandEvent({required this.idIssue, required this.date});
 }
+
+class GetMyDemands extends AttendDemandEvent {}

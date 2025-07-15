@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/attend_Demand_bloc/attend_demand_bloc.dart';
 import 'package:graduation/blocs/consultation_request_bloc/consultation_request_bloc.dart';
 import 'package:graduation/blocs/issue_requests_bloc/issue_requests_bloc.dart';
+import 'package:graduation/presentation/screens/AttendDemand/my_demands_screen.dart';
 import 'package:graduation/presentation/screens/consultation_request/submit_consultation_request_screen.dart';
 import 'package:graduation/presentation/screens/issue_request/add_issue_request.dart';
 import 'package:graduation/presentation/screens/issue_request/user_issue_requests_screen.dart';
@@ -106,6 +108,20 @@ class UserHomeScreen extends StatelessWidget {
             MaterialPageRoute(
               builder: (_) => const AllConsultationRequestsPage(),
             ),
+          );
+        },
+      },
+      {
+        'title': 'My Demnds',
+        'icon': Icons.date_range,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => BlocProvider(
+                      create: (context) => AttendDemandBloc(),
+                      child: const MyDemandsScreen(),
+                    )),
           );
         },
       },

@@ -38,7 +38,13 @@ class _ConsultationRequestListState extends State<ConsultationRequestList> {
           consultationsRequestsList = state.consultationRequest;
           return buildList();
         } else if (state is ConsultationRequestSuccess) {
-          return consultationsRequestsList.isNotEmpty
+          consultationRequestBloc.add(
+            myRole == 'user'
+                ? GetUserConsultationRequestStatusEvent()
+                : GetAllConsultationRequestStatusEvent(),
+          );
+          return 
+          consultationsRequestsList.isNotEmpty
               ? buildList()
               : Center(
                   child: Text('No data'),

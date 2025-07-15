@@ -62,6 +62,23 @@ class AttendDemandBloc extends Bloc<AttendDemandEvent, AttendDemandState> {
             ),
           );
         }
+      } else if (event is GetMyDemands) {
+        emit(
+          DemandLoading(),
+        );
+        try {
+          List<DemandModel> value = await DemandRepository().getMyDemands();
+
+          emit(
+            DemandListLoadedSuccessfully(listdemand: value),
+          );
+        } catch (e) {
+          emit(
+            DemandFail(
+              errmsg: e.toString(),
+            ),
+          );
+        }
       } else if (event is UpdateDemandDateEvent) {
         emit(
           DemandLoading(),
