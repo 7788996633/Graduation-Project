@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/user_bloc/user_bloc.dart';
 import '../../data/models/user_model.dart';
-import 'user_item1.dart';
+import 'user_item.dart';
 
 class UserList extends StatefulWidget {
   const UserList({super.key, required this.bloc});
@@ -59,7 +59,7 @@ class _UserListState extends State<UserList> {
               child: ListView.builder(
                 itemCount: userList.length,
                 itemBuilder: (context, index) {
-                  return UserItem1(
+                  return UserItem(
                     userModel: userList[index],
                   );
                 },

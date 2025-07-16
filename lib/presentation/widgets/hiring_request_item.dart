@@ -38,14 +38,7 @@ class HiringRequestItem extends StatelessWidget {
           },
           icon: const Icon(Icons.delete, color: Colors.red),
         ),
-        title: Text(
-          "Request #${hiringRequestModel.id}",
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-        subtitle: Column(
+        title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 4),

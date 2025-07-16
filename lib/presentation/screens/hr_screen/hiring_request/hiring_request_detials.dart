@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../blocs/hiring_requests/hiring_requests_block.dart';
 import '../../../../blocs/job_application/job_application_bloc.dart';
-import '../../../../data/models/hiring_request_model.dart';
+ import '../../../../data/models/hiring_request_model.dart';
 import '../../../../themes.dart';
 import '../../../widgets/custom_appbar_add.dart';
 import '../job_application/add_job_application.dart';
@@ -98,8 +98,7 @@ class _HiringRequestDetailsScreenState extends State<HiringRequestDetailsScreen>
                   ),
                 ),
                 const SizedBox(height: 24),
-                _buildInfoRow('ID', hiringRequest.id.toString()),
-                Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
+
                 _buildInfoRow('jopTitle', hiringRequest.jopTitle),
                 Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
                 _buildInfoRow('type', hiringRequest.type),
