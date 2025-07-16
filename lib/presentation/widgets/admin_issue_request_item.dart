@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/issue_requests_bloc/issue_requests_bloc.dart';
-import 'package:graduation/constant.dart';
-import 'package:graduation/data/models/issue_request_model.dart';
-import 'package:graduation/presentation/widgets/custom_user_item.dart';
 
+import '../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
 import '../../blocs/issue_requests_bloc/issue_requests_event.dart';
+import '../../constant.dart';
+import '../../data/models/issue_request_model.dart';
 import '../screens/issue_request/issue_request_detials_screen.dart';
+import 'custom_user_item.dart';
 
 class AdminIssueRequestItem extends StatefulWidget {
   const AdminIssueRequestItem({

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/consultation_request_bloc/consultation_request_bloc.dart';
 
+
+import '../../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
 import '../../../blocs/consultations_bloc/consultation_bloc.dart';
 import '../../../constant.dart';
 import '../../../data/models/cons_req_model.dart';
@@ -108,7 +109,7 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                       CircleAvatar(
                         backgroundImage: NetworkImage(
                           widget
-                              .consultationRequestModel.user.profileModel.image,
+                              .consultationRequestModel.user.profileModel!.image,
                         ),
                       ),
                       Text(

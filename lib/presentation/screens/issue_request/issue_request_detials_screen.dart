@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/issue_requests_bloc/issue_requests_event.dart';
-import 'package:graduation/data/models/user_model.dart';
+
  import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
+import '../../../blocs/issue_requests_bloc/issue_requests_event.dart';
 import '../../../constant.dart';
 import '../../../data/models/issue_request_model.dart';
+import '../../../data/models/user_model.dart';
 import '../../../themes.dart';
 import '../../widgets/build_custom_appbar_detials.dart';
 import '../../widgets/edit_button.dart';
@@ -70,7 +71,7 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
               Text(widget.userModel.name),
               CircleAvatar(
                 backgroundImage: NetworkImage(
-                  widget.userModel.profileModel.image,
+                  widget.userModel.profileModel!.image,
                 ),
               ),
               const SizedBox(height: 20),

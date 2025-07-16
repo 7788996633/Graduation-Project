@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:graduation/data/models/consultation_model.dart';
+
 import 'package:http/http.dart' as http;
 
 import '../../constant.dart';
+import '../models/consultation_model.dart';
 
 class ConsultationServices {
   Future<String> addConsultation(

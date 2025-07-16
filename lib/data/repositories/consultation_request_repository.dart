@@ -1,6 +1,6 @@
-import 'package:graduation/data/services/consultation_request_services.dart';
 
 import '../models/cons_req_model.dart';
+import '../services/consultation_request_services.dart';
 
 class ConsultationRequestRepository {
   Future<List<ConsReqModel>> getALLConsultationRequest() async {

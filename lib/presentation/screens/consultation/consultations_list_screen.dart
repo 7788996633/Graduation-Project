@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/consultations_bloc/consultation_bloc.dart';
-import 'package:graduation/presentation/widgets/consultation_list.dart';
+
+import '../../../blocs/consultations_bloc/consultation_bloc.dart';
+import '../../widgets/consultation_list.dart';
 
 class ConsultationsListScreen extends StatefulWidget {
   const ConsultationsListScreen({super.key});

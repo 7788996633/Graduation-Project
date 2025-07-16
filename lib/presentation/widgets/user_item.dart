@@ -28,7 +28,7 @@ class _UserItemState extends State<UserItem> {
         style: TextStyle(
           color: getCurrentTheme()['NormalText'],
         ),
-        widget.userModel.roleName,
+        widget.userModel.roleName!,
       ),
       trailing: widget.userModel.id == 1
           ? const Text("")
@@ -76,7 +76,7 @@ class _UserItemState extends State<UserItem> {
                 color: getCurrentTheme()['Icons'],
               ),
               itemBuilder: (context) =>
-                  getPopupItems(widget.userModel.roleName),
+                  getPopupItems(widget.userModel.roleName!),
             ),
     );
   }

@@ -1,8 +1,9 @@
 import 'dart:convert';
 
-import 'package:graduation/constant.dart';
+
 import 'package:http/http.dart' as http;
 
+import '../../constant.dart';
 import '../models/cons_req_model.dart';
 
 class ConsultationRequestServices {

@@ -1,8 +1,9 @@
  import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/attend_Demand_bloc/attend_demand_bloc.dart';
-import 'package:graduation/data/models/demand_model.dart';
-import 'package:graduation/presentation/widgets/canvas/demands_chart.dart';
+
+import '../../../blocs/attend_Demand_bloc/attend_demand_bloc.dart';
+import '../../../data/models/demand_model.dart';
+import '../../widgets/canvas/demands_chart.dart';
 
 class MyDemandsScreen extends StatefulWidget {
   const MyDemandsScreen({super.key});

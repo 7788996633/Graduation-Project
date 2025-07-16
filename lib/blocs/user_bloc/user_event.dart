@@ -6,7 +6,7 @@ sealed class UserEvent {}
 class GetAllUsers extends UserEvent {}
 
 class GetAllClients extends UserEvent {}
-
+class GetAllEmployees extends UserEvent {}
 class DeleteUserById extends UserEvent {
   final int userId;
 

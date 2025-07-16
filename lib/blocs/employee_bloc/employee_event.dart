@@ -7,17 +7,17 @@ class CreateEmployeeEvent extends EmployeeEvent {
   final int userId;
   final int salary;
   final String hireDate;
-  final String certificate;
+  final dynamic certificate; // File على الأجهزة أو Uint8List على الويب
+  final String certificateFileName; // اسم ملف الشهادة
   final String type;
-
 
   CreateEmployeeEvent({
     required this.userId,
     required this.salary,
     required this.hireDate,
     required this.certificate,
+    required this.certificateFileName,
     required this.type,
-
   });
 }
 

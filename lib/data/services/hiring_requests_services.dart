@@ -40,26 +40,24 @@ class HiringRequestsServices {
       return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
     }
   }
-  Future<String> setSalaryByLawyerId(
-      int lawyerId,
-      int salary,
-      ) async {
+
+  Future<String> setSalaryByLawyerId(int lawyerId, int salary) async {
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken',
+      'Content-Type': 'application/json',
     };
-    var request =
-    http.MultipartRequest('POST', Uri.parse('${myUrl}lawyers/$lawyerId/salary'));
-    request.fields.addAll({
-      'salary': salary.toString(),
 
+    var body = json.encode({
+      'salary': salary,
     });
 
-    request.headers.addAll(headers);
+    var response = await http.post(
+      Uri.parse('${myUrl}lawyers/$lawyerId/salary'),
+      headers: headers,
+      body: body,
+    );
 
-    var streamedResponse = await request.send();
-
-    var response = await http.Response.fromStream(streamedResponse);
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
 
@@ -69,6 +67,9 @@ class HiringRequestsServices {
       } else {
         return 'failed: ${jsonResponse['message']}';
       }
+    } else if (response.statusCode == 422) {
+      print("Validation Error: ${jsonResponse['errors']}");
+      return 'Validation Error: ${jsonResponse['errors']}';
     } else {
       return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
     }

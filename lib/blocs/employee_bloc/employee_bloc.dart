@@ -15,6 +15,7 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
           event.salary,
           event.hireDate,
           event.certificate,
+          event.certificateFileName,
           event.type,
 
         );

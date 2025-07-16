@@ -1,4 +1,5 @@
-import 'package:graduation/constant.dart';
+
+import '../../constant.dart';
 
 class ProfileModel {
   final int id;
@@ -8,22 +9,23 @@ class ProfileModel {
   final int age;
   final String image;
 
-  ProfileModel(
-      {required this.id,
-      required this.address,
-      required this.phone,
-      required this.scientificLevel,
-      required this.age,
-      required this.image});
+  ProfileModel({required this.id,
+    required this.address,
+    required this.phone,
+    required this.scientificLevel,
+    required this.age,
+    required this.image});
 
   factory ProfileModel.fromjson(data) {
     return ProfileModel(
-      id: data['id'],
-      address: data['address'],
-      age: data['age'],
-      image: 'http://$ip:8000/${data['image']}',
-      phone: data['phone'],
-      scientificLevel: data['scientificLevel'],
+      id: data['id'] ?? 0,
+      address: data['address'] ?? 'غير معروف',
+      age: data['age'] ?? 0,
+      phone: data['phone'] ?? 'لا يوجد',
+      scientificLevel: data['scientificLevel'] ?? 'غير محدد',
+      image: data['image'] != null
+          ? 'http://$ip:8000/${data['image']}'
+          : 'https://example.com/default-image.png',
     );
   }
 }

@@ -38,8 +38,8 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            ClientsList1(
-              onUserSelected: (userId) {
+           ClientsList1(
+               onUserSelected: (userId) {
                 setState(() {
                   selectedUserId = userId;
                 });

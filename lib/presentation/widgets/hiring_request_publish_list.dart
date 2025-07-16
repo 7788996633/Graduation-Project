@@ -40,7 +40,7 @@ class _HiringRequestPublishListState extends State<HiringRequestPublishList> {
               backgroundColor: Colors.green,
             ),
           );
-          widget.bloc.add(GetAllHiringRequests());
+          widget.bloc.add(GetHiringRequestsPublished());
         } else if (state is HiringRequestsFail) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

@@ -1,8 +1,9 @@
 import 'package:bloc/bloc.dart';
-import 'package:graduation/data/models/consultation_model.dart';
-import 'package:graduation/data/repositories/consultation_repositories.dart';
+
 import 'package:meta/meta.dart';
 
+import '../../data/models/consultation_model.dart';
+import '../../data/repositories/consultation_repositories.dart';
 import '../../data/services/consultation_services.dart';
 
 part 'consultation_event.dart';

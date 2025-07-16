@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/consultation_request_bloc/consultation_request_bloc.dart';
-import 'package:graduation/themes.dart';
 
+import '../../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
+import '../../../themes.dart';
 import '../../../validator.dart';
 
 class SubmitConsultationRequestScreen extends StatefulWidget {

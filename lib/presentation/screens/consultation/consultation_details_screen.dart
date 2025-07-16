@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:graduation/data/models/consultation_model.dart';
+
+import '../../../data/models/consultation_model.dart';
 
 class ConsultationDetailsScreen extends StatefulWidget {
   const ConsultationDetailsScreen({super.key, required this.consultationModel});

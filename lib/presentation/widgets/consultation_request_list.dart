@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/constant.dart';
-
-import '../../blocs/consultation_request_bloc/consultation_request_bloc.dart';
+import '../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
+import '../../constant.dart';
 import '../../data/models/cons_req_model.dart';
 import 'consultation_request_item.dart';
 

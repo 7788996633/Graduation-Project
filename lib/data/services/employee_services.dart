@@ -6,17 +6,24 @@ import 'dart:io';
 import '../../constant.dart';
 import '../models/employee_model.dart';
 
+import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart' show kIsWeb;
+
+import 'package:mime/mime.dart';
+import 'package:http_parser/http_parser.dart';
+
 class EmployeeServices {
   final Map<String, String> baseHeaders = {
     'Accept': 'application/json',
     'Authorization': 'Bearer $myToken',
   };
-
   Future<String> createEmployee(
       int userId,
       int salary,
       String hireDate,
-      String certificatePath,
+      dynamic certificate, // هنا ممكن يكون File أو Uint8List (Bytes)
+      String certificateFileName,
       String type,
       ) async {
     print('--- Creating Employee ---');
@@ -24,12 +31,7 @@ class EmployeeServices {
     print('Salary: $salary');
     print('Hire Date: $hireDate');
     print('Type: $type');
-    print('Certificate Path: $certificatePath');
-
-    final certFile = File(certificatePath);
-    if (!certFile.existsSync()) {
-      return 'failed: Certificate file not found';
-    }
+    print('Certificate file name: $certificateFileName');
 
     try {
       DateTime.parse(hireDate);
@@ -43,51 +45,48 @@ class EmployeeServices {
     }
 
     var url = Uri.parse('${myUrl}employees/create/$userId');
+    var request = http.MultipartRequest('POST', url);
+    request.headers.addAll(baseHeaders);
+
+    request.fields.addAll({
+      'salary': salary.toString(),
+      'hire_date': hireDate,
+      'type': type,
+    });
 
     if (kIsWeb) {
-      // على الويب لا يمكن استخدام MultipartFile من الملف، فقط نرسل الحقول بدون ملف أو تحتاج طريقة أخرى للرفع
-      var request = http.Request('POST', url);
-      request.headers.addAll(baseHeaders);
-      request.bodyFields = {
-        'salary': salary.toString(),
-        'hire_date': hireDate,
-        'type': type,
-        // لا يمكن ارسال ملف مباشرة في الويب بنفس الطريقة، تحتاج رفع بطريقة مختلفة (مثلاً base64)
-      };
+      // certificate هو Uint8List (bytes)
+      final mimeType = lookupMimeType(certificateFileName) ?? 'application/octet-stream';
+      final mimeParts = mimeType.split('/');
 
-      var streamedResponse = await request.send();
-      var response = await http.Response.fromStream(streamedResponse);
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-
-      var jsonResponse = json.decode(response.body);
-      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-        return jsonResponse['message'];
-      } else {
-        return 'failed: ${jsonResponse['message']}';
-      }
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          'certificate',
+          certificate as Uint8List,
+          filename: certificateFileName,
+          contentType: MediaType(mimeParts[0], mimeParts[1]),
+        ),
+      );
     } else {
-      // على الأجهزة العادية (Android, iOS)
-      var request = http.MultipartRequest('POST', url);
-      request.headers.addAll(baseHeaders);
-      request.fields.addAll({
-        'salary': salary.toString(),
-        'hire_date': hireDate,
-        'type': type,
-      });
-      request.files.add(await http.MultipartFile.fromPath('certificate', certificatePath));
-
-      var streamedResponse = await request.send();
-      var response = await http.Response.fromStream(streamedResponse);
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-
-      var jsonResponse = json.decode(response.body);
-      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-        return jsonResponse['message'];
-      } else {
-        return 'failed: ${jsonResponse['message']}';
+      // certificate هو File
+      final certFile = certificate as File;
+      if (!certFile.existsSync()) {
+        return 'failed: Certificate file not found';
       }
+      request.files.add(await http.MultipartFile.fromPath('certificate', certFile.path));
+    }
+
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    var jsonResponse = json.decode(response.body);
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return jsonResponse['message'];
+    } else {
+      return 'failed: ${jsonResponse['message']}';
     }
   }
 

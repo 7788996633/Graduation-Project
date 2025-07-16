@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/consultations_bloc/consultation_bloc.dart';
-import 'package:graduation/blocs/sessions_bloc/sessions_bloc.dart';
-import 'package:graduation/presentation/screens/consultation/consultations_list_screen.dart';
-import 'package:graduation/presentation/screens/lawyer_screens/lawyer_issues_screens/lawyer_issues_list_screen.dart';
-import 'package:graduation/presentation/screens/lawyer_screens/lawyer_sessions_screen.dart/lawyer_sessions_screen.dart';
+
+import '../../../blocs/consultations_bloc/consultation_bloc.dart';
 import '../../../blocs/furlough_request_bloc/furlough_request_bloc.dart';
 import '../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
+import '../../../blocs/sessions_bloc/sessions_bloc.dart';
 import '../../widgets/custom_lawyer_drawer.dart';
 import '../../widgets/section_card.dart';
 import '../../widgets/custom_home_appbar.dart';
+import '../consultation/consultations_list_screen.dart';
 import '../consultation_request/all_consultation_requests_page.dart';
 import '../furloughs/add_furlough_screen.dart';
+import '../lawyer_screens/lawyer_issues_screens/lawyer_issues_list_screen.dart';
+import '../lawyer_screens/lawyer_sessions_screen.dart/lawyer_sessions_screen.dart';
 
 class LawyerHomeScreen extends StatelessWidget {
   const LawyerHomeScreen({super.key});
