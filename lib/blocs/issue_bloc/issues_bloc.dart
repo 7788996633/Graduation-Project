@@ -18,7 +18,6 @@ class IssuesBloc extends Bloc<IssuesEvent, IssuesState> {
             String value = await IssusServices().issueCreateService(
               event.title,
               event.issueNumber,
-              event.category,
               event.courtName,
               event.status,
               event.priority,
@@ -30,6 +29,8 @@ class IssuesBloc extends Bloc<IssuesEvent, IssuesState> {
               event.userId,
               event.amoountPaid,
               event.description,
+              event.categoryId,
+
             );
             emit(
               IssuesSuccess(
@@ -110,6 +111,23 @@ class IssuesBloc extends Bloc<IssuesEvent, IssuesState> {
           );
           try {
             List<IssuesModel> value = await IssuesRepository().getAllIssues();
+            emit(
+              IssuesListLoadedSuccessFully(issues: value),
+            );
+          } catch (e) {
+            emit(
+              IssuesFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is GetIssuesByCategoryId) {
+          emit(
+            IssuesLoading(),
+          );
+          try {
+            List<IssuesModel> value = await IssuesRepository()
+                .getIssuesByCategoryId(event.categoryId);
             emit(
               IssuesListLoadedSuccessFully(issues: value),
             );

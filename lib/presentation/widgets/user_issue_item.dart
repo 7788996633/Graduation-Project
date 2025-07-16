@@ -107,7 +107,7 @@ class _UserIssueItemState extends State<UserIssueItem> {
                             fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                       Text(
-                        widget.issuesModel.category,
+                        widget.issuesModel.issueNumber,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 14),
                       ),

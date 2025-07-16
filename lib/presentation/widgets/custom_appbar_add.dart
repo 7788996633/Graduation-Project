@@ -4,7 +4,8 @@ import 'package:easy_localization/easy_localization.dart'; // لإضافة tr()
 
 import '../../themes.dart';
 
-class CustomActionAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CustomActionAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   final String title;
 
   final IconData? actionIcon;
@@ -38,8 +39,6 @@ class CustomActionAppBar extends StatelessWidget implements PreferredSizeWidget 
         title.tr(), // <-- استخدم الترجمة هنا
         style: TextStyle(
           color: textColor,
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
         ),
       ),
       centerTitle: true,

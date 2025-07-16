@@ -34,11 +34,17 @@ class _LawyerListState extends State<LawyerList> {
       physics: const ClampingScrollPhysics(),
       itemBuilder: (context, index) {
         final lawyer = lawyersList[index];
-        return BlocProvider(
-          create: (context) => LawyerProfileBloc(),
-          child: LawyerItem(lawyerModel: lawyer),
+        return Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0), // مسافة عمودية بين العناصر
+            child: BlocProvider(
+              create: (context) => LawyerProfileBloc(),
+              child: LawyerItem(lawyerModel: lawyer),
+            ),
+          ),
         );
       },
+
     );
   }
 

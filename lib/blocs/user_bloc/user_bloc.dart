@@ -48,7 +48,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             List<UserModel> value = await UsersRepositories().getAllUsers();
             List<UserModel> clientList = value
                 .where(
-                  (element) => element.roleName.toLowerCase() == 'user',
+                  (element) => element.roleName!.toLowerCase() == 'user',
                 )
                 .toList();
             emit(
@@ -63,7 +63,32 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               ),
             );
           }
-        } else if (event is GetAllUsers) {
+        }
+        else if (event is GetAllEmployees) {
+          emit(
+            UserLoading(),
+          );
+          try {
+            List<UserModel> value = await UsersRepositories().getAllUsers();
+            List<UserModel> clientList = value
+                .where(
+                    (element) => !['user', 'admin'].contains(element.roleName!.toLowerCase())
+
+            )
+                .toList();
+            emit(
+              UsersListLoaded(
+                usersList: clientList,
+              ),
+            );
+          } catch (e) {
+            emit(
+              UserFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        }else if (event is GetAllUsers) {
           emit(
             UserLoading(),
           );

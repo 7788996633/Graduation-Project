@@ -133,10 +133,7 @@ class _IssueScreenState extends State<IssueScreen> {
                 icon: Icons.numbers,
                 title: "Issue Number",
                 value: widget.issuesModel.issueNumber),
-            buildSectionCard(
-                icon: Icons.category,
-                title: "Category",
-                value: widget.issuesModel.category),
+            
             buildSectionCard(
                 icon: Icons.title,
                 title: "Court Name",

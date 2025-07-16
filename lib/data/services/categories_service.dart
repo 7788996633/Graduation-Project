@@ -41,33 +41,5 @@ class CategoriesServices {
     }
   }
 
-  Future<CategoriesModel> getIssuesByCategory(int categoryId) async {
-    try {
-      var url = Uri.parse('${myUrl}issues/by-category/$categoryId');
-      http.Response response;
-
-      if (kIsWeb) {
-        var request = http.Request('GET', url);
-        request.headers.addAll(baseHeaders);
-        var streamedResponse = await request.send();
-        response = await http.Response.fromStream(streamedResponse);
-      } else {
-        var request = http.MultipartRequest('GET', url);
-        request.headers.addAll(baseHeaders);
-        var streamedResponse = await request.send();
-        response = await http.Response.fromStream(streamedResponse);
-      }
-
-      var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
-
-      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-        return CategoriesModel.fromJson(jsonResponse['data']);
-      } else {
-        throw Exception('failed: ${jsonResponse['message']}');
-      }
-    } catch (e) {
-      throw Exception('Error in getCategoryById: $e');
-    }
-  }
+ 
 }

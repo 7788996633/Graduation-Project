@@ -26,9 +26,10 @@ class LawyerItem extends StatelessWidget {
           // انتقل إلى شاشة تعيين الراتب مع تمرير معرف المحامي
           Navigator.push(
             context,
+
             MaterialPageRoute(
-              builder: (_) => BlocProvider.value(
-                value: BlocProvider.of<HiringRequestsBloc>(context),
+              builder: (_) => BlocProvider(
+                create: (_) => HiringRequestsBloc(),
                 child: SetSalaryLawyerScreen(lawyerId: lawyerModel.id),
               ),
             ),

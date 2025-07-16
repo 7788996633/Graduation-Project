@@ -21,7 +21,8 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
   final TextEditingController issuenumberController = TextEditingController();
   final TextEditingController courtnameController = TextEditingController();
   final TextEditingController totalcostController = TextEditingController();
-  final TextEditingController numberofpaymentsController = TextEditingController();
+  final TextEditingController numberofpaymentsController =
+      TextEditingController();
   final TextEditingController opponentnameController = TextEditingController();
 
   // Dropdown values
@@ -29,7 +30,7 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
   final List<String> statuses = ['Open', 'Closed', 'Pending', 'In Progress'];
   final List<String> priorities = ['Low', 'Medium', 'High', 'Urgent'];
 
-  String? selectedCategory;
+  int? selectedCategoryId;
   String? selectedStatus;
   String? selectedPriority;
 
@@ -64,7 +65,8 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
 
     final pickedDate = await showDatePicker(
       context: context,
-      initialDate: isStartDate ? (startDate ?? initialDate) : (endDate ?? initialDate),
+      initialDate:
+          isStartDate ? (startDate ?? initialDate) : (endDate ?? initialDate),
       firstDate: firstDate,
       lastDate: lastDate,
     );
@@ -117,7 +119,9 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
           );
           return;
         }
-        if (selectedCategory == null || selectedStatus == null || selectedPriority == null) {
+        if (selectedCategoryId == null ||
+            selectedStatus == null ||
+            selectedPriority == null) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text("Please select category, status, and priority."),
@@ -133,7 +137,7 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
           userId: selectedUserId!,
           title: titleController.text,
           issueNumber: issuenumberController.text,
-          category: selectedCategory!,
+          categoryId: selectedCategoryId!,
           courtName: courtnameController.text,
           status: selectedStatus!,
           priority: selectedPriority!,
@@ -165,7 +169,6 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
       appBar: CustomActionAppBar(
         title: 'Create Issue',
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Form(
@@ -185,9 +188,11 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 14),
                     ),
-                    child: Text(isLastStep ? 'Submit' : 'Next', style: const TextStyle(fontSize: 18)),
+                    child: Text(isLastStep ? 'Submit' : 'Next',
+                        style: const TextStyle(fontSize: 18)),
                   ),
                   const SizedBox(width: 20),
                   if (_currentStep > 0)
@@ -201,7 +206,8 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
             steps: [
               Step(
                 isActive: _currentStep >= 0,
-                state: _currentStep > 0 ? StepState.complete : StepState.indexed,
+                state:
+                    _currentStep > 0 ? StepState.complete : StepState.indexed,
                 title: const Text('Basic Info'),
                 content: Column(
                   children: [
@@ -210,24 +216,30 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
                       label: 'Title',
                       icon: Icons.title,
                     ),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     _buildTextField(
                       controller: issuenumberController,
                       label: 'Issue Number',
                       icon: Icons.confirmation_number_outlined,
                       inputType: TextInputType.number,
                     ),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     _buildTextField(
                       controller: courtnameController,
                       label: 'Court Name',
                       icon: Icons.account_balance,
                     ),
-                    const SizedBox(height: 10),
-                    _buildDropdown(
-                      label: 'Category',
-                      value: selectedCategory,
-                      items: categories,
-                      onChanged: (val) => setState(() => selectedCategory = val),
-                    ),
+                    // const SizedBox(height: 10),
+                    // _buildDropdown(
+                    //   label: 'Category',
+                    //   value: selectedCategoryId.toString(),
+                    //   items: categories,
+                    //   onChanged: (val) => setState(() => selectedCategoryId = val),
+                    // ),
                     const SizedBox(height: 10),
                     _buildDropdown(
                       label: 'Status',
@@ -240,14 +252,19 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
                       label: 'Priority',
                       value: selectedPriority,
                       items: priorities,
-                      onChanged: (val) => setState(() => selectedPriority = val),
+                      onChanged: (val) =>
+                          setState(() => selectedPriority = val),
+                    ),
+                    const SizedBox(
+                      height: 10,
                     ),
                   ],
                 ),
               ),
               Step(
                 isActive: _currentStep >= 1,
-                state: _currentStep > 1 ? StepState.complete : StepState.indexed,
+                state:
+                    _currentStep > 1 ? StepState.complete : StepState.indexed,
                 title: const Text('Dates & Costs'),
                 content: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -287,7 +304,8 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
                   children: [
                     const Text(
                       "Select a Client:",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     const SizedBox(height: 12),
                     Container(
@@ -302,7 +320,8 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
                           ),
                         ],
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 10),
                       height: 150,
                       child: BlocProvider(
                         create: (context) => UserBloc(),
@@ -313,7 +332,6 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
                             });
                           },
                         ),
-
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -386,7 +404,8 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
           items: items.map((item) {
             return DropdownMenuItem<String>(
               value: item,
-              child: Text(item, style: const TextStyle(fontWeight: FontWeight.w600)),
+              child: Text(item,
+                  style: const TextStyle(fontWeight: FontWeight.w600)),
             );
           }).toList(),
           onChanged: onChanged,
@@ -407,7 +426,8 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
           labelText: label,
           labelStyle: TextStyle(color: mainColor, fontWeight: FontWeight.bold),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
         ),
         child: Text(
           selectedDate == null

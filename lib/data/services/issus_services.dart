@@ -6,10 +6,14 @@ import '../../../constant.dart';
 import '../../../data/models/issues_model.dart';
 
 class IssusServices {
+  final Map<String, String> baseHeaders = {
+    'Accept': 'application/json',
+    'Authorization': 'Bearer $myToken',
+  };
+
   Future<String> issueCreateService(
     String title,
     String issueNumber,
-    String category,
     String courtName,
     String status,
     String priority,
@@ -21,6 +25,7 @@ class IssusServices {
     int userId,
     int amoountPaid,
     String description,
+    int categoryId,
   ) async {
     var headers = {
       'Accept': 'application/json',
@@ -32,7 +37,6 @@ class IssusServices {
       var body = {
         'title': title,
         'issue_number': issueNumber,
-        'category': category,
         'court_name': courtName,
         'status': status,
         'priority': priority,
@@ -43,6 +47,7 @@ class IssusServices {
         'opponent_name': opponentName,
         'amount_paid': amoountPaid.toString(),
         'description': description,
+        'category_id': categoryId.toString(),
       };
 
       var request = http.Request('POST', url);
@@ -71,7 +76,6 @@ class IssusServices {
       request.fields.addAll({
         'title': title,
         'issue_number': issueNumber,
-        'category': category,
         'court_name': courtName,
         'status': status,
         'priority': priority,
@@ -81,7 +85,8 @@ class IssusServices {
         'number_of_payments': numberOfPayments.toString(),
         'opponent_name': opponentName,
         'amount_paid': amoountPaid.toString(),
-        'description': description
+        'description': description,
+        'category_id': categoryId.toString()
       });
 
       request.headers.addAll(headers);
@@ -284,6 +289,36 @@ class IssusServices {
       }
     } else {
       return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+    }
+  }
+
+  Future<List> getIssuesByCategory(int categoryId) async {
+    try {
+      var url = Uri.parse('${myUrl}issues/by-category/$categoryId');
+      http.Response response;
+
+      if (kIsWeb) {
+        var request = http.Request('GET', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      } else {
+        var request = http.MultipartRequest('GET', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      }
+
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+        return jsonResponse['data']['issues'];
+      } else {
+        throw Exception('failed: ${jsonResponse['message']}');
+      }
+    } catch (e) {
+      throw Exception('Error in getCategoryById: $e');
     }
   }
 

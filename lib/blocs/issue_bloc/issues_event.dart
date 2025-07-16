@@ -7,7 +7,7 @@ class IssueAdd extends IssuesEvent {
   final String title;
 
   final String issueNumber;
-  final String category;
+  final int categoryId;
 
   final String courtName;
 
@@ -26,7 +26,7 @@ class IssueAdd extends IssuesEvent {
   IssueAdd({
     required this.title,
     required this.issueNumber,
-    required this.category,
+    required this.categoryId,
     required this.courtName,
     required this.status,
     required this.priority,
@@ -106,4 +106,9 @@ class UpdateIssuePriorityEvent extends IssuesEvent {
   final String priority;
 
   UpdateIssuePriorityEvent({required this.issueId, required this.priority});
+}
+
+class GetIssuesByCategoryId extends IssuesEvent {
+  final int categoryId;
+  GetIssuesByCategoryId({required this.categoryId});
 }

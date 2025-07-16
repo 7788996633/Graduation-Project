@@ -206,34 +206,47 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
                               _hireDateController.text.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content:
-                                Text("Please fill in all fields."),
+                                content: Text("Please fill in all fields."),
                                 backgroundColor: Colors.orange,
                               ),
                             );
                             return;
                           }
 
-                          final int? salary = int.tryParse(
-                              _salaryController.text.trim());
+                          final int? salary =
+                          int.tryParse(_salaryController.text.trim());
                           if (salary == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text(
-                                    "Salary must be a valid number."),
+                                content:
+                                Text("Salary must be a valid number."),
                                 backgroundColor: Colors.orange,
                               ),
                             );
                             return;
                           }
+
+                          if (!_employeeTypes.contains(_selectedType)) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content:
+                                Text("Please select a valid employee type."),
+                                backgroundColor: Colors.orange,
+                              ),
+                            );
+                            return;
+                          }
+
+                          final String certificateFileName =
+                              _certificateFile!.path.split('/').last;
 
                           BlocProvider.of<EmployeeBloc>(context).add(
                             CreateEmployeeEvent(
                               userId: widget.userId,
                               salary: salary,
-                              hireDate:
-                              _hireDateController.text.trim(),
-                              certificate: _certificateFile!.path,
+                              hireDate: _hireDateController.text.trim(),
+                              certificate: _certificateFile!,
+                              certificateFileName: certificateFileName,
                               type: _selectedType!,
                             ),
                           );

@@ -100,10 +100,11 @@ class _SetSalaryLawyerScreenState extends State<SetSalaryLawyerScreen> {
                           }
 
                           BlocProvider.of<HiringRequestsBloc>(context).add(
-                            CreateHiringRequestsEvent(
-                              jopTitle: "Set Salary",
-                              type: _salaryController.text.trim(),
-                              description: "",
+                            SetSalaryByLawyerId(
+
+                              salary: int.parse(_salaryController.text.trim()), lawyerId: widget.lawyerId,
+
+
                             ),
                           );
                         },

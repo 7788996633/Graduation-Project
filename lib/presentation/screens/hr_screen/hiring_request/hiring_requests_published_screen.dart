@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../blocs/hiring_requests/hiring_requests_block.dart';
 import '../../../../blocs/hiring_requests/hiring_requests_event.dart';
 import '../../../../themes.dart';
+import '../../../widgets/custom_appbar_add.dart';
 import '../../../widgets/hiring_request_publish_list.dart';
 import '../../../widgets/refresh_button.dart';
 
@@ -28,13 +29,17 @@ class _ListHiringRequestsPublishScreenState extends State<ListHiringRequestsPubl
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.scaffold,
-
+      appBar: CustomActionAppBar(
+        title: 'Hiring Requests Published',
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             const SizedBox(height: 20),
-            HiringRequestPublishList(bloc: bloc),
+            Expanded(
+              child: HiringRequestPublishList(bloc: bloc),
+            ),
           ],
         ),
       ),

@@ -2,7 +2,7 @@ class IssuesModel {
   final int id;
   final String title;
   final String issueNumber;
-  final String category;
+  final int category;
   final String opponentName;
   final String courtName;
   final int numberOfPayments;
@@ -40,7 +40,7 @@ class IssuesModel {
       id: json['id'] ?? 0,
       title: json['title'] ?? '',
       issueNumber: json['issue_number'] ?? '',
-      category: json['category'] ?? '',
+      category: json['category_id'] ?? '',
       opponentName: json['opponent_name'] ?? '',
       courtName: json['court_name'] ?? '',
       numberOfPayments: json['number_of_payments'] ?? 0,
@@ -59,6 +59,7 @@ class IssuesModel {
 
 // Enums
 enum IssuePriority { low, medium, high, critical }
+
 enum IssueStatus { open, in_Progress, closed }
 
 // Enum <-> String Helpers
@@ -72,14 +73,14 @@ String statusToString(IssueStatus s) {
 
 IssuePriority stringToPriority(String s) {
   return IssuePriority.values.firstWhere(
-        (e) => e.name.toLowerCase() == s.toLowerCase(),
+    (e) => e.name.toLowerCase() == s.toLowerCase(),
     orElse: () => IssuePriority.low,
   );
 }
 
 IssueStatus stringToStatus(String s) {
   return IssueStatus.values.firstWhere(
-        (e) => e.name.toLowerCase() == s.toLowerCase(),
+    (e) => e.name.toLowerCase() == s.toLowerCase(),
     orElse: () => IssueStatus.open,
   );
 }

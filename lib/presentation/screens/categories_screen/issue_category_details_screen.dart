@@ -1,111 +1,97 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/issue_bloc/issues_bloc.dart';
+import 'package:graduation/presentation/widgets/isssues_category_list.dart';
+import 'package:graduation/presentation/widgets/user_issue_item.dart';
 
 import '../../../data/models/categories_model.dart';
 import '../../../data/models/issues_model.dart';
 import '../../../themes.dart';
 import '../../widgets/custom_appbar_add.dart';
-class IssueCategoryDetailsScreen extends StatelessWidget {
+
+class IssueCategoryDetailsScreen extends StatefulWidget {
   final CategoriesModel issueCategoryModel;
 
-  const IssueCategoryDetailsScreen({super.key, required this.issueCategoryModel});
+  const IssueCategoryDetailsScreen(
+      {super.key, required this.issueCategoryModel});
+
+  @override
+  State<IssueCategoryDetailsScreen> createState() =>
+      _IssueCategoryDetailsScreenState();
+}
+
+class _IssueCategoryDetailsScreenState
+    extends State<IssueCategoryDetailsScreen> {
+  bool isLeaf = false;
+
+  @override
+  void initState() {
+    isLeaf = (widget.issueCategoryModel.children.isEmpty);
+    if (isLeaf) {
+      BlocProvider.of<IssuesBloc>(context).add(
+        GetIssuesByCategoryId(
+          categoryId: widget.issueCategoryModel.id,
+        ),
+      );
+    }
+    print(widget.issueCategoryModel.id);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final category = issueCategoryModel;
-    final List<IssuesModel> issues = category.issues;
+    List<IssuesModel> issues = [];
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const CustomActionAppBar(title: 'تفاصيل التصنيف والقضايا'),
+      appBar: CustomActionAppBar(
+        title: widget.issueCategoryModel.name,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // معلومات التصنيف
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'اسم التصنيف: ${category.name}',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.darkBlue,
-                      ),
+            if (isLeaf)
+              Column(
+                children: [
+                  Text(
+                    'القضايا:',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.darkBlue,
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'رقم التصنيف: ${category.id}',
-                      style: const TextStyle(fontSize: 16, color: AppColors.darkBlue),
-                    ),
-                    if (category.parentId != null) ...[
-                      const SizedBox(height: 8),
-                      Text(
-                        'رقم التصنيف الأب: ${category.parentId}', // ← هذا هو المطلوب
-                        style: const TextStyle(fontSize: 16, color: AppColors.darkBlue),
-                      ),
-                    ],
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 12),
+                  BlocBuilder<IssuesBloc, IssuesState>(
+                    builder: (context, state) {
+                      if (state is IssuesListLoadedSuccessFully) {
+                        issues = state.issues;
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: issues.length,
+                          itemBuilder: (context, index) => UserIssueItem(
+                            issuesModel: issues[index],
+                          ),
+                        );
+                      } else if (state is IssuesFail) {
+                        return Text(
+                          state.errmsg,
+                        );
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    },
+                  ),
+                ],
+              )
+            else
+              IsssuesCategoryList(
+                categoriesModel: widget.issueCategoryModel.children,
               ),
-            ),
-            const SizedBox(height: 24),
-
-            // القضايا المرتبطة
-            Text(
-              'القضايا:',
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: AppColors.darkBlue,
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            if (issues.isEmpty)
-              const Text('لا توجد قضايا لهذا التصنيف'),
-            ...issues.map((issue) => _buildIssueCard(issue)) ,
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildIssueCard(IssuesModel issue) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              issue.title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppColors.darkBlue,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text('رقم القضية: ${issue.issueNumber}'),
-            Text('الحالة: ${issue.status}'),
-            Text('الأولوية: ${issue.priority}'),
-            Text('المبلغ المدفوع: ${issue.amountPaid}'),
-            Text('التكلفة الكلية: ${issue.totalCost}'),
-            Text('اسم المحكمة: ${issue.courtName}'),
-            Text('الخصم: ${issue.opponentName}'),
-            Text('تاريخ البدء: ${issue.startDate}'),
-            Text('تاريخ الانتهاء: ${issue.endDate}'),
           ],
         ),
       ),

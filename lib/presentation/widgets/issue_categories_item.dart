@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/issue_bloc/issues_bloc.dart';
 
 import '../../data/models/categories_model.dart';
 import '../screens/categories_screen/issue_category_details_screen.dart';
-import '../../blocs/categories/categories_bloc.dart';
 
 class IssueCategoryItem extends StatelessWidget {
   final CategoriesModel issueCategoryModel;
@@ -30,36 +30,25 @@ class IssueCategoryItem extends StatelessWidget {
     return shades[depth];
   }
 
-  Widget _buildCategory(BuildContext context, CategoriesModel category, int depth) {
-    final isLeaf = category.children.isEmpty;
-
+  Widget _buildCategory(
+      BuildContext context, CategoriesModel category, int depth) {
     return Card(
       color: _getColorByDepth(depth),
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
       elevation: 3,
-      child: isLeaf
-          ? ListTile(
+      child: ListTile(
         title: Text(category.name),
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (_) => BlocProvider(
-                create: (_) => CategoriesBloc(),
+                create: (_) => IssuesBloc(),
                 child: IssueCategoryDetailsScreen(issueCategoryModel: category),
               ),
             ),
           );
         },
-      )
-          : ExpansionTile(
-        title: Text(
-          category.name,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        children: category.children
-            .map((child) => _buildCategory(context, child, depth + 1))
-            .toList(),
       ),
     );
   }

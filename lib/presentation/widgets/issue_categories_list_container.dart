@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/presentation/widgets/isssues_category_list.dart';
 
 import '../../blocs/categories/categories_bloc.dart';
 import '../../blocs/categories/categories_event.dart';
 
 import '../../data/models/categories_model.dart';
-import 'issue_categories_item.dart';
 
-
-class IssueCategoryList extends StatefulWidget {
-  const IssueCategoryList({super.key, required this.bloc});
+class IssueCategoryListContainer extends StatefulWidget {
+  const IssueCategoryListContainer({super.key, required this.bloc});
   final CategoriesBloc bloc;
 
   @override
-  State<IssueCategoryList> createState() => _IssueCategoryListState();
+  State<IssueCategoryListContainer> createState() => _IssueCategoryListState();
 }
 
-class _IssueCategoryListState extends State<IssueCategoryList> {
+class _IssueCategoryListState extends State<IssueCategoryListContainer> {
   @override
   void initState() {
     super.initState();
@@ -60,11 +59,8 @@ class _IssueCategoryListState extends State<IssueCategoryList> {
               return const Center(child: Text('There are no issue categories'));
             }
             return Expanded(
-              child: ListView.builder(
-                itemCount: issueCategoryList.length,
-                itemBuilder: (context, index) {
-                  return IssueCategoryItem(issueCategoryModel: issueCategoryList[index]);
-                },
+              child: IsssuesCategoryList(
+                categoriesModel: issueCategoryList,
               ),
             );
           } else if (state is CategoriesFail) {
