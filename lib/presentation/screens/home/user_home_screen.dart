@@ -9,11 +9,13 @@ import 'package:graduation/presentation/screens/issue_request/add_issue_request.
 import 'package:graduation/presentation/screens/issue_request/user_issue_requests_screen.dart';
 import 'package:graduation/presentation/screens/user_screens/user_issues_screens/user_issues_screens.dart';
 import 'package:graduation/presentation/screens/user_screens/user_sessions_screen/user_session_screens.dart';
+import '../../../blocs/common_consultation_bloc/common _consultation_bloc.dart';
 import '../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../blocs/sessions_bloc/sessions_bloc.dart';
 import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../widgets/custom_app_drawer.dart';
 import '../../widgets/section_card.dart';
+import '../common_consulation/list_common_consul.dart';
 import '../consultation_request/all_consultation_requests_page.dart';
 import '../settings/setting_screen.dart';
 import '../../widgets/custom_home_appbar.dart';
@@ -34,6 +36,21 @@ class UserHomeScreen extends StatelessWidget {
               builder: (_) => BlocProvider(
                 create: (_) => IssuesBloc(),
                 child: const UserIssuesScreens(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'common Consultations',
+        'icon': Icons.question_answer_rounded,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => CommonConsultationBloc(),
+                child: const ListCommonConsultationsScreen(),
               ),
             ),
           );

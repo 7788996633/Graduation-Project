@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../../data/models/issues_model.dart';
 import '../../../widgets/custom_appbar_add.dart';
-import '../../../widgets/issue_item.dart';
+import '../../../widgets/user_issue_item.dart';
 
 class UserIssuesScreens extends StatefulWidget {
   const UserIssuesScreens({super.key});
@@ -25,7 +25,7 @@ class _UserIssuesScreensState extends State<UserIssuesScreens> {
   Widget buildIssuesList() {
     return ListView.builder(
       itemCount: allIssuesList.length,
-      itemBuilder: (context, index) => IssueItem(
+      itemBuilder: (context, index) => UserIssueItem(
         issuesModel: allIssuesList[index],
       ),
     );
