@@ -1,37 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../../blocs/hiring_requests/hiring_requests_block.dart';
 import '../../../../blocs/hiring_requests/hiring_requests_event.dart';
 import '../../../../blocs/hiring_requests/hiring_requests_state.dart';
-
 import '../../../widgets/build_custom_appbar_detials.dart';
 import '../../../widgets/custom_text_field_add.dart';
 import '../../../widgets/elevated_button_submit.dart';
 
-class AddHiringRequestScreen extends StatefulWidget {
-  const AddHiringRequestScreen({super.key});
+class SetSalaryLawyerScreen extends StatefulWidget {
+  final int lawyerId;
+
+  const SetSalaryLawyerScreen({super.key,required this.lawyerId,});
 
   @override
-  State<AddHiringRequestScreen> createState() => _AddHiringRequestScreenState();
+  State<SetSalaryLawyerScreen> createState() => _SetSalaryLawyerScreenState();
 }
 
-class _AddHiringRequestScreenState extends State<AddHiringRequestScreen> {
-  final TextEditingController _jobTitleController = TextEditingController();
-  final TextEditingController _typeController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
+class _SetSalaryLawyerScreenState extends State<SetSalaryLawyerScreen> {
+  final TextEditingController _salaryController = TextEditingController();
 
   void _clearFields() {
-    _jobTitleController.clear();
-    _typeController.clear();
-    _descriptionController.clear();
+    _salaryController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
-      appBar: buildCustomAppBar("Add Hiring Request"),
+      appBar: buildCustomAppBar("Set Salary Lawyer"),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: BlocConsumer<HiringRequestsBloc, HiringRequestsState>(
@@ -72,7 +68,7 @@ class _AddHiringRequestScreenState extends State<AddHiringRequestScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const Text(
-                      "Create New Hiring Request",
+                      "Set Salary for Lawyer",
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w600,
@@ -81,21 +77,9 @@ class _AddHiringRequestScreenState extends State<AddHiringRequestScreen> {
                     ),
                     const SizedBox(height: 25),
                     CustomTextFieldAdd(
-                      controller: _jobTitleController,
-                      label: 'Job Title',
-                    ),
-                    const SizedBox(height: 20),
-                    CustomTextFieldAdd(
-                      controller: _typeController,
-                      label: 'Type',
-                    ),
-                    const SizedBox(height: 20),
-                    CustomTextFieldAdd(
-                      controller: _descriptionController,
-                      label: 'Description',
-                      maxLines: 5,
-                      filled: true,
-                      fillColor: Colors.grey[100],
+                      controller: _salaryController,
+                      label: 'Salary',
+                      keyboardType: TextInputType.number,
                     ),
                     const SizedBox(height: 30),
                     state is HiringRequestsLoading
@@ -105,12 +89,10 @@ class _AddHiringRequestScreenState extends State<AddHiringRequestScreen> {
                       child: CustomElevatedButtonSubmit(
                         label: "Submit",
                         onPressed: () {
-                          if (_jobTitleController.text.isEmpty ||
-                              _typeController.text.isEmpty ||
-                              _descriptionController.text.isEmpty) {
+                          if (_salaryController.text.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text("Please fill in all fields."),
+                                content: Text("Please enter the salary."),
                                 backgroundColor: Colors.orange,
                               ),
                             );
@@ -119,9 +101,9 @@ class _AddHiringRequestScreenState extends State<AddHiringRequestScreen> {
 
                           BlocProvider.of<HiringRequestsBloc>(context).add(
                             CreateHiringRequestsEvent(
-                              jopTitle: _jobTitleController.text.trim(),
-                              type: _typeController.text.trim(),
-                              description: _descriptionController.text.trim(),
+                              jopTitle: "Set Salary",
+                              type: _salaryController.text.trim(),
+                              description: "",
                             ),
                           );
                         },

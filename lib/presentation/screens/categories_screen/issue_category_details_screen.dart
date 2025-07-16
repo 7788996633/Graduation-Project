@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../blocs/categories/categories_bloc.dart';
-import '../../../blocs/categories/categories_event.dart';
 
 import '../../../data/models/categories_model.dart';
 import '../../../data/models/issues_model.dart';

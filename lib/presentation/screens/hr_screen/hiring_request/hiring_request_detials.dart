@@ -99,8 +99,7 @@ class _HiringRequestDetailsScreenState extends State<HiringRequestDetailsScreen>
                   ),
                 ),
                 const SizedBox(height: 24),
-                _buildInfoRow('ID', hiringRequest.id.toString()),
-                Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
+
                 _buildInfoRow('jopTitle', hiringRequest.jopTitle),
                 Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
                 _buildInfoRow('type', hiringRequest.type),

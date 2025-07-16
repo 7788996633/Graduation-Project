@@ -18,6 +18,22 @@ class CategoriesModel {
   });
 
   factory CategoriesModel.fromJson(Map<String, dynamic> json) {
+    // إذا الـ json يحتوي على "category" و "issues" (مثل طلب getIssuesByCategory)
+    if (json.containsKey('category') && json.containsKey('issues')) {
+      final category = json['category'];
+      return CategoriesModel(
+        id: category['id'] ?? 0,
+        name: category['name'] ?? '',
+        parentId: category['parent_id'],
+        type: category['type'],
+        children: [], // مافي children بهذا الطلب
+        issues: List<IssuesModel>.from(
+          (json['issues'] as List).map((e) => IssuesModel.fromJson(e)),
+        ),
+      );
+    }
+
+    // الحالة العادية (من طلب getAllCategories)
     return CategoriesModel(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
@@ -25,13 +41,11 @@ class CategoriesModel {
       type: json['type'],
       children: json['children'] != null
           ? List<CategoriesModel>.from(
-          (json['children'] as List)
-              .map((child) => CategoriesModel.fromJson(child)))
+          (json['children'] as List).map((child) => CategoriesModel.fromJson(child)))
           : [],
       issues: json['issues'] != null
           ? List<IssuesModel>.from(
-          (json['issues'] as List)
-              .map((issue) => IssuesModel.fromJson(issue)))
+          (json['issues'] as List).map((issue) => IssuesModel.fromJson(issue)))
           : [],
     );
   }

@@ -62,7 +62,15 @@ class CategoriesServices {
       print(jsonResponse);
 
       if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-        return CategoriesModel.fromJson(jsonResponse['data']);
+        final categoryJson = jsonResponse['data']['category'];
+        final issuesJson = jsonResponse['data']['issues'];
+
+        // دمج القيم يدويًا
+        return CategoriesModel.fromJson({
+          ...categoryJson, // ← يفرد id, name, parent_id
+          'children': [], // لأنه مش موجود داخل `category`
+          'issues': issuesJson, // ← يربط قائمة القضايا
+        });
       } else {
         throw Exception('failed: ${jsonResponse['message']}');
       }
