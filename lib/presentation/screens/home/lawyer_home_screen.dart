@@ -10,6 +10,7 @@ import '../../widgets/custom_lawyer_drawer.dart';
 import '../../widgets/section_card.dart';
 import '../../widgets/custom_home_appbar.dart';
 import '../consultation/consultations_list_screen.dart';
+import '../consultation/my_consultations_lawyer_list_screen.dart';
 import '../consultation_request/all_consultation_requests_page.dart';
 import '../furloughs/add_furlough_screen.dart';
 import '../lawyer_screens/lawyer_issues_screens/lawyer_issues_list_screen.dart';
@@ -76,6 +77,21 @@ class LawyerHomeScreen extends StatelessWidget {
               builder: (_) => BlocProvider(
                 create: (_) => ConsultationBloc(),
                 child: const ConsultationsListScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'My Consultations',
+        'icon': Icons.message,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => ConsultationBloc(),
+                child: const MyConsultationsLawyerListScreen(),
               ),
             ),
           );
