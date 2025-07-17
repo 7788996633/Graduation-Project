@@ -9,7 +9,7 @@ import '../../../../data/filters/filters_strategy.dart';
 import '../../../../data/models/issues_model.dart';
 import '../../../../themes.dart';
 import '../../../widgets/custom_appbar_add.dart';
- import 'create_issue_screen.dart';
+import 'create_issue_screen.dart';
 
 class AllIssuesScreen extends StatefulWidget {
   const AllIssuesScreen({super.key});
@@ -30,14 +30,19 @@ class _AllIssuesScreenState extends State<AllIssuesScreen> {
 
   Widget buildIssuesList() {
     return ListView.builder(
-      itemCount: allIssuesList.length,
+      shrinkWrap: true,
+      itemCount: _searchText.isEmpty ? allIssuesList.length : filterd.length,
       itemBuilder: (context, index) => UserIssueItem(
-        issuesModel: allIssuesList[index],
+        issuesModel:
+            _searchText.isEmpty ? allIssuesList[index] : filterd[index],
         issuesBloc: issuesBloc,
       ),
     );
   }
 
+  String _searchText = '';
+
+  List<IssuesModel> filterd = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,43 +79,84 @@ class _AllIssuesScreenState extends State<AllIssuesScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: BlocBuilder<IssuesBloc, IssuesState>(
-          builder: (context, state) {
-            if (state is IssuesListLoadedSuccessFully) {
-              allIssuesList = state.issues;
-              return allIssuesList.isEmpty
-                  ? const Center(child: Text('There is no issues'))
-                  : buildIssuesList();
-            } else if (state is IssuesSuccess) {
-              BlocProvider.of<IssuesBloc>(context).add(GetAllIssuesEvent());
-              return const SizedBox();
-            } else if (state is IssuesFail) {
-              debugPrint(" Error: ${state.errmsg}");
-              return Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      "There is an error:",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      state.errmsg,
-                      style: const TextStyle(fontSize: 16),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              TextField(
+                onChanged: (value) {
+                  _searchText = value;
+                  if (value.isNotEmpty) {
+                    filterd = allIssuesList
+                        .where(
+                          (element) =>
+                              element.issueNumber
+                                  .toLowerCase()
+                                  .contains(value.toLowerCase()) ||
+                              element.user.name
+                                  .toLowerCase()
+                                  .contains(value.toLowerCase()) ||
+                              element.title
+                                  .toLowerCase()
+                                  .contains(value.toLowerCase()),
+                        )
+                        .toList();
+                  } else {
+                    filterd = allIssuesList;
+                  }
+                  setState(() {});
+                },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(
+                    Icons.search,
+                  ),
+                  hintText: "Search by name, user or type...",
                 ),
-              );
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              BlocBuilder<IssuesBloc, IssuesState>(
+                builder: (context, state) {
+                  if (state is IssuesListLoadedSuccessFully) {
+                    allIssuesList = state.issues;
+                    return allIssuesList.isEmpty
+                        ? const Center(child: Text('There is no issues'))
+                        : buildIssuesList();
+                  } else if (state is IssuesSuccess) {
+                    BlocProvider.of<IssuesBloc>(context)
+                        .add(GetAllIssuesEvent());
+                    return const SizedBox();
+                  } else if (state is IssuesFail) {
+                    debugPrint(" Error: ${state.errmsg}");
+                    return Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            "There is an error:",
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            state.errmsg,
+                            style: const TextStyle(fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    );
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

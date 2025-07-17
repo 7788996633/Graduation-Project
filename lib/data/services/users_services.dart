@@ -1,5 +1,5 @@
 import 'dart:convert';
- import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../../constant.dart';
@@ -66,20 +66,20 @@ class UsersServices {
   Future<String> changeUserRole(int userId, String role) async {
     var url = Uri.parse('${myUrl}users/change-role/$userId');
     http.Response response;
-
+    var body = {'role_name': role};
     if (kIsWeb) {
       var request = http.Request('PUT', url);
       request.headers.addAll({
         ...baseHeaders,
         'Content-Type': 'application/x-www-form-urlencoded',
       });
-      request.bodyFields = {'role_name': role};
+      request.bodyFields = body;
       var streamed = await request.send();
       response = await http.Response.fromStream(streamed);
     } else {
-      var request = http.MultipartRequest('PUT', url);
+      var request = http.Request('PUT', url);
       request.headers.addAll(baseHeaders);
-      request.fields['role_name'] = role;
+      request.bodyFields = body;
       var streamed = await request.send();
       response = await http.Response.fromStream(streamed);
     }
@@ -142,7 +142,8 @@ class UsersServices {
     if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
       return UserModel.fromJson(jsonResponse['data']);
     } else {
-      throw Exception('failed: ${jsonResponse['message'] ?? response.reasonPhrase}');
+      throw Exception(
+          'failed: ${jsonResponse['message'] ?? response.reasonPhrase}');
     }
   }
 }

@@ -70,7 +70,12 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
         );
         try {
           String value = await UserProfileServices().updateProfile(
-              event.phone, event.address, event.age, event.scientificLevel);
+            event.phone,
+            event.address,
+            event.age,
+            event.scientificLevel,
+            event.imagePath,
+          );
           emit(UserProfileSuccess(successmsg: value));
         } catch (e) {
           emit(

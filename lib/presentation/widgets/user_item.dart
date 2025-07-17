@@ -62,6 +62,7 @@ class _UserItemState extends State<UserItem> {
                       DeleteUserById(userId: widget.userModel.id),
                     );
                   } else {
+                    print(value);
                     BlocProvider.of<UserBloc>(context).add(
                       ChangeUserRole(
                         userId: widget.userModel.id,

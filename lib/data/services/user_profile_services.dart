@@ -23,7 +23,8 @@ class UserProfileServices {
     if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
       return UserProfileModel.fromJson(jsonResponse['data']);
     } else {
-      throw Exception('failed: ${jsonResponse['message'] ?? response.reasonPhrase}');
+      throw Exception(
+          'failed: ${jsonResponse['message'] ?? response.reasonPhrase}');
     }
   }
 
@@ -44,12 +45,13 @@ class UserProfileServices {
     if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
       return UserProfileModel.fromJson(jsonResponse['data']);
     } else {
-      throw Exception('failed: ${jsonResponse['message'] ?? response.reasonPhrase}');
+      throw Exception(
+          'failed: ${jsonResponse['message'] ?? response.reasonPhrase}');
     }
   }
 
-  Future<String> updateProfile(
-      String phone, String address, String age, String scientificLevel) async {
+  Future<String> updateProfile(String phone, String address, String age,
+      String scientificLevel, String? imagePath) async {
     var headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -57,17 +59,24 @@ class UserProfileServices {
     };
 
     var url = Uri.parse('${myUrl}profile/update');
-    var body = {
+
+    var request = http.MultipartRequest('POST', url);
+    request.headers.addAll(headers);
+    request.fields.addAll({
       'phone': phone,
       'address': address,
       'age': age,
       'scientificLevel': scientificLevel,
-    };
-
-    var request = http.Request('POST', url)
-      ..headers.addAll(headers)
-      ..bodyFields = body;
-
+    });
+    if (imagePath != null) {
+      request.files.add(await http.MultipartFile.fromPath(
+        'image',
+        imagePath,
+      ));
+      print(
+          '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++imagePath: $imagePath');
+    }
+    request.headers.addAll(headers);
     var streamedResponse = await request.send();
     var response = await http.Response.fromStream(streamedResponse);
     var jsonResponse = json.decode(response.body);
@@ -80,8 +89,8 @@ class UserProfileServices {
     }
   }
 
-  Future<String> createProfile(
-      String phone, String address, String age, String scientificLevel, String imagePath) async {
+  Future<String> createProfile(String phone, String address, String age,
+      String scientificLevel, String imagePath) async {
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken'

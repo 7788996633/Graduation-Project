@@ -134,7 +134,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       address: addressController.text,
                       age: ageController.text,
                       scientificLevel: scientificLevelController.text,
-                      imagePath: _pickedImage?.path ?? userProfileModel.image,
+                      imagePath: _pickedImage?.path  ,
                     ));
                     bloc.add(ShowUserProfileEvent());
                   }

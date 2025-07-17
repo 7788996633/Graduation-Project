@@ -105,6 +105,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           }
         } else if (event is ChangeUserRole) {
           try {
+            print("event.role ${event.role}");
             String value =
                 await UsersServices().changeUserRole(event.userId, event.role);
             emit(
