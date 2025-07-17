@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../data/models/notification_model.dart';
 import '../../../blocs/notification_bloc/notification_bloc.dart';
+import '../../../data/models/notification_model.dart';
+import '../../../themes.dart';
+import '../screens/notification_detials.dart';
 
 class NotificationItem extends StatelessWidget {
   const NotificationItem({super.key, required this.notificationModel});
@@ -9,40 +11,72 @@ class NotificationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        BlocProvider.of<NotificationBloc>(context).add(
-          MarkNotificationReadEvent(notificationId: notificationModel.id),
-        );
-      },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Card(
-        color:
-            notificationModel.isRead ? Colors.white : const Color(0xFFF1F8E9),
-        elevation: 2,
+        elevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(
+            color: Colors.grey.shade400,
+            width: 2,
+          ),
+        ),
+        shadowColor: AppColors.darkBlue.withOpacity(0.4),
         child: ListTile(
-          leading: Icon(
-            notificationModel.isRead
-                ? Icons.mark_email_read
-                : Icons.mark_email_unread,
-            color: notificationModel.isRead ? Colors.grey : Colors.green,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => BlocProvider.value(
+                  value: BlocProvider.of<NotificationBloc>(context),
+                  child: NotificationDetailsScreen(
+                    notificationModel: notificationModel,
+                  ),
+                ),
+              ),
+            );
+          },
+          leading: Container(
+            decoration: BoxDecoration(
+              color: AppColors.darkBlue.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: IconButton(
+              onPressed: () {
+                BlocProvider.of<NotificationBloc>(context).add(
+                  DeleteNotificationEvent(notificationId: notificationModel.id),
+                );
+              },
+              icon: Icon(
+                Icons.delete_forever,
+                color: AppColors.darkBlue,
+                size: 28,
+              ),
+              tooltip: 'Delete Notification',
+            ),
           ),
           title: Text(
             notificationModel.title,
             style: TextStyle(
-              fontWeight: notificationModel.isRead
-                  ? FontWeight.normal
-                  : FontWeight.bold,
-              color: notificationModel.isRead ? Colors.black : Colors.black87,
+              fontSize: 17,
+              fontWeight: FontWeight.w700,
+              color: AppColors.darkBlue,
+              letterSpacing: 0.5,
             ),
           ),
-          subtitle: Text(notificationModel.body),
-          trailing: IconButton(
-            icon: const Icon(Icons.delete, color: Colors.red),
-            onPressed: () {
-              BlocProvider.of<NotificationBloc>(context).add(
-                DeleteNotificationEvent(notificationId: notificationModel.id),
-              );
-            },
+          subtitle: Text(
+            notificationModel.body,
+            style: TextStyle(
+              fontSize: 14,
+              color: AppColors.darkBlue.withOpacity(0.6),
+            ),
+          ),
+          trailing: Icon(
+            Icons.keyboard_arrow_right,
+            color: AppColors.darkBlue.withOpacity(0.7),
+            size: 32,
           ),
         ),
       ),

@@ -10,6 +10,7 @@ import 'blocs/user_bloc/user_bloc.dart';
 import 'blocs/auth_bloc/auth_bloc.dart';
 import 'blocs/user_profile_bloc/user_profile_bloc.dart';
 
+import 'data/services/notifications_services.dart';
 import 'firebase_options.dart';
 import 'presentation/screens/auth_screens/auth_screen.dart';
 import 'presentation/widgets/auth_web_wedgets/auth_web_screen.dart';
@@ -17,20 +18,11 @@ import 'presentation/widgets/auth_web_wedgets/auth_web_screen.dart';
 import 'localnotification.dart';
 
 void main() async {
-  Bloc.observer = MyBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
- // await Firebase.initializeApp(
-   // options: DefaultFirebaseOptions.currentPlatform,
-  //);
+  await Firebase.initializeApp();
+  await  NotificationsServices().initNotifications();
 
- // FirebaseMessaging messaging = FirebaseMessaging.instance;
- // String? token = await messaging.getToken();
-//print('📱 Firebase Messaging Token: $token');
 
-  if (!kIsWeb) {
-    await LocalNotification.init();
-    LocalNotification.ensureConnected();
-  }
 
   await EasyLocalization.ensureInitialized();
 
