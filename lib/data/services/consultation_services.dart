@@ -135,6 +135,31 @@ class ConsultationServices {
     }
   }
 
+  Future<List> showMyConsultationsLawyer() async {
+    var headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $myToken'
+    };
+    var request = http.Request('GET', Uri.parse('${myUrl}consultations_lawyer'));
+    request.bodyFields = {};
+    request.headers.addAll(headers);
+    var streamedResponse = await request.send();
+
+    var response = await http.Response.fromStream(streamedResponse);
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode == 200) {
+      if (jsonResponse['status'] == 'success') {
+        return jsonResponse['data'];
+      } else {
+        return [];
+      }
+    } else {
+      return [];
+    }
+  }
+
   Future<String> deleteConsultation(int id) async {
     var headers = {
       'Accept': 'application/json',
