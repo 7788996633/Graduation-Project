@@ -217,6 +217,58 @@ class IssusServices {
     }
   }
 
+  Future<String> issueStatusUpdateService(
+    int id,
+    String status,
+  ) async {
+    var headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer $myToken'
+    };
+
+    var url = Uri.parse('${myUrl}issues/$id/status');
+    var body = {'status': status};
+
+    if (kIsWeb) {
+      var request = http.Request('PUT', url);
+      request.headers.addAll(headers);
+      request.bodyFields = body;
+
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+      if (response.statusCode == 200) {
+        if (jsonResponse['status'] == 'success') {
+          return jsonResponse['message'];
+        } else {
+          return 'failed: ${jsonResponse['message']}';
+        }
+      } else {
+        return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+      }
+    } else {
+      var request = http.Request('PUT', url);
+      request.headers.addAll(headers);
+      request.bodyFields = body;
+
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+      if (response.statusCode == 200) {
+        if (jsonResponse['status'] == 'success') {
+          return jsonResponse['message'];
+        } else {
+          return 'failed: ${jsonResponse['message']}';
+        }
+      } else {
+        return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+      }
+    }
+  }
+
   Future<IssuesModel> issueShowService(int id) async {
     var headers = {
       'Accept': 'application/json',

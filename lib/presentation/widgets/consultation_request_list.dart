@@ -36,6 +36,7 @@ class _ConsultationRequestListState extends State<ConsultationRequestList> {
       builder: (context, state) {
         if (state is ConsultationRequestListLoadedSuccessFully) {
           consultationsRequestsList = state.consultationRequest;
+          
           return buildList();
         } else if (state is ConsultationRequestSuccess) {
           consultationRequestBloc.add(

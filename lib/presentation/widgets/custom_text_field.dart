@@ -21,17 +21,26 @@ class CustomTextFeild extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
         color: color,
       ),
       child: TextFormField(
+        style: const TextStyle(
+          color: AppColors.white,
+        ),
         validator: validator,
         controller: controller,
         decoration: InputDecoration(
-          prefixIcon: icon != null ? Icon(icon) : null,
+          prefixIcon: icon != null
+              ? Icon(
+                  icon,
+                  color: AppColors.white,
+                )
+              : null,
           hintText: text,
           hintStyle: const TextStyle(
-            color: AppColors.darkBlue,
+            color: AppColors.white,
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(

@@ -35,6 +35,7 @@ class CustomActionAppBar extends StatelessWidget
     final textColor = isWeb ? AppColors.darkBlue : Colors.white;
 
     return AppBar(
+      scrolledUnderElevation: 0,
       title: Text(
         title.tr(), // <-- استخدم الترجمة هنا
         style: TextStyle(

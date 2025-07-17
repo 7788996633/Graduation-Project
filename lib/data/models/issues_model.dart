@@ -1,3 +1,5 @@
+import 'package:graduation/data/models/user_model.dart';
+
 class IssuesModel {
   final int id;
   final String title;
@@ -8,7 +10,7 @@ class IssuesModel {
   final int numberOfPayments;
   final String totalCost;
   final String amountPaid;
-  final int userId;
+  final UserModel user;
   final String status;
   final String priority;
   final String startDate;
@@ -26,7 +28,7 @@ class IssuesModel {
     required this.numberOfPayments,
     required this.totalCost,
     required this.amountPaid,
-    required this.userId,
+    required this.user,
     required this.status,
     required this.priority,
     required this.startDate,
@@ -46,7 +48,9 @@ class IssuesModel {
       numberOfPayments: json['number_of_payments'] ?? 0,
       totalCost: json['total_cost']?.toString() ?? '',
       amountPaid: json['amount_paid']?.toString() ?? '',
-      userId: json['user_id'] ?? 0,
+      user: UserModel.fromJson(
+        json['user'],
+      ),
       status: json['status'] ?? '',
       priority: json['priority'] ?? '',
       startDate: json['start_date'] ?? '',
@@ -58,9 +62,9 @@ class IssuesModel {
 }
 
 // Enums
-enum IssuePriority { low, medium, high, critical }
+enum IssuePriority { normal, medium, high, critical }
 
-enum IssueStatus { open, in_Progress, closed }
+enum IssueStatus { open, in_progress, closed, archived }
 
 // Enum <-> String Helpers
 String priorityToString(IssuePriority p) {
@@ -74,13 +78,14 @@ String statusToString(IssueStatus s) {
 IssuePriority stringToPriority(String s) {
   return IssuePriority.values.firstWhere(
     (e) => e.name.toLowerCase() == s.toLowerCase(),
-    orElse: () => IssuePriority.low,
+    orElse: () => IssuePriority.normal,
   );
 }
 
 IssueStatus stringToStatus(String s) {
+  final normalized = s.toLowerCase().replaceAll(' ', '_');
   return IssueStatus.values.firstWhere(
-    (e) => e.name.toLowerCase() == s.toLowerCase(),
-    orElse: () => IssueStatus.open,
+    (e) => e.name == normalized,
+    orElse: () => IssueStatus.in_progress,
   );
 }

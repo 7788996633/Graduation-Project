@@ -44,5 +44,18 @@ class IssueRequestModel {
 
 enum IssueRequestStatus {
   approved,
+  pending,
   rejected,
+}
+
+String statusToString(IssueRequestStatus s) {
+  return s.name[0].toUpperCase() + s.name.substring(1).replaceAll('_', ' ');
+}
+
+IssueRequestStatus stringToStatus(String s) {
+  final normalized = s.toLowerCase();
+  return IssueRequestStatus.values.firstWhere(
+    (e) => e.name == normalized,
+    orElse: () => IssueRequestStatus.pending,
+  );
 }

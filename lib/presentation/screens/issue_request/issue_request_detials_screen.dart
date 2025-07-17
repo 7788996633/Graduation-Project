@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation/blocs/issue_requests_bloc/issue_requests_event.dart';
 import 'package:graduation/data/models/user_model.dart';
- import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
+import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
 import '../../../constant.dart';
 import '../../../data/models/issue_request_model.dart';
 import '../../../themes.dart';
-import '../../widgets/build_custom_appbar_detials.dart';
-import '../../widgets/edit_button.dart';
-import '../../widgets/build_info_title.dart';
+ import '../../widgets/build_info_title.dart';
 import 'update_issue_request_screen.dart';
 
 class IssueRequestDetailsScreen extends StatefulWidget {
@@ -83,15 +81,6 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
                   Icons.description, "description", request.description),
               buildInfoTile(Icons.verified, "status", request.status),
               const SizedBox(height: 30),
-              if (myUserId == widget.userModel.id)
-                EditButton(
-                  destinationScreen: BlocProvider.value(
-                    value: IssueRequestsBloc(),
-                    child: UpdateIssueRequestScreen(
-                      issueRequest: request,
-                    ),
-                  ),
-                ),
             ],
           ),
         ),
@@ -103,7 +92,38 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.scaffold,
-      appBar: buildCustomAppBar("Issue Request"),
+      appBar: AppBar(
+        actions: [
+          if (myRole == 'admin' ||
+              (myRole == 'admin' &&
+                  widget.issueRequest.status.toLowerCase() == 'pending'))
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => UpdateIssueRequestScreen(
+                    issueRequest: widget.issueRequest,
+                    bloc: bloc,
+                  ),
+                ));
+              },
+              icon: Icon(
+                Icons.edit,
+              ),
+            ),
+        ],
+        backgroundColor: AppColors.darkBlue,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text(
+          widget.issueRequest.title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 4,
+      ),
       body: buildProfileUI(widget.issueRequest, context),
     );
   }

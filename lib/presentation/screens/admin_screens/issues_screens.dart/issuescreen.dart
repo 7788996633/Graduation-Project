@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/presentation/screens/admin_screens/issues_screens.dart/edit_issue_screen.dart';
 
 import '../../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../../blocs/lawyer_bloc/lawyer_bloc.dart';
 import '../../../../blocs/lawyer_in_issues_bloc/lawyer_in_issues_bloc.dart';
 import '../../../../blocs/sessions_bloc/sessions_bloc.dart';
 import '../../../../blocs/user_profile_bloc/user_profile_bloc.dart';
+import '../../../../constant.dart';
 import '../../../../data/models/issues_model.dart';
 import '../../../../data/models/user_profile_model.dart';
 import '../../../widgets/add_lawyers_to_issue_sheet.dart';
@@ -28,7 +30,7 @@ class _IssueScreenState extends State<IssueScreen> {
   @override
   void initState() {
     BlocProvider.of<UserProfileBloc>(context).add(
-      ShowUserProfileByIdEvent(userId: widget.issuesModel.userId),
+      ShowUserProfileByIdEvent(userId: widget.issuesModel.user.id),
     );
     super.initState();
   }
@@ -103,7 +105,27 @@ class _IssueScreenState extends State<IssueScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomActionAppBar(title: 'Issue Details'),
+      appBar: CustomActionAppBar(
+        title: 'Issue Details',
+        actionIcon: ((myRole == 'admin') ||
+                (myRole == 'user' ||
+                    widget.issuesModel.status.toLowerCase() == 'pedning'))
+            ? Icons.edit
+            : null,
+        onActionPressed: () {
+          if ((myRole == 'admin') ||
+              (myRole == 'user' ||
+                  widget.issuesModel.status.toLowerCase() == 'pedning')) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => EditIssueScreen(
+                  issue: widget.issuesModel,
+                ),
+              ),
+            );
+          }
+        },
+      ),
       backgroundColor: const Color(0xFFF5F6FA),
       body: SingleChildScrollView(
         child: Column(
@@ -123,7 +145,9 @@ class _IssueScreenState extends State<IssueScreen> {
             const SizedBox(height: 10),
             BlocProvider(
               create: (context) => LawyerInIssuesBloc(),
-              child: LawyersInIssueList(issueId: widget.issuesModel.id),
+              child: LawyersInIssueList(
+                issueId: widget.issuesModel.id,
+              ),
             ),
             buildSectionCard(
                 icon: Icons.title,
@@ -133,7 +157,6 @@ class _IssueScreenState extends State<IssueScreen> {
                 icon: Icons.numbers,
                 title: "Issue Number",
                 value: widget.issuesModel.issueNumber),
-            
             buildSectionCard(
                 icon: Icons.title,
                 title: "Court Name",

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../../constant.dart';
-import '../models/categories_model.dart';
 
 class CategoriesServices {
   final Map<String, String> baseHeaders = {
@@ -40,6 +39,4 @@ class CategoriesServices {
       return [];
     }
   }
-
- 
 }

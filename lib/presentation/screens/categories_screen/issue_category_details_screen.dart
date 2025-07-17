@@ -23,12 +23,14 @@ class IssueCategoryDetailsScreen extends StatefulWidget {
 class _IssueCategoryDetailsScreenState
     extends State<IssueCategoryDetailsScreen> {
   bool isLeaf = false;
+  late IssuesBloc issuesBloc;
 
   @override
   void initState() {
     isLeaf = (widget.issueCategoryModel.children.isEmpty);
     if (isLeaf) {
-      BlocProvider.of<IssuesBloc>(context).add(
+      issuesBloc = BlocProvider.of<IssuesBloc>(context);
+      issuesBloc.add(
         GetIssuesByCategoryId(
           categoryId: widget.issueCategoryModel.id,
         ),
@@ -73,6 +75,7 @@ class _IssueCategoryDetailsScreenState
                           itemCount: issues.length,
                           itemBuilder: (context, index) => UserIssueItem(
                             issuesModel: issues[index],
+                            issuesBloc: issuesBloc,
                           ),
                         );
                       } else if (state is IssuesFail) {

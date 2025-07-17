@@ -191,8 +191,13 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 24, vertical: 14),
                     ),
-                    child: Text(isLastStep ? 'Submit' : 'Next',
-                        style: const TextStyle(fontSize: 18)),
+                    child: Text(
+                      isLastStep ? 'Submit' : 'Next',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                   const SizedBox(width: 20),
                   if (_currentStep > 0)

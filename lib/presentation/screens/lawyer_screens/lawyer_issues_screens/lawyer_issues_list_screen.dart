@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/presentation/widgets/user_issue_item.dart';
 
 import '../../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../../data/models/issues_model.dart';
 import '../../../widgets/custom_appbar_add.dart';
-import '../../../widgets/issue_item.dart';
-
+ 
 class LawyerIssuesListScreen extends StatefulWidget {
   const LawyerIssuesListScreen({super.key});
   @override
@@ -13,10 +13,12 @@ class LawyerIssuesListScreen extends StatefulWidget {
 }
 
 class _LawyerIssuesListScreenState extends State<LawyerIssuesListScreen> {
+  late IssuesBloc issuesBloc;
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<IssuesBloc>(context).add(
+    issuesBloc = BlocProvider.of<IssuesBloc>(context);
+    issuesBloc.add(
       GetAllLawyerIssuesEvent(),
     );
   }
@@ -25,8 +27,9 @@ class _LawyerIssuesListScreenState extends State<LawyerIssuesListScreen> {
   Widget buildIssuesList() {
     return ListView.builder(
       itemCount: allIssuesList.length,
-      itemBuilder: (context, index) => IssueItem(
+      itemBuilder: (context, index) => UserIssueItem(
         issuesModel: allIssuesList[index],
+        issuesBloc: issuesBloc,
       ),
     );
   }

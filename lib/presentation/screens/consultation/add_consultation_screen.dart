@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation/blocs/consultation_request_bloc/consultation_request_bloc.dart';
+import 'package:graduation/themes.dart';
 
 import '../../../blocs/consultations_bloc/consultation_bloc.dart';
 import '../../../constant.dart';
@@ -69,7 +70,13 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('إضافة استشارة'),
+        backgroundColor: AppColors.darkBlue,
+        title: Text(
+          widget.consultationRequestModel.subject,
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
         actions: [
           myUserId == widget.consultationRequestModel.user.id &&
                   widget.consultationRequestModel.isLocked == 0
@@ -125,51 +132,55 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                 ],
               ),
             ),
-            BlocConsumer<ConsultationBloc, ConsultationState>(
-              listener: (context, state) {
-                print('locked ${widget.consultationRequestModel.isLocked}');
-                if (state is ConsultationSuccess) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(state.successmsg)),
-                  );
-                } else if (state is ConsultationFail) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('خطأ: ${state.errmsg}'),
+            if (myRole == 'lawyer' &&
+                widget.consultationRequestModel.status.toLowerCase() ==
+                    'approved' &&
+                widget.consultationRequestModel.isLocked == 0)
+              BlocConsumer<ConsultationBloc, ConsultationState>(
+                listener: (context, state) {
+                  print('locked ${widget.consultationRequestModel.isLocked}');
+                  if (state is ConsultationSuccess) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(state.successmsg)),
+                    );
+                  } else if (state is ConsultationFail) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('خطأ: ${state.errmsg}'),
+                      ),
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  return Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _resaultController,
+                          decoration: const InputDecoration(
+                            labelText: 'نتيجة الاستشارة',
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'يرجى إدخال نتيجة الاستشارة';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        state is ConsultationLoading
+                            ? const CircularProgressIndicator()
+                            : ElevatedButton(
+                                onPressed: _onSubmit,
+                                child: const Text('إرسال'),
+                              ),
+                      ],
                     ),
                   );
-                }
-              },
-              builder: (context, state) {
-                return Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: _resaultController,
-                        decoration: const InputDecoration(
-                          labelText: 'نتيجة الاستشارة',
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'يرجى إدخال نتيجة الاستشارة';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      state is ConsultationLoading
-                          ? const CircularProgressIndicator()
-                          : ElevatedButton(
-                              onPressed: _onSubmit,
-                              child: const Text('إرسال'),
-                            ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                },
+              ),
           ],
         ),
       ),

@@ -6,6 +6,7 @@ import '../../../blocs/issue_requests_bloc/issue_requests_event.dart';
 import '../../../blocs/issue_requests_bloc/issue_requests_state.dart';
 import '../../../../themes.dart';
 
+import '../../widgets/auth_widgets/issue_request_list_widget.dart';
 import '../../widgets/custom_appbar_add.dart';
 import '../../widgets/refresh_button.dart';
 import 'add_issue_request.dart';
@@ -61,15 +62,12 @@ class _UserIssueRequestsScreenState extends State<UserIssueRequestsScreen> {
                       child: CircularProgressIndicator(),
                     );
                   } else if (state is IssueRequestsListLoaded) {
-                    return                          Text('data');
-
-                    // RequestListWidget(requests: state.issueRequestsList);
-                  } else if (state is IssueRequestsLoadedSuccessfully) {
-                    return                                              Text('data');
-
-                    //  RequestListWidget(
-                    //   requests: [state.issueRequest],
-                    // );
+                    return RequestListWidget(
+                      requests: state.issueRequestsList,
+                    );
+                  } else if (state is IssueRequestsSuccess) {
+                    bloc.add(GetMyIssueRequestsEvent());
+                    return SizedBox();
                   } else if (state is IssueRequestsFail) {
                     return Center(
                       child: Text(

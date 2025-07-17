@@ -108,7 +108,20 @@ class UpdateIssuePriorityEvent extends IssuesEvent {
   UpdateIssuePriorityEvent({required this.issueId, required this.priority});
 }
 
+class UpdateIssueStatusEvent extends IssuesEvent {
+  final int issueId;
+  final String status;
+
+  UpdateIssueStatusEvent({required this.issueId, required this.status});
+}
+
 class GetIssuesByCategoryId extends IssuesEvent {
   final int categoryId;
   GetIssuesByCategoryId({required this.categoryId});
+}
+
+class FilterIssues extends IssuesEvent {
+  final FiltersStrategy<IssuesModel> filter;
+
+  FilterIssues(this.filter);
 }

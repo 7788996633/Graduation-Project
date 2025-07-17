@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+ import 'package:graduation/themes.dart';
 
 import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
 import '../../../blocs/issue_requests_bloc/issue_requests_event.dart';
@@ -7,8 +7,9 @@ import '../../../data/models/issue_request_model.dart';
 
 class UpdateIssueRequestScreen extends StatefulWidget {
   final IssueRequestModel issueRequest;
-
-  const UpdateIssueRequestScreen({super.key, required this.issueRequest});
+  final IssueRequestsBloc bloc;
+  const UpdateIssueRequestScreen(
+      {super.key, required this.issueRequest, required this.bloc});
 
   @override
   State<UpdateIssueRequestScreen> createState() =>
@@ -37,7 +38,7 @@ class _UpdateIssueRequestScreenState extends State<UpdateIssueRequestScreen> {
 
   void _submitUpdate() {
     if (_formKey.currentState!.validate()) {
-      BlocProvider.of<IssueRequestsBloc>(context).add(
+      widget.bloc.add(
         UpdateIssueRequestEvent(
           issueRequestId: widget.issueRequest.id,
           title: _titleController.text.trim(),
@@ -52,8 +53,13 @@ class _UpdateIssueRequestScreenState extends State<UpdateIssueRequestScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Update Issue Request'),
-        backgroundColor: const Color(0xFFB8820E),
+        title: const Text(
+          'Update Issue Request',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: AppColors.darkBlue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -78,8 +84,14 @@ class _UpdateIssueRequestScreenState extends State<UpdateIssueRequestScreen> {
               ElevatedButton(
                 onPressed: _submitUpdate,
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0F6829)),
-                child: const Text('Update'),
+                  backgroundColor: AppColors.darkBlue,
+                ),
+                child: const Text(
+                  'Update',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ],
           ),

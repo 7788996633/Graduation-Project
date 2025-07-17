@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation/blocs/consultation_request_bloc/consultation_request_bloc.dart';
+import 'package:graduation/constant.dart';
 import 'package:graduation/data/models/cons_req_model.dart';
 import 'package:intl/intl.dart';
 
@@ -125,7 +126,7 @@ class _ConsultationRequestItemState extends State<ConsultationRequestItem> {
                               SizedBox(
                                 width: 5,
                               ),
-                              isEditing
+                              (isEditing && myRole == 'admin')
                                   ? DropdownButton<ConsReqModelStatus>(
                                       value: selectedStatus,
                                       items: ConsReqModelStatus.values
@@ -254,105 +255,111 @@ class _ConsultationRequestItemState extends State<ConsultationRequestItem> {
                       //       ),
                       //     ],
                       //   ),
-                      BlocConsumer<ConsultationRequestBloc,
-                          ConsultationRequestState>(
-                        listener: (context, state) {
-                          if (state is ConsultationRequestSuccess) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  state.successmsg,
-                                  style: const TextStyle(fontSize: 16),
+                      if (myRole == 'admin' ||
+                          (myRole == 'user' &&
+                              widget.consReqModel.status == 'pending'))
+                        BlocConsumer<ConsultationRequestBloc,
+                            ConsultationRequestState>(
+                          listener: (context, state) {
+                            if (state is ConsultationRequestSuccess) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    state.successmsg,
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                  backgroundColor: Colors.green,
                                 ),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-                          } else if (state is ConsultationRequestFail) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  state.errmsg,
-                                  style: const TextStyle(fontSize: 16),
+                              );
+                            } else if (state is ConsultationRequestFail) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    state.errmsg,
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                  backgroundColor: Colors.red,
                                 ),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
-                        },
-                        builder: (context, state) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconButton(
-                                icon:
-                                    Icon(isEditing ? Icons.check : Icons.edit),
-                                onPressed: () {
-                                  if (isEditing) {
-                                    if (statusToString(selectedStatus)
-                                            .toLowerCase() !=
-                                        widget.consReqModel.status
-                                            .toLowerCase()) {
-                                      BlocProvider.of<ConsultationRequestBloc>(
-                                              context)
-                                          .add(
-                                        UpdateConsultationRequestStatusEvent(
-                                          id: widget.consReqModel.id,
-                                          status: statusToString(selectedStatus)
-                                              .toLowerCase(),
-                                        ),
-                                      );
-                                    }
-                                    print('Saving status: $selectedStatus');
-                                  }
-                                  setState(() {
-                                    isEditing = !isEditing;
-                                  });
-                                },
-                              ),
-                              if (isEditing) ...[
-                                SizedBox(
-                                  width: 5,
-                                ),
+                              );
+                            }
+                          },
+                          builder: (context, state) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
                                 IconButton(
-                                  icon: Icon(Icons.delete, color: Colors.red),
+                                  icon: Icon(
+                                      isEditing ? Icons.check : Icons.edit),
                                   onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: Text("تأكيد الحذف"),
-                                        content: Text(
-                                            "هل أنت متأكد من حذف هذه الاستشارة؟"),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(context),
-                                            child: Text("إلغاء"),
+                                    if (isEditing) {
+                                      if (statusToString(selectedStatus)
+                                              .toLowerCase() !=
+                                          widget.consReqModel.status
+                                              .toLowerCase()) {
+                                        BlocProvider.of<
+                                                    ConsultationRequestBloc>(
+                                                context)
+                                            .add(
+                                          UpdateConsultationRequestStatusEvent(
+                                            id: widget.consReqModel.id,
+                                            status:
+                                                statusToString(selectedStatus)
+                                                    .toLowerCase(),
                                           ),
-                                          TextButton(
-                                            onPressed: () {
-                                              widget.consultationRequestBloc
-                                                  .add(
-                                                DeleteConsultationRequestStatusEvent(
-                                                    id: widget.consReqModel.id),
-                                              );
-                                              Navigator.pop(context);
-                                              widget.consultationRequestBloc
-                                                  .add(
-                                                GetAllConsultationRequestStatusEvent(),
-                                              );
-                                            },
-                                            child: Text("نعم، احذف"),
-                                          ),
-                                        ],
-                                      ),
-                                    );
+                                        );
+                                      }
+                                      print('Saving status: $selectedStatus');
+                                    }
+                                    setState(() {
+                                      isEditing = !isEditing;
+                                    });
                                   },
                                 ),
+                                if (isEditing) ...[
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.delete, color: Colors.red),
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: Text("تأكيد الحذف"),
+                                          content: Text(
+                                              "هل أنت متأكد من حذف هذه الاستشارة؟"),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context),
+                                              child: Text("إلغاء"),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                widget.consultationRequestBloc
+                                                    .add(
+                                                  DeleteConsultationRequestStatusEvent(
+                                                      id: widget
+                                                          .consReqModel.id),
+                                                );
+                                                Navigator.pop(context);
+                                                widget.consultationRequestBloc
+                                                    .add(
+                                                  GetAllConsultationRequestStatusEvent(),
+                                                );
+                                              },
+                                              child: Text("نعم، احذف"),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
                               ],
-                            ],
-                          );
-                        },
-                      ),
+                            );
+                          },
+                        ),
                     ],
                   ),
                 ),

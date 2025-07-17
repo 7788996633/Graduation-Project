@@ -13,10 +13,12 @@ class UserIssuesScreens extends StatefulWidget {
 }
 
 class _UserIssuesScreensState extends State<UserIssuesScreens> {
+  late IssuesBloc issuesBloc;
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<IssuesBloc>(context).add(
+    issuesBloc = BlocProvider.of<IssuesBloc>(context);
+    issuesBloc.add(
       GetAllClientIssuesEvent(),
     );
   }
@@ -26,6 +28,7 @@ class _UserIssuesScreensState extends State<UserIssuesScreens> {
     return ListView.builder(
       itemCount: allIssuesList.length,
       itemBuilder: (context, index) => UserIssueItem(
+        issuesBloc: issuesBloc,
         issuesModel: allIssuesList[index],
       ),
     );

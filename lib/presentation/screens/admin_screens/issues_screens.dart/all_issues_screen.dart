@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/constant.dart';
+import 'package:graduation/presentation/widgets/issues_filter_bottom_sheet.dart';
+import 'package:graduation/presentation/widgets/user_issue_item.dart';
 
 import '../../../../blocs/issue_bloc/issues_bloc.dart';
+import '../../../../data/filters/filters_strategy.dart';
 import '../../../../data/models/issues_model.dart';
 import '../../../../themes.dart';
 import '../../../widgets/custom_appbar_add.dart';
-import '../../../widgets/issue_item.dart';
-import 'create_issue_screen.dart';
+ import 'create_issue_screen.dart';
 
 class AllIssuesScreen extends StatefulWidget {
   const AllIssuesScreen({super.key});
@@ -15,10 +18,12 @@ class AllIssuesScreen extends StatefulWidget {
 }
 
 class _AllIssuesScreenState extends State<AllIssuesScreen> {
+  late IssuesBloc issuesBloc;
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<IssuesBloc>(context).add(GetAllIssuesEvent());
+    issuesBloc = BlocProvider.of<IssuesBloc>(context);
+    issuesBloc.add(GetAllIssuesEvent());
   }
 
   List<IssuesModel> allIssuesList = [];
@@ -26,8 +31,9 @@ class _AllIssuesScreenState extends State<AllIssuesScreen> {
   Widget buildIssuesList() {
     return ListView.builder(
       itemCount: allIssuesList.length,
-      itemBuilder: (context, index) => IssueItem(
+      itemBuilder: (context, index) => UserIssueItem(
         issuesModel: allIssuesList[index],
+        issuesBloc: issuesBloc,
       ),
     );
   }
@@ -37,6 +43,20 @@ class _AllIssuesScreenState extends State<AllIssuesScreen> {
     return Scaffold(
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
+        secondaryIcon: myRole == 'admin' ? Icons.sort : null,
+        onSecondaryPressed: () async {
+          final filter =
+              await showModalBottomSheet<FiltersStrategy<IssuesModel>>(
+            barrierColor: Colors.grey.withOpacity(
+              0.6,
+            ),
+            context: context,
+            builder: (_) => const IssuesFilterBottomSheet(),
+          );
+          if (filter != null) {
+            issuesBloc.add(FilterIssues(filter));
+          }
+        },
         title: 'Issues',
         actionIcon: Icons.add_circle_rounded,
         tooltip: 'Add New Issue',
@@ -61,9 +81,7 @@ class _AllIssuesScreenState extends State<AllIssuesScreen> {
               return allIssuesList.isEmpty
                   ? const Center(child: Text('There is no issues'))
                   : buildIssuesList();
-            }
-
-            else if (state is IssuesSuccess) {
+            } else if (state is IssuesSuccess) {
               BlocProvider.of<IssuesBloc>(context).add(GetAllIssuesEvent());
               return const SizedBox();
             } else if (state is IssuesFail) {

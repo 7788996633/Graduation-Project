@@ -35,4 +35,11 @@ class Validator {
     }
     return null;
   }
+
+  static String? noteValidator(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Please enter your note';
+    }
+    return null;
+  }
 }

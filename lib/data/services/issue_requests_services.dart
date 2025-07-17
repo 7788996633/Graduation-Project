@@ -154,7 +154,7 @@ class IssueRequestsServices {
       String adminNote, String status, int issueRequestId) async {
     var url = Uri.parse('${myUrl}admin/issue-requests/$issueRequestId');
 
-    var request = http.Request('POST', url);
+    var request = http.Request('PUT', url);
     request.headers.addAll({
       ...baseHeaders,
       'Content-Type': 'application/x-www-form-urlencoded',

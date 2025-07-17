@@ -1,5 +1,3 @@
-import 'package:graduation/blocs/issue_bloc/issues_bloc.dart';
-
 import '../../../data/models/issues_model.dart';
 import '../services/issus_services.dart';
 
@@ -12,7 +10,8 @@ class IssuesRepository {
         )
         .toList();
   }
-Future<List<IssuesModel>> getIssuesByCategoryId(int catId) async {
+
+  Future<List<IssuesModel>> getIssuesByCategoryId(int catId) async {
     var issueList = await IssusServices().getIssuesByCategory(catId);
     return issueList
         .map(
@@ -20,6 +19,7 @@ Future<List<IssuesModel>> getIssuesByCategoryId(int catId) async {
         )
         .toList();
   }
+
   Future<List<IssuesModel>> getAllLawyerIssues() async {
     var issueList = await IssusServices().showAllLawyerIssues();
     return issueList

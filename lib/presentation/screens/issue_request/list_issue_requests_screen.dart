@@ -22,16 +22,12 @@ class ListIssueRequestsScreen extends StatefulWidget {
 
 class _ListIssueRequestsScreenState extends State<ListIssueRequestsScreen> {
   late IssueRequestsBloc bloc;
-  bool _isInit = true; // حتى ما يعيد جلب البيانات كل مرة
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_isInit) {
-      bloc = BlocProvider.of<IssueRequestsBloc>(context);
-      bloc.add(GetAllIssueRequestsEvent());
-      _isInit = false;
-    }
+  void initState() {
+    bloc = BlocProvider.of<IssueRequestsBloc>(context);
+    bloc.add(GetAllIssueRequestsEvent());
+    super.initState();
   }
 
   List<IssueRequestModel> issueRequestsList = [];
@@ -76,11 +72,8 @@ class _ListIssueRequestsScreenState extends State<ListIssueRequestsScreen> {
                           )
                         : RequestListWidget(requests: issueRequestsList);
                   } else if (state is IssueRequestsSuccess) {
-                    return issueRequestsList.isEmpty
-                        ? const Center(
-                            child: Text('There Is No data '),
-                          )
-                        : RequestListWidget(requests: issueRequestsList);
+                    bloc.add(GetAllIssueRequestsEvent());
+                    return SizedBox();
                   } else if (state is IssueRequestsFail) {
                     return Center(
                       child: Text(

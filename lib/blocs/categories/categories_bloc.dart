@@ -2,8 +2,7 @@ import 'dart:core';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import '../../data/models/categories_model.dart';
- import '../../data/repositories/categories_repository.dart';
-import '../../data/services/categories_service.dart';
+import '../../data/repositories/categories_repository.dart';
 import 'categories_event.dart';
 part 'categories_state.dart';
 

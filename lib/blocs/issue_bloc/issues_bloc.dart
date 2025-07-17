@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
+import '../../data/filters/filters_strategy.dart';
 import '../../data/models/issues_model.dart';
 import '../../data/repositories/issues_repository.dart';
 import '../../data/services/issus_services.dart';
@@ -10,6 +11,8 @@ part 'issues_state.dart';
 
 class IssuesBloc extends Bloc<IssuesEvent, IssuesState> {
   IssuesBloc() : super(IssuesInitial()) {
+    List<IssuesModel> allIssues = [];
+
     on<IssuesEvent>(
       (event, emit) async {
         if (event is IssueAdd) {
@@ -30,7 +33,6 @@ class IssuesBloc extends Bloc<IssuesEvent, IssuesState> {
               event.amoountPaid,
               event.description,
               event.categoryId,
-
             );
             emit(
               IssuesSuccess(
@@ -110,9 +112,9 @@ class IssuesBloc extends Bloc<IssuesEvent, IssuesState> {
             IssuesLoading(),
           );
           try {
-            List<IssuesModel> value = await IssuesRepository().getAllIssues();
+            allIssues = await IssuesRepository().getAllIssues();
             emit(
-              IssuesListLoadedSuccessFully(issues: value),
+              IssuesListLoadedSuccessFully(issues: allIssues),
             );
           } catch (e) {
             emit(
@@ -172,6 +174,23 @@ class IssuesBloc extends Bloc<IssuesEvent, IssuesState> {
               ),
             );
           }
+        } else if (event is UpdateIssueStatusEvent) {
+          emit(
+            IssuesLoading(),
+          );
+          try {
+            String value = await IssusServices()
+                .issueStatusUpdateService(event.issueId, event.status);
+            emit(
+              IssuesSuccess(successmsg: value),
+            );
+          } catch (e) {
+            emit(
+              IssuesFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
         } else if (event is GetAllLawyerIssuesEvent) {
           emit(
             IssuesLoading(),
@@ -198,6 +217,30 @@ class IssuesBloc extends Bloc<IssuesEvent, IssuesState> {
                 await IssuesRepository().getAllClientissues();
             emit(
               IssuesListLoadedSuccessFully(issues: value),
+            );
+          } catch (e) {
+            emit(
+              IssuesFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is FilterIssues) {
+          emit(
+            IssuesLoading(),
+          );
+          try {
+            final filtered = allIssues
+                .where(
+                  (issue) => event.filter.apply(
+                    issue,
+                  ),
+                )
+                .toList();
+            emit(
+              IssuesListLoadedSuccessFully(
+                issues: filtered,
+              ),
             );
           } catch (e) {
             emit(
