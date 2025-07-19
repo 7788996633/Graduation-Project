@@ -43,9 +43,6 @@ dependencies:
   open_filex: ^4.7.0
   path: ^1.9.0
 
-
-
-  api_helper: ^1.0.5
   # PDF & Viewer
   syncfusion_flutter_pdfviewer: ^29.1.38
   flutter_pdfview: ^1.4.0+1

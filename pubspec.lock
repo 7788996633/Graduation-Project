@@ -25,14 +25,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.5.2"
-  api_helper:
-    dependency: "direct main"
-    description:
-      name: api_helper
-      sha256: "4a68cde4743ac3f073e617574932f0e6606eb60060b9bbb7ae284bdda83970b6"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.5"
   archive:
     dependency: transitive
     description:
@@ -209,14 +201,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.6"
-  custom_response:
-    dependency: transitive
-    description:
-      name: custom_response
-      sha256: f4c706c444335b67001f8148616826e06ffb6612c3d646fd926a1c7c1e9646e8
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.3"
   dbus:
     dependency: transitive
     description:
@@ -249,14 +233,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.1"
-  dio:
-    dependency: transitive
-    description:
-      name: dio
-      sha256: "7d328c4d898a61efc3cd93655a0955858e29a0aa647f0f9e02d59b3bb275e2e8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.6"
   easy_localization:
     dependency: "direct main"
     description:

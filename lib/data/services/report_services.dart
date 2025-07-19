@@ -8,8 +8,6 @@ class ReportService {
     'Accept': 'application/json',
     'Authorization': 'Bearer $myToken',
   };
-
-
   Future<Map<String, dynamic>> reportFinancial() async {
     var url = Uri.parse('${myUrl}report-salaries');
     http.Response response;
@@ -25,7 +23,6 @@ class ReportService {
       var streamedResponse = await request.send();
       response = await http.Response.fromStream(streamedResponse);
     }
-
     return _handleReportResponse(response, 'فشل إنشاء تقرير الرواتب');
   }
 
@@ -33,7 +30,6 @@ class ReportService {
   Future<Map<String, dynamic>> reportInvoices() async {
     var url = Uri.parse('${myUrl}invoices-report');
     http.Response response;
-
     if (kIsWeb) {
       var request = http.Request('GET', url);
       request.headers.addAll(baseHeaders);
@@ -42,7 +38,6 @@ class ReportService {
     } else {
       response = await http.get(url, headers: baseHeaders);
     }
-
     return _handleReportResponse(response, 'فشل إنشاء تقرير الدفعات المالية');
   }
 
@@ -59,7 +54,6 @@ class ReportService {
     } else {
       response = await http.get(url, headers: baseHeaders);
     }
-
     return _handleReportResponse(
         response, 'فشل إنشاء تقرير الوظائف والمتقدمين');
   }
@@ -76,6 +70,4 @@ class ReportService {
       throw Exception('$failMessage: ${jsonResponse['message']}');
     }
   }
-
-
 }
