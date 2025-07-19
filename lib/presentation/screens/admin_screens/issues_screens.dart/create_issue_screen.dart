@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/categories/categories_bloc.dart';
+import 'package:graduation/blocs/categories/categories_event.dart';
+import 'package:graduation/data/models/categories_model.dart';
+import 'package:graduation/presentation/screens/categories_screen/select_category_for_issue_screen.dart';
+import 'package:graduation/presentation/widgets/issue_category_selecter.dart';
+import 'package:graduation/themes.dart';
 
 import '../../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../../blocs/user_bloc/user_bloc.dart';
@@ -30,7 +36,11 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
   final List<String> statuses = ['Open', 'Closed', 'Pending', 'In Progress'];
   final List<String> priorities = ['Low', 'Medium', 'High', 'Urgent'];
 
-  int? selectedCategoryId;
+  // CategoriesModel selectedCategory = CategoriesModel(
+  //   id: -1,
+  //   name: "name",
+  //   children: [],
+  // );
   String? selectedStatus;
   String? selectedPriority;
 
@@ -56,6 +66,27 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
     numberofpaymentsController.dispose();
     opponentnameController.dispose();
     super.dispose();
+  }
+
+  int? selectedCategoryId;
+  String? selectedCategoryName;
+
+  void _showCategorySelector() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => BlocProvider(
+        create: (context) => CategoriesBloc()..add(GetAllCategoriesEvent()),
+        child: IssueCategorySelecter(
+          onSelected: (id, name) {
+            setState(() {
+              selectedCategoryId = id;
+              selectedCategoryName = name;
+            });
+            Navigator.pop(context);
+          },
+        ),
+      ),
+    );
   }
 
   Future<void> _pickDate(BuildContext context, bool isStartDate) async {
@@ -98,6 +129,9 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
   }
 
   void _onStepContinue() {
+    print(
+        "selectedPriority $selectedPriority $selectedStatus $selectedCategoryName");
+
     if (_currentStep == 2) {
       // Final step - validate whole form and submit
       if (_formKey.currentState?.validate() ?? false) {
@@ -130,7 +164,6 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
           );
           return;
         }
-
         BlocProvider.of<IssuesBloc>(context).add(IssueAdd(
           amoountPaid: int.tryParse(numberofpaymentsController.text) ?? 0,
           description: titleController.text,
@@ -139,8 +172,8 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
           issueNumber: issuenumberController.text,
           categoryId: selectedCategoryId!,
           courtName: courtnameController.text,
-          status: selectedStatus!,
-          priority: selectedPriority!,
+          status: selectedStatus!.toLowerCase(),
+          priority: selectedPriority!.toLowerCase(),
           startDate: startDate!.toIso8601String(),
           endDate: endDate!.toIso8601String(),
           totalCost: totalcostController.text,
@@ -238,13 +271,29 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
                       label: 'Court Name',
                       icon: Icons.account_balance,
                     ),
-                    // const SizedBox(height: 10),
-                    // _buildDropdown(
-                    //   label: 'Category',
-                    //   value: selectedCategoryId.toString(),
-                    //   items: categories,
-                    //   onChanged: (val) => setState(() => selectedCategoryId = val),
-                    // ),
+                    const SizedBox(height: 10),
+                    GestureDetector(
+                      onTap: _showCategorySelector,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.blue,
+                          ),
+                          borderRadius: BorderRadius.circular(
+                            8,
+                          ),
+                        ),
+                        padding: EdgeInsets.all(15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              selectedCategoryName ?? "Selcet issue category",
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 10),
                     _buildDropdown(
                       label: 'Status',

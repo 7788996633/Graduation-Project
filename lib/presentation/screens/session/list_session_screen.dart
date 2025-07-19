@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/session_points_bloc/session_points_bloc.dart';
+import 'package:graduation/presentation/screens/session/session_points_chart.dart';
 
 import '../../../blocs/sessions_bloc/sessions_bloc.dart';
 import '../../../blocs/sessions_bloc/sessions_event.dart';
@@ -22,12 +24,16 @@ class ListSessionsScreen extends StatefulWidget {
 
 class _ListSessionsScreenState extends State<ListSessionsScreen> {
   late SessionsBloc bloc;
-
+  bool isShowingAnalytics = false;
   @override
   void initState() {
     super.initState();
     bloc = BlocProvider.of<SessionsBloc>(context);
-    bloc.add(GetAllSessionsEvent());
+    bloc.add(
+      GetSessionsByIsssueIdEvent(
+        issueId: widget.issueId,
+      ),
+    );
   }
 
   @override
@@ -35,7 +41,7 @@ class _ListSessionsScreenState extends State<ListSessionsScreen> {
     return Scaffold(
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
-        title: 'List Sessions',
+        title: 'Sessions',
         actionIcon: Icons.add_circle_rounded,
         tooltip: 'Add New Sessions',
         onActionPressed: () {
@@ -63,19 +69,74 @@ class _ListSessionsScreenState extends State<ListSessionsScreen> {
           );
         },
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            SessionsList(bloc: bloc),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              SessionsList(
+                bloc: bloc,
+                issueId: widget.issueId,
+              ),
+              GestureDetector(
+                onTap: () {
+                  isShowingAnalytics = !isShowingAnalytics;
+                  setState(() {});
+                },
+                child: Container(
+                  padding: EdgeInsets.all(
+                    10,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                    borderRadius: BorderRadius.circular(
+                      8,
+                    ),
+                    color: Colors.white,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.analytics_outlined,
+                        size: 26,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        "${isShowingAnalytics ? "Hide" : "Show"} Analytics",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if (isShowingAnalytics)
+                SizedBox(
+                  height: 350,
+                  child: BlocProvider(
+                    create: (context) => SessionPointsBloc(),
+                    child: SessionPointsChart(
+                      issueId: widget.issueId,
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: RefreshButton(
         onPressed: () {
-          bloc.add(GetAllSessionsEvent());
+          bloc.add(
+            GetSessionsByIsssueIdEvent(
+              issueId: widget.issueId,
+            ),
+          );
         },
       ),
     );

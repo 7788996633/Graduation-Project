@@ -39,7 +39,10 @@ class _UserSessionScreensState extends State<UserSessionScreens> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            SessionsList(bloc: bloc),
+            SessionsList(
+              bloc: bloc,
+              issueId: null,
+            ),
           ],
         ),
       ),

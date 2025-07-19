@@ -125,3 +125,5 @@ class FilterIssues extends IssuesEvent {
 
   FilterIssues(this.filter);
 }
+
+ 

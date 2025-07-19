@@ -37,7 +37,6 @@ class _AdminIssueRequestItemState extends State<AdminIssueRequestItem> {
     return '$day/$month/$year';
   }
 
-  final formKey = GlobalKey<FormState>();
   @override
   void initState() {
     issueRequestStatus = stringToStatus(widget.request.status);
@@ -46,139 +45,134 @@ class _AdminIssueRequestItemState extends State<AdminIssueRequestItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: GestureDetector(
-        onTap: () {
-          if (!isEditing) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => BlocProvider.value(
-                  value: widget.bloc,
-                  child: IssueRequestDetailsScreen(
-                    userModel: widget.request.userModel,
-                    issueRequest: widget.request,
-                  ),
+    return GestureDetector(
+      onTap: () {
+        if (!isEditing) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BlocProvider.value(
+                value: widget.bloc,
+                child: IssueRequestDetailsScreen(
+                  userModel: widget.request.userModel,
+                  issueRequest: widget.request,
                 ),
               ),
-            );
-          }
-          // (myRole == 'admin')
-          //     ? widget.bloc.add(GetAllIssueRequestsEvent())
-          //     : widget.bloc.add(GetMyIssueRequestsEvent());
-        },
-        child: Container(
-          padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: Colors.grey,
             ),
+          );
+        }
+        // (myRole == 'admin')
+        //     ? widget.bloc.add(GetAllIssueRequestsEvent())
+        //     : widget.bloc.add(GetMyIssueRequestsEvent());
+      },
+      child: Container(
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: Colors.grey,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                margin: EdgeInsets.only(bottom: 10),
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: Colors.grey,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Container(
+              margin: EdgeInsets.only(bottom: 10),
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: Colors.grey,
+                ),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      (isEditing)
+                          ? DropdownButton<IssueRequestStatus>(
+                              value: issueRequestStatus,
+                              items: IssueRequestStatus.values.map((value) {
+                                return DropdownMenuItem<IssueRequestStatus>(
+                                  value: value,
+                                  child: Text(statusToString(value)),
+                                );
+                              }).toList(),
+                              onChanged: (newValue) {
+                                if (newValue != null) {
+                                  setState(() {
+                                    issueRequestStatus = newValue;
+                                  });
+                                }
+                              },
+                            )
+                          : Text(
+                              statusToString(issueRequestStatus),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 14),
+                            ),
+                      Text(
+                        widget.request.userModel.name,
+                      ),
+                    ],
                   ),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        (isEditing)
-                            ? DropdownButton<IssueRequestStatus>(
-                                value: issueRequestStatus,
-                                items: IssueRequestStatus.values.map((value) {
-                                  return DropdownMenuItem<IssueRequestStatus>(
-                                    value: value,
-                                    child: Text(statusToString(value)),
-                                  );
-                                }).toList(),
-                                onChanged: (newValue) {
-                                  if (newValue != null) {
-                                    setState(() {
-                                      issueRequestStatus = newValue;
-                                    });
-                                  }
-                                },
-                              )
-                            : Text(
-                                statusToString(issueRequestStatus),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 14),
-                              ),
-                        Text(
-                          widget.request.userModel.name,
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          formatDate(),
-                        ),
-                        Text(
-                          widget.request.title,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        formatDate(),
+                      ),
+                      Text(
+                        widget.request.title,
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              Text(
-                widget.request.description,
+            ),
+            Text(
+              widget.request.description,
+            ),
+            if (isEditing &&
+                statusToString(issueRequestStatus).toLowerCase() != 'pending')
+              CustomTextFeild(
+                controller: noteController,
+                color: AppColors.darkBlue,
+                text: "Add your note...",
+                icon: Icons.note_add,
+                validator: Validator.noteValidator,
               ),
-              if (isEditing &&
-                  statusToString(issueRequestStatus).toLowerCase() != 'pending')
-                CustomTextFeild(
-                  controller: noteController,
-                  color: AppColors.darkBlue,
-                  text: "Add your note...",
-                  icon: Icons.note_add,
-                  validator: Validator.noteValidator,
-                ),
-              if (myRole == 'admin')
-                Center(
-                  child: IconButton(
-                    onPressed: () {
-                      if (isEditing) {
-                        if (statusToString(issueRequestStatus).toLowerCase() !=
-                            widget.request.status.toLowerCase()) {
-                          if (formKey.currentState!.validate()) {
-                            widget.bloc.add(
-                              UpdateIssueRequestEventAsAnAdmin(
-                                issueRequestId: widget.request.id,
-                                status: statusToString(
-                                  issueRequestStatus,
-                                ).toLowerCase(),
-                                adminNote: noteController.text,
-                              ),
-                            );
-                          }
-                        }
+            if (myRole == 'admin')
+              Center(
+                child: IconButton(
+                  onPressed: () {
+                    if (isEditing) {
+                      if (statusToString(issueRequestStatus).toLowerCase() !=
+                          widget.request.status.toLowerCase()) {
+                        widget.bloc.add(
+                          UpdateIssueRequestEventAsAnAdmin(
+                            issueRequestId: widget.request.id,
+                            status: statusToString(
+                              issueRequestStatus,
+                            ).toLowerCase(),
+                            adminNote: noteController.text,
+                          ),
+                        );
                       }
-                      isEditing = !isEditing;
-                      setState(() {});
-                    },
-                    icon: Icon(
-                      isEditing ? Icons.check : Icons.edit,
-                    ),
+                    }
+                    isEditing = !isEditing;
+                    setState(() {});
+                  },
+                  icon: Icon(
+                    isEditing ? Icons.check : Icons.edit,
                   ),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
       ),
     );

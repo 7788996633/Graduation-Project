@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 import '../../blocs/sessions_bloc/sessions_bloc.dart';
 import '../../blocs/sessions_bloc/sessions_event.dart';
 import '../../blocs/sessions_bloc/sessions_state.dart';
@@ -9,21 +8,14 @@ import '../../data/models/session_model.dart';
 import 'session_item.dart';
 
 class SessionsList extends StatefulWidget {
-  const SessionsList({super.key, required this.bloc});
+  const SessionsList({super.key, required this.bloc, required this.issueId});
   final SessionsBloc bloc;
+  final int? issueId;
   @override
   State<SessionsList> createState() => _SessionsListState();
 }
 
 class _SessionsListState extends State<SessionsList> {
-  @override
-  void initState() {
-    widget.bloc.add(
-      GetAllSessionsEvent(),
-    );
-    super.initState();
-  }
-
   List<SessionModel> sessionsList = [];
   Widget buildSessionModel() {
     return ListView.builder(
@@ -51,7 +43,11 @@ class _SessionsListState extends State<SessionsList> {
             ),
           );
           BlocProvider.of<SessionsBloc>(context).add(
-            GetAllSessionsEvent(),
+            widget.issueId == null
+                ? GetAllSessionsEvent()
+                : GetSessionsByIsssueIdEvent(
+                    issueId: widget.issueId!,
+                  ),
           );
         } else if (state is SessionsFail) {
           ScaffoldMessenger.of(context).showSnackBar(

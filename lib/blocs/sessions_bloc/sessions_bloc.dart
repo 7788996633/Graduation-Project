@@ -18,7 +18,6 @@ class SessionsBloc extends Bloc<SessionsEvent, SessionsState> {
               event.sessionTypeId,
               event.lawyerId,
               event.issueId,
-
             );
             emit(
               SessionsSuccess(
@@ -39,6 +38,27 @@ class SessionsBloc extends Bloc<SessionsEvent, SessionsState> {
           try {
             List<SessionModel> sessionsList =
                 await SessionsRepository().getSessions();
+            emit(
+              SessionsListLoaded(
+                sessionsList: sessionsList,
+              ),
+            );
+          } catch (e) {
+            emit(
+              SessionsFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is GetSessionsByIsssueIdEvent) {
+          emit(
+            SessionsLoading(),
+          );
+          try {
+            List<SessionModel> sessionsList =
+                await SessionsRepository().getSessionsBuIssueId(
+              event.issueId,
+            );
             emit(
               SessionsListLoaded(
                 sessionsList: sessionsList,

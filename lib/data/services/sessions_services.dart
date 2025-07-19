@@ -36,6 +36,37 @@ class SessionServices {
     }
   }
 
+  Future<List> getSessionsByIssueId(int issueId) async {
+    var headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $myToken',
+    };
+
+    final url = Uri.parse('${myUrl}sessions/issue/$issueId');
+    http.Response response;
+
+    if (kIsWeb) {
+      var request = http.Request('GET', url);
+      request.headers.addAll(headers);
+      var streamed = await request.send();
+      response = await http.Response.fromStream(streamed);
+    } else {
+      var request = http.MultipartRequest('GET', url);
+      request.headers.addAll(headers);
+      var streamed = await request.send();
+      response = await http.Response.fromStream(streamed);
+    }
+
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return jsonResponse['data'];
+    } else {
+      return [];
+    }
+  }
+
   Future<List> getLawyerSessions() async {
     var headers = {
       'Accept': 'application/json',
@@ -130,11 +161,10 @@ class SessionServices {
   }
 
   Future<String> createSession(
-      int sessionTypeId,
-      int lawyerId,
-      int issueId,
-
-      ) async {
+    int sessionTypeId,
+    int lawyerId,
+    int issueId,
+  ) async {
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken',
@@ -152,7 +182,6 @@ class SessionServices {
       request.bodyFields = {
         'session_type_id': sessionTypeId.toString(),
         'lawyer_id': lawyerId.toString(),
-
       };
 
       var streamed = await request.send();
@@ -163,7 +192,6 @@ class SessionServices {
       request.fields.addAll({
         'session_type_id': sessionTypeId.toString(),
         'lawyer_id': lawyerId.toString(),
-
       });
 
       var streamed = await request.send();
@@ -180,7 +208,8 @@ class SessionServices {
     }
   }
 
-  Future<String> updateSession(String outcome, int isAttend, int sessionId) async {
+  Future<String> updateSession(
+      String outcome, int isAttend, int sessionId) async {
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken',
@@ -240,6 +269,7 @@ class SessionServices {
     }
   }
 }
+
 Future<String> markSessionAsAttendance(int sessionId) async {
   var headers = {
     'Accept': 'application/json',
@@ -267,6 +297,7 @@ Future<String> markSessionAsAttendance(int sessionId) async {
     return 'failed: ${jsonResponse['message']}';
   }
 }
+
 Future<String> evaluateLawyerInSession(
     int sessionId, int lawyerId, String notes, int points) async {
   var headers = {

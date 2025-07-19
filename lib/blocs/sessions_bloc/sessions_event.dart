@@ -12,7 +12,6 @@ class CreateSessionsEvent extends SessionsEvent {
     required this.sessionTypeId,
     required this.lawyerId,
     required this.issueId,
-
   });
 }
 
@@ -29,6 +28,12 @@ class UpdateSessionEvent extends SessionsEvent {
 }
 
 class GetAllSessionsEvent extends SessionsEvent {}
+
+class GetSessionsByIsssueIdEvent extends SessionsEvent {
+  final int issueId;
+
+  GetSessionsByIsssueIdEvent({required this.issueId});
+}
 
 class GetLawyerSessionsEvent extends SessionsEvent {}
 

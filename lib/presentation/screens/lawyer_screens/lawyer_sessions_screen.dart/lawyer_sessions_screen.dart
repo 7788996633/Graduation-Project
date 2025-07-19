@@ -39,7 +39,10 @@ class _LawyerSessionsScreenState extends State<LawyerSessionsScreen> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            SessionsList(bloc: bloc),
+            SessionsList(
+              bloc: bloc,
+              issueId: null,
+            ),
           ],
         ),
       ),

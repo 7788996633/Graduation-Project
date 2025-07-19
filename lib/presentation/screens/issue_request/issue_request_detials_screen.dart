@@ -6,7 +6,7 @@ import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
 import '../../../constant.dart';
 import '../../../data/models/issue_request_model.dart';
 import '../../../themes.dart';
- import '../../widgets/build_info_title.dart';
+import '../../widgets/build_info_title.dart';
 import 'update_issue_request_screen.dart';
 
 class IssueRequestDetailsScreen extends StatefulWidget {
@@ -29,7 +29,7 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
     bloc = context.read<IssueRequestsBloc>();
     print(myRole);
 
-    if (myRole == 'admin') {
+    if (myRole == 'admin' && widget.issueRequest.status == 'pending') {
       bloc.add(
           StartIssueRequestReviewEvent(issueRequestId: widget.issueRequest.id));
       print(myRole);
@@ -38,7 +38,7 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
 
   @override
   void dispose() {
-    if (myRole == 'admin') {
+    if (myRole == 'admin' && widget.issueRequest.status == 'pending') {
       bloc.add(
           EndIssueRequestReviewEvent(issueRequestId: widget.issueRequest.id));
     }
@@ -80,6 +80,12 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
               buildInfoTile(
                   Icons.description, "description", request.description),
               buildInfoTile(Icons.verified, "status", request.status),
+              if (request.adminNote != null)
+                buildInfoTile(
+                  Icons.note_rounded,
+                  "Admin note",
+                  request.adminNote!,
+                ),
               const SizedBox(height: 30),
             ],
           ),
