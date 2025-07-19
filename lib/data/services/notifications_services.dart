@@ -64,7 +64,7 @@ class NotificationsServices {
 
   /// إرسال توكن FCM إلى السيرفر
   Future<String> sendFcmTokenToServer(String fcmToken) async {
-    final url = Uri.parse('${myUrl}save-fcm-token');
+    final url = Uri.parse('${myUrl}save-fcm-token');//'${myUrl}issue-categories'
 
     final body = json.encode({'fcm_token': fcmToken});
 

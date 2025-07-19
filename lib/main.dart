@@ -19,11 +19,20 @@ import 'localnotification.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  await  NotificationsServices().initNotifications();
 
+  // تهيئة Firebase مع مراعاة الويب
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.web,
+    );
+  } else {
+    await Firebase.initializeApp();
+  }
 
+  // تهيئة الإشعارات
+  await NotificationsServices().initNotifications();
 
+  // تهيئة EasyLocalization
   await EasyLocalization.ensureInitialized();
 
   runApp(

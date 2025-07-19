@@ -42,9 +42,9 @@ flutter {
 }
 
 dependencies {
-    // ✅ ضروري لـ flutter_local_notifications
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4") // ✅ تأكد من إضافة هذا السطر مع تحديث الإصدار
 
-    // ✅ لإشعارات Firebase
-    implementation("com.google.firebase:firebase-messaging:23.4.1")
+    // ✅ Firebase BOM و Analytics
+    implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
+    implementation("com.google.firebase:firebase-analytics")
 }

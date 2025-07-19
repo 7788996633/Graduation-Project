@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../blocs/employee_bloc/employee_bloc.dart';
 import '../../../blocs/hiring_requests/hiring_requests_block.dart';
 import '../../../blocs/job_application/job_application_bloc.dart';
 import '../../../blocs/lawyer_bloc/lawyer_bloc.dart';
 import '../../../blocs/user_bloc/user_bloc.dart';
 import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
+
 import '../../widgets/custom_app_drawer.dart';
 import '../../widgets/section_card.dart';
+
 import '../hr_screen/employee_screens/list_employee_screen.dart';
 import '../hr_screen/employee_screens/list_user_screen.dart';
 import '../hr_screen/hiring_request/hiring_requests_published_screen.dart';
 import '../hr_screen/hiring_request/list_hiring_requests_screen.dart';
 import '../hr_screen/hiring_request/list_lawyer_screen.dart';
 import '../hr_screen/job_application/job_application_list_screen.dart';
+
 import '../../widgets/custom_home_appbar.dart';
+
+import '../report_screen/report_financial_screen.dart';
+import '../report_screen/report_hiring_screen.dart';
+import '../report_screen/report_invoices_screen.dart';
 
 class HrHomeScreen extends StatelessWidget {
   const HrHomeScreen({super.key});
@@ -24,7 +32,7 @@ class HrHomeScreen extends StatelessWidget {
     final sections = [
       {
         'icon': Icons.assignment_ind,
-        'title': ' Hiring Requests ',
+        'title': 'Hiring Requests',
         'onTap': () {
           Navigator.push(
             context,
@@ -36,9 +44,10 @@ class HrHomeScreen extends StatelessWidget {
             ),
           );
         },
-      }, {
-        'icon': Icons.campaign ,
-        'title': ' Hiring Requests Publish',
+      },
+      {
+        'icon': Icons.campaign,
+        'title': 'Hiring Requests Publish',
         'onTap': () {
           Navigator.push(
             context,
@@ -66,23 +75,57 @@ class HrHomeScreen extends StatelessWidget {
           );
         },
       },
-
-
-    {
-    'icon': Icons.attach_money
-,
-      'title': 'Set salary to lawyer',
-    'onTap': () {
-    Navigator.push(
-    context,
-    MaterialPageRoute(
-    builder: (_) => BlocProvider(
-    create: (_) => LawyerBloc(),
-    child: const ListLawyersScreen(),),),);
-    },},
-
-
-
+      {
+        'icon': Icons.attach_money,
+        'title': 'Set salary to lawyer',
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => LawyerBloc(),
+                child: const ListLawyersScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'icon': Icons.insert_drive_file,
+        'title': 'Financial Report',
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const ReportFinancialScreen(),
+            ),
+          );
+        },
+      },
+      {
+        'icon': Icons.group,
+        'title': 'Hiring Report',
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const ReportHiringScreen(),
+            ),
+          );
+        },
+      },
+      {
+        'icon': Icons.receipt_long,
+        'title': 'Invoices Report',
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const ReportInvoicesScreen(),
+            ),
+          );
+        },
+      },
       {
         'icon': Icons.event_available,
         'title': 'Add Employee',
@@ -98,7 +141,6 @@ class HrHomeScreen extends StatelessWidget {
           );
         },
       },
-
       {
         'icon': Icons.event_available,
         'title': 'Employees',

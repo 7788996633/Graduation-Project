@@ -1,17 +1,9 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// build.gradle.kts (في android/)
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        // إضافة Google Services Plugin لتفعيل Firebase
-        classpath("com.google.gms:google-services:4.3.15")
-    }
+plugins {
+    id("com.google.gms.google-services") version "4.4.3" apply false
 }
 
-// إعداد المستودعات لجميع المشاريع
 allprojects {
     repositories {
         google()
