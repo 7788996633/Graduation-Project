@@ -11,4 +11,13 @@ class ConsultationRepositories {
         )
         .toList();
   }
+
+  Future<List<ConsultationModel>> getMyConsultationsLawyer() async {
+    var consultations = await ConsultationServices().showMyConsultationsLawyer();
+    return consultations
+        .map(
+          (e) => ConsultationModel.fromJson(e),
+    )
+        .toList();
+  }
 }

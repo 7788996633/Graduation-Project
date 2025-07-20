@@ -1,5 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -166,7 +165,7 @@ class _EmployeeDetailsScreenState extends State<EmployeeDetailsScreen> {
                         _buildInfoRow(
                             icon: Icons.work,
                             label: 'Role',
-                            value: userModel.roleName!),
+                            value: userModel.roleName),
                         _buildInfoRow(
                           icon: Icons.attach_money,
                           label: 'Salary',

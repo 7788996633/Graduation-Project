@@ -1,8 +1,9 @@
 import 'package:bloc/bloc.dart';
-import 'package:graduation/data/models/consultation_model.dart';
-import 'package:graduation/data/repositories/consultation_repositories.dart';
+
 import 'package:meta/meta.dart';
 
+import '../../data/models/consultation_model.dart';
+import '../../data/repositories/consultation_repositories.dart';
 import '../../data/services/consultation_services.dart';
 
 part 'consultation_event.dart';
@@ -46,7 +47,25 @@ class ConsultationBloc extends Bloc<ConsultationEvent, ConsultationState> {
               ),
             );
           }
-        } else if (event is GetConsultationByIdEvent) {
+        }
+        else if (event is GetMyConsultationsLawyer) {
+          emit(ConsultationLoading());
+          try {
+            List<ConsultationModel> value =
+            await ConsultationRepositories().getMyConsultationsLawyer();
+            emit(
+              ConsultationsListLoadedSuccessfully(
+                consultations: value,
+              ),
+            );
+          } catch (e) {
+            emit(
+              ConsultationFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        }else if (event is GetConsultationByIdEvent) {
           emit(
             ConsultationLoading(),
           );

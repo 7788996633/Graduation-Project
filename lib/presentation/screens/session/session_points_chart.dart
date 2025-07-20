@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:graduation/blocs/issue_bloc/issues_bloc.dart';
 import 'package:graduation/blocs/session_points_bloc/session_points_bloc.dart';
 
-import '../../../blocs/case_type_percentages_bloc/case_type_percentages_bloc.dart';
-import '../../../blocs/case_type_percentages_bloc/case_type_percentages_event.dart';
-import '../../../blocs/case_type_percentages_bloc/case_type_percentages_state.dart';
 
 class SessionPointsChart extends StatelessWidget {
   const SessionPointsChart({super.key, required this.issueId});

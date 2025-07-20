@@ -63,15 +63,18 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               ),
             );
           }
-        } else if (event is GetAllEmployees) {
+        }
+        else if (event is GetAllEmployees) {
           emit(
             UserLoading(),
           );
           try {
             List<UserModel> value = await UsersRepositories().getAllUsers();
             List<UserModel> clientList = value
-                .where((element) =>
-                    !['user', 'admin'].contains(element.roleName.toLowerCase()))
+                .where(
+                    (element) => !['user', 'admin'].contains(element.roleName.toLowerCase())
+
+            )
                 .toList();
             emit(
               UsersListLoaded(
@@ -85,7 +88,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               ),
             );
           }
-        } else if (event is GetAllUsers) {
+        }else if (event is GetAllUsers) {
           emit(
             UserLoading(),
           );
@@ -105,7 +108,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           }
         } else if (event is ChangeUserRole) {
           try {
-            print("event.role ${event.role}");
             String value =
                 await UsersServices().changeUserRole(event.userId, event.role);
             emit(
@@ -135,18 +137,19 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               ),
             );
           }
-        } else if (event is GetUserById) {
+        }
+        else if (event is GetUserById) {
           emit(UserLoading());
 
           try {
-            UserModel userModel =
-                await UsersServices().getUserById(event.userId);
+            UserModel userModel = await UsersServices().getUserById(event.userId);
 
             emit(UserLoadedSuccessfully(userModel: userModel));
           } catch (e) {
             emit(UserFail(errmsg: e.toString()));
           }
-        } else if (event is GetUserRole) {
+        }
+        else if (event is GetUserRole) {
           emit(
             UserLoading(),
           );

@@ -26,7 +26,7 @@ class GetConsultationByIdEvent extends ConsultationEvent {
 }
 
 class GetAllConsultationsEvent extends ConsultationEvent {}
-
+class GetMyConsultationsLawyer extends ConsultationEvent {}
 class EndConsultationRequestReview extends ConsultationEvent {
   final int consultationRequestId;
 

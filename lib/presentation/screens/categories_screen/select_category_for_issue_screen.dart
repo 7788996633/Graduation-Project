@@ -76,8 +76,7 @@ class _SelectCategoryForIssueScreenState
                             selectedindex = index;
 
                             setState(() {});
-                            print("selectedindex ${selectedindex} ");
-                          }
+                           }
                         },
                         child: Container(
                           decoration: BoxDecoration(

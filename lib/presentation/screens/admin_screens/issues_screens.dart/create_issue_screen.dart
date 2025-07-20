@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation/blocs/categories/categories_bloc.dart';
 import 'package:graduation/blocs/categories/categories_event.dart';
-import 'package:graduation/data/models/categories_model.dart';
-import 'package:graduation/presentation/screens/categories_screen/select_category_for_issue_screen.dart';
 import 'package:graduation/presentation/widgets/issue_category_selecter.dart';
-import 'package:graduation/themes.dart';
 
 import '../../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../../blocs/user_bloc/user_bloc.dart';
