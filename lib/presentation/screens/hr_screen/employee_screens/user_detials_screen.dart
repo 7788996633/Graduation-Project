@@ -90,7 +90,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                 Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
                 _buildInfoRow('Name', user.name),
                 Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
-                _buildInfoRow('Type', user.roleName),
+                _buildInfoRow('Type', user.roleName!),
                 Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
                 _buildInfoRow('Email', user.email),
                 const SizedBox(height: 30),

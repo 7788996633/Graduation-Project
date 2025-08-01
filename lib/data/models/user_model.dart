@@ -8,6 +8,7 @@ class UserModel {
   final String roleName;
   final int roleId;
   final ProfileModel profileModel;
+  final int employeeId;
   UserModel({
     required this.id,
     required this.name,
@@ -15,6 +16,7 @@ class UserModel {
     required this.roleName,
     required this.roleId,
     required this.profileModel,
+    required this.employeeId,
   });
 
   factory UserModel.fromJson(json) {
@@ -26,7 +28,9 @@ class UserModel {
       roleName: json['role']['name'],
       profileModel: ProfileModel.fromjson(
         json['profile'],
+
       ),
+      employeeId: json['employee_id'],
     );
   }
 }

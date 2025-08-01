@@ -1,6 +1,8 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 
 import '../../../../blocs/employee_bloc/employee_bloc.dart';
 import '../../../../blocs/employee_bloc/employee_event.dart';
@@ -84,29 +86,29 @@ class _EmployeeDetailsScreenState extends State<EmployeeDetailsScreen> {
           Expanded(
             child: isLink
                 ? GestureDetector(
-                    onTap: () {
-                      if (value.isNotEmpty) {
-                        _openUrl(value);
-                      }
-                    },
-                    child: Text(
-                      value,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline,
-                        height: 1.3,
-                      ),
-                    ),
-                  )
+              onTap: () {
+                if (value.isNotEmpty) {
+                  _openUrl(value);
+                }
+              },
+              child: Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                  height: 1.3,
+                ),
+              ),
+            )
                 : Text(
-                    value,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppColors.darkBlue,
-                      height: 1.3,
-                    ),
-                  ),
+              value,
+              style: TextStyle(
+                fontSize: 16,
+                color: AppColors.darkBlue,
+                height: 1.3,
+              ),
+            ),
           ),
         ],
       ),
@@ -116,12 +118,8 @@ class _EmployeeDetailsScreenState extends State<EmployeeDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => EmployeeBloc()
-        ..add(
-          GetEmployeeByIdEvent(
-            employeeId: userModel.id,
-          ),
-        ),
+      create: (_) => EmployeeBloc()..add(GetEmployeeByIdEvent(employeeId: userModel.employeeId!)),
+
       child: Scaffold(
         backgroundColor: AppColors.scaffold,
         appBar: const CustomActionAppBar(title: 'Employee Details'),
@@ -165,7 +163,7 @@ class _EmployeeDetailsScreenState extends State<EmployeeDetailsScreen> {
                         _buildInfoRow(
                             icon: Icons.work,
                             label: 'Role',
-                            value: userModel.roleName),
+                            value: userModel.roleName!),
                         _buildInfoRow(
                           icon: Icons.attach_money,
                           label: 'Salary',
@@ -204,29 +202,27 @@ class _EmployeeDetailsScreenState extends State<EmployeeDetailsScreen> {
         floatingActionButton: employeeModel == null
             ? null
             : FloatingActionButton.extended(
-                onPressed: () async {
-                  final result = await Navigator.push<EmployeeModel>(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => BlocProvider(
-                        create: (_) => EmployeeBloc(),
-                        child:
-                            UpdateEmployeeInfoScreen(employee: employeeModel!),
-                      ),
-                    ),
-                  );
-                  if (result != null) {
-                    refreshData(result);
-                  }
-                },
-                icon: const Icon(Icons.edit, color: Colors.white),
-                label: const Text(
-                  'Edit',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.white),
+          onPressed: () async {
+            final result = await Navigator.push<EmployeeModel>(
+              context,
+              MaterialPageRoute(
+                builder: (_) => BlocProvider(
+                  create: (_) => EmployeeBloc(),
+                  child: UpdateEmployeeInfoScreen(employee: employeeModel!),
                 ),
-                backgroundColor: AppColors.darkBlue,
               ),
+            );
+            if (result != null) {
+              refreshData(result);
+            }
+          },
+          icon: const Icon(Icons.edit, color: Colors.white),
+          label: const Text(
+            'Edit',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          backgroundColor: AppColors.darkBlue,
+        ),
       ),
     );
   }

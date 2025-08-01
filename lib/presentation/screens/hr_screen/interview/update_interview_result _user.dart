@@ -5,8 +5,6 @@ import '../../../../blocs/interview_bloc/interview_bloc.dart';
 import '../../../../blocs/interview_bloc/interview_event.dart';
 import '../../../../blocs/interview_bloc/interviews_state.dart';
 import '../../../../data/models/interview_model.dart';
-import '../../../../themes.dart';
-import '../../../widgets/custom_appbar_add.dart';
 
 class UpdateInterviewResultScreen extends StatefulWidget {
   final InterviewModel interview;
@@ -20,8 +18,13 @@ class UpdateInterviewResultScreen extends StatefulWidget {
 
 class _UpdateInterviewResultScreenState
     extends State<UpdateInterviewResultScreen> {
-  final _formKey = GlobalKey<FormState>();
-  late String selectedResult;
+  String? selectedResult;
+
+  final List<String> resultOptions = [
+    'accepted',
+    'rejected',
+    'pending',
+  ];
 
   @override
   void initState() {
@@ -31,98 +34,84 @@ class _UpdateInterviewResultScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomActionAppBar(title: 'Update Interview Result'),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: BlocConsumer<InterviewBloc, InterviewState>(
+    return BlocProvider(
+      create: (_) => InterviewBloc(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Update Interview Result'),
+          backgroundColor: Colors.indigo,
+        ),
+        body: BlocConsumer<InterviewBloc, InterviewState>(
           listener: (context, state) {
             if (state is InterviewSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    state.successMsg,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Colors.green,
-                ),
+                SnackBar(content: Text('✅ ${state.successMsg}')),
               );
-              Navigator.pop(
-                context,
-                InterviewModel(
-                  id: widget.interview.id,
-                  result: selectedResult,
-                  note: widget.interview.note,
-                  date: widget.interview.date,
-                  jobAppId: widget.interview.jobAppId,
-                  userId: widget.interview.userId,
-                ),
-              );
+              Navigator.pop(context);
             } else if (state is InterviewFail) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    state.errMsg,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Colors.red,
-                ),
+                SnackBar(content: Text('❌ ${state.errMsg}')),
               );
             }
           },
           builder: (context, state) {
-            return Form(
-              key: _formKey,
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Select Interview Result",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  Text(
+                    'Interview Date: ${widget.interview.date.toLocal().toString().split(' ')[0]}',
+                    style: const TextStyle(fontSize: 16),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Current Note: ${widget.interview.note}',
+                    style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                  ),
+                  const SizedBox(height: 30),
                   DropdownButtonFormField<String>(
                     value: selectedResult,
-                    items: const [
-                      DropdownMenuItem(
-                          value: 'accepted', child: Text('Accepted')),
-                      DropdownMenuItem(
-                          value: 'rejected', child: Text('Rejected')),
-                      DropdownMenuItem(
-                          value: 'pending', child: Text('Pending')),
-                    ],
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 14),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedResult = value!;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () {
-                      BlocProvider.of<InterviewBloc>(context).add(
-                        UpdateInterviewResultEvent(
-                          interviewId: widget.interview.id,
-                          result: selectedResult,
+                    items: resultOptions.map((String result) {
+                      return DropdownMenuItem<String>(
+                        value: result,
+                        child: Text(
+                          result[0].toUpperCase() + result.substring(1),
                         ),
                       );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedResult = value;
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Select New Result',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  state is InterviewLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : ElevatedButton(
+                    onPressed: () {
+                      if (selectedResult != null) {
+                        BlocProvider.of<InterviewBloc>(context).add(
+                          UpdateInterviewResultEvent(
+                            interviewId: widget.interview.id,
+                            result: selectedResult!,
+                          ),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.darkBlue,
+                      backgroundColor: Colors.indigo,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 14),
                     ),
                     child: const Text(
                       'Update Result',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ],

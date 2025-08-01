@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../blocs/interview_bloc/interview_bloc.dart';
 import '../../../../blocs/job_application/job_application_bloc.dart';
+
 import '../../../../data/models/job_application_model.dart';
 import '../../../../themes.dart';
 import '../../../widgets/custom_appbar_add.dart';
 import '../interview/add_interview_screen.dart';
 import '../interview/list_interview_screen.dart';
 import 'update_job_application.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class JobApplicationDetailsScreen extends StatefulWidget {
   final JobApplicationModel jobApplication;
@@ -21,8 +22,7 @@ class JobApplicationDetailsScreen extends StatefulWidget {
       _JobApplicationDetailsScreenState();
 }
 
-class _JobApplicationDetailsScreenState
-    extends State<JobApplicationDetailsScreen> {
+class _JobApplicationDetailsScreenState extends State<JobApplicationDetailsScreen> {
   late JobApplicationModel jobApplication;
 
   @override
@@ -160,8 +160,6 @@ class _JobApplicationDetailsScreenState
                   isLink: jobApplication.cvLink.isNotEmpty,
                 ),
                 const SizedBox(height: 20),
-
-
                 ElevatedButton.icon(
                   onPressed: () {
                     Navigator.push(
@@ -176,24 +174,16 @@ class _JobApplicationDetailsScreenState
                       ),
                     );
                   },
-                  icon: const Icon(Icons.question_answer,color: Colors.white,),
-                  label: const Text(
-                    'View Interviews',
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  icon: const Icon(Icons.question_answer, color: Colors.white),
+                  label: const Text('View Interviews', style: TextStyle(fontSize: 16)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.cyan,
                     foregroundColor: Colors.white,
                     minimumSize: const Size.fromHeight(50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
-
                 const SizedBox(height: 12),
-
-                // Add Interview
                 ElevatedButton.icon(
                   onPressed: () {
                     Navigator.push(
@@ -201,25 +191,18 @@ class _JobApplicationDetailsScreenState
                       MaterialPageRoute(
                         builder: (_) => BlocProvider(
                           create: (_) => InterviewBloc(),
-                          child: AddInterviewScreen(
-                            jobAppId: jobApplication.id,
-                          ),
+                          child: AddInterviewScreen(jobAppId: jobApplication.id),
                         ),
                       ),
                     );
                   },
-                  icon: const Icon(Icons.event, size: 22,color: Colors.white,),
-                  label: const Text(
-                    'Add Interview',
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  icon: const Icon(Icons.event, size: 22, color: Colors.white),
+                  label: const Text('Add Interview', style: TextStyle(fontSize: 16)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.darkBlue,
                     foregroundColor: Colors.white,
                     minimumSize: const Size.fromHeight(50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
               ],
@@ -242,11 +225,8 @@ class _JobApplicationDetailsScreenState
             refreshData(result);
           }
         },
-        icon: const Icon(Icons.edit,color: Colors.white,),
-        label: const Text(
-          'Edit',
-          style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,),
-        ),
+        icon: const Icon(Icons.edit, color: Colors.white),
+        label: const Text('Edit', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: AppColors.darkBlue,
       ),
     );

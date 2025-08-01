@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../themes.dart';
 
- 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -11,8 +11,40 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  String selectedLanguage = 'العربية';
   bool is2FAEnabled = false;
+
+  final GlobalKey _languageKey = GlobalKey();
+
+  void _showLanguageMenu() async {
+    final RenderBox renderBox = _languageKey.currentContext!.findRenderObject() as RenderBox;
+    final Offset position = renderBox.localToGlobal(Offset.zero);
+
+    final selected = await showMenu<String>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        position.dx,
+        position.dy + renderBox.size.height,
+        position.dx + renderBox.size.width,
+        position.dy,
+      ),
+      items: const [
+        PopupMenuItem<String>(
+          value: 'ar',
+          child: Text('العربية'),
+        ),
+        PopupMenuItem<String>(
+          value: 'en',
+          child: Text('English'),
+        ),
+      ],
+    );
+
+    if (selected != null) {
+      final locale = Locale(selected);
+      await context.setLocale(locale);
+      setState(() {}); // لتحديث العرض بعد تغيير اللغة
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,86 +53,82 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'الإعدادات',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        title: Text(
+          tr('settings'),  // تأكد من وجود هذا المفتاح في ملفات الترجمة
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: isDark ? Colors.black : AppColors.darkBlue,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
-            _buildSectionTitle('عام'),
+            _buildSectionTitle(tr('general')),  // "عام"
             _buildCard(
               icon: Icons.language,
-              title: 'تغيير اللغة',
-              trailing: DropdownButton<String>(
-                value: selectedLanguage,
-                underline: Container(),
-                items: ['العربية', 'English'].map((lang) {
-                  return DropdownMenuItem(
-                    value: lang,
-                    child: Text(lang),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedLanguage = value!;
-                  });
-                },
+              title: tr('change_language'),
+              trailing: GestureDetector(
+                key: _languageKey,
+                onTap: _showLanguageMenu,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      context.locale.languageCode == 'ar' ? 'العربية' : 'English',
+                      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                    ),
+                    const SizedBox(width: 4),
+                    const Icon(Icons.arrow_drop_down),
+                  ],
+                ),
               ),
             ),
             _buildCard(
               icon: Icons.brightness_6,
-              title: 'الوضع الليلي',
+              title: tr('dark_mode'),
               trailing: Switch(
-                value: isLight,
+                value: isDark,
                 onChanged: (val) {
-                  setState(() {
-                    isLight = val;
-                  });
+                  // تفعيل تغيير الثيم حسب تطبيقك
                 },
               ),
             ),
             _buildCard(
               icon: Icons.lock,
-              title: 'تغيير كلمة المرور',
+              title: tr('change_password'),
               onTap: () {
                 // شاشة تغيير كلمة المرور
               },
             ),
             _buildCard(
               icon: Icons.logout,
-              title: 'تسجيل الخروج',
+              title: tr('logout'),
               onTap: () {
                 // تسجيل الخروج
               },
             ),
             const SizedBox(height: 24),
-            _buildSectionTitle('الشركة'),
+            _buildSectionTitle(tr('company')),  // "الشركة"
             _buildCard(
               icon: Icons.business,
-              title: 'اسم وشعار الشركة',
+              title: tr('company_name_logo'),
               onTap: () {},
             ),
             _buildCard(
               icon: Icons.contact_mail,
-              title: 'بيانات التواصل الرسمية',
+              title: tr('official_contact_info'),
               onTap: () {},
             ),
             const SizedBox(height: 24),
-            _buildSectionTitle('الأمان'),
+            _buildSectionTitle(tr('security')),  // "الأمان"
             _buildCard(
               icon: Icons.security,
-              title: 'التحقق بخطوتين',
+              title: tr('two_factor_authentication'),
               trailing: Switch(
                 value: is2FAEnabled,
                 onChanged: (val) {
@@ -112,12 +140,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             _buildCard(
               icon: Icons.phonelink_lock,
-              title: 'إدارة الجلسات النشطة',
+              title: tr('manage_active_sessions'),
               onTap: () {},
             ),
             _buildCard(
               icon: Icons.folder_shared,
-              title: 'صلاحيات الوصول للمجلدات',
+              title: tr('folder_access_permissions'),
               onTap: () {},
             ),
           ],
@@ -137,8 +165,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       margin: const EdgeInsets.symmetric(vertical: 8),
       elevation: 4,
       child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         leading: Icon(icon, color: Colors.black, size: 28),
         title: Text(title,
             style: const TextStyle(

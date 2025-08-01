@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../../blocs/job_application/job_application_bloc.dart';
 import '../../../../blocs/job_application/job_application_event.dart';
 import '../../../../blocs/job_application/job_application_state.dart';
+
 import '../../../../data/models/interview_model.dart';
 import '../../../../themes.dart';
 import '../../../widgets/custom_appbar_add.dart';
@@ -68,7 +69,6 @@ class InterviewDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-
     final iconSize = screenWidth * 0.06;
     final titleFontSize = screenWidth * 0.06;
     final contentFontSize = screenWidth * 0.045;
@@ -83,13 +83,13 @@ class InterviewDetailsScreen extends StatelessWidget {
         body: Padding(
           padding: EdgeInsets.all(paddingValue),
           child: BlocBuilder<JobApplicationBloc, JobApplicationState>(
-            builder: (context, state) {
-              if (state is JobApplicationLoading) {
+            builder: (context, jobState) {
+              if (jobState is JobApplicationLoading) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is JobApplicationFail) {
-                return Center(child: Text("Failed: ${state.errMsg}"));
-              } else if (state is JobApplicationLoaded) {
-                final job = state.jobApplication;
+              } else if (jobState is JobApplicationFail) {
+                return Center(child: Text("Failed: ${jobState.errMsg}"));
+              } else if (jobState is JobApplicationLoaded) {
+                final job = jobState.jobApplication;
 
                 return SingleChildScrollView(
                   child: Card(
@@ -106,8 +106,7 @@ class InterviewDetailsScreen extends StatelessWidget {
                           Center(
                             child: Column(
                               children: [
-                                Icon(Icons.event_note,
-                                    size: iconSize * 2, color: AppColors.darkBlue),
+                                Icon(Icons.event_note, size: iconSize * 2, color: AppColors.darkBlue),
                                 const SizedBox(height: 10),
                                 Text(
                                   'Interview #${interviewModel.id}',
@@ -146,22 +145,12 @@ class InterviewDetailsScreen extends StatelessWidget {
                           ),
                           const Divider(),
                           _buildInfoRow(
-                            icon: Icons.person,
-                            label: 'Applicant',
-                            value: job.userName,
-                            iconSize: iconSize,
-                            fontSize: contentFontSize,
-                          ),
-                          const Divider(),
-                          _buildInfoRow(
                             icon: Icons.work_outline,
                             label: 'Job Title',
                             value: job.jobTitle,
                             iconSize: iconSize,
                             fontSize: contentFontSize,
                           ),
-
-
                         ],
                       ),
                     ),
@@ -169,7 +158,7 @@ class InterviewDetailsScreen extends StatelessWidget {
                 );
               }
 
-              return const SizedBox(); // fallback
+              return const SizedBox();
             },
           ),
         ),

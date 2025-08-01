@@ -7,9 +7,10 @@ import '../../../../themes.dart';
 import '../../../widgets/custom_appbar_add.dart';
 import '../../../widgets/job_application_list.dart';
 import '../../../widgets/refresh_button.dart';
-
 class ListJobApplicationsScreen extends StatefulWidget {
-  const ListJobApplicationsScreen({super.key});
+  final int hiringReqId;
+
+  const ListJobApplicationsScreen({super.key, required this.hiringReqId});
 
   @override
   State<ListJobApplicationsScreen> createState() =>
@@ -23,7 +24,7 @@ class _ListJobApplicationsScreenState extends State<ListJobApplicationsScreen> {
   void initState() {
     super.initState();
     bloc = BlocProvider.of<JobApplicationBloc>(context);
-    bloc.add(GetAllJobApplicationsEvent());
+    bloc.add(GetAllJobApplicationsEvent(hiringReqId: widget.hiringReqId));
   }
 
   @override
@@ -38,13 +39,13 @@ class _ListJobApplicationsScreenState extends State<ListJobApplicationsScreen> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            JobApplicationList(bloc: bloc),
+            JobApplicationList(bloc: bloc, hiringReqId: widget.hiringReqId,),
           ],
         ),
       ),
       floatingActionButton: RefreshButton(
         onPressed: () {
-          bloc.add(GetAllJobApplicationsEvent());
+          bloc.add(GetAllJobApplicationsEvent(hiringReqId: widget.hiringReqId));
         },
       ),
     );

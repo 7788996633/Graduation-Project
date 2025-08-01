@@ -13,7 +13,37 @@ class JobApplicationServices {
     'Authorization': 'Bearer $myToken',
   };
 
-  Future<List> getJobApplications() async {
+  Future<List> getJobApplications(int hiringReq) async {
+    try {
+      var url = Uri.parse('${myUrl}job-applications/by-hiring/$hiringReq');
+      http.Response response;
+
+      if (kIsWeb) {
+        var request = http.Request('GET', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      } else {
+        var request = http.MultipartRequest('GET', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      }
+
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+        return jsonResponse['data'];
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print('Error in getJobApplications: $e');
+      return [];
+    }
+  }
+  Future<List> getMyJobApplications() async {
     try {
       var url = Uri.parse('${myUrl}job-applications/');
       http.Response response;
@@ -43,7 +73,6 @@ class JobApplicationServices {
       return [];
     }
   }
-
   Future<JobApplicationModel> getJobApplicationById(int jobApplicationId) async {
     try {
       var url = Uri.parse('${myUrl}job-applications/$jobApplicationId'); // عدّل المسار إذا لزم
@@ -81,12 +110,12 @@ class JobApplicationServices {
         Uri.parse('${myUrl}job-applications/$hiringReqId'),
       );
 
-      // إضافة الملف بشكل صحيح
+
       request.files.add(
         await http.MultipartFile.fromPath(
-          'cv',         // اسم الحقل المتوقع من الـ backend
+          'cv',
           cv.path,
-          contentType: MediaType('application', 'pdf'), // إذا كان PDF
+          contentType: MediaType('application', 'pdf'),
         ),
       );
 
@@ -111,7 +140,7 @@ class JobApplicationServices {
 
   Future<String> updateJobApplication(int jobApplicationId, String status) async {
     try {
-      var url = Uri.parse('${myUrl}interviews/$jobApplicationId'); // عدّل المسار إذا لزم
+      var url = Uri.parse('${myUrl}job-applications/update-status/$jobApplicationId');
       var body = {
         'status': status,
       };
@@ -148,34 +177,5 @@ class JobApplicationServices {
     }
   }
 
-  Future<String> deleteJobApplication(int jobApplicationId) async {
-    try {
-      var url = Uri.parse('${myUrl}interviews/$jobApplicationId'); // عدّل المسار إذا لزم
 
-      http.Response response;
-
-      if (kIsWeb) {
-        var request = http.Request('DELETE', url);
-        request.headers.addAll(baseHeaders);
-        var streamedResponse = await request.send();
-        response = await http.Response.fromStream(streamedResponse);
-      } else {
-        var request = http.Request('DELETE', url);
-        request.headers.addAll(baseHeaders);
-        var streamedResponse = await request.send();
-        response = await http.Response.fromStream(streamedResponse);
-      }
-
-      var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
-
-      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-        return jsonResponse['message'];
-      } else {
-        return 'failed: ${jsonResponse['message']}';
-      }
-    } catch (e) {
-      return 'Error in deleteJobApplication: $e';
-    }
-  }
 }

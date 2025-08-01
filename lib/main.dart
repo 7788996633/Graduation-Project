@@ -1,17 +1,47 @@
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'blocs/my_bloc_observere.dart';
 import 'blocs/user_bloc/user_bloc.dart';
 import 'blocs/auth_bloc/auth_bloc.dart';
 import 'blocs/user_profile_bloc/user_profile_bloc.dart';
 
+import 'data/services/notifications_services.dart';
+import 'firebase_options.dart';
 import 'presentation/screens/auth_screens/auth_screen.dart';
+import 'presentation/widgets/auth_web_wedgets/auth_web_screen.dart';
 
-void main() {
-  Bloc.observer = MyBlocObserver();
+import 'localnotification.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // // تهيئة Firebase مع مراعاة الويب
+  // if (kIsWeb) {
+  //   await Firebase.initializeApp(
+  //     options: DefaultFirebaseOptions.web,
+  //   );
+  // } else {
+  //   await Firebase.initializeApp();
+  // }
+  //
+  // // تهيئة الإشعارات
+  // await NotificationsServices().initNotifications();
+
+  // تهيئة EasyLocalization
+  await EasyLocalization.ensureInitialized();
+
   runApp(
-    const MyApp(),
+    EasyLocalization(
+      supportedLocales: const [Locale('en'), Locale('ar')],
+      path: 'assets/translations',
+      fallbackLocale: const Locale('en'),
+      child: const MyApp(),
+    ),
   );
 }
 
@@ -33,7 +63,10 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const AuthScreen(),
+        locale: context.locale,
+        supportedLocales: context.supportedLocales,
+        localizationsDelegates: context.localizationDelegates,
+        home: kIsWeb ? const AuthWebScreen() : const AuthScreen(),
       ),
     );
   }

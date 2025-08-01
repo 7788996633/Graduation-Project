@@ -31,7 +31,7 @@ class JobApplicationBloc extends Bloc<JobApplicationEvent, JobApplicationState> 
       } else if (event is GetAllJobApplicationsEvent) {
         emit(JobApplicationLoading());
         try {
-          List<JobApplicationModel> data = await JobApplicationRepository().getJobApplications();
+          List<JobApplicationModel> data = await JobApplicationRepository().getJobApplications(event.hiringReqId);
           emit(JobApplicationListLoaded(list: data));
         } catch (e) {
           emit(JobApplicationFail(errMsg: e.toString()));
@@ -49,15 +49,6 @@ class JobApplicationBloc extends Bloc<JobApplicationEvent, JobApplicationState> 
         try {
           String result = await JobApplicationServices()
               .updateJobApplication(event.jobApplicationId, event.date);
-          emit(JobApplicationSuccess(successMsg: result));
-        } catch (e) {
-          emit(JobApplicationFail(errMsg: e.toString()));
-        }
-      } else if (event is DeleteJobApplicationEvent) {
-        emit(JobApplicationLoading());
-        try {
-          String result =
-          await JobApplicationServices().deleteJobApplication(event.jobApplicationId);
           emit(JobApplicationSuccess(successMsg: result));
         } catch (e) {
           emit(JobApplicationFail(errMsg: e.toString()));

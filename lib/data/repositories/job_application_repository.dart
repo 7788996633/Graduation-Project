@@ -3,8 +3,8 @@ import '../services/job_application_service.dart';
 
 
 class JobApplicationRepository {
-  Future<List<JobApplicationModel>> getJobApplications() async {
-    var jobApplicationList = await JobApplicationServices().getJobApplications();
+  Future<List<JobApplicationModel>> getJobApplications(int hiringReq) async {
+    var jobApplicationList = await JobApplicationServices().getJobApplications(hiringReq);
     return jobApplicationList
         .map(
           (e) => JobApplicationModel.fromJson(e),
@@ -13,7 +13,7 @@ class JobApplicationRepository {
   }
 
   Future<List<JobApplicationModel>> getMyJobApplications() async {
-    var jobApplicationList = await JobApplicationServices().getJobApplications();
+    var jobApplicationList = await JobApplicationServices().getMyJobApplications();
     return jobApplicationList
         .map(
           (e) => JobApplicationModel.fromJson(e),

@@ -6,6 +6,7 @@ import '../../../../blocs/job_application/job_application_event.dart';
 import '../../../../themes.dart';
 import '../../../widgets/custom_appbar_add.dart';
 import '../../../widgets/job_application_list.dart';
+import '../../../widgets/my_job_application_list.dart';
 import '../../../widgets/refresh_button.dart';
 
 class  MyListJobApplicationsScreen extends StatefulWidget {
@@ -37,13 +38,13 @@ class _MyListJobApplicationsScreenState extends State<MyListJobApplicationsScree
         child: Column(
           children: [
             const SizedBox(height: 20),
-            JobApplicationList(bloc: bloc),
+            MyJobApplicationList(bloc: bloc,),
           ],
         ),
       ),
       floatingActionButton: RefreshButton(
         onPressed: () {
-          bloc.add(GetMyJobApplicationsEvent()); // 👈 استبدال All بـ My
+          bloc.add(GetMyJobApplicationsEvent());
         },
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../blocs/employee_bloc/employee_bloc.dart';
 import '../../../blocs/hiring_requests/hiring_requests_block.dart';
@@ -24,15 +25,25 @@ import '../report_screen/report_financial_screen.dart';
 import '../report_screen/report_hiring_screen.dart';
 import '../report_screen/report_invoices_screen.dart';
 
-class HrHomeScreen extends StatelessWidget {
+class HrHomeScreen extends StatefulWidget {
   const HrHomeScreen({super.key});
+
+  @override
+  State<HrHomeScreen> createState() => _HrHomeScreenState();
+}
+
+class _HrHomeScreenState extends State<HrHomeScreen> {
+  // دالة لإعادة بناء الشاشة عند تغيير اللغة من صفحة الإعدادات
+  void refresh() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     final sections = [
       {
         'icon': Icons.assignment_ind,
-        'title': 'Hiring Requests',
+        'title': tr('hiring_requests'),
         'onTap': () {
           Navigator.push(
             context,
@@ -47,7 +58,7 @@ class HrHomeScreen extends StatelessWidget {
       },
       {
         'icon': Icons.campaign,
-        'title': 'Hiring Requests Publish',
+        'title': tr('hiring_requests_publish'),
         'onTap': () {
           Navigator.push(
             context,
@@ -60,24 +71,10 @@ class HrHomeScreen extends StatelessWidget {
           );
         },
       },
-      {
-        'icon': Icons.people,
-        'title': 'Job Application',
-        'onTap': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (_) => JobApplicationBloc(),
-                child: const ListJobApplicationsScreen(),
-              ),
-            ),
-          );
-        },
-      },
+
       {
         'icon': Icons.attach_money,
-        'title': 'Set salary to lawyer',
+        'title': tr('set_salary_to_lawyer'),
         'onTap': () {
           Navigator.push(
             context,
@@ -92,7 +89,7 @@ class HrHomeScreen extends StatelessWidget {
       },
       {
         'icon': Icons.insert_drive_file,
-        'title': 'Financial Report',
+        'title': tr('financial_report'),
         'onTap': () {
           Navigator.push(
             context,
@@ -104,7 +101,7 @@ class HrHomeScreen extends StatelessWidget {
       },
       {
         'icon': Icons.group,
-        'title': 'Hiring Report',
+        'title': tr('hiring_report'),
         'onTap': () {
           Navigator.push(
             context,
@@ -116,7 +113,7 @@ class HrHomeScreen extends StatelessWidget {
       },
       {
         'icon': Icons.receipt_long,
-        'title': 'Invoices Report',
+        'title': tr('invoices_report'),
         'onTap': () {
           Navigator.push(
             context,
@@ -128,7 +125,7 @@ class HrHomeScreen extends StatelessWidget {
       },
       {
         'icon': Icons.event_available,
-        'title': 'Add Employee',
+        'title': tr('add_employee'),
         'onTap': () {
           Navigator.push(
             context,
@@ -143,7 +140,7 @@ class HrHomeScreen extends StatelessWidget {
       },
       {
         'icon': Icons.event_available,
-        'title': 'Employees',
+        'title': tr('employees'),
         'onTap': () {
           Navigator.push(
             context,
@@ -159,10 +156,12 @@ class HrHomeScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: const CustomHomeAppBar(title: 'Hr Panel'),
+      appBar: CustomHomeAppBar(title: tr('hr_panel')),
       drawer: BlocProvider(
         create: (context) => UserProfileBloc()..add(ShowUserProfileEvent()),
-        child: const CustomAppDrawer(),
+        child: CustomAppDrawer(
+          onSettingsClosed: refresh,
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

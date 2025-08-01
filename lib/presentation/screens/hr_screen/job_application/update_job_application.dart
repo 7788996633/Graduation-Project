@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+
 import '../../../../blocs/job_application/job_application_bloc.dart';
 import '../../../../blocs/job_application/job_application_event.dart';
 import '../../../../blocs/job_application/job_application_state.dart';
- import '../../../../data/models/job_application_model.dart';
-import '../../../../themes.dart';
-import '../../../widgets/custom_appbar_add.dart';
+import '../../../../data/models/job_application_model.dart';
 
 class UpdateJobApplicationScreen extends StatefulWidget {
   final JobApplicationModel jobApplication;
@@ -17,13 +17,14 @@ class UpdateJobApplicationScreen extends StatefulWidget {
 }
 
 class _UpdateJobApplicationScreenState extends State<UpdateJobApplicationScreen> {
-  final _formKey = GlobalKey<FormState>();
   late DateTime selectedDate;
+  final TextEditingController _dateController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     selectedDate = widget.jobApplication.date;
+    _dateController.text = DateFormat('yyyy-MM-dd').format(selectedDate);
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -32,36 +33,38 @@ class _UpdateJobApplicationScreenState extends State<UpdateJobApplicationScreen>
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate.isBefore(tomorrow) ? tomorrow : selectedDate,
-      firstDate: tomorrow, // يبدأ من بكرا فقط
+      firstDate: tomorrow,
       lastDate: DateTime(2100),
     );
 
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
+        _dateController.text = DateFormat('yyyy-MM-dd').format(picked);
       });
     }
   }
 
   @override
+  void dispose() {
+    _dateController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomActionAppBar(
-        title: 'Update Job Application',
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: BlocConsumer< JobApplicationBloc, JobApplicationState>(
+    return BlocProvider(
+      create: (_) => JobApplicationBloc(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Update Job Application Date'),
+          backgroundColor: Colors.brown,
+        ),
+        body: BlocConsumer<JobApplicationBloc, JobApplicationState>(
           listener: (context, state) {
             if (state is JobApplicationSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    state.successMsg,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Colors.green,
-                ),
+                SnackBar(content: Text('✅ ${state.successMsg}')),
               );
               Navigator.pop(
                 context,
@@ -69,50 +72,46 @@ class _UpdateJobApplicationScreenState extends State<UpdateJobApplicationScreen>
                   id: widget.jobApplication.id,
                   result: widget.jobApplication.result,
                   note: widget.jobApplication.note,
-                  date: selectedDate,
+                  date: selectedDate, // التاريخ الجديد اللي اختاره المستخدم
                   hiringReqId: widget.jobApplication.hiringReqId,
-                  userName: '', jobTitle: '', cvLink: '',
+                  jobTitle: widget.jobApplication.jobTitle,
+                  cvLink: widget.jobApplication.cvLink,
+                  userId: widget.jobApplication.userId, userName: '',
                 ),
               );
             } else if (state is JobApplicationFail) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    state.errMsg,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            } else if (state is JobApplicationLoading) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    "Loading ...",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Colors.grey,
-                ),
+                SnackBar(content: Text('❌ ${state.errMsg}')),
               );
             }
           },
           builder: (context, state) {
-            return Form(
-              key: _formKey,
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Selected Date: ${selectedDate.toLocal()}".split(' ')[0],
-                    style: const TextStyle(fontSize: 18),
+                    'Job Title: ${widget.jobApplication.jobTitle}',
+                    style: const TextStyle(fontSize: 16),
                   ),
-                  const SizedBox(height: 12),
-                  ElevatedButton(
-                    onPressed: () => _selectDate(context),
-                    child: const Text('Select Date'),
+                  const SizedBox(height: 10),
+                  TextFormField(
+                    controller: _dateController,
+                    readOnly: true,
+                    onTap: () => _selectDate(context),
+                    decoration: InputDecoration(
+                      labelText: 'Select New Date',
+                      suffixIcon: const Icon(Icons.calendar_today),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
+                  const SizedBox(height: 30),
+                  state is JobApplicationLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : ElevatedButton(
                     onPressed: () {
                       BlocProvider.of<JobApplicationBloc>(context).add(
                         UpdateJobApplicationEvent(
@@ -122,15 +121,12 @@ class _UpdateJobApplicationScreenState extends State<UpdateJobApplicationScreen>
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.darkBlue,
+                      backgroundColor: Colors.brown,
+                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
                     ),
                     child: const Text(
-                      'Update',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      'Update Date',
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ],

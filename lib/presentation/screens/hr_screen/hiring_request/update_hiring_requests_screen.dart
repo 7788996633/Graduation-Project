@@ -6,8 +6,6 @@ import '../../../../blocs/hiring_requests/hiring_requests_event.dart';
 import '../../../../blocs/hiring_requests/hiring_requests_state.dart';
 
 import '../../../../data/models/hiring_request_model.dart';
-import '../../../../themes.dart';
-import '../../../widgets/custom_appbar_add.dart';
 
 class UpdateHiringRequestStatusScreen extends StatefulWidget {
   final HiringRequestModel hiringRequest;
@@ -15,114 +13,98 @@ class UpdateHiringRequestStatusScreen extends StatefulWidget {
   const UpdateHiringRequestStatusScreen({super.key, required this.hiringRequest});
 
   @override
-  State<UpdateHiringRequestStatusScreen> createState() =>
-      _UpdateHiringRequestStatusScreenState();
+  State<UpdateHiringRequestStatusScreen> createState() => _UpdateHiringRequestStatusScreenState();
 }
 
-class _UpdateHiringRequestStatusScreenState
-    extends State<UpdateHiringRequestStatusScreen> {
-  final _formKey = GlobalKey<FormState>();
-  late TextEditingController _statusController;
+class _UpdateHiringRequestStatusScreenState extends State<UpdateHiringRequestStatusScreen> {
+  String? selectedStatus;
+
+  final List<String> statusOptions = [
+    'Pending',
+    'Accepted',
+    'Rejected',
+    'Under Review',
+  ];
 
   @override
   void initState() {
     super.initState();
-    _statusController = TextEditingController(text: widget.hiringRequest.status);
-  }
-
-  @override
-  void dispose() {
-    _statusController.dispose();
-    super.dispose();
+    selectedStatus = widget.hiringRequest.status;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomActionAppBar(
-        title: 'Update Hiring Request Status',
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: BlocConsumer<HiringRequestsBloc, HiringRequestsState>(
+    return BlocProvider(
+      create: (_) => HiringRequestsBloc(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Update Hiring Status'),
+          backgroundColor: Colors.blueGrey,
+        ),
+        body: BlocConsumer<HiringRequestsBloc, HiringRequestsState>(
           listener: (context, state) {
             if (state is HiringRequestsSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    state.successmsg,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Colors.green,
-                ),
+                SnackBar(content: Text('✅ ${state.successmsg}')),
               );
               Navigator.pop(
                 context,
-                HiringRequestModel(
-                  id: widget.hiringRequest.id,
-                  status: _statusController.text.trim(),
-                  jopTitle:widget.hiringRequest.jopTitle,
-                   type: widget.hiringRequest.type,
-                  description: widget.hiringRequest.description,
-                ),
               );
             } else if (state is HiringRequestsFail) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    state.errmsg,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            } else if (state is HiringRequestsLoading) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    "Loading ...",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Colors.grey,
-                ),
+                SnackBar(content: Text('❌ ${state.errmsg}')),
               );
             }
           },
           builder: (context, state) {
-            return Form(
-              key: _formKey,
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextFormField(
-                    controller: _statusController,
-                    keyboardType: TextInputType.text,
-                    decoration: const InputDecoration(labelText: 'Status'),
-                    validator: (value) =>
-                    value == null || value.isEmpty ? 'Please enter status' : null,
+                  Text('Job Title: ${widget.hiringRequest.jopTitle}',
+                      style: TextStyle(fontSize: 16)),
+                  SizedBox(height: 10),
+                  Text('Type: ${widget.hiringRequest.type}',
+                      style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                  SizedBox(height: 30),
+                  DropdownButtonFormField<String>(
+                    value: selectedStatus,
+                    items: statusOptions.map((String status) {
+                      return DropdownMenuItem<String>(
+                        value: status,
+                        child: Text(status),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedStatus = value;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Select New Status',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
+                  SizedBox(height: 30),
+                  state is HiringRequestsLoading
+                      ? Center(child: CircularProgressIndicator())
+                      : ElevatedButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
+                      if (selectedStatus != null) {
                         BlocProvider.of<HiringRequestsBloc>(context).add(
                           UpdateHiringRequest(
                             hiringRequestId: widget.hiringRequest.id,
-                            status: _statusController.text.trim(),
+                            status: selectedStatus!,
                           ),
                         );
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.darkBlue,
+                      backgroundColor: Colors.blueGrey,
+                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 14),
                     ),
-                    child: const Text(
-                      'Update',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    child: Text('Update Status', style: TextStyle(color: Colors.white)),
                   ),
                 ],
               ),
