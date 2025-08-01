@@ -3,14 +3,16 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../data/services/report_services.dart';
 import '../../../themes.dart';
 
-class ReportHiringScreen extends StatefulWidget {
-  const ReportHiringScreen({super.key});
+class ReportSessionsScreen extends StatefulWidget {
+  final int sessionId;
+
+  const ReportSessionsScreen({super.key, required this.sessionId});
 
   @override
-  State<ReportHiringScreen> createState() => _ReportHiringScreenState();
+  State<ReportSessionsScreen> createState() => _ReportSessionsScreenState();
 }
 
-class _ReportHiringScreenState extends State<ReportHiringScreen> {
+class _ReportSessionsScreenState extends State<ReportSessionsScreen> {
   bool _loading = false;
   Map<String, dynamic>? _reportData;
   String? _error;
@@ -18,10 +20,10 @@ class _ReportHiringScreenState extends State<ReportHiringScreen> {
   @override
   void initState() {
     super.initState();
-    _generateAndOpenReport();
+    _generateAndOpenPdf(); // استدعاء التقرير تلقائياً
   }
 
-  Future<void> _generateAndOpenReport() async {
+  Future<void> _generateAndOpenPdf() async {
     setState(() {
       _loading = true;
       _error = null;
@@ -29,7 +31,7 @@ class _ReportHiringScreenState extends State<ReportHiringScreen> {
     });
 
     try {
-      final data = await ReportService().reportHiring();
+      final data = await ReportService().reportSession(widget.sessionId);
       final pdfLink = data['link']?.toString();
 
       if (pdfLink != null && pdfLink.endsWith('.pdf')) {
@@ -48,7 +50,7 @@ class _ReportHiringScreenState extends State<ReportHiringScreen> {
       });
     } catch (e) {
       setState(() {
-        _error = 'حدث خطأ أثناء جلب البيانات: $e';
+        _error = 'حدث خطأ أثناء تحميل التقرير: $e';
       });
     } finally {
       setState(() {
@@ -95,7 +97,8 @@ class _ReportHiringScreenState extends State<ReportHiringScreen> {
                 if (value.isEmpty) return;
                 final uri = Uri.parse(prepareFullUrl(value));
                 if (await canLaunchUrl(uri)) {
-                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  await launchUrl(uri,
+                      mode: LaunchMode.externalApplication);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('لا يمكن فتح الرابط')),
@@ -140,14 +143,14 @@ class _ReportHiringScreenState extends State<ReportHiringScreen> {
           children: [
             const Center(
               child: Icon(
-                Icons.insert_drive_file,
+                Icons.picture_as_pdf,
                 size: 72,
                 color: AppColors.darkBlue,
               ),
             ),
             const SizedBox(height: 20),
             const Text(
-              'تفاصيل تقرير الوظائف والمتقدمين',
+              'تفاصيل تقرير الجلسة',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -156,12 +159,12 @@ class _ReportHiringScreenState extends State<ReportHiringScreen> {
             ),
             const Divider(height: 30, thickness: 1.2),
             ..._reportData!.entries.map((entry) {
-              final isLink = entry.key.toLowerCase().contains('link');
               return _buildInfoRow(
-                icon: isLink ? Icons.link : Icons.info,
+                icon: Icons.info_outline,
                 label: entry.key,
-                value: entry.value.toString(),
-                isLink: isLink,
+                value: entry.value?.toString() ?? '',
+                isLink: (entry.value?.toString().contains('.pdf') ?? false) ||
+                    (entry.value?.toString().startsWith('http') ?? false),
               );
             }).toList(),
           ],
@@ -185,7 +188,7 @@ class _ReportHiringScreenState extends State<ReportHiringScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('تقرير الوظائف والمتقدمين'),
+        title: const Text('تقرير الجلسة'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
