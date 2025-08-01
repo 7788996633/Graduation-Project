@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "34322017082",
+    "project_id": "lawcompanyapp",
+    "storage_bucket": "lawcompanyapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:34322017082:android:3d76942207fe1f5e397e03",
+        "android_client_info": {
+          "package_name": "com.example.untitled2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAxAjAoeybaKn1kKsiC2pl9KSj20YDHWg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:34322017082:android:1df9ea9aa65f26c2397e03",
+        "android_client_info": {
+          "package_name": "com.example.untitled30"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAxAjAoeybaKn1kKsiC2pl9KSj20YDHWg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
