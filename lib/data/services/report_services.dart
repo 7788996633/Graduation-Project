@@ -8,6 +8,7 @@ class ReportService {
     'Accept': 'application/json',
     'Authorization': 'Bearer $myToken',
   };
+
   Future<Map<String, dynamic>> reportFinancial() async {
     var url = Uri.parse('${myUrl}report-salaries');
     http.Response response;
@@ -70,4 +71,24 @@ class ReportService {
       throw Exception('$failMessage: ${jsonResponse['message']}');
     }
   }
-}
+
+
+
+
+
+
+Future<Map<String, dynamic>> reportSession(int sessionId) async {
+  var url = Uri.parse('${myUrl}session-report-pdf/$sessionId');
+  http.Response response;
+
+  if (kIsWeb) {
+    var request = http.Request('GET', url);
+    request.headers.addAll(baseHeaders);
+    var streamedResponse = await request.send();
+    response = await http.Response.fromStream(streamedResponse);
+  } else {
+    response = await http.get(url, headers: baseHeaders);
+  }
+  return _handleReportResponse(
+      response, 'فشل إنشاء تقرير الوظائف والمتقدمين');
+}}

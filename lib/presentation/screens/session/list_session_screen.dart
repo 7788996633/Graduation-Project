@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/session_points_bloc/session_points_bloc.dart';
-import 'package:graduation/presentation/screens/session/session_points_chart.dart';
 
+import '../../../blocs/session_points_bloc/session_points_bloc.dart';
 import '../../../blocs/sessions_bloc/sessions_bloc.dart';
 import '../../../blocs/sessions_bloc/sessions_event.dart';
 import '../../../blocs/documents_bloc/document_bloc.dart';
@@ -13,6 +12,7 @@ import '../../widgets/sessions_list.dart';
 
 import '../document/documents_list_screen.dart';
 import 'create_session.dart';
+import 'session_points_chart.dart';
 
 class ListSessionsScreen extends StatefulWidget {
   const ListSessionsScreen({super.key, required this.issueId});

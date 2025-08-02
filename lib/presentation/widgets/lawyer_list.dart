@@ -36,7 +36,8 @@ class _LawyerListState extends State<LawyerList> {
         final lawyer = lawyersList[index];
         return Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0), // مسافة عمودية بين العناصر
+            padding: const EdgeInsets.symmetric(
+                vertical: 8.0), // مسافة عمودية بين العناصر
             child: BlocProvider(
               create: (context) => LawyerProfileBloc(),
               child: LawyerItem(lawyerModel: lawyer),
@@ -44,7 +45,6 @@ class _LawyerListState extends State<LawyerList> {
           ),
         );
       },
-
     );
   }
 
@@ -57,7 +57,8 @@ class _LawyerListState extends State<LawyerList> {
         } else if (state is LawyerFail) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.errorMsg, style: const TextStyle(fontSize: 16)),
+              content:
+                  Text(state.errorMsg, style: const TextStyle(fontSize: 16)),
               backgroundColor: Colors.red,
             ),
           );
@@ -73,7 +74,8 @@ class _LawyerListState extends State<LawyerList> {
           } else if (state is LawyerFail) {
             return Column(
               children: [
-                const Text("There is an error:", style: TextStyle(fontSize: 30)),
+                const Text("There is an error:",
+                    style: TextStyle(fontSize: 30)),
                 Text(state.errorMsg, style: const TextStyle(fontSize: 30)),
               ],
             );

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/user_profile_bloc/user_profile_bloc.dart';
-import 'package:graduation/data/models/user_model.dart';
-import 'package:graduation/presentation/screens/user_screens/user_profile_screens/user_profile_screen.dart';
+
+import '../../blocs/user_profile_bloc/user_profile_bloc.dart';
+import '../../data/models/user_model.dart';
 import '../../themes.dart';
+import '../screens/user_screens/user_profile_screens/user_profile_screen.dart';
 
 class CustomUserItem extends StatelessWidget {
   const CustomUserItem({

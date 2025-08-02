@@ -19,21 +19,21 @@ class IssuesBloc extends Bloc<IssuesEvent, IssuesState> {
           emit(IssuesLoading());
           try {
             String value = await IssusServices().issueCreateService(
-              event.title,
-              event.issueNumber,
-              event.courtName,
-              event.status,
-              event.priority,
-              event.startDate,
-              event.endDate,
-              event.totalCost,
-              event.numberOfPayments,
-              event.opponentName,
-              event.userId,
-              event.amoountPaid,
-              event.description,
-              event.categoryId,
-            );
+                event.title,
+                event.issueNumber,
+                event.courtName,
+                event.status,
+                event.priority,
+                event.startDate,
+                event.endDate,
+                event.totalCost,
+                event.numberOfPayments,
+                event.opponentName,
+                event.userId,
+                event.amoountPaid,
+                event.description,
+                event.categoryId,
+                event.lawyersPercentage);
             emit(
               IssuesSuccess(
                 successmsg: value,

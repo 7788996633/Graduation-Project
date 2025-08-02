@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/presentation/screens/home/lawyer_home_page.dart';
+
 import 'package:path/path.dart';
 
 import '../../../../blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
 import '../../../../data/models/lawyer_model.dart';
+import '../../home/lawyer_home_page.dart';
 
 class EditLawyerProfileScreen extends StatefulWidget {
   final LawyerModel lawyer;

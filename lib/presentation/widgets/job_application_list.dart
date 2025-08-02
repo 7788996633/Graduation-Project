@@ -9,21 +9,27 @@ import '../../data/models/job_application_model.dart';
 import 'job_application_item.dart';
 
 class JobApplicationList extends StatefulWidget {
-  const JobApplicationList({super.key, required this.bloc});
+  const JobApplicationList({
+    super.key,
+    required this.bloc,
+    required this.hiringReqId,
+  });
+
   final JobApplicationBloc bloc;
+  final int hiringReqId;
 
   @override
   State<JobApplicationList> createState() => _JobApplicationListState();
 }
 
 class _JobApplicationListState extends State<JobApplicationList> {
+  List<JobApplicationModel> jobApplicationList = [];
+
   @override
   void initState() {
     super.initState();
-    widget.bloc.add(GetAllJobApplicationsEvent());
+    widget.bloc.add(GetAllJobApplicationsEvent(hiringReqId: widget.hiringReqId));
   }
-
-  List<JobApplicationModel> jobApplicationList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +45,7 @@ class _JobApplicationListState extends State<JobApplicationList> {
               backgroundColor: Colors.green,
             ),
           );
-          widget.bloc.add(GetAllJobApplicationsEvent());
+          widget.bloc.add(GetAllJobApplicationsEvent(hiringReqId: widget.hiringReqId));
         } else if (state is JobApplicationFail) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -63,9 +69,7 @@ class _JobApplicationListState extends State<JobApplicationList> {
               child: ListView.builder(
                 itemCount: jobApplicationList.length,
                 itemBuilder: (context, index) {
-                  return JobApplicationItem(
-                    jobApplication: jobApplicationList[index],
-                  );
+                  return JobApplicationItem(jobApplication: jobApplicationList[index]);
                 },
               ),
             );

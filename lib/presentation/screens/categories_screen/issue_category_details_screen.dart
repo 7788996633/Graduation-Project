@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/issue_bloc/issues_bloc.dart';
-import 'package:graduation/presentation/widgets/isssues_category_list.dart';
-import 'package:graduation/presentation/widgets/user_issue_item.dart';
 
+import '../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../data/models/categories_model.dart';
 import '../../../data/models/issues_model.dart';
 import '../../../themes.dart';
 import '../../widgets/custom_appbar_add.dart';
+import '../../widgets/isssues_category_list.dart';
+import '../../widgets/user_issue_item.dart';
 
 class IssueCategoryDetailsScreen extends StatefulWidget {
   final CategoriesModel issueCategoryModel;

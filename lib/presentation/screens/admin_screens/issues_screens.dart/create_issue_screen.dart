@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/categories/categories_bloc.dart';
-import 'package:graduation/blocs/categories/categories_event.dart';
-import 'package:graduation/presentation/widgets/issue_category_selecter.dart';
 
+import '../../../../blocs/categories/categories_bloc.dart';
+import '../../../../blocs/categories/categories_event.dart';
 import '../../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../../blocs/user_bloc/user_bloc.dart';
 import '../../../widgets/clients_list.dart';
 import '../../../widgets/custom_appbar_add.dart';
+import '../../../widgets/issue_category_selecter.dart';
 
 class CreateIssueScreen extends StatefulWidget {
   const CreateIssueScreen({super.key});
@@ -27,6 +27,8 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
   final TextEditingController numberofpaymentsController =
       TextEditingController();
   final TextEditingController opponentnameController = TextEditingController();
+  final TextEditingController lawyerPercentageController =
+      TextEditingController();
 
   // Dropdown values
   final List<String> categories = ['Civil', 'Criminal', 'Commercial', 'Other'];
@@ -62,6 +64,7 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
     totalcostController.dispose();
     numberofpaymentsController.dispose();
     opponentnameController.dispose();
+    lawyerPercentageController.dispose();
     super.dispose();
   }
 
@@ -162,21 +165,22 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
           return;
         }
         BlocProvider.of<IssuesBloc>(context).add(IssueAdd(
-          amoountPaid: int.tryParse(numberofpaymentsController.text) ?? 0,
-          description: titleController.text,
-          userId: selectedUserId!,
-          title: titleController.text,
-          issueNumber: issuenumberController.text,
-          categoryId: selectedCategoryId!,
-          courtName: courtnameController.text,
-          status: selectedStatus!.toLowerCase(),
-          priority: selectedPriority!.toLowerCase(),
-          startDate: startDate!.toIso8601String(),
-          endDate: endDate!.toIso8601String(),
-          totalCost: totalcostController.text,
-          numberOfPayments: int.tryParse(numberofpaymentsController.text) ?? 0,
-          opponentName: opponentnameController.text,
-        ));
+            amoountPaid: int.tryParse(numberofpaymentsController.text) ?? 0,
+            description: titleController.text,
+            userId: selectedUserId!,
+            title: titleController.text,
+            issueNumber: issuenumberController.text,
+            categoryId: selectedCategoryId!,
+            courtName: courtnameController.text,
+            status: selectedStatus!.toLowerCase(),
+            priority: selectedPriority!.toLowerCase(),
+            startDate: startDate!.toIso8601String(),
+            endDate: endDate!.toIso8601String(),
+            totalCost: totalcostController.text,
+            numberOfPayments:
+                int.tryParse(numberofpaymentsController.text) ?? 0,
+            opponentName: opponentnameController.text,
+            lawyersPercentage: lawyerPercentageController.text));
       }
     } else {
       setState(() {
@@ -269,6 +273,15 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
                       icon: Icons.account_balance,
                     ),
                     const SizedBox(height: 10),
+                    _buildTextField(
+                      inputType: TextInputType.number,
+                      controller: lawyerPercentageController,
+                      label: 'Lawyers Percentage',
+                      icon: Icons.percent,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     GestureDetector(
                       onTap: _showCategorySelector,
                       child: Container(

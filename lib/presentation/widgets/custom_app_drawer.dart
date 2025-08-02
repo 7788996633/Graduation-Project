@@ -1,15 +1,24 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../../../themes.dart';
 import '../screens/settings/setting_screen.dart';
 import '../screens/user_screens/user_profile_screens/user_profile_screen.dart';
 
-class CustomAppDrawer extends StatelessWidget {
-  const CustomAppDrawer({super.key});
+class CustomAppDrawer extends StatefulWidget {
 
+  final VoidCallback? onSettingsClosed;
+
+  const CustomAppDrawer({super.key, this.onSettingsClosed});
+
+  @override
+  State<CustomAppDrawer> createState() => _CustomAppDrawerState();
+}
+
+class _CustomAppDrawerState extends State<CustomAppDrawer> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -58,10 +67,9 @@ class CustomAppDrawer extends StatelessWidget {
                         backgroundImage: pickedImage != null
                             ? FileImage(pickedImage)
                             : (userProfileModel.image.isNotEmpty
-                                    ? NetworkImage(userProfileModel.image)
-                                    : const AssetImage(
-                                        'assets/default_image.png'))
-                                as ImageProvider,
+                            ? NetworkImage(userProfileModel.image)
+                            : const AssetImage('assets/default_image.png'))
+                        as ImageProvider,
                       ),
                     ),
                   );
@@ -82,22 +90,31 @@ class CustomAppDrawer extends StatelessWidget {
                 }
               },
             ),
+
             ListTile(
               leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
+              title: Text(tr('settings')),
+              onTap: () async {
+                Navigator.pop(context); // غلق الدروير
+                await Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const SettingsScreen()),
                 );
+                // بعد العودة من الإعدادات، ننادي الـ callback لإعادة بناء الشاشة الأب
+                if (widget.onSettingsClosed != null) {
+                  widget.onSettingsClosed!();
+                }
+                // مع ذلك، نعيد بناء الدروير لتحديث النصوص فيه أيضا
+                setState(() {});
               },
             ),
+
             ListTile(
               leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
+              title: Text(tr('logout')),
               onTap: () {
                 Navigator.pop(context);
+                // هنا يمكن تضيف وظيفة تسجيل الخروج
               },
             ),
           ],

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/presentation/screens/admin_screens/issues_screens.dart/edit_issue_screen.dart';
 
 import '../../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../../blocs/lawyer_bloc/lawyer_bloc.dart';
@@ -15,6 +14,7 @@ import '../../../widgets/custom_appbar_add.dart';
 import '../../../widgets/lawyers_in_issue_list.dart';
 import '../../AttendDemand/all_attend_demand_screen.dart';
 import '../../session/list_session_screen.dart';
+import 'edit_issue_screen.dart';
 
 class IssueScreen extends StatefulWidget {
   final IssuesModel issuesModel;

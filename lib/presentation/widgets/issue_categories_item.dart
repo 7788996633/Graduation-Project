@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/issue_bloc/issues_bloc.dart';
 
+import '../../blocs/issue_bloc/issues_bloc.dart';
 import '../../data/models/categories_model.dart';
 import '../screens/categories_screen/issue_category_details_screen.dart';
 

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/constant.dart';
-import 'package:graduation/presentation/widgets/issues_filter_bottom_sheet.dart';
-import 'package:graduation/presentation/widgets/user_issue_item.dart';
 
 import '../../../../blocs/issue_bloc/issues_bloc.dart';
+import '../../../../constant.dart';
 import '../../../../data/filters/filters_strategy.dart';
 import '../../../../data/models/issues_model.dart';
 import '../../../../themes.dart';
 import '../../../widgets/custom_appbar_add.dart';
+import '../../../widgets/issues_filter_bottom_sheet.dart';
+import '../../../widgets/user_issue_item.dart';
 import 'create_issue_screen.dart';
 
 class AllIssuesScreen extends StatefulWidget {

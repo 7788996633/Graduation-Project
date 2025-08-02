@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/data/models/categories_model.dart';
-import 'package:graduation/presentation/screens/categories_screen/issue_select_category_screen.dart';
 
 import '../../../blocs/categories/categories_bloc.dart';
 import '../../../blocs/categories/categories_event.dart';
 
+import '../../../data/models/categories_model.dart';
 import '../../../themes.dart';
 
 import '../../widgets/custom_appbar_add.dart';
 import '../../widgets/refresh_button.dart';
+import 'issue_select_category_screen.dart';
 
 class SelectCategoryForIssueScreen extends StatefulWidget {
   SelectCategoryForIssueScreen({

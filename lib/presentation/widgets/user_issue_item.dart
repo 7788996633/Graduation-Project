@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/issue_bloc/issues_bloc.dart';
-import 'package:graduation/blocs/user_profile_bloc/user_profile_bloc.dart';
-import 'package:graduation/constant.dart';
-import 'package:graduation/data/models/issues_model.dart';
-import 'package:graduation/presentation/screens/admin_screens/issues_screens.dart/issuescreen.dart';
-import 'package:graduation/themes.dart';
+
+import '../../blocs/issue_bloc/issues_bloc.dart';
+import '../../blocs/user_profile_bloc/user_profile_bloc.dart';
+import '../../constant.dart';
+import '../../data/models/issues_model.dart';
+import '../../themes.dart';
+import '../screens/admin_screens/issues_screens.dart/issuescreen.dart';
 
 class UserIssueItem extends StatefulWidget {
   const UserIssueItem(

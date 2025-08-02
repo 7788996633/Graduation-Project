@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/categories/categories_bloc.dart';
-import 'package:graduation/blocs/categories/categories_event.dart';
+
+import '../../blocs/categories/categories_bloc.dart';
+import '../../blocs/categories/categories_event.dart';
 
 class IssueCategorySelecter extends StatefulWidget {
   final Function(int id, String name) onSelected;

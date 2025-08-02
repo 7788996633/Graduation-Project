@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../blocs/hiring_requests/hiring_requests_block.dart';
 import '../../../../blocs/job_application/job_application_bloc.dart';
- import '../../../../data/models/hiring_request_model.dart';
+import '../../../../data/models/hiring_request_model.dart';
 import '../../../../themes.dart';
 import '../../../widgets/custom_appbar_add.dart';
+import '../job_application/job_application_list_screen.dart';
+
 import '../job_application/add_job_application.dart';
 import 'update_hiring_requests_screen.dart';
 
@@ -20,6 +22,9 @@ class HiringRequestDetailsScreen extends StatefulWidget {
 
 class _HiringRequestDetailsScreenState extends State<HiringRequestDetailsScreen> {
   late HiringRequestModel hiringRequest;
+
+  // دور المستخدم الحالي (عدل حسب إدارة الحالة لديك)
+  String myRole = 'user'; // مثال: 'user' أو 'admin'
 
   @override
   void initState() {
@@ -67,9 +72,7 @@ class _HiringRequestDetailsScreenState extends State<HiringRequestDetailsScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.deepPurple.shade50,
-      appBar: CustomActionAppBar(
-        title: 'Hiring Request Details',
-      ),
+      appBar: const CustomActionAppBar(title: 'Hiring Request Details'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Card(
@@ -98,42 +101,69 @@ class _HiringRequestDetailsScreenState extends State<HiringRequestDetailsScreen>
                   ),
                 ),
                 const SizedBox(height: 24),
-
-                _buildInfoRow('jopTitle', hiringRequest.jopTitle),
+                _buildInfoRow('Job Title', hiringRequest.jopTitle),
                 Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
-                _buildInfoRow('type', hiringRequest.type),
+                _buildInfoRow('Type', hiringRequest.type),
                 Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
-                _buildInfoRow('description', hiringRequest.description),
+                _buildInfoRow('Description', hiringRequest.description),
                 Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
-                _buildInfoRow('status', hiringRequest.status),
-
+                _buildInfoRow('Status', hiringRequest.status),
                 const SizedBox(height: 30),
+
+                if (myRole == 'user')
+                  Center(
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.send),
+                      label: const Text("Apply for Job"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BlocProvider(
+                              create: (_) => JobApplicationBloc(),
+                              child: AddJobApplicationScreen(
+                                hiringReqId: hiringRequest.id,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+
+                const SizedBox(height: 16),
 
                 Center(
                   child: ElevatedButton.icon(
-                    icon: const Icon(Icons.send),
-                    label: const Text("Apply for Job"),
+                    icon: const Icon(Icons.list),
+                    label: const Text("View Applications"),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
+                      backgroundColor: Colors.blue,
                       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     onPressed: () {
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => BlocProvider(
-                                create: (_) => JobApplicationBloc(),
-                                child: AddJobApplicationScreen(
-                                  hiringReqId: hiringRequest.id,
-                                ),
-                              ),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => BlocProvider(
+                            create: (_) => JobApplicationBloc(),
+                            child: ListJobApplicationsScreen(
+                              hiringReqId: hiringRequest.id,
                             ),
-                          );
+                          ),
+                        ),
 
+                      );
                     },
                   ),
                 ),

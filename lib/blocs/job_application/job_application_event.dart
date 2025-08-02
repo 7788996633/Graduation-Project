@@ -20,7 +20,11 @@ class GetJobApplicationByIdEvent extends JobApplicationEvent {
   GetJobApplicationByIdEvent({required this.jobApplicationId});
 }
 
-class GetAllJobApplicationsEvent extends JobApplicationEvent {}
+class GetAllJobApplicationsEvent extends JobApplicationEvent {
+  final int hiringReqId;
+
+  GetAllJobApplicationsEvent({required this.hiringReqId});
+}
 class GetMyJobApplicationsEvent extends JobApplicationEvent {}
 
 class UpdateJobApplicationEvent extends JobApplicationEvent {

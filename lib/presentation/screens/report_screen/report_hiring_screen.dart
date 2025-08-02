@@ -15,7 +15,13 @@ class _ReportHiringScreenState extends State<ReportHiringScreen> {
   Map<String, dynamic>? _reportData;
   String? _error;
 
-  Future<void> _generateReport() async {
+  @override
+  void initState() {
+    super.initState();
+    _generateAndOpenReport();
+  }
+
+  Future<void> _generateAndOpenReport() async {
     setState(() {
       _loading = true;
       _error = null;
@@ -24,6 +30,19 @@ class _ReportHiringScreenState extends State<ReportHiringScreen> {
 
     try {
       final data = await ReportService().reportHiring();
+      final pdfLink = data['link']?.toString();
+
+      if (pdfLink != null && pdfLink.endsWith('.pdf')) {
+        final uri = Uri.parse(prepareFullUrl(pdfLink));
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('لا يمكن فتح الرابط')),
+          );
+        }
+      }
+
       setState(() {
         _reportData = data;
       });
@@ -65,7 +84,7 @@ class _ReportHiringScreenState extends State<ReportHiringScreen> {
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
-              color:AppColors.darkBlue,
+              color: AppColors.darkBlue,
             ),
           ),
           const SizedBox(width: 8),
@@ -121,7 +140,7 @@ class _ReportHiringScreenState extends State<ReportHiringScreen> {
           children: [
             const Center(
               child: Icon(
-                Icons.bar_chart,
+                Icons.insert_drive_file,
                 size: 72,
                 color: AppColors.darkBlue,
               ),
@@ -165,44 +184,23 @@ class _ReportHiringScreenState extends State<ReportHiringScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('تقرير الوظائف والمتقدمين')),
+      appBar: AppBar(
+        title: const Text('تقرير الوظائف والمتقدمين'),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ElevatedButton.icon(
-              onPressed: _loading ? null : _generateReport,
-              icon: const Icon(Icons.insert_chart),
-              label: _loading
-                  ? const SizedBox(
-                width: 16,
-                height: 16,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.white,
-                ),
-              )
-                  : const Text('توليد تقرير الوظائف'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+            if (_loading)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: CircularProgressIndicator(),
                 ),
               ),
-            ),
             _buildReportCard(),
             _buildError(),
-            if (!_loading && _reportData == null && _error == null)
-              const Padding(
-                padding: EdgeInsets.only(top: 24),
-                child: Center(
-                  child: Text(
-                    'لم يتم توليد التقرير بعد',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ),
           ],
         ),
       ),

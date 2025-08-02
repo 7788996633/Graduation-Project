@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/consultation_request_bloc/consultation_request_bloc.dart';
-import 'package:graduation/constant.dart';
-import 'package:graduation/data/models/cons_req_model.dart';
+
 import 'package:intl/intl.dart';
 
+import '../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
 import '../../blocs/consultations_bloc/consultation_bloc.dart';
+import '../../constant.dart';
+import '../../data/models/cons_req_model.dart';
 import '../screens/consultation/add_consultation_screen.dart';
 
 class ConsultationRequestItem extends StatefulWidget {

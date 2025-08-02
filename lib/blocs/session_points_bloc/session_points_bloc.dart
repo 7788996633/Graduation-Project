@@ -1,8 +1,10 @@
 import 'package:bloc/bloc.dart';
-import 'package:graduation/data/repositories/session_points_repository.dart';
-import 'package:graduation/data/services/session_points_services.dart';
-import 'package:graduation/data/session_points_model.dart';
+
 import 'package:meta/meta.dart';
+
+import '../../data/repositories/session_points_repository.dart';
+import '../../data/services/session_points_services.dart';
+import '../../data/session_points_model.dart';
 
 part 'session_points_event.dart';
 part 'session_points_state.dart';

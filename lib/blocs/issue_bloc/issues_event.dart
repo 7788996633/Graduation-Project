@@ -23,22 +23,23 @@ class IssueAdd extends IssuesEvent {
   final String opponentName;
   final int userId;
   final int amoountPaid;
-  IssueAdd({
-    required this.title,
-    required this.issueNumber,
-    required this.categoryId,
-    required this.courtName,
-    required this.status,
-    required this.priority,
-    required this.description,
-    required this.startDate,
-    required this.endDate,
-    required this.totalCost,
-    required this.numberOfPayments,
-    required this.opponentName,
-    required this.userId,
-    required this.amoountPaid,
-  });
+  final String lawyersPercentage;
+  IssueAdd(
+      {required this.title,
+      required this.issueNumber,
+      required this.categoryId,
+      required this.courtName,
+      required this.status,
+      required this.priority,
+      required this.description,
+      required this.startDate,
+      required this.endDate,
+      required this.totalCost,
+      required this.numberOfPayments,
+      required this.opponentName,
+      required this.userId,
+      required this.amoountPaid,
+      required this.lawyersPercentage});
 }
 
 class IssueUpdate extends IssuesEvent {
@@ -125,5 +126,3 @@ class FilterIssues extends IssuesEvent {
 
   FilterIssues(this.filter);
 }
-
- 

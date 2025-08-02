@@ -1,4 +1,5 @@
-import 'package:graduation/constant.dart';
+
+import '../../constant.dart';
 
 class ProfileModel {
   final int id;

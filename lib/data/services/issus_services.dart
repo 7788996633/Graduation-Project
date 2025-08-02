@@ -12,21 +12,21 @@ class IssusServices {
   };
 
   Future<String> issueCreateService(
-    String title,
-    String issueNumber,
-    String courtName,
-    String status,
-    String priority,
-    String startDate,
-    String endDate,
-    String totalCost,
-    int numberOfPayments,
-    String opponentName,
-    int userId,
-    int amoountPaid,
-    String description,
-    int categoryId,
-  ) async {
+      String title,
+      String issueNumber,
+      String courtName,
+      String status,
+      String priority,
+      String startDate,
+      String endDate,
+      String totalCost,
+      int numberOfPayments,
+      String opponentName,
+      int userId,
+      int amoountPaid,
+      String description,
+      int categoryId,
+      String lawyersPercentage) async {
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken'
@@ -48,6 +48,7 @@ class IssusServices {
         'amount_paid': amoountPaid.toString(),
         'description': description,
         'category_id': categoryId.toString(),
+        'lawyer_percentage': lawyersPercentage
       };
 
       var request = http.Request('POST', url);
@@ -86,7 +87,8 @@ class IssusServices {
         'opponent_name': opponentName,
         'amount_paid': amoountPaid.toString(),
         'description': description,
-        'category_id': categoryId.toString()
+        'category_id': categoryId.toString(),
+        'lawyer_percentage': lawyersPercentage
       });
 
       request.headers.addAll(headers);

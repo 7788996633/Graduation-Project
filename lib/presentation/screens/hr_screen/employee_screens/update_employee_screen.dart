@@ -1,14 +1,13 @@
+ 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 import '../../../../blocs/employee_bloc/employee_bloc.dart';
-
 import '../../../../blocs/employee_bloc/employee_event.dart';
 import '../../../../blocs/employee_bloc/employee_state.dart';
 import '../../../../data/models/employee_model.dart';
 import '../../../../themes.dart';
-import '../../../widgets/custom_appbar_add.dart';
 
 class UpdateEmployeeInfoScreen extends StatefulWidget {
   final EmployeeModel employee;
@@ -20,121 +19,143 @@ class UpdateEmployeeInfoScreen extends StatefulWidget {
 }
 
 class _UpdateEmployeeInfoScreenState extends State<UpdateEmployeeInfoScreen> {
-  final _formKey = GlobalKey<FormState>();
   late TextEditingController _salaryController;
-  late TextEditingController _certificateController;
+  String? _selectedCertificatePath;
 
   @override
   void initState() {
     super.initState();
     _salaryController = TextEditingController(text: widget.employee.salary.toString());
-    _certificateController = TextEditingController(text: widget.employee.certificate);
+    _selectedCertificatePath = widget.employee.certificate; // القيمة الأصلية إن وجدت
   }
 
   @override
   void dispose() {
     _salaryController.dispose();
-    _certificateController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickPdfFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+
+    if (result != null && result.files.single.path != null) {
+      setState(() {
+        _selectedCertificatePath = result.files.single.path!;
+      });
+    } else {
+      // تم الإلغاء
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomActionAppBar(title: 'Update Employee Info'),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: BlocConsumer<EmployeeBloc, EmployeeState>(
+    return BlocProvider(
+      create: (_) => EmployeeBloc(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('تحديث بيانات الموظف'),
+          backgroundColor: AppColors.darkBlue,
+        ),
+        body: BlocConsumer<EmployeeBloc, EmployeeState>(
           listener: (context, state) {
             if (state is EmployeeSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    state.successMsg,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Colors.green,
-                ),
+                SnackBar(content: Text('✅ ${state.successMsg}')),
               );
               Navigator.pop(
                 context,
                 EmployeeModel(
                   id: widget.employee.id,
                   salary: int.parse(_salaryController.text.trim()),
-                  certificate: _certificateController.text.trim(),
-                  hireDate: widget.employee.hireDate,  // نحتفظ بالقيمة الأصلية
-                  userId: widget.employee.userId,      // نحتفظ بالقيمة الأصلية
+                  certificate: _selectedCertificatePath ?? '',
+                  hireDate: widget.employee.hireDate,
+                  userId: widget.employee.userId,
                 ),
               );
             } else if (state is EmployeeFail) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    state.errMsg,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Colors.red,
-                ),
+                SnackBar(content: Text('❌ ${state.errMsg}')),
               );
             }
           },
           builder: (context, state) {
-            if (state is EmployeeLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            return Form(
-              key: _formKey,
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  TextFormField(
+                  Text('ID: ${widget.employee.id}', style: const TextStyle(fontSize: 16)),
+                  const SizedBox(height: 10),
+                  TextField(
                     controller: _salaryController,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: 'Salary'),
-                    validator: (value) =>
-                    value == null || value.isEmpty ? 'Please enter salary' : null,
+                    decoration: const InputDecoration(
+                      labelText: 'الراتب',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                   const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _certificateController,
-                    keyboardType: TextInputType.text,
-                    decoration: const InputDecoration(labelText: 'Certificate (Path or Name)'),
-                    validator: (value) =>
-                    value == null || value.isEmpty ? 'Please enter certificate' : null,
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        final int? salary = int.tryParse(_salaryController.text.trim());
-                        if (salary == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Salary must be a valid number"),
-                              backgroundColor: Colors.orange,
-                            ),
-                          );
-                          return;
-                        }
 
-                        BlocProvider.of<EmployeeBloc>(context).add(
-                          UpdateEmployeeEvent(
-                            employeeId: widget.employee.id,
-                            salary: salary,
-                            certificate: _certificateController.text.trim(),
+                  // زر تحميل الشهادة
+                  ElevatedButton.icon(
+                    onPressed: _pickPdfFile,
+                    icon: const Icon(Icons.attach_file),
+                    label: const Text('تحميل شهادة (PDF)'),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
+                  ),
+                  if (_selectedCertificatePath != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        '📄 الملف المختار: ${_selectedCertificatePath!.split('/').last}',
+                        style: const TextStyle(fontSize: 14, color: Colors.black87),
+                      ),
+                    ),
+
+                  const SizedBox(height: 30),
+                  state is EmployeeLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : ElevatedButton(
+                    onPressed: () {
+                      final salary = int.tryParse(_salaryController.text.trim());
+                      if (salary == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("⚠️ الراتب يجب أن يكون رقماً صحيحاً"),
+                            backgroundColor: Colors.orange,
                           ),
                         );
+                        return;
                       }
+
+                      if (_selectedCertificatePath == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("⚠️ يرجى تحميل ملف الشهادة"),
+                            backgroundColor: Colors.orange,
+                          ),
+                        );
+                        return;
+                      }
+
+                      BlocProvider.of<EmployeeBloc>(context).add(
+                        UpdateEmployeeEvent(
+                          employeeId: widget.employee.id,
+                          salary: salary,
+                          certificate: _selectedCertificatePath!,
+                        ),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.darkBlue,
+                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
                     ),
                     child: const Text(
-                      'Update',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      'تحديث البيانات',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
                 ],

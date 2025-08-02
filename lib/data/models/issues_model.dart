@@ -1,4 +1,5 @@
-import 'package:graduation/data/models/user_model.dart';
+
+import 'user_model.dart';
 
 class IssuesModel {
   final int id;

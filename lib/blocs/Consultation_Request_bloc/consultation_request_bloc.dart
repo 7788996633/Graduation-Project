@@ -1,9 +1,10 @@
 import 'package:bloc/bloc.dart';
-import 'package:graduation/data/services/consultation_request_services.dart';
+
 import 'package:meta/meta.dart';
 
 import '../../data/models/cons_req_model.dart';
 import '../../data/repositories/consultation_request_repository.dart';
+import '../../data/services/consultation_request_services.dart';
 
 part 'consultation_request_event.dart';
 part 'consultation_request_state.dart';
