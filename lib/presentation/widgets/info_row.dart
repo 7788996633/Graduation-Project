@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../themes.dart';
+
 class InfoRow extends StatelessWidget {
   const InfoRow(
       {super.key, required this.title, required this.value, Color? textColor});
@@ -13,11 +15,13 @@ class InfoRow extends StatelessWidget {
         children: [
           Text(
             '$title ',
-            style: const TextStyle(fontWeight: FontWeight.w600),
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: getCurrentTheme()['BoldText']),
           ),
           Text(
             value,
-            style: const TextStyle(color: Colors.black87),
+            style: TextStyle(color: getCurrentTheme()['BoldText']),
           ),
         ],
       ),

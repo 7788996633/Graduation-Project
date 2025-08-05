@@ -8,7 +8,11 @@ class CreateRequiredDocumentsEvent extends RequiredDocumentsEvent {
   final String requireFileType;
   final String note;
 
-  CreateRequiredDocumentsEvent({required this.issueId,required this.requireFileType, required this.note,});
+  CreateRequiredDocumentsEvent({
+    required this.issueId,
+    required this.requireFileType,
+    required this.note,
+  });
 }
 
 class ShowRequiredDocumentsEvent extends RequiredDocumentsEvent {}
@@ -26,6 +30,7 @@ class GetMyRequiredDocUp extends RequiredDocumentsEvent {
 
   GetMyRequiredDocUp({required this.issueId});
 }
+
 class UpdateRequiredDocumentsEvent extends RequiredDocumentsEvent {
   final int requiredDocumentId;
   final String status;
@@ -42,7 +47,9 @@ class DeleteRequiredDocumentsEvent extends RequiredDocumentsEvent {
 
   DeleteRequiredDocumentsEvent({
     required this.requiredDocumentId,
-  });}
+  });
+}
+
 class UploadRequiredDocumentEvent extends RequiredDocumentsEvent {
   final int issueId;
   final String filePath;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:graduation/themes.dart';
 
 Widget buildInfoTile(IconData icon, String label, String value,
     {Widget? customWidget}) {
@@ -9,7 +10,7 @@ Widget buildInfoTile(IconData icon, String label, String value,
     margin: const EdgeInsets.symmetric(vertical: 8),
     child: Row(
       children: [
-        Icon(icon, color: customColor),
+        Icon(icon, color: !isLight ? getCurrentTheme()['Icons'] : customColor),
         const SizedBox(width: 10),
         Expanded(
           child: customWidget ??
@@ -20,11 +21,17 @@ Widget buildInfoTile(IconData icon, String label, String value,
                   children: [
                     TextSpan(
                       text: "$label: ",
-                      style: const TextStyle(color: customColor),
+                      style: TextStyle(
+                          color: !isLight
+                              ? getCurrentTheme()['Icons']
+                              : customColor),
                     ),
                     TextSpan(
                       text: value,
-                      style: const TextStyle(color: valueColor),
+                      style: TextStyle(
+                          color: !isLight
+                              ? getCurrentTheme()['Icons']
+                              : valueColor),
                     ),
                   ],
                 ),

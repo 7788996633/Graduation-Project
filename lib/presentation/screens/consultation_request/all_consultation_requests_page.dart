@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../blocs/consultation_request_bloc/consultation_request_bloc.dart';
 import '../../../themes.dart';
 import '../../widgets/consultation_request_list.dart';
 
@@ -28,10 +26,7 @@ class _AllConsultationRequestsPageState
         ),
         backgroundColor: AppColors.darkBlue,
       ),
-      body: BlocProvider(
-        create: (context) => ConsultationRequestBloc(),
-        child: ConsultationRequestList(),
-      ),
+      body: ConsultationRequestList(),
     );
   }
 }

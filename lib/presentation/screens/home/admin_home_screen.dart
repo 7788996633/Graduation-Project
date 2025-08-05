@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/themes.dart';
 
+import '../../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
 import '../../../blocs/categories/categories_bloc.dart';
 import '../../../blocs/common_consultation_bloc/common _consultation_bloc.dart';
 import '../../../blocs/furlough_request_bloc/furlough_request_bloc.dart';
@@ -93,7 +95,10 @@ class AdminHomeScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => const AllConsultationRequestsPage(),
+              builder: (_) => BlocProvider(
+                create: (context) => ConsultationRequestBloc(),
+                child: const AllConsultationRequestsPage(),
+              ),
             ),
           );
         },
@@ -176,6 +181,7 @@ class AdminHomeScreen extends StatelessWidget {
     ];
 
     return Scaffold(
+      backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: const CustomHomeAppBar(title: 'Admin Panel'),
       drawer: BlocProvider(
         create: (context) => UserProfileBloc()..add(ShowUserProfileEvent()),

@@ -13,13 +13,16 @@ import 'update_common_consul.dart';
 class CommonConsultationDetailsScreen extends StatefulWidget {
   final CommonConsultationModel consultationModel;
 
-  const CommonConsultationDetailsScreen({super.key, required this.consultationModel});
+  const CommonConsultationDetailsScreen(
+      {super.key, required this.consultationModel});
 
   @override
-  State<CommonConsultationDetailsScreen> createState() => _CommonConsultationDetailsScreenState();
+  State<CommonConsultationDetailsScreen> createState() =>
+      _CommonConsultationDetailsScreenState();
 }
 
-class _CommonConsultationDetailsScreenState extends State<CommonConsultationDetailsScreen> {
+class _CommonConsultationDetailsScreenState
+    extends State<CommonConsultationDetailsScreen> {
   @override
   void initState() {
     super.initState();
@@ -31,7 +34,7 @@ class _CommonConsultationDetailsScreenState extends State<CommonConsultationDeta
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.scaffold,
+      backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: CustomActionAppBar(
         title: 'Common Consultation details',
       ),
@@ -45,8 +48,10 @@ class _CommonConsultationDetailsScreenState extends State<CommonConsultationDeta
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Card(
+                color: getCurrentTheme()['BackGorund'],
                 elevation: 2,
                 shape: RoundedRectangleBorder(
+                  side: BorderSide(color: Colors.grey, width: isLight ? 0 : 1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Padding(
@@ -59,15 +64,18 @@ class _CommonConsultationDetailsScreenState extends State<CommonConsultationDeta
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 4),
                             decoration: BoxDecoration(
                               color: AppColors.darkBlue.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: const Text(
+                            child: Text(
                               'General Consultation',
                               style: TextStyle(
-                                color: AppColors.darkBlue,
+                                color: !isLight
+                                    ? AppColors.white
+                                    : AppColors.darkBlue,
                                 fontSize: 14,
                               ),
                             ),
@@ -94,17 +102,20 @@ class _CommonConsultationDetailsScreenState extends State<CommonConsultationDeta
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
+                                Text(
                                   'Question:',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: AppColors.darkBlue,
+                                    color: !isLight
+                                        ? AppColors.white
+                                        : AppColors.darkBlue,
                                   ),
                                 ),
                                 const SizedBox(height: 8),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 12),
                                   decoration: BoxDecoration(
                                     color: Colors.lightBlue.shade50,
                                     borderRadius: const BorderRadius.only(
@@ -116,10 +127,10 @@ class _CommonConsultationDetailsScreenState extends State<CommonConsultationDeta
                                   child: Text(
                                     consultation.question,
                                     style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.black87,
-                                      height: 1.5,
-                                    ),
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                        height: 1.5,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ],
@@ -147,17 +158,20 @@ class _CommonConsultationDetailsScreenState extends State<CommonConsultationDeta
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
+                                Text(
                                   'Answer:',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: AppColors.darkBlue,
+                                    color: !isLight
+                                        ? AppColors.white
+                                        : AppColors.darkBlue,
                                   ),
                                 ),
                                 const SizedBox(height: 8),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 12),
                                   decoration: BoxDecoration(
                                     color: Colors.grey.shade200,
                                     borderRadius: const BorderRadius.only(
@@ -167,12 +181,14 @@ class _CommonConsultationDetailsScreenState extends State<CommonConsultationDeta
                                     ),
                                   ),
                                   child: Text(
-                                    consultation.answer.isEmpty ? 'No answer yet' : consultation.answer,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.black87,
-                                      height: 1.5,
-                                    ),
+                                    consultation.answer.isEmpty
+                                        ? 'No answer yet'
+                                        : consultation.answer,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                        height: 1.5,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ],
@@ -192,7 +208,8 @@ class _CommonConsultationDetailsScreenState extends State<CommonConsultationDeta
           }
         },
       ),
-      floatingActionButton: BlocBuilder<CommonConsultationBloc, CommonConsultationState>(
+      floatingActionButton:
+          BlocBuilder<CommonConsultationBloc, CommonConsultationState>(
         builder: (context, state) {
           if (state is CommonConsultationLoadedSuccessfully) {
             return FloatingActionButton.extended(
@@ -202,7 +219,8 @@ class _CommonConsultationDetailsScreenState extends State<CommonConsultationDeta
                   MaterialPageRoute(
                     builder: (_) => BlocProvider(
                       create: (_) => CommonConsultationBloc(),
-                      child: UpdateCommonConsultationScreen(consultation: state.consultationModel),
+                      child: UpdateCommonConsultationScreen(
+                          consultation: state.consultationModel),
                     ),
                   ),
                 );

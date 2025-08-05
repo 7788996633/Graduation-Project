@@ -14,18 +14,22 @@ class AddRequiredDocumentScreen extends StatefulWidget {
   const AddRequiredDocumentScreen({super.key, required this.issueId});
 
   @override
-  State<AddRequiredDocumentScreen> createState() => _AddRequiredDocumentScreenState();
+  State<AddRequiredDocumentScreen> createState() =>
+      _AddRequiredDocumentScreenState();
 }
 
 class _AddRequiredDocumentScreenState extends State<AddRequiredDocumentScreen> {
-  final TextEditingController _requireFileTypeController = TextEditingController();
+  final TextEditingController _requireFileTypeController =
+      TextEditingController();
   final TextEditingController _noteController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.scaffold,
-      appBar: CustomActionAppBar(  title: 'Add Require Document',),
+      appBar: CustomActionAppBar(
+        title: 'Add Require Document',
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: BlocConsumer<RequiredDocumentsBloc, RequiredDocumentsState>(
@@ -85,27 +89,26 @@ class _AddRequiredDocumentScreenState extends State<AddRequiredDocumentScreen> {
                       controller: _noteController,
                       label: 'Note',
                     ),
-
                     const SizedBox(height: 30),
                     state is RequiredDocumentsLoading
                         ? const Center(child: CircularProgressIndicator())
                         : SizedBox(
-                      height: 50,
-                      child: CustomElevatedButtonSubmit(
-                        label: "Submit",
-                        onPressed: () {
-                          BlocProvider.of<RequiredDocumentsBloc>(context).add(
-                            CreateRequiredDocumentsEvent(
-
-                              issueId: widget.issueId,
-                              requireFileType: _requireFileTypeController.text,
-                              note: _noteController.text,
-
+                            height: 50,
+                            child: CustomElevatedButtonSubmit(
+                              label: "Submit",
+                              onPressed: () {
+                                BlocProvider.of<RequiredDocumentsBloc>(context)
+                                    .add(
+                                  CreateRequiredDocumentsEvent(
+                                    issueId: widget.issueId,
+                                    requireFileType:
+                                        _requireFileTypeController.text,
+                                    note: _noteController.text,
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
-                    ),
+                          ),
                   ],
                 ),
               ),

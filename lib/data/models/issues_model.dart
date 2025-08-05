@@ -1,4 +1,3 @@
-
 import 'user_model.dart';
 
 class IssuesModel {
@@ -40,24 +39,24 @@ class IssuesModel {
 
   factory IssuesModel.fromJson(Map<String, dynamic> json) {
     return IssuesModel(
-      id: json['id'] ?? 0,
-      title: json['title'] ?? '',
-      issueNumber: json['issue_number'] ?? '',
-      category: json['category_id'] ?? '',
-      opponentName: json['opponent_name'] ?? '',
-      courtName: json['court_name'] ?? '',
-      numberOfPayments: json['number_of_payments'] ?? 0,
-      totalCost: json['total_cost']?.toString() ?? '',
-      amountPaid: json['amount_paid']?.toString() ?? '',
+      id: json['id'],
+      title: json['title'],
+      issueNumber: json['issue_number'],
+      category: json['category_id'],
+      opponentName: json['opponent_name'],
+      courtName: json['court_name'],
+      numberOfPayments: json['number_of_payments'],
+      totalCost: json['total_cost'].toString(),
+      amountPaid: json['amount_paid'].toString(),
       user: UserModel.fromJson(
         json['user'],
       ),
-      status: json['status'] ?? '',
-      priority: json['priority'] ?? '',
-      startDate: json['start_date'] ?? '',
-      endDate: json['end_date'] ?? '',
-      createdAt: json['created_at'] ?? '',
-      updatedAt: json['updated_at'] ?? '',
+      status: json['status'],
+      priority: json['priority'],
+      startDate: json['start_date'],
+      endDate: json['end_date'],
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
     );
   }
 }

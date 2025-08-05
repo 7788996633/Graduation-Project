@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/constant.dart';
 
 import '../../blocs/common_consultation_bloc/common _consultation_bloc.dart';
 import '../../blocs/common_consultation_bloc/common _consultation_event.dart';
@@ -7,6 +8,7 @@ import '../../blocs/common_consultation_bloc/common _consultation_event.dart';
 import '../../data/models/common _consultation_model.dart';
 import '../../themes.dart';
 import '../screens/common_consulation/common_consul_detials.dart';
+
 class CommonConsultationItem extends StatelessWidget {
   const CommonConsultationItem({super.key, required this.consultationModel});
   final CommonConsultationModel consultationModel;
@@ -17,6 +19,7 @@ class CommonConsultationItem extends StatelessWidget {
       elevation: 3,
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       shape: RoundedRectangleBorder(
+        side: BorderSide(color: Colors.grey, width: isLight ? 0 : 1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: InkWell(
@@ -37,7 +40,6 @@ class CommonConsultationItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // =================== Question Section ===================
             Container(
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
@@ -66,45 +68,44 @@ class CommonConsultationItem extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Question:',
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.darkBlue,
+                            color: getCurrentTheme()['CommonConsultationText'],
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           consultationModel.question,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 15,
-                            color: Colors.black87,
+                            color: getCurrentTheme()['BoldText'],
                           ),
                         ),
                       ],
                     ),
                   ),
-                  // زر الحذف
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    onPressed: () {
-                      BlocProvider.of<CommonConsultationBloc>(context).add(
-                        DeleteCommonConsultationEvent(id: consultationModel.id),
-                      );
-                    },
-                  ),
+                  if (myRole == 'admin')
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      onPressed: () {
+                        BlocProvider.of<CommonConsultationBloc>(context).add(
+                          DeleteCommonConsultationEvent(
+                              id: consultationModel.id),
+                        );
+                      },
+                    ),
                 ],
               ),
             ),
-
-            // =================== Answer Section ===================
             Container(
               padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                color: getCurrentTheme()['BackGorund'],
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(12),
                   bottomRight: Radius.circular(12),
@@ -113,11 +114,10 @@ class CommonConsultationItem extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // صورة الشركة
                   ClipRRect(
                     borderRadius: BorderRadius.circular(6),
                     child: Image.asset(
-                      'assets/images/grad.jpg',//assets/images/grad.jpg
+                      'assets/images/grad.jpg', //assets/images/grad.jpg
                       height: 32,
                       width: 32,
                       fit: BoxFit.cover,
@@ -129,12 +129,13 @@ class CommonConsultationItem extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Answer:',
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.darkBlue,
+                            color:
+                                isLight ? AppColors.darkBlue : AppColors.white,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -142,9 +143,9 @@ class CommonConsultationItem extends StatelessWidget {
                           consultationModel.answer.isEmpty
                               ? 'No answer yet'
                               : consultationModel.answer,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 15,
-                            color: Colors.black87,
+                            color: getCurrentTheme()['BoldText'],
                           ),
                         ),
                       ],

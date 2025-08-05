@@ -55,7 +55,6 @@ class CustomLawyerItem extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
           border: Border.all(
             color: isSelected ? AppColors.darkBlue : Colors.grey,
             width: 2,
@@ -76,7 +75,7 @@ class CustomLawyerItem extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
-              color: Colors.black,
+              color: getCurrentTheme()['BoldText'],
             ),
           ),
           subtitle: Column(

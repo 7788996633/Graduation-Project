@@ -45,7 +45,7 @@ class _IssueCategoryDetailsScreenState
     List<IssuesModel> issues = [];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: CustomActionAppBar(
         title: widget.issueCategoryModel.name,
       ),
@@ -59,10 +59,10 @@ class _IssueCategoryDetailsScreenState
                 children: [
                   Text(
                     'القضايا:',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.darkBlue,
+                      color: isLight ? AppColors.darkBlue : AppColors.white,
                     ),
                   ),
                   const SizedBox(height: 12),

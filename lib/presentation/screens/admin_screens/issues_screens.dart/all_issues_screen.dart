@@ -46,7 +46,7 @@ class _AllIssuesScreenState extends State<AllIssuesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.scaffold,
+      backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: CustomActionAppBar(
         secondaryIcon: myRole == 'admin' ? Icons.sort : null,
         onSecondaryPressed: () async {
@@ -83,6 +83,9 @@ class _AllIssuesScreenState extends State<AllIssuesScreen> {
           child: Column(
             children: [
               TextField(
+                style: TextStyle(
+                  color: getCurrentTheme()['BoldText'],
+                ),
                 onChanged: (value) {
                   _searchText = value;
                   if (value.isNotEmpty) {
@@ -109,8 +112,12 @@ class _AllIssuesScreenState extends State<AllIssuesScreen> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(
                     Icons.search,
+                    color: getCurrentTheme()['Icons'],
                   ),
                   hintText: "Search by name, user or type...",
+                  hintStyle: TextStyle(
+                    color: getCurrentTheme()['BoldText'],
+                  ),
                 ),
               ),
               SizedBox(

@@ -8,11 +8,11 @@ import 'invoice_item.dart';
 
 class InvoiceListByIssueId extends StatefulWidget {
   int issueId;
-InvoiceListByIssueId({super.key, required this.bloc,required this.issueId});
-final InvoiceBloc bloc;
+  InvoiceListByIssueId({super.key, required this.bloc, required this.issueId});
+  final InvoiceBloc bloc;
 
-@override
-State<InvoiceListByIssueId> createState() => _InvoiceListByIssueIdState();
+  @override
+  State<InvoiceListByIssueId> createState() => _InvoiceListByIssueIdState();
 }
 
 class _InvoiceListByIssueIdState extends State<InvoiceListByIssueId> {

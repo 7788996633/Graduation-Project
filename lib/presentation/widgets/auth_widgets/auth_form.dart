@@ -23,7 +23,7 @@ class _AuthFormState extends State<AuthForm> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
-  TextEditingController();
+      TextEditingController();
   final GlobalKey<FormState> myKey = GlobalKey<FormState>();
 
   void handleLogin() {
@@ -128,8 +128,8 @@ class _AuthFormState extends State<AuthForm> {
                   onPressed: isSubmitting
                       ? null
                       : isLogin
-                      ? handleLogin
-                      : handleRegister,
+                          ? handleLogin
+                          : handleRegister,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.darkBlue,
                     padding: const EdgeInsets.symmetric(vertical: 14),
@@ -152,21 +152,21 @@ class _AuthFormState extends State<AuthForm> {
               const SizedBox(height: 10),
               isLogin
                   ? LoginColumn(
-                onPressed: () {
-                  setState(() {
-                    isLogin = false;
-                    clearControllers();
-                  });
-                },
-              )
+                      onPressed: () {
+                        setState(() {
+                          isLogin = false;
+                          clearControllers();
+                        });
+                      },
+                    )
                   : RegisterColumn(
-                onPressed: () {
-                  setState(() {
-                    isLogin = true;
-                    clearControllers();
-                  });
-                },
-              ),
+                      onPressed: () {
+                        setState(() {
+                          isLogin = true;
+                          clearControllers();
+                        });
+                      },
+                    ),
             ],
           ),
         ),

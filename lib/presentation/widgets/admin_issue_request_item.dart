@@ -96,7 +96,12 @@ class _AdminIssueRequestItemState extends State<AdminIssueRequestItem> {
                               items: IssueRequestStatus.values.map((value) {
                                 return DropdownMenuItem<IssueRequestStatus>(
                                   value: value,
-                                  child: Text(statusToString(value)),
+                                  child: Text(
+                                    statusToString(value),
+                                    style: TextStyle(
+                                      color: getCurrentTheme()['BoldText'],
+                                    ),
+                                  ),
                                 );
                               }).toList(),
                               onChanged: (newValue) {
@@ -110,9 +115,14 @@ class _AdminIssueRequestItemState extends State<AdminIssueRequestItem> {
                           : Text(
                               statusToString(issueRequestStatus),
                               style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 14),
+                                  color: getCurrentTheme()['BoldText'],
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14),
                             ),
                       Text(
+                        style: TextStyle(
+                          color: getCurrentTheme()['BoldText'],
+                        ),
                         widget.request.userModel.name,
                       ),
                     ],
@@ -125,9 +135,15 @@ class _AdminIssueRequestItemState extends State<AdminIssueRequestItem> {
                     children: [
                       Text(
                         formatDate(),
+                        style: TextStyle(
+                          color: getCurrentTheme()['BoldText'],
+                        ),
                       ),
                       Text(
                         widget.request.title,
+                        style: TextStyle(
+                          color: getCurrentTheme()['BoldText'],
+                        ),
                       ),
                     ],
                   ),
@@ -136,6 +152,9 @@ class _AdminIssueRequestItemState extends State<AdminIssueRequestItem> {
             ),
             Text(
               widget.request.description,
+              style: TextStyle(
+                color: getCurrentTheme()['BoldText'],
+              ),
             ),
             if (isEditing &&
                 statusToString(issueRequestStatus).toLowerCase() != 'pending')
@@ -169,6 +188,7 @@ class _AdminIssueRequestItemState extends State<AdminIssueRequestItem> {
                   },
                   icon: Icon(
                     isEditing ? Icons.check : Icons.edit,
+                    color: getCurrentTheme()['Icons'],
                   ),
                 ),
               ),

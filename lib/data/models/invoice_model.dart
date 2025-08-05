@@ -6,7 +6,6 @@ class InvoiceModel {
   final int userId;
   final int createdBy;
 
-
   InvoiceModel({
     required this.id,
     required this.amount,
@@ -14,7 +13,6 @@ class InvoiceModel {
     required this.issueId,
     required this.userId,
     required this.createdBy,
-
   });
 
   factory InvoiceModel.fromJson(Map<String, dynamic> data) {
@@ -25,7 +23,6 @@ class InvoiceModel {
       issueId: data['issue_id'] ?? '',
       userId: data['user_id'] ?? '',
       createdBy: data['created_by'] ?? 0,
-
     );
   }
 }

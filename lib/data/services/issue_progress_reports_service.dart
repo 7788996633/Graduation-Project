@@ -110,7 +110,7 @@ class IssueProgressReportServices {
       );
 
       request.fields.addAll({
-        'report':  report,
+        'report': report,
       });
 
       request.headers.addAll(baseHeaders);
@@ -130,12 +130,14 @@ class IssueProgressReportServices {
     }
   }
 
-  Future<String> updateReport(int reportId, String report, ) async {
+  Future<String> updateReport(
+    int reportId,
+    String report,
+  ) async {
     try {
       var url = Uri.parse('${myUrl}issue-progress-reports/update/$reportId');
       var body = {
-        'report':report,
-
+        'report': report,
       };
       http.Response response;
 

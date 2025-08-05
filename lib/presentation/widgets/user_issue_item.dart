@@ -96,9 +96,12 @@ class _UserIssueItemState extends State<UserIssueItem>
                       ),
                       Text(
                         widget.issuesModel.user.name,
+                        style: TextStyle(
+                          color: getCurrentTheme()['BoldText'],
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
-                      Spacer(),
-                      Text(''),
                     ],
                   ),
                 ),
@@ -146,6 +149,7 @@ class _UserIssueItemState extends State<UserIssueItem>
                                   : Text(
                                       statusToString(issueStatus),
                                       style: TextStyle(
+                                          color: getCurrentTheme()['BoldText'],
                                           fontWeight: FontWeight.bold,
                                           fontSize: 14),
                                     ),
@@ -166,7 +170,13 @@ class _UserIssueItemState extends State<UserIssueItem>
                                       items: IssuePriority.values.map((value) {
                                         return DropdownMenuItem<IssuePriority>(
                                           value: value,
-                                          child: Text(priorityToString(value)),
+                                          child: Text(
+                                            priorityToString(value),
+                                            style: TextStyle(
+                                              color:
+                                                  getCurrentTheme()['BoldText'],
+                                            ),
+                                          ),
                                         );
                                       }).toList(),
                                       onChanged: (newValue) {
@@ -178,8 +188,11 @@ class _UserIssueItemState extends State<UserIssueItem>
                                       },
                                     )
                                   : Text(
-                                      priorityToString(issuePriority),
+                                      priorityToString(
+                                        issuePriority,
+                                      ),
                                       style: TextStyle(
+                                          color: getCurrentTheme()['BoldText'],
                                           fontWeight: FontWeight.bold,
                                           fontSize: 14),
                                     ),
@@ -193,12 +206,16 @@ class _UserIssueItemState extends State<UserIssueItem>
                           Text(
                             widget.issuesModel.title,
                             style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 14),
+                                color: getCurrentTheme()['BoldText'],
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14),
                           ),
                           Text(
                             widget.issuesModel.issueNumber,
                             style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 14),
+                                color: getCurrentTheme()['BoldText'],
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14),
                           ),
                         ],
                       ),
@@ -209,6 +226,7 @@ class _UserIssueItemState extends State<UserIssueItem>
                   Text(
                     '${myRole == 'admin' ? widget.issuesModel.user.name : "You"} have paid ${(currentPaidAmount * 100).toStringAsFixed(2)}% of the total cost',
                     textAlign: TextAlign.start,
+                    style: TextStyle(color: getCurrentTheme()['BoldText']),
                   ),
                   SizedBox(
                     height: 10,
@@ -274,6 +292,7 @@ class _UserIssueItemState extends State<UserIssueItem>
                       },
                       icon: Icon(
                         isEditing ? Icons.check : Icons.edit,
+                        color: getCurrentTheme()['Icons'],
                       ),
                     ),
                   ),

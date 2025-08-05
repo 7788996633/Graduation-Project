@@ -42,17 +42,15 @@ class _AddLawyerToSessionSheetState extends State<AddLawyerToSessionSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Select Lawyer", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const Text("Select Lawyer",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-
           SelectLawyerForSessionList(
             onLawyerSelected: (id) {
               setState(() => selectedUserId = id);
             },
           ),
-
           const SizedBox(height: 16),
-
           BlocConsumer<SessionsBloc, SessionsState>(
             listener: (context, state) {
               if (state is SessionsSuccess) {

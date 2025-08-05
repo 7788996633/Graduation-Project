@@ -48,7 +48,7 @@ class _AllLawyersScreenState extends State<AllLawyersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F1F6),
+      backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: AppBar(
         actions: [
           IconButton(
@@ -74,7 +74,7 @@ class _AllLawyersScreenState extends State<AllLawyersScreen> {
         ),
         centerTitle: true,
         elevation: 8,
-        backgroundColor: AppColors.darkBlue,
+        backgroundColor: getCurrentTheme()['BackGorund'],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../blocs/issue_bloc/issues_bloc.dart';
 import '../../data/models/categories_model.dart';
+import '../../themes.dart';
 import '../screens/categories_screen/issue_category_details_screen.dart';
 
 class IsssuesCategoryList extends StatelessWidget {
@@ -46,7 +47,7 @@ class IsssuesCategoryList extends StatelessWidget {
             child: Text(
               categoriesModel[index].name,
               style: TextStyle(
-                color: Colors.black,
+                color: getCurrentTheme()['BoldText'],
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),

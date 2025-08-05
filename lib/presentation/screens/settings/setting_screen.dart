@@ -16,7 +16,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final GlobalKey _languageKey = GlobalKey();
 
   void _showLanguageMenu() async {
-    final RenderBox renderBox = _languageKey.currentContext!.findRenderObject() as RenderBox;
+    final RenderBox renderBox =
+        _languageKey.currentContext!.findRenderObject() as RenderBox;
     final Offset position = renderBox.localToGlobal(Offset.zero);
 
     final selected = await showMenu<String>(
@@ -54,11 +55,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          tr('settings'),  // تأكد من وجود هذا المفتاح في ملفات الترجمة
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          tr('settings'), // تأكد من وجود هذا المفتاح في ملفات الترجمة
+          style:
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: isDark ? Colors.black : AppColors.darkBlue,
+        backgroundColor: !isLight ? Colors.black : AppColors.darkBlue,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -68,7 +70,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
-            _buildSectionTitle(tr('general')),  // "عام"
+            _buildSectionTitle(tr('general')), // "عام"
             _buildCard(
               icon: Icons.language,
               title: tr('change_language'),
@@ -79,8 +81,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      context.locale.languageCode == 'ar' ? 'العربية' : 'English',
-                      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                      context.locale.languageCode == 'ar'
+                          ? 'العربية'
+                          : 'English',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w600, fontSize: 16),
                     ),
                     const SizedBox(width: 4),
                     const Icon(Icons.arrow_drop_down),
@@ -92,9 +97,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               icon: Icons.brightness_6,
               title: tr('dark_mode'),
               trailing: Switch(
-                value: isDark,
+                value: !isLight,
                 onChanged: (val) {
-                  // تفعيل تغيير الثيم حسب تطبيقك
+                  isLight = !isLight;
+                  setState(() {});
                 },
               ),
             ),
@@ -113,7 +119,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
             const SizedBox(height: 24),
-            _buildSectionTitle(tr('company')),  // "الشركة"
+            _buildSectionTitle(tr('company')), // "الشركة"
             _buildCard(
               icon: Icons.business,
               title: tr('company_name_logo'),
@@ -125,7 +131,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onTap: () {},
             ),
             const SizedBox(height: 24),
-            _buildSectionTitle(tr('security')),  // "الأمان"
+            _buildSectionTitle(tr('security')), // "الأمان"
             _buildCard(
               icon: Icons.security,
               title: tr('two_factor_authentication'),
@@ -165,7 +171,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       margin: const EdgeInsets.symmetric(vertical: 8),
       elevation: 4,
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         leading: Icon(icon, color: Colors.black, size: 28),
         title: Text(title,
             style: const TextStyle(

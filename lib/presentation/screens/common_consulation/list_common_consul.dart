@@ -14,10 +14,12 @@ class ListCommonConsultationsScreen extends StatefulWidget {
   const ListCommonConsultationsScreen({super.key});
 
   @override
-  State<ListCommonConsultationsScreen> createState() => _ListCommonConsultationsScreenState();
+  State<ListCommonConsultationsScreen> createState() =>
+      _ListCommonConsultationsScreenState();
 }
 
-class _ListCommonConsultationsScreenState extends State<ListCommonConsultationsScreen> {
+class _ListCommonConsultationsScreenState
+    extends State<ListCommonConsultationsScreen> {
   late CommonConsultationBloc bloc;
 
   @override
@@ -38,7 +40,7 @@ class _ListCommonConsultationsScreenState extends State<ListCommonConsultationsS
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.scaffold,
+      backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: CustomActionAppBar(
         title: 'List Common Consultations',
         actionIcon: Icons.add_circle_rounded,

@@ -20,9 +20,10 @@ class SectionCard extends StatelessWidget {
       child: Card(
         elevation: 6,
         shape: RoundedRectangleBorder(
+          side: BorderSide(color: Colors.grey, width: isLight ? 0 : 1),
           borderRadius: BorderRadius.circular(16),
         ),
-        color: AppColors.softGray,
+        color: getCurrentTheme()['HomeCards'],
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(16),
@@ -34,16 +35,16 @@ class SectionCard extends StatelessWidget {
                 Icon(
                   icon,
                   size: 40,
-                  color:AppColors.darkBlue,
+                  color: getCurrentTheme()['HomeCardsIcons'],
                 ),
                 const SizedBox(height: 10),
                 Text(
                   title,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.darkBlue,
+                    color: getCurrentTheme()['HomeCardsText'],
                   ),
                 ),
               ],

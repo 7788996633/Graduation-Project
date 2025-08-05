@@ -111,7 +111,8 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                             context: context,
                             builder: (context) => MultiBlocProvider(
                               providers: [
-                                BlocProvider(create: (_) => LawyerInIssuesBloc()),
+                                BlocProvider(
+                                    create: (_) => LawyerInIssuesBloc()),
                                 BlocProvider(create: (_) => SessionsBloc()),
                               ],
                               child: AddLawyerToSessionSheet(
@@ -123,7 +124,8 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text("Please select a session type first."),
+                              content:
+                                  Text("Please select a session type first."),
                             ),
                           );
                         }

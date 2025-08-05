@@ -93,36 +93,36 @@ class _ReportSessionsScreenState extends State<ReportSessionsScreen> {
           Expanded(
             child: isLink
                 ? GestureDetector(
-              onTap: () async {
-                if (value.isEmpty) return;
-                final uri = Uri.parse(prepareFullUrl(value));
-                if (await canLaunchUrl(uri)) {
-                  await launchUrl(uri,
-                      mode: LaunchMode.externalApplication);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('لا يمكن فتح الرابط')),
-                  );
-                }
-              },
-              child: Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: AppColors.darkBlue,
-                  decoration: TextDecoration.underline,
-                  height: 1.3,
-                ),
-              ),
-            )
+                    onTap: () async {
+                      if (value.isEmpty) return;
+                      final uri = Uri.parse(prepareFullUrl(value));
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri,
+                            mode: LaunchMode.externalApplication);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('لا يمكن فتح الرابط')),
+                        );
+                      }
+                    },
+                    child: Text(
+                      value,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: AppColors.darkBlue,
+                        decoration: TextDecoration.underline,
+                        height: 1.3,
+                      ),
+                    ),
+                  )
                 : Text(
-              value,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.black87,
-                height: 1.3,
-              ),
-            ),
+                    value,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      height: 1.3,
+                    ),
+                  ),
           ),
         ],
       ),

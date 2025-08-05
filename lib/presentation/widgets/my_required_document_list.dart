@@ -11,7 +11,8 @@ import 'required_document_item.dart';
 class MyRequiredDocumentList extends StatefulWidget {
   final int issueId;
 
-  const MyRequiredDocumentList({super.key, required this.bloc,required this.issueId});
+  const MyRequiredDocumentList(
+      {super.key, required this.bloc, required this.issueId});
   final RequiredDocumentsBloc bloc;
 
   @override
@@ -21,7 +22,7 @@ class MyRequiredDocumentList extends StatefulWidget {
 class _MyRequiredDocumentListState extends State<MyRequiredDocumentList> {
   @override
   void initState() {
-    widget.bloc.add(  GetMyRequiredDocUp(issueId: widget.issueId));
+    widget.bloc.add(GetMyRequiredDocUp(issueId: widget.issueId));
     super.initState();
   }
 
@@ -54,7 +55,7 @@ class _MyRequiredDocumentListState extends State<MyRequiredDocumentList> {
               backgroundColor: Colors.green,
             ),
           );
-          widget.bloc.add(  GetMyRequiredDocUp(issueId: widget.issueId));
+          widget.bloc.add(GetMyRequiredDocUp(issueId: widget.issueId));
         } else if (state is RequiredDocumentsFail) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

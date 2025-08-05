@@ -31,7 +31,7 @@ class _ListIssueCategoriesScreenState extends State<ListIssueCategoriesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: CustomActionAppBar(
         title: 'Issue Categories',
       ),

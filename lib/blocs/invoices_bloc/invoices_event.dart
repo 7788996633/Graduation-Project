@@ -36,8 +36,8 @@ class GetAllInvoicesEvent extends InvoiceEvent {}
 
 class UpdateInvoiceEvent extends InvoiceEvent {
   final int invoiceId;
-  final String status ;
-  final int amount ;
+  final String status;
+  final int amount;
   UpdateInvoiceEvent({
     required this.invoiceId,
     required this.status,

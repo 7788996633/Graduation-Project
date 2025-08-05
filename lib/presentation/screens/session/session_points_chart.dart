@@ -4,7 +4,6 @@ import 'package:fl_chart/fl_chart.dart';
 
 import '../../../blocs/session_points_bloc/session_points_bloc.dart';
 
-
 class SessionPointsChart extends StatelessWidget {
   const SessionPointsChart({super.key, required this.issueId});
   final int issueId;

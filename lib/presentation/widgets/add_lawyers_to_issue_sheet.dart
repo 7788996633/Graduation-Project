@@ -66,7 +66,6 @@ class _AddLawyersToIssueSheetState extends State<AddLawyersToIssueSheet> {
                   ),
                 );
 
-
                 Future.delayed(const Duration(seconds: 2), () {
                   Navigator.of(context).pop(); // إغلاق الـ AlertDialog
                   Navigator.of(context).pop(); // إغلاق الـ Bottom Sheet
@@ -88,20 +87,19 @@ class _AddLawyersToIssueSheetState extends State<AddLawyersToIssueSheet> {
                 onPressed: selectedLawyersIds.isEmpty
                     ? null
                     : () {
-                  BlocProvider.of<IssuesBloc>(context).add(
-                    AssignIsuueToLawyerEvent(
-                      issueId: widget.issueId,
-                      lawyerIds: selectedLawyersIds,
-                    ),
-                  );
-                  print("===========================================");
-                  print(selectedLawyersIds);
-                },
+                        BlocProvider.of<IssuesBloc>(context).add(
+                          AssignIsuueToLawyerEvent(
+                            issueId: widget.issueId,
+                            lawyerIds: selectedLawyersIds,
+                          ),
+                        );
+                        print("===========================================");
+                        print(selectedLawyersIds);
+                      },
                 child: const Text("Add"),
               );
             },
           ),
-
         ],
       ),
     );

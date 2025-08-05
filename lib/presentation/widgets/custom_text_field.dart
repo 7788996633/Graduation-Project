@@ -23,11 +23,15 @@ class CustomTextFeild extends StatelessWidget {
     return Container(
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(
+          8,
+        ),
         color: color,
       ),
       child: TextFormField(
         style: const TextStyle(
-          color: AppColors.white,
+          color: AppColors.darkBlue,
+          fontWeight: FontWeight.w500,
         ),
         validator: validator,
         controller: controller,

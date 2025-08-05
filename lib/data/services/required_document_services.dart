@@ -1,5 +1,5 @@
 import 'dart:convert';
- import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
@@ -59,8 +59,7 @@ class RequiredDocumentServices {
     }
   }
 
-  Future<RequiredDocumentModel>  getMyRequiredDocUp(
-      int issueId) async {
+  Future<RequiredDocumentModel> getMyRequiredDocUp(int issueId) async {
     var url = Uri.parse('${myUrl}required-documents/$issueId');
     http.Response response;
 
@@ -83,8 +82,11 @@ class RequiredDocumentServices {
     }
   }
 
-  Future<String> addRequiredDocument(int issueId, String requireFileType,
-      String note,) async {
+  Future<String> addRequiredDocument(
+    int issueId,
+    String requireFileType,
+    String note,
+  ) async {
     var request = http.MultipartRequest(
       'POST',
       Uri.parse('${myUrl}required-documents/$issueId'),
@@ -109,9 +111,8 @@ class RequiredDocumentServices {
     }
   }
 
-
-  Future<String> updateRequiredDocument(int issueId, String status,
-      String note) async {
+  Future<String> updateRequiredDocument(
+      int issueId, String status, String note) async {
     var url = Uri.parse('${myUrl}required-documents/$issueId');
 
     var request = http.Request('POST', url);
@@ -121,7 +122,6 @@ class RequiredDocumentServices {
     });
 
     request.bodyFields = {
-
       'status': status,
       'note': note,
     };
@@ -137,7 +137,6 @@ class RequiredDocumentServices {
       return 'failed: ${jsonResponse['message']}';
     }
   }
-
 
   Future<String> deleteRequiredDocument(int requiredDocumentId) async {
     try {

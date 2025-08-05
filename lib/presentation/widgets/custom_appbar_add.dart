@@ -30,7 +30,8 @@ class CustomActionAppBar extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     final isWeb = kIsWeb;
-    final backgroundColor = isWeb ? Colors.transparent : AppColors.darkBlue;
+    final backgroundColor =
+        isWeb ? Colors.transparent : getCurrentTheme()['AppBar'];
     final iconColor = isWeb ? AppColors.darkBlue : Colors.white;
     final textColor = isWeb ? AppColors.darkBlue : Colors.white;
 

@@ -12,7 +12,8 @@ class ListInvoicesByIssueScreen extends StatefulWidget {
   const ListInvoicesByIssueScreen({super.key, required this.issueId});
 
   @override
-  State<ListInvoicesByIssueScreen> createState() => _ListInvoicesByIssueScreenState();
+  State<ListInvoicesByIssueScreen> createState() =>
+      _ListInvoicesByIssueScreenState();
 }
 
 class _ListInvoicesByIssueScreenState extends State<ListInvoicesByIssueScreen> {
@@ -22,9 +23,9 @@ class _ListInvoicesByIssueScreenState extends State<ListInvoicesByIssueScreen> {
   void initState() {
     super.initState();
     bloc = BlocProvider.of<InvoiceBloc>(context);
-    bloc.add(GetInvoiceByIssueIdEvent(issueId: widget.issueId)); // استدعاء حدث حسب الـ issueId
+    bloc.add(GetInvoiceByIssueIdEvent(
+        issueId: widget.issueId)); // استدعاء حدث حسب الـ issueId
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,8 @@ class _ListInvoicesByIssueScreenState extends State<ListInvoicesByIssueScreen> {
       ),
       floatingActionButton: RefreshButton(
         onPressed: () {
-          bloc.add(GetInvoiceByIssueIdEvent(issueId: widget.issueId)); // تحديث القائمة بنفس الـ issueId
+          bloc.add(GetInvoiceByIssueIdEvent(
+              issueId: widget.issueId)); // تحديث القائمة بنفس الـ issueId
         },
       ),
     );

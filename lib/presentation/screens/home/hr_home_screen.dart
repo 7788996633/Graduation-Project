@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:graduation/themes.dart';
 
 import '../../../blocs/employee_bloc/employee_bloc.dart';
 import '../../../blocs/hiring_requests/hiring_requests_block.dart';
- import '../../../blocs/lawyer_bloc/lawyer_bloc.dart';
+import '../../../blocs/lawyer_bloc/lawyer_bloc.dart';
 import '../../../blocs/user_bloc/user_bloc.dart';
 import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
 
@@ -16,7 +17,7 @@ import '../hr_screen/employee_screens/list_user_screen.dart';
 import '../hr_screen/hiring_request/hiring_requests_published_screen.dart';
 import '../hr_screen/hiring_request/list_hiring_requests_screen.dart';
 import '../hr_screen/hiring_request/list_lawyer_screen.dart';
- 
+
 import '../../widgets/custom_home_appbar.dart';
 
 import '../report_screen/report_financial_screen.dart';
@@ -69,7 +70,6 @@ class _HrHomeScreenState extends State<HrHomeScreen> {
           );
         },
       },
-
       {
         'icon': Icons.attach_money,
         'title': tr('set_salary_to_lawyer'),
@@ -154,6 +154,7 @@ class _HrHomeScreenState extends State<HrHomeScreen> {
     ];
 
     return Scaffold(
+      backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: CustomHomeAppBar(title: tr('hr_panel')),
       drawer: BlocProvider(
         create: (context) => UserProfileBloc()..add(ShowUserProfileEvent()),

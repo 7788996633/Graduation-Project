@@ -41,7 +41,8 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
               children: [
                 ElevatedButton(
                   onPressed: () async {
-                    FilePickerResult? result = await FilePicker.platform.pickFiles();
+                    FilePickerResult? result =
+                        await FilePicker.platform.pickFiles();
 
                     if (result != null && result.files.single.path != null) {
                       setState(() {
@@ -61,13 +62,13 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                 ElevatedButton(
                   onPressed: selectedFilePath != null
                       ? () {
-                    context.read<RequiredDocumentsBloc>().add(
-                      UploadRequiredDocumentEvent(
-                        issueId: widget.issueId,
-                        filePath: selectedFilePath!,
-                      ),
-                    );
-                  }
+                          context.read<RequiredDocumentsBloc>().add(
+                                UploadRequiredDocumentEvent(
+                                  issueId: widget.issueId,
+                                  filePath: selectedFilePath!,
+                                ),
+                              );
+                        }
                       : null,
                   child: state is RequiredDocumentsLoading
                       ? const CircularProgressIndicator()

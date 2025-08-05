@@ -72,7 +72,6 @@ class ArchiveServices {
     }
   }
 
-
   Future<ArchiveModel> getArchivedIssueById(int archiveId) async {
     try {
       var url = Uri.parse('${myUrl}show/issue/Archived/$archiveId');
@@ -103,7 +102,7 @@ class ArchiveServices {
     }
   }
 
-  Future<String> addArchiveIssue(int issueId ) async {
+  Future<String> addArchiveIssue(int issueId) async {
     try {
       var request = http.MultipartRequest(
         'POST',
@@ -125,7 +124,8 @@ class ArchiveServices {
       return 'Error in addArchive: $e';
     }
   }
-  Future<String> addUnArchiveIssue(int issueId ) async {
+
+  Future<String> addUnArchiveIssue(int issueId) async {
     try {
       var request = http.MultipartRequest(
         'POST',
@@ -147,9 +147,4 @@ class ArchiveServices {
       return 'Error in addArchive: $e';
     }
   }
-
-
-
-
-
 }

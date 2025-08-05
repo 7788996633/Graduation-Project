@@ -12,7 +12,7 @@ import '../../widgets/required_document_list.dart';
 class MyRequiredDocUp extends StatefulWidget {
   final int issueId;
 
-  const MyRequiredDocUp({super.key,required this.issueId});
+  const MyRequiredDocUp({super.key, required this.issueId});
 
   @override
   State<MyRequiredDocUp> createState() => _MyRequiredDocUpState();
@@ -26,7 +26,7 @@ class _MyRequiredDocUpState extends State<MyRequiredDocUp> {
   void initState() {
     super.initState();
     bloc = BlocProvider.of<RequiredDocumentsBloc>(context);
-    bloc.add( GetMyRequiredDocUp(issueId: widget.issueId));
+    bloc.add(GetMyRequiredDocUp(issueId: widget.issueId));
   }
 
   @override
@@ -47,8 +47,7 @@ class _MyRequiredDocUpState extends State<MyRequiredDocUp> {
       ),
       floatingActionButton: RefreshButton(
         onPressed: () {
-          bloc.add( GetMyRequiredDocUp(issueId: widget.issueId
-          ));
+          bloc.add(GetMyRequiredDocUp(issueId: widget.issueId));
         },
       ),
     );

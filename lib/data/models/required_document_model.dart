@@ -6,7 +6,6 @@ class RequiredDocumentModel {
     required this.requireFileType,
     required this.note,
     required this.status,
-
   });
 
   final int id;
@@ -16,7 +15,6 @@ class RequiredDocumentModel {
   final String requireFileType;
   final String status;
 
-
   factory RequiredDocumentModel.fromJson(Map<String, dynamic> json) {
     return RequiredDocumentModel(
       id: json["id"],
@@ -25,7 +23,6 @@ class RequiredDocumentModel {
       requireFileType: json["require_file_type"],
       note: json["note"],
       status: json["status"],
-
     );
   }
 }

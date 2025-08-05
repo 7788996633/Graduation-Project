@@ -15,7 +15,7 @@ class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
         title,
         style: const TextStyle(color: Colors.white),
       ),
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: getCurrentTheme()['AppBar'],
       iconTheme: const IconThemeData(color: Colors.white),
       actions: [
         IconButton(
@@ -30,7 +30,6 @@ class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
             );
           },
         ),
-
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 15),
           child: CircleAvatar(
@@ -38,7 +37,6 @@ class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
             backgroundImage: AssetImage('assets/images/grad.jpg'),
           ),
         ),
-
       ],
     );
   }

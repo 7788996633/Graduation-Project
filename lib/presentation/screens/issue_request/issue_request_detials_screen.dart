@@ -53,7 +53,7 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
           margin: const EdgeInsets.all(20),
           padding: const EdgeInsets.all(25),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: getCurrentTheme()['BackGorund'],
             borderRadius: BorderRadius.circular(25),
             boxShadow: [
               BoxShadow(
@@ -66,7 +66,12 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(widget.userModel.name),
+              Text(
+                widget.userModel.name,
+                style: TextStyle(
+                  color: getCurrentTheme()['BoldText'],
+                ),
+              ),
               CircleAvatar(
                 backgroundImage: NetworkImage(
                   widget.userModel.profileModel.image,
@@ -98,7 +103,7 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.scaffold,
+      backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: AppBar(
         actions: [
           if (myRole == 'admin' ||
@@ -115,10 +120,11 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
               },
               icon: Icon(
                 Icons.edit,
+                color: getCurrentTheme()['Icons'],
               ),
             ),
         ],
-        backgroundColor: AppColors.darkBlue,
+        backgroundColor: getCurrentTheme()['BackGorund'],
         iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
           widget.issueRequest.title,

@@ -11,21 +11,21 @@ import '../../widgets/elevated_button_submit.dart';
 class AddInvoiceScreen extends StatefulWidget {
   final int issueId;
   final int userId;
-  const  AddInvoiceScreen({super.key,required this.issueId,required this.userId});
+  const AddInvoiceScreen(
+      {super.key, required this.issueId, required this.userId});
 
   @override
   State<AddInvoiceScreen> createState() => _AddInvoiceScreenState();
 }
 
 class _AddInvoiceScreenState extends State<AddInvoiceScreen> {
-
   final TextEditingController _statusController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:AppColors.darkBlue,
+      backgroundColor: AppColors.darkBlue,
       appBar: buildCustomAppBar("Add Invoice"),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -86,26 +86,27 @@ class _AddInvoiceScreenState extends State<AddInvoiceScreen> {
                       label: 'Amount',
                       keyboardType: TextInputType.number,
                     ),
-
                     const SizedBox(height: 30),
                     state is InvoiceLoading
                         ? const Center(child: CircularProgressIndicator())
                         : SizedBox(
-                      height: 50,
-                      child: CustomElevatedButtonSubmit(
-                        label: "Submit",
-                        onPressed: () {
-                          BlocProvider.of<InvoiceBloc>(context).add(
-                            AddInvoiceEvent(
-                             issueId:widget.issueId,
-                              userId: widget.userId,
-                              status: _statusController.text.trim(),
-                              amount: int.tryParse(_amountController.text.trim()) ?? 0,
+                            height: 50,
+                            child: CustomElevatedButtonSubmit(
+                              label: "Submit",
+                              onPressed: () {
+                                BlocProvider.of<InvoiceBloc>(context).add(
+                                  AddInvoiceEvent(
+                                    issueId: widget.issueId,
+                                    userId: widget.userId,
+                                    status: _statusController.text.trim(),
+                                    amount: int.tryParse(
+                                            _amountController.text.trim()) ??
+                                        0,
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
-                    ),
+                          ),
                   ],
                 ),
               ),

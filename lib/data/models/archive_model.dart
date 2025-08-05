@@ -10,7 +10,7 @@ class ArchiveModel {
 
   factory ArchiveModel.fromJson(Map<String, dynamic> data) {
     return ArchiveModel(
-      id: data['id'] ,
+      id: data['id'],
       issueId: data['issue_Id'],
     );
   }

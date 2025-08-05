@@ -34,7 +34,7 @@ class _ListIssueRequestsScreenState extends State<ListIssueRequestsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.scaffold,
+      backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: CustomActionAppBar(
         title: 'List Issue Requests',
         actionIcon: Icons.add_circle_rounded,
@@ -53,10 +53,9 @@ class _ListIssueRequestsScreenState extends State<ListIssueRequestsScreen> {
         },
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            const SizedBox(height: 20),
             Expanded(
               child: BlocBuilder<IssueRequestsBloc, IssueRequestsState>(
                 builder: (context, state) {

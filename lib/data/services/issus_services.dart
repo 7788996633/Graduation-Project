@@ -367,7 +367,7 @@ class IssusServices {
       print(jsonResponse);
 
       if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-        return jsonResponse['data']['issues'];
+        return jsonResponse['data'];
       } else {
         throw Exception('failed: ${jsonResponse['message']}');
       }

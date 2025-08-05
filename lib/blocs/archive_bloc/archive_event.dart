@@ -11,14 +11,12 @@ class AddArchiveEvent extends ArchiveEvent {
   });
 }
 
-
 class AddUnArchiveIssue extends ArchiveEvent {
   final int issueId;
   AddUnArchiveIssue({
     required this.issueId,
   });
 }
-
 
 class GetArchiveByIdEvent extends ArchiveEvent {
   final int archiveId;
@@ -27,6 +25,7 @@ class GetArchiveByIdEvent extends ArchiveEvent {
 }
 
 class GetAllArchivedIssuesEvent extends ArchiveEvent {}
+
 class GetMyArchivedIssuesEvent extends ArchiveEvent {}
 
 class UpdateArchiveEvent extends ArchiveEvent {

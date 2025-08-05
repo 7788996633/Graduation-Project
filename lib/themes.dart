@@ -9,9 +9,8 @@ class AppColors {
   static const Color darkBlue = Color(0xFF0D47A1);
   static const Color softGray = Color(0xFFC4D7FF);
   static const Color scaffold = Color(0xFFE6ECF5);
-  static const Color textGrey= Color(0xFF6B7280);
-  static  const Color cardColor = Color(0xFFF0F0F0);
-
+  static const Color textGrey = Color(0xFF6B7280);
+  static const Color cardColor = Color(0xFFF0F0F0);
 }
 
 Map<String, Color> currentTheme = {
@@ -38,6 +37,7 @@ Map<String, Color> lightTheme = {
   'HomeCardsIcons': AppColors.darkBlue,
   'HomeCardsText': AppColors.darkBlue,
   'BoldText': AppColors.black,
+  'CommonConsultationText': AppColors.darkBlue,
   'NormalText': AppColors.black,
   'Icons': AppColors.black,
 };
@@ -48,11 +48,12 @@ Map<String, Color> darkTheme = {
   'Border': AppColors.softGray,
   'AppBarTitle': AppColors.white,
   'AppBarIcons': AppColors.white,
-  'HomeCards': AppColors.softGray,
+  'HomeCards': AppColors.black,
   'HomeCardsIcons': AppColors.white,
   'HomeCardsText': AppColors.white,
   'BoldText': AppColors.white,
   'NormalText': AppColors.white,
+  'CommonConsultationText': AppColors.white,
   'Icons': AppColors.white,
 };
 bool isLight = true;
