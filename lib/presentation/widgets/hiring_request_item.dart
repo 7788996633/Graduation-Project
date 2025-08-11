@@ -53,7 +53,7 @@ class HiringRequestItem extends StatelessWidget {
             title: Text(
               hiringRequestModel.jopTitle,
               style: const TextStyle(
-                fontSize: 17,
+                fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: AppColors.darkBlue,
               ),
@@ -70,34 +70,40 @@ class HiringRequestItem extends StatelessWidget {
                       color: Colors.black87,
                     ),
                   ),
-                  Text(
-                    hiringRequestModel.type ?? 'N/A',
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.darkBlue,
+                  Flexible(
+                    child: Text(
+                      hiringRequestModel.type ?? 'N/A',
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.darkBlue,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
               ),
             ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                  onPressed: () {
-                    BlocProvider.of<HiringRequestsBloc>(context).add(
-                      DeleteHiringRequest(hiringRequestId: hiringRequestModel.id),
-                    );
-                  },
-                ),
-                const Icon(
-                  Icons.arrow_forward_ios,
-                  color: AppColors.darkBlue,
-                  size: 18,
-                ),
-              ],
+            trailing: SizedBox(
+              width: 80, // حجم مناسب لتجنب overflow
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                    onPressed: () {
+                      BlocProvider.of<HiringRequestsBloc>(context).add(
+                        DeleteHiringRequest(hiringRequestId: hiringRequestModel.id),
+                      );
+                    },
+                  ),
+                  const Icon(
+                    Icons.arrow_forward_ios,
+                    color: AppColors.darkBlue,
+                    size: 18,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

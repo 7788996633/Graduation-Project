@@ -14,7 +14,6 @@ import '../../widgets/section_card.dart';
 
 import '../hr_screen/employee_screens/list_employee_screen.dart';
 import '../hr_screen/employee_screens/list_user_screen.dart';
-import '../hr_screen/hiring_request/hiring_requests_published_screen.dart';
 import '../hr_screen/hiring_request/list_hiring_requests_screen.dart';
 import '../hr_screen/hiring_request/list_lawyer_screen.dart';
 
@@ -50,21 +49,6 @@ class _HrHomeScreenState extends State<HrHomeScreen> {
               builder: (_) => BlocProvider(
                 create: (_) => HiringRequestsBloc(),
                 child: const ListHiringRequestsScreen(),
-              ),
-            ),
-          );
-        },
-      },
-      {
-        'icon': Icons.campaign,
-        'title': tr('hiring_requests_publish'),
-        'onTap': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (_) => HiringRequestsBloc(),
-                child: const ListHiringRequestsPublishScreen(),
               ),
             ),
           );

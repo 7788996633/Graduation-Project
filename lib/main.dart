@@ -1,5 +1,5 @@
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,28 +9,33 @@ import 'blocs/my_bloc_observere.dart';
 import 'blocs/user_bloc/user_bloc.dart';
 import 'blocs/auth_bloc/auth_bloc.dart';
 import 'blocs/user_profile_bloc/user_profile_bloc.dart';
-
 import 'data/services/notifications_services.dart';
 import 'firebase_options.dart';
 import 'presentation/screens/auth_screens/auth_screen.dart';
 import 'presentation/widgets/auth_web_wedgets/auth_web_screen.dart';
 
-import 'localnotification.dart';
+/// معالجة رسائل الخلفية (Android / iOS)
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // هنا ممكن تضيف منطق لمعالجة الإشعار
+  print("Handling a background message: ${message.messageId}");
+}
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   Bloc.observer = MyBlocObserver();
-  // // تهيئة Firebase مع مراعاة الويب
-  // if (kIsWeb) {
-  //   await Firebase.initializeApp(
-  //     options: DefaultFirebaseOptions.web,
-  //   );
-  // } else {
-  //   await Firebase.initializeApp();
-  // }
-  //
-  // // تهيئة الإشعارات
-  // await NotificationsServices().initNotifications();
+
+  // تهيئة Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // تهيئة إشعارات Firebase Messaging
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+  // تهيئة الإشعارات المحلية
+  await NotificationsServices().initNotifications();
 
   // تهيئة EasyLocalization
   await EasyLocalization.ensureInitialized();

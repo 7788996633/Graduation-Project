@@ -1,0 +1,4 @@
+{"flutter":{"platforms":
+{"android":{
+  "default":{"projectId":"lawcompanyapp",
+    "appId":"1:34322017082:android:7bc0a5c5adc0a224397e03","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"lawcompanyapp","configurations":{"android":"1:34322017082:android:7bc0a5c5adc0a224397e03","ios":"1:34322017082:ios:0314f6996ee06d2e397e03","macos":"1:34322017082:ios:0314f6996ee06d2e397e03","web":"1:34322017082:web:a7dc48a6c146b865397e03","windows":"1:34322017082:web:8e204e1444885ed8397e03"}}}}}}

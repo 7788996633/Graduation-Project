@@ -25,10 +25,11 @@ class _UpdateHiringRequestStatusScreenState
   String? selectedStatus;
 
   final List<String> statusOptions = [
-    'pending',
-    'accepted',
-    'rejected',
-    'under_review',
+    'archived',
+    'canceled',
+    'closed',
+    'published',
+    ' draft',
   ];
 
   late HiringRequestsBloc _bloc;

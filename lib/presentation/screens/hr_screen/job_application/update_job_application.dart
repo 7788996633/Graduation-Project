@@ -125,18 +125,7 @@ class _UpdateJobApplicationScreenState extends State<UpdateJobApplicationScreen>
                       });
                     },
                   ),
-                  RadioListTile<String>(
-                    title: const Text('Interview'),
-                    value: 'interview',
-                    groupValue: selectedStatus,
-                    onChanged: isLoading
-                        ? null
-                        : (value) {
-                      setState(() {
-                        selectedStatus = value!;
-                      });
-                    },
-                  ),
+
                   const SizedBox(height: 30),
                   isLoading
                       ? const CircularProgressIndicator()
