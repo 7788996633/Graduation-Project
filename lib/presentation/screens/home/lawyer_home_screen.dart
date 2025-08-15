@@ -14,6 +14,7 @@ import '../consultation/consultations_list_screen.dart';
 import '../consultation/my_consultations_lawyer_list_screen.dart';
 import '../consultation_request/all_consultation_requests_page.dart';
 import '../furloughs/add_furlough_screen.dart';
+import '../furloughs/my_list_furloughs_screen.dart';
 import '../lawyer_screens/lawyer_issues_screens/lawyer_issues_list_screen.dart';
 import '../lawyer_screens/lawyer_sessions_screen.dart/lawyer_sessions_screen.dart';
 
@@ -48,6 +49,21 @@ class LawyerHomeScreen extends StatelessWidget {
               builder: (_) => BlocProvider(
                 create: (_) => FurloughRequestsBloc(),
                 child: const AddFurloughScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'My Furloughs',
+        'icon': Icons.event_available,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => FurloughRequestsBloc(),
+                child: const MyListFurloughRequestsScreen(),
               ),
             ),
           );

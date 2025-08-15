@@ -62,7 +62,7 @@ class _ListSessionTypesScreenState extends State<ListSessionTypesScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            CustomSearchBar(          // إضافة شريط البحث هنا
+            CustomSearchBar(
               hint: 'Search by Type',
               onSearch: _onSearch,
             ),

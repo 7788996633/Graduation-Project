@@ -161,9 +161,16 @@ class _CustomDrawerWebState extends State<CustomDrawerWeb> {
           DrawerItem.build(
             index: 12,
             icon: Icons.question_answer_rounded,
-            title: tr('report'),
+            title: tr('Legal_News'),
             isSelected: selectedIndex == 12,
             onTap: () => _handleTap(12),
+          ),
+          DrawerItem.build(
+            index: 13,
+            icon: Icons.question_answer_rounded,
+            title: tr('report'),
+            isSelected: selectedIndex == 13,
+            onTap: () => _handleTap(13),
           ),
         ],
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/legal_books_bloc/legal_books_bloc.dart';
+import '../../blocs/legal_books_bloc/legal_books_event.dart';
 import '../../data/models/legal_book_model.dart';
 import '../../themes.dart';
 import '../screens/legal_books_screen/logal_book_detials.dart';
@@ -56,25 +57,35 @@ class LegalBookItem extends StatelessWidget {
             ),
           ),
           title: Text(
-            legalBook.book,  // عنوان الكتاب
+            legalBook.bookTitle,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 15,
               color: AppColors.darkBlue,
             ),
           ),
-          subtitle: Text(
-            'Author: ${legalBook.bookTitle ?? 'Unknown'}', // اسم المؤلف أو حقل مشابه
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black54,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          trailing: const Icon(
-            Icons.arrow_forward_ios_rounded,
-            color: Color(0xFF1A237E),
-            size: 20,
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                onPressed: () {
+                  BlocProvider.of<LegalBookBloc>(context).add(
+                    DeleteLegalBookEvent(bookId: legalBook.id),
+                  );
+                },
+                icon: const Icon(
+                  Icons.delete,
+                  color: Colors.redAccent,
+                  size: 24,
+                ),
+                tooltip: 'Delete Book',
+              ),
+              const Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: Color(0xFF1A237E),
+                size: 20,
+              ),
+            ],
           ),
         ),
       ),

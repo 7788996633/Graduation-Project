@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untitled5/blocs/legal_books_bloc/legal_books_bloc.dart';
+import 'package:untitled5/blocs/legal_news_bloc/legal_news_bloc.dart';
 
 import '../../../blocs/consultation_request_bloc/consultation_request_bloc.dart';
 import '../../../blocs/categories/categories_bloc.dart';
@@ -22,6 +23,7 @@ import '../home_web/main_page_web.dart';
 import '../hr_screen/employee_screens/list_employee_screen.dart';
 import '../issue_request/list_issue_requests_screen.dart';
 import '../legal_books_screen/logal_book_list.dart';
+import '../legal_news_screen/list_legal_news_screen.dart';
 import '../permission_screen/list_permission_screen.dart';
 import '../report_screen/report_invoices_screen.dart';
 import '../required_documents/list_required_document_screen.dart';
@@ -84,6 +86,10 @@ class _HomeWebPageState extends State<HomeWebPage> {
     BlocProvider(
       create: (context) => LegalBookBloc(),
       child: const  ListLegalBooksScreen(),
+    ),
+    BlocProvider(
+      create: (context) => LegalNewsBloc(),
+      child: const  ListLegalNewsScreen(),
     ),
     const ReportInvoicesScreen(),
   ];

@@ -11,4 +11,13 @@ class LegalBookRepository {
     )
         .toList();
   }
+
+  Future<List<LegalBookModel>> getMySavedLegalBooks() async {
+    var legalBooksList = await LegalBookServices().getMySavedLegalBooks();
+    return legalBooksList
+        .map(
+          (e) => LegalBookModel.fromJson(e),
+    )
+        .toList();
+  }
 }

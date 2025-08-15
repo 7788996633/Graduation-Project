@@ -56,6 +56,27 @@ class LegalBookServices {
     }
   }
 
+  Future<String> saveLegalBook(int bookId) async {
+    try {
+
+      var url = Uri.parse('https://example.com/api/legal-books/$bookId/save');
+      var request = http.MultipartRequest('POST', url);
+
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+        return jsonResponse['message'];
+      } else {
+        return 'failed: ${jsonResponse['message']}';
+      }
+    } catch (e) {
+      return 'Error in saveLegalBook: $e';
+    }
+  }
   /// جلب كتاب قانوني واحد
   Future<LegalBookModel> getLegalBookById(int bookId) async {
     try {
@@ -115,6 +136,67 @@ class LegalBookServices {
       }
     } catch (e) {
       print('Error in getAllLegalBooks: $e');
+      return [];
+    }
+  }
+
+  Future<List> getMySavedLegalBooks() async {
+    try {
+      var url = Uri.parse('${myUrl}legalbooks/saved');
+      http.Response response;
+
+      if (kIsWeb) {
+        var request = http.Request('GET', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      } else {
+        var request = http.MultipartRequest('GET', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      }
+
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+        return jsonResponse['data'];
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print('Error in getAllLegalBooks: $e');
+      return [];
+    }}
+
+  Future<List> getMySaveLegalBooks() async {
+    try {
+      var url = Uri.parse('${myUrl}legalbooks/saved');
+      http.Response response;
+
+      if (kIsWeb) {
+        var request = http.Request('GET', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      } else {
+        var request = http.MultipartRequest('GET', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      }
+
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+        return jsonResponse['data'];
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print('Error in getMySavedLegalBooks: $e');
       return [];
     }
   }
@@ -195,4 +277,36 @@ class LegalBookServices {
       return 'Error in deleteLegalBook: $e';
     }
   }
+
+  Future<String> unSaveLegalBook(int bookId) async {
+    try {
+      var url = Uri.parse('${myUrl}legal-books/$bookId/unsave');
+      http.Response response;
+
+      if (kIsWeb) {
+        var request = http.Request('DELETE', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      } else {
+        var request = http.Request('DELETE', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      }
+
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+        return jsonResponse['message'];
+      } else {
+        return 'failed: ${jsonResponse['message']}';
+      }
+    } catch (e) {
+      return 'Error in unSaveLegalBook: $e';
+    }
+  }
+
+
 }

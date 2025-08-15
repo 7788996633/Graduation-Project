@@ -14,7 +14,12 @@ class AddLegalBookEvent extends LegalBookEvent {
     required this.fileName,
   });
 }
-
+class SaveLegalBookEvent extends LegalBookEvent {
+  final int bookId;
+  SaveLegalBookEvent({
+    required this.bookId,
+  });
+}
 
 class GetLegalBookByIdEvent extends LegalBookEvent {
   final int bookId;
@@ -23,6 +28,7 @@ class GetLegalBookByIdEvent extends LegalBookEvent {
 }
 
 class GetAllLegalBooksEvent extends LegalBookEvent {}
+class GetMySavedLegalBooksEvent extends LegalBookEvent {}
 
 class SearchLegalBooksByTitleEvent extends LegalBookEvent {
   final String bookTitle;
@@ -49,4 +55,10 @@ class DeleteLegalBookEvent extends LegalBookEvent {
   final int bookId;
 
   DeleteLegalBookEvent({required this.bookId});
+}
+
+
+class UnSaveLegalBookEvent extends LegalBookEvent {
+  final int bookId;
+  UnSaveLegalBookEvent({required this.bookId});
 }

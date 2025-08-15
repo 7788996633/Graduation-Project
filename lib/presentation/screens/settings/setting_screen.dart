@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:untitled5/blocs/company_info_bloc/company_info_bloc.dart';
+import 'package:untitled5/presentation/screens/company_info_screen/company_info_details.dart';
+import 'package:untitled5/data/models/company_info_model.dart';
 
 import '../../../themes.dart';
 
@@ -12,12 +16,11 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool is2FAEnabled = false;
-
   final GlobalKey _languageKey = GlobalKey();
 
   void _showLanguageMenu() async {
     final RenderBox renderBox =
-        _languageKey.currentContext!.findRenderObject() as RenderBox;
+    _languageKey.currentContext!.findRenderObject() as RenderBox;
     final Offset position = renderBox.localToGlobal(Offset.zero);
 
     final selected = await showMenu<String>(
@@ -43,21 +46,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (selected != null) {
       final locale = Locale(selected);
       await context.setLocale(locale);
-      setState(() {}); // لتحديث العرض بعد تغيير اللغة
+      setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          tr('settings'), // تأكد من وجود هذا المفتاح في ملفات الترجمة
-          style:
-              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          tr('settings'),
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: !isLight ? Colors.black : AppColors.darkBlue,
@@ -70,7 +69,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
-            _buildSectionTitle(tr('general')), // "عام"
+            _buildSectionTitle(tr('general')),
             _buildCard(
               icon: Icons.language,
               title: tr('change_language'),
@@ -81,11 +80,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      context.locale.languageCode == 'ar'
-                          ? 'العربية'
-                          : 'English',
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w600, fontSize: 16),
+                      context.locale.languageCode == 'ar' ? 'العربية' : 'English',
+                      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                     ),
                     const SizedBox(width: 4),
                     const Icon(Icons.arrow_drop_down),
@@ -107,31 +103,44 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _buildCard(
               icon: Icons.lock,
               title: tr('change_password'),
-              onTap: () {
-                // شاشة تغيير كلمة المرور
-              },
+              onTap: () {},
             ),
             _buildCard(
               icon: Icons.logout,
               title: tr('logout'),
-              onTap: () {
-                // تسجيل الخروج
-              },
+              onTap: () {},
             ),
             const SizedBox(height: 24),
-            _buildSectionTitle(tr('company')), // "الشركة"
+            _buildSectionTitle(tr('company')),
             _buildCard(
               icon: Icons.business,
               title: tr('company_name_logo'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider(
+                      create: (_) => CompanyInfoBloc(),
+                      child: CompanyInfoDetailsScreen(
+
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
             _buildCard(
               icon: Icons.contact_mail,
               title: tr('official_contact_info'),
               onTap: () {},
             ),
+            _buildCard(
+              icon: Icons.info,
+              title: tr('about_company'),
+              onTap: () {},
+            ),
             const SizedBox(height: 24),
-            _buildSectionTitle(tr('security')), // "الأمان"
+            _buildSectionTitle(tr('security')),
             _buildCard(
               icon: Icons.security,
               title: tr('two_factor_authentication'),
@@ -171,14 +180,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       margin: const EdgeInsets.symmetric(vertical: 8),
       elevation: 4,
       child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         leading: Icon(icon, color: Colors.black, size: 28),
-        title: Text(title,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
-            )),
+        title: Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
+        ),
         trailing: trailing,
         onTap: onTap,
       ),

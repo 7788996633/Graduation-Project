@@ -14,7 +14,7 @@ class CreateFurloughRequestsEvent extends FurloughRequestsEvent {
 class ShowFurloughRequestsEvent extends FurloughRequestsEvent {}
 
 class GetAllFurloughRequests extends FurloughRequestsEvent {}
-
+class GetMyFurloughRequests extends FurloughRequestsEvent  {}
 class GetFurloughRequestsById extends FurloughRequestsEvent {
   final int furloughRequestId;
 
