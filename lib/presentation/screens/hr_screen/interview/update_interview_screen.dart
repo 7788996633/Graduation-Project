@@ -7,6 +7,7 @@ import '../../../../blocs/interview_bloc/interview_event.dart';
 import '../../../../blocs/interview_bloc/interviews_state.dart';
 import '../../../../data/models/interview_model.dart';
 import '../../../../themes.dart';
+import '../../../widgets/custom_appbar_add.dart';
 
 class UpdateInterviewScreen extends StatefulWidget {
   final InterviewModel interview;
@@ -18,14 +19,24 @@ class UpdateInterviewScreen extends StatefulWidget {
 }
 
 class _UpdateInterviewScreenState extends State<UpdateInterviewScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  late TextEditingController _dateController;
   late DateTime selectedDate;
-  final TextEditingController _dateController = TextEditingController();
+
+  bool _isSaving = false;
 
   @override
   void initState() {
     super.initState();
     selectedDate = widget.interview.date;
-    _dateController.text = DateFormat('yyyy-MM-dd').format(selectedDate);
+    _dateController = TextEditingController(text: DateFormat('yyyy-MM-dd').format(selectedDate));
+  }
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+    super.dispose();
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -46,79 +57,93 @@ class _UpdateInterviewScreenState extends State<UpdateInterviewScreen> {
     }
   }
 
-  @override
-  void dispose() {
-    _dateController.dispose();
-    super.dispose();
+  void _submitUpdate() {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isSaving = true;
+      });
+
+      BlocProvider.of<InterviewBloc>(context).add(
+        UpdateInterviewEvent(
+          interviewId: widget.interview.id,
+          date: selectedDate.toIso8601String(),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => InterviewBloc(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Update Interview Date'),
-          backgroundColor: AppColors.darkBlue,
-        ),
-        body: BlocConsumer<InterviewBloc, InterviewState>(
+    return Scaffold(
+      appBar: const CustomActionAppBar(title: 'Update Interview Date'),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: BlocConsumer<InterviewBloc, InterviewState>(
           listener: (context, state) {
             if (state is InterviewSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('✅ ${state.successMsg}')),
+                SnackBar(
+                  content: Text(state.successMsg),
+                  backgroundColor: Colors.green,
+                ),
               );
-              Navigator.pop(
-                context,
-
-              );
+              Navigator.pop(context);
             } else if (state is InterviewFail) {
+              setState(() {
+                _isSaving = false;
+              });
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('❌ ${state.errMsg}')),
+                SnackBar(
+                  content: Text(state.errMsg),
+                  backgroundColor: Colors.red,
+                ),
               );
             }
           },
           builder: (context, state) {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
+            return Form(
+              key: _formKey,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
                     'Interview ID: ${widget.interview.id}',
                     style: const TextStyle(fontSize: 16),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 16),
                   TextFormField(
                     controller: _dateController,
                     readOnly: true,
                     onTap: () => _selectDate(context),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Select New Date',
-                      suffixIcon: const Icon(Icons.calendar_today),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                      border: OutlineInputBorder(),
+                      suffixIcon: Icon(Icons.calendar_today),
                     ),
-                  ),
-                  const SizedBox(height: 30),
-                  state is InterviewLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : ElevatedButton(
-                    onPressed: () {
-                      BlocProvider.of<InterviewBloc>(context).add(
-                        UpdateInterviewEvent(
-                          interviewId: widget.interview.id,
-                          date: selectedDate.toIso8601String(),
-                        ),
-                      );
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please select a date';
+                      }
+                      return null;
                     },
+                    enabled: !_isSaving,
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: _isSaving ? null : _submitUpdate,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.darkBlue,
-                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+                      minimumSize: const Size.fromHeight(50),
                     ),
-                    child: const Text(
-                      'Update Date',
-                      style: TextStyle(color: Colors.white),
+                    child: _isSaving
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text(
+                      'Update',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],

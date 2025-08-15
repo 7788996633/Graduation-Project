@@ -26,7 +26,6 @@ class _ConsultationRequestItemState extends State<ConsultationRequestItem> {
     String day = DateFormat('d').format(date);
     String month = DateFormat('M').format(date);
     String year = DateFormat('yyyy').format(date);
-
     return '$day/$month/$year';
   }
 

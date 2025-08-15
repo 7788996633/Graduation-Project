@@ -104,7 +104,7 @@ class HiringRequestsServices {
       'Authorization': 'Bearer $myToken'
     };
     var request =
-    http.MultipartRequest('GET', Uri.parse('$myUrl/hiring-requests/published'));
+    http.MultipartRequest('GET', Uri.parse('${myUrl}hiring-requests/published'));
     request.headers.addAll(headers);
     var streamedResponse = await request.send();
     var response = await http.Response.fromStream(streamedResponse);

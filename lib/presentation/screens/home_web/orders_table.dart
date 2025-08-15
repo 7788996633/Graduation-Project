@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class OrdersTable extends StatelessWidget {
-  const OrdersTable({super.key});
+  final Color cardColor;
+
+  const OrdersTable({super.key, required this.cardColor});
 
   final List<Order> orders = const [
     Order(invoice: '12386', customer: 'Charly Duos', from: 'Brazil', price: 299, status: 'Process', color: Colors.red),
@@ -15,26 +17,34 @@ class OrdersTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(
+        color: cardColor, // استخدم اللون المرسل من الخارج
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Order Status', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          Text('Order Status',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: cardColor.computeLuminance() > 0.5 ? Colors.black : Colors.white,
+              )),
           const SizedBox(height: 20),
           DataTable(
-            columns: const [
-              DataColumn(label: Text('Invoice')),
-              DataColumn(label: Text('Customer')),
-              DataColumn(label: Text('From')),
-              DataColumn(label: Text('Price')),
-              DataColumn(label: Text('Status')),
+            columns: [
+              DataColumn(label: Text('Invoice', style: TextStyle(color: cardColor.computeLuminance() > 0.5 ? Colors.black : Colors.white))),
+              DataColumn(label: Text('Customer', style: TextStyle(color: cardColor.computeLuminance() > 0.5 ? Colors.black : Colors.white))),
+              DataColumn(label: Text('From', style: TextStyle(color: cardColor.computeLuminance() > 0.5 ? Colors.black : Colors.white))),
+              DataColumn(label: Text('Price', style: TextStyle(color: cardColor.computeLuminance() > 0.5 ? Colors.black : Colors.white))),
+              DataColumn(label: Text('Status', style: TextStyle(color: cardColor.computeLuminance() > 0.5 ? Colors.black : Colors.white))),
             ],
             rows: orders.map((order) {
               return DataRow(cells: [
-                DataCell(Text(order.invoice)),
-                DataCell(Text(order.customer)),
-                DataCell(Text(order.from)),
-                DataCell(Text('\$${order.price}')),
+                DataCell(Text(order.invoice, style: TextStyle(color: cardColor.computeLuminance() > 0.5 ? Colors.black : Colors.white))),
+                DataCell(Text(order.customer, style: TextStyle(color: cardColor.computeLuminance() > 0.5 ? Colors.black : Colors.white))),
+                DataCell(Text(order.from, style: TextStyle(color: cardColor.computeLuminance() > 0.5 ? Colors.black : Colors.white))),
+                DataCell(Text('\$${order.price}', style: TextStyle(color: cardColor.computeLuminance() > 0.5 ? Colors.black : Colors.white))),
                 DataCell(Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(

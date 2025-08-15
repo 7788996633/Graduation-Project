@@ -16,27 +16,22 @@ final class HiringRequestsSuccess extends HiringRequestsState {
 
   HiringRequestsSuccess({required this.successmsg});
 }
-
 final class HiringRequestsLoadedSuccessfully extends HiringRequestsState {
   final HiringRequestModel hiringRequestModel;
 
   HiringRequestsLoadedSuccessfully({required this.hiringRequestModel});
 }
-
 final class HiringRequestsFail extends HiringRequestsState {
   final String errmsg;
 
   HiringRequestsFail({required this.errmsg});
 
 }
-
-
 final class HiringRequestsListLoaded extends HiringRequestsState {
   late final List<HiringRequestModel> hiringRequestsList;
 
   HiringRequestsListLoaded({required this.hiringRequestsList});
 }
-
 final class HiringRequestsIdLoaded extends HiringRequestsState {
   final HiringRequestModel hiringRequestModel;
 

@@ -21,34 +21,53 @@ class CustomTextFeild extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          8,
-        ),
+        borderRadius: BorderRadius.circular(8),
         color: color,
       ),
       child: TextFormField(
         style: const TextStyle(
-          color: AppColors.darkBlue,
-          fontWeight: FontWeight.w500,
+          color: Colors.black54,
+          fontWeight: FontWeight.bold,
         ),
         validator: validator,
         controller: controller,
         decoration: InputDecoration(
           prefixIcon: icon != null
               ? Icon(
-                  icon,
-                  color: AppColors.white,
-                )
+            icon,
+            color: AppColors.darkBlue,
+          )
               : null,
-          hintText: text,
-          hintStyle: const TextStyle(
-            color: AppColors.white,
+          labelText: text,
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
+          floatingLabelStyle: TextStyle(
+            color: AppColors.darkBlue,
+            fontWeight: FontWeight.bold,
+            backgroundColor: Colors.white.withOpacity(0.9),
+            shadows: const [
+              Shadow(
+                color: Colors.white,
+                offset: Offset(0, 0),
+                blurRadius: 5,
+              ),
+            ],
           ),
+          filled: true,
+          fillColor: color,
+          contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(
-              8,
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              color: Colors.grey.shade300, // هنا لون الحواف رمادي فاتح
+              width: 1,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              color: AppColors.darkBlue,
+              width: 2,
             ),
           ),
         ),

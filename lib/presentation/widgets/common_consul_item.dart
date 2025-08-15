@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/constant.dart';
 
 import '../../blocs/common_consultation_bloc/common _consultation_bloc.dart';
 import '../../blocs/common_consultation_bloc/common _consultation_event.dart';
 
+import '../../constant.dart';
 import '../../data/models/common _consultation_model.dart';
 import '../../themes.dart';
 import '../screens/common_consulation/common_consul_detials.dart';

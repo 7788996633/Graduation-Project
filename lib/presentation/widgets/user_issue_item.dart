@@ -3,16 +3,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../blocs/issue_bloc/issues_bloc.dart';
 import '../../blocs/user_profile_bloc/user_profile_bloc.dart';
+import '../../blocs/archive_bloc/archive_bloc.dart'; // استدعاء البلوك
+import '../../blocs/archive_bloc/archive_event.dart';
+
 import '../../constant.dart';
 import '../../data/models/issues_model.dart';
+import '../../responsive.dart';
 import '../../themes.dart';
 import '../screens/admin_screens/issues_screens.dart/issuescreen.dart';
 
 class UserIssueItem extends StatefulWidget {
-  const UserIssueItem(
-      {super.key, required this.issuesModel, required this.issuesBloc});
+  const UserIssueItem({
+    super.key,
+    required this.issuesModel,
+    required this.issuesBloc,
+  });
+
   final IssuesModel issuesModel;
   final IssuesBloc issuesBloc;
+
   @override
   State<UserIssueItem> createState() => _UserIssueItemState();
 }
@@ -25,6 +34,8 @@ class _UserIssueItemState extends State<UserIssueItem>
   late IssueStatus issueStatus;
   late AnimationController animationController;
   late Animation<double> animation;
+  late bool isArchived;
+
   @override
   void initState() {
     currentPaidAmount = ((double.parse(widget.issuesModel.amountPaid)) /
@@ -35,6 +46,8 @@ class _UserIssueItemState extends State<UserIssueItem>
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     animation = Tween<double>(begin: 0, end: 1).animate(animationController);
     animationController.forward();
+    isArchived = (statusToString(issueStatus).toLowerCase() == 'archived');
+    print('isArchived $isArchived');
     super.initState();
   }
 
@@ -68,51 +81,67 @@ class _UserIssueItemState extends State<UserIssueItem>
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: Colors.grey,
-              ),
+              border: Border.all(color: Colors.grey),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  margin: EdgeInsets.only(bottom: 10),
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: Colors.grey,
+                // ---------------------- معلومات المستخدم ----------------------
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(
+                            widget.issuesModel.user.profileModel.image,
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          widget.issuesModel.user.name,
+                          style: TextStyle(
+                            color: getCurrentTheme()['BoldText'],
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(
-                          widget.issuesModel.user.profileModel.image,
+                    if (myRole == 'admin')
+                      // ---------------------- زر الأرشفة ----------------------
+                      IconButton(
+                        onPressed: () {
+                          print("object onPressed");
+                          widget.issuesBloc.add(
+                            isArchived
+                                ? UnArchiveIssueEvent(
+                                    issueId: widget.issuesModel.id)
+                                : ArchiveIssueEvent(
+                                    issueId: widget.issuesModel.id,
+                                  ),
+                          );
+                        },
+                        icon: Icon(
+                          isArchived ? Icons.unarchive : Icons.archive,
+                          color: isArchived
+                              ? Colors.grey[700]
+                              : AppColors.darkBlue,
                         ),
+                        tooltip: isArchived ? 'UnArchive' : 'Archive',
                       ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        widget.issuesModel.user.name,
-                        style: TextStyle(
-                          color: getCurrentTheme()['BoldText'],
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ),
+                  ],
                 ),
+
                 Container(
-                  margin: EdgeInsets.only(bottom: 10),
+                  margin: EdgeInsets.only(
+                    top: 10,
+                    bottom: 10,
+                  ),
                   padding: EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: Colors.grey,
-                    ),
+                    border: Border.all(color: Colors.grey),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -123,19 +152,22 @@ class _UserIssueItemState extends State<UserIssueItem>
                           Row(
                             children: [
                               CircleAvatar(
-                                backgroundColor: Colors.green,
-                                radius: 5,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              (isEditing)
+                                  backgroundColor: Colors.green, radius: 5),
+                              SizedBox(width: 5),
+                              isEditing &&
+                                      statusToString(issueStatus) != "archived"
                                   ? DropdownButton<IssueStatus>(
                                       value: issueStatus,
                                       items: IssueStatus.values.map((value) {
+                                        print(
+                                            'object ${statusToString(value).toLowerCase() != "archived"}');
                                         return DropdownMenuItem<IssueStatus>(
                                           value: value,
-                                          child: Text(statusToString(value)),
+                                          child: Text(statusToString(value)
+                                                      .toLowerCase() !=
+                                                  "archived"
+                                              ? statusToString(value)
+                                              : ''),
                                         );
                                       }).toList(),
                                       onChanged: (newValue) {
@@ -149,34 +181,24 @@ class _UserIssueItemState extends State<UserIssueItem>
                                   : Text(
                                       statusToString(issueStatus),
                                       style: TextStyle(
-                                          color: getCurrentTheme()['BoldText'],
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14),
+                                        color: getCurrentTheme()['BoldText'],
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                             ],
                           ),
                           Row(
                             children: [
                               CircleAvatar(
-                                backgroundColor: Colors.redAccent,
-                                radius: 5,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              (isEditing)
+                                  backgroundColor: Colors.redAccent, radius: 5),
+                              SizedBox(width: 5),
+                              isEditing
                                   ? DropdownButton<IssuePriority>(
                                       value: issuePriority,
                                       items: IssuePriority.values.map((value) {
                                         return DropdownMenuItem<IssuePriority>(
                                           value: value,
-                                          child: Text(
-                                            priorityToString(value),
-                                            style: TextStyle(
-                                              color:
-                                                  getCurrentTheme()['BoldText'],
-                                            ),
-                                          ),
+                                          child: Text(priorityToString(value)),
                                         );
                                       }).toList(),
                                       onChanged: (newValue) {
@@ -188,52 +210,51 @@ class _UserIssueItemState extends State<UserIssueItem>
                                       },
                                     )
                                   : Text(
-                                      priorityToString(
-                                        issuePriority,
-                                      ),
+                                      priorityToString(issuePriority),
                                       style: TextStyle(
-                                          color: getCurrentTheme()['BoldText'],
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14),
+                                        color: getCurrentTheme()['BoldText'],
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                             ],
                           ),
                         ],
                       ),
+
+                      // العنوان ورقم القضية
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
                             widget.issuesModel.title,
                             style: TextStyle(
-                                color: getCurrentTheme()['BoldText'],
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14),
+                              color: getCurrentTheme()['BoldText'],
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           Text(
                             widget.issuesModel.issueNumber,
                             style: TextStyle(
-                                color: getCurrentTheme()['BoldText'],
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14),
+                              color: getCurrentTheme()['BoldText'],
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
                     ],
                   ),
                 ),
+
+                // ---------------------- شريط الدفع ----------------------
                 if (myRole != 'lawyer') ...[
                   Text(
                     '${myRole == 'admin' ? widget.issuesModel.user.name : "You"} have paid ${(currentPaidAmount * 100).toStringAsFixed(2)}% of the total cost',
-                    textAlign: TextAlign.start,
                     style: TextStyle(color: getCurrentTheme()['BoldText']),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 10),
                   SizedBox(
                     height: 40,
-                    width: 400,
+                    width: s390f,
                     child: Stack(
                       children: [
                         Container(
@@ -245,8 +266,8 @@ class _UserIssueItemState extends State<UserIssueItem>
                           height: 40,
                         ),
                         Positioned(
-                          width: (currentPaidAmount * animation.value * 400)
-                              .clamp(0.0, 400.0),
+                          width: (currentPaidAmount * animation.value * s390f)
+                              .clamp(0.0, s390f),
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(25),
@@ -259,42 +280,65 @@ class _UserIssueItemState extends State<UserIssueItem>
                     ),
                   ),
                 ],
-                if (myRole == 'admin')
-                  Center(
-                    child: IconButton(
-                      onPressed: () {
-                        if (isEditing) {
-                          if (priorityToString(issuePriority).toLowerCase() !=
-                              widget.issuesModel.priority.toLowerCase()) {
-                            widget.issuesBloc.add(
-                              UpdateIssuePriorityEvent(
-                                issueId: widget.issuesModel.id,
-                                priority: priorityToString(
-                                  issuePriority,
-                                ).toLowerCase(),
-                              ),
-                            );
-                          }
-                          if (statusToString(issueStatus).toLowerCase() !=
-                              widget.issuesModel.status.toLowerCase()) {
-                            widget.issuesBloc.add(
-                              UpdateIssueStatusEvent(
-                                issueId: widget.issuesModel.id,
-                                status: statusToString(
-                                  issueStatus,
-                                ).toLowerCase(),
-                              ),
-                            );
-                          }
-                        }
-                        isEditing = !isEditing;
-                        setState(() {});
-                      },
-                      icon: Icon(
-                        isEditing ? Icons.check : Icons.edit,
-                        color: getCurrentTheme()['Icons'],
-                      ),
-                    ),
+
+                if (myRole == 'admin' && !isArchived)
+                  BlocConsumer<IssuesBloc, IssuesState>(
+                    listener: (context, state) {
+                      if (state is IssuesSuccess) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.greenAccent,
+                            content: Text(state.successmsg),
+                          ),
+                        );
+                      } else if (state is IssuesFail) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.redAccent,
+                            content: Text(state.errmsg),
+                          ),
+                        );
+                      }
+                    },
+                    builder: (context, state) {
+                      return Center(
+                        child: IconButton(
+                          onPressed: () {
+                            if (isEditing &&
+                                statusToString(issueStatus) != "archived") {
+                              if (priorityToString(issuePriority)
+                                      .toLowerCase() !=
+                                  widget.issuesModel.priority.toLowerCase()) {
+                                widget.issuesBloc.add(
+                                  UpdateIssuePriorityEvent(
+                                    issueId: widget.issuesModel.id,
+                                    priority: priorityToString(issuePriority)
+                                        .toLowerCase(),
+                                  ),
+                                );
+                              }
+                              if (statusToString(issueStatus).toLowerCase() !=
+                                  widget.issuesModel.status.toLowerCase()) {
+                                widget.issuesBloc.add(
+                                  UpdateIssueStatusEvent(
+                                    issueId: widget.issuesModel.id,
+                                    status: statusToString(issueStatus)
+                                        .toLowerCase(),
+                                  ),
+                                );
+                              }
+                            }
+                            setState(() {
+                              isEditing = !isEditing;
+                            });
+                          },
+                          icon: Icon(
+                            isEditing ? Icons.check : Icons.edit,
+                            color: getCurrentTheme()['Icons'],
+                          ),
+                        ),
+                      );
+                    },
                   ),
               ],
             ),

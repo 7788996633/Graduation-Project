@@ -249,6 +249,56 @@ class IssuesBloc extends Bloc<IssuesEvent, IssuesState> {
               ),
             );
           }
+        } else if (event is GetAllArchivedIssuesEvent) {
+          emit(
+            IssuesLoading(),
+          );
+          try {
+            allIssues = await IssuesRepository().getAllArchivedIssues();
+            emit(
+              IssuesListLoadedSuccessFully(issues: allIssues),
+            );
+          } catch (e) {
+            emit(
+              IssuesFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is ArchiveIssueEvent) {
+          emit(IssuesLoading());
+          try {
+            String value =
+                await IssusServices().archiveIssueService(event.issueId);
+            emit(
+              IssuesSuccess(
+                successmsg: value,
+              ),
+            );
+          } catch (e) {
+            emit(
+              IssuesFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is UnArchiveIssueEvent) {
+          emit(IssuesLoading());
+          try {
+            String value =
+                await IssusServices().unArchiveIssueService(event.issueId);
+            emit(
+              IssuesSuccess(
+                successmsg: value,
+              ),
+            );
+          } catch (e) {
+            emit(
+              IssuesFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
         }
       },
     );

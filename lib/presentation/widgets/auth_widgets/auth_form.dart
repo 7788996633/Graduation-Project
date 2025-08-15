@@ -68,7 +68,7 @@ class _AuthFormState extends State<AuthForm> {
         child: Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Colors.white, // ← لون خلفية الفورم
+            color: Colors.white,
             borderRadius: BorderRadius.circular(30),
             boxShadow: [
               BoxShadow(
@@ -86,6 +86,7 @@ class _AuthFormState extends State<AuthForm> {
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
+                  color: Colors.black54,
                 ),
               ),
               const SizedBox(height: 16),

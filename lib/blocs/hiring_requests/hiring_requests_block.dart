@@ -69,9 +69,9 @@ class HiringRequestsBloc
         emit(HiringRequestsLoading());
         try {
           List<HiringRequestModel> hiringRequestsList =
-          await HiringRequestRepository().getHiringRequests();
+          await HiringRequestRepository().getHiringRequestsPublish();
           emit(
-              HiringRequestsListLoaded(hiringRequestsList: hiringRequestsList));
+              HiringRequestsListLoaded( hiringRequestsList:hiringRequestsList));
         } catch (e) {
           emit(
             HiringRequestsFail(

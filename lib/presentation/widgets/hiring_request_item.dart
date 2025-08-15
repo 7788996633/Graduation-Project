@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/hiring_requests/hiring_requests_block.dart';
 import '../../blocs/hiring_requests/hiring_requests_event.dart';
 import '../../data/models/hiring_request_model.dart';
+import '../../themes.dart';
 import '../screens/hr_screen/hiring_request/hiring_request_detials.dart';
 
 class HiringRequestItem extends StatelessWidget {
@@ -12,83 +13,100 @@ class HiringRequestItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x11000000),
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ListTile(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        contentPadding: const EdgeInsets.all(20),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      child: GestureDetector(
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => HiringRequestDetailsScreen(
+              builder: (_) => HiringRequestDetailsScreen(
                 hiringRequestModel: hiringRequestModel,
               ),
             ),
           );
         },
-        leading: CircleAvatar(
-          radius: 24,
-          backgroundColor: Colors.red.withOpacity(0.1),
-          child: IconButton(
-            icon: const Icon(Icons.delete, color: Colors.red),
-            onPressed: () {
-              BlocProvider.of<HiringRequestsBloc>(context).add(
-                DeleteHiringRequest(hiringRequestId: hiringRequestModel.id),
-              );
-            },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.85),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 15,
+                offset: const Offset(0, 6),
+              ),
+            ],
+            border: Border.all(color: AppColors.darkBlue.withOpacity(0.6), width: 1.2),
+          ),
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            leading: CircleAvatar(
+              radius: 26,
+              backgroundColor: AppColors.darkBlue.withOpacity(0.1),
+              child: const Icon(
+                Icons.campaign_outlined,
+                color: AppColors.darkBlue,
+                size: 26,
+              ),
+            ),
+            title: Text(
+              hiringRequestModel.jopTitle,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: AppColors.darkBlue,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Row(
+                children: [
+                  const Text(
+                    'Type: ',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  Flexible(
+                    child: Text(
+                      hiringRequestModel.type ?? 'N/A',
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.darkBlue,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            trailing: SizedBox(
+              width: 80, // حجم مناسب لتجنب overflow
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                    onPressed: () {
+                      BlocProvider.of<HiringRequestsBloc>(context).add(
+                        DeleteHiringRequest(hiringRequestId: hiringRequestModel.id),
+                      );
+                    },
+                  ),
+                  const Icon(
+                    Icons.arrow_forward_ios,
+                    color: AppColors.darkBlue,
+                    size: 18,
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
-        title: Padding(
-          padding: const EdgeInsets.only(bottom: 4.0),
-          child: Text(
-            hiringRequestModel.jopTitle,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1A237E),
-            ),
-          ),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                const Icon(Icons.work_outline, size: 18, color: Colors.grey),
-                const SizedBox(width: 6),
-                Text(
-                  "Type: ${hiringRequestModel.type}",
-                  style: const TextStyle(fontSize: 14, color: Colors.black87),
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Row(
-              children: [
-                const Icon(Icons.check_circle_outline, size: 18, color: Colors.grey),
-                const SizedBox(width: 6),
-                Text(
-                  "Status: ${hiringRequestModel.status}",
-                  style: const TextStyle(fontSize: 14, color: Colors.black87),
-                ),
-              ],
-            ),
-          ],
-        ),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 18, color: Colors.grey),
       ),
     );
   }

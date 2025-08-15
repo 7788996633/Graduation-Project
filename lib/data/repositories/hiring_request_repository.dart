@@ -10,4 +10,11 @@ class HiringRequestRepository {
         .toList();
   }
 
+  Future<List<HiringRequestModel>> getHiringRequestsPublish() async {
+    var hiringRequestsList = await HiringRequestsServices ().getHiringRequestsPublished();
+    return  hiringRequestsList
+        .map(
+          (e) => HiringRequestModel.fromJson(e),)
+        .toList();
+  }
 }

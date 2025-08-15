@@ -35,7 +35,7 @@ class _ListMyArchivedIssuesScreenState extends State<ListMyArchivedIssuesScreen>
     return Scaffold(
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
-        title: 'Archived Issues',
+        title: ' My Archived Issues',
 
       ),
       body: Padding(

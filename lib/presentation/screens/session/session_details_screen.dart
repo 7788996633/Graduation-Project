@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/delegations_bloc/delegations_bloc.dart';
+import 'package:graduation/blocs/issue_progress_reports/issue_progress_reports_bloc.dart';
+import 'package:graduation/blocs/issue_progress_reports/issue_progress_reports_state.dart';
+import 'package:graduation/blocs/sessions_bloc/sessions_bloc.dart';
+import 'package:graduation/blocs/sessions_bloc/sessions_event.dart';
+import 'package:graduation/constant.dart';
+import 'package:graduation/data/models/lawyer_model.dart';
+import 'package:graduation/presentation/screens/delegations_screen/submit_delegation_screen.dart';
+import 'package:graduation/presentation/widgets/custom_text_field.dart';
 
 import '../../../blocs/documents_bloc/document_bloc.dart';
 import '../../../blocs/issue_bloc/issues_bloc.dart';
-import '../../../blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
 import '../../../blocs/session_points_bloc/session_points_bloc.dart';
 import '../../../blocs/session_type_bloc/session_type_bloc.dart';
 import '../../../blocs/session_type_bloc/session_type_event.dart';
@@ -23,6 +31,7 @@ class SessionDetailsScreen extends StatefulWidget {
 }
 
 class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
+  TextEditingController reportController = TextEditingController();
   Widget _buildInfoRow(IconData icon, String label, String value,
       double iconSize, double fontSize) {
     return Padding(
@@ -30,7 +39,11 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: AppColors.darkBlue, size: iconSize),
+          Icon(icon,
+              color: isLight
+                  ? AppColors.darkBlue
+                  : const Color.fromARGB(255, 117, 165, 238),
+              size: iconSize),
           const SizedBox(width: 12),
           Expanded(
             child: RichText(
@@ -39,11 +52,19 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
                     TextStyle(fontSize: fontSize, fontWeight: FontWeight.w500),
                 children: [
                   TextSpan(
-                      text: '$label: ',
-                      style: const TextStyle(color: Colors.black87)),
+                    text: '$label: ',
+                    style: TextStyle(
+                      color: getCurrentTheme()['NormalText'],
+                    ),
+                  ),
                   TextSpan(
-                      text: value,
-                      style: const TextStyle(color: AppColors.darkBlue)),
+                    text: value,
+                    style: TextStyle(
+                      color: isLight
+                          ? AppColors.darkBlue
+                          : const Color.fromARGB(255, 117, 165, 238),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -55,9 +76,20 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
 
   TextEditingController noteController = TextEditingController();
   TextEditingController pointsController = TextEditingController();
+  bool isAddingOutCome = false;
+  late bool isCurrentLawyer;
+  late LawyerModel lawyer;
+  @override
+  void initState() {
+    lawyer = widget.sessionModel.lawyer;
+    isCurrentLawyer = (lawyer.licenseNumber.trim() == myLicenesNumber.trim());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    print(
+        "object $isCurrentLawyer ${lawyer.licenseNumber} object$myLicenesNumber");
     void showPointsEvaluate() {
       showModalBottomSheet(
         context: context,
@@ -173,20 +205,36 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
             create: (_) => IssuesBloc()
               ..add(IssueShowbyId(id: widget.sessionModel.issueId))),
         BlocProvider(
-            create: (_) => LawyerProfileBloc()
-              ..add(ShowLawyerProfileByIdEvent(
-                  lawyerId: widget.sessionModel.lawyerId))),
-        BlocProvider(
             create: (_) => SessionTypeBloc()
               ..add(GetSessionTypeByIdEvent(
                   sessionTypeId: widget.sessionModel.sessionTypeId))),
       ],
       child: Scaffold(
-        backgroundColor: const Color(0xFFF2F4F8),
+        backgroundColor: getCurrentTheme()['BackGorund'],
         appBar: CustomActionAppBar(
           title: 'Session Details',
-          actionIcon: Icons.moving_outlined,
-          onActionPressed: showPointsEvaluate,
+          actionIcon: myRole == 'admin'
+              ? Icons.moving_outlined
+              : myRole == 'lawyer' && isCurrentLawyer
+                  ? Icons.find_replace
+                  : null,
+          onActionPressed: myRole == 'admin'
+              ? showPointsEvaluate
+              : myRole == 'lawyer' && isCurrentLawyer
+                  ? () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider(
+                            create: (context) => DelegationBloc(),
+                            child: SubmitDelegationScreen(
+                              sessionId: widget.sessionModel.sessionId,
+                              originalLawyerId: widget.sessionModel.lawyerId,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  : null,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16),
@@ -195,107 +243,305 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
               if (issueState is IssuesLoadedSuccessFully) {
                 final issue = issueState.issue;
 
-                return BlocBuilder<LawyerProfileBloc, LawyerProfileState>(
-                  builder: (context, lawyerState) {
-                    if (lawyerState is LawyerProfileLoadedSuccessfully) {
-                      final lawyer = lawyerState.lawyerModel;
+                return BlocBuilder<SessionTypeBloc, SessionTypeState>(
+                  builder: (context, sessionTypeState) {
+                    if (sessionTypeState is SessionTypeLoaded) {
+                      final sessionType = sessionTypeState.session;
 
-                      return BlocBuilder<SessionTypeBloc, SessionTypeState>(
-                        builder: (context, sessionTypeState) {
-                          if (sessionTypeState is SessionTypeLoaded) {
-                            final sessionType = sessionTypeState.session;
-
-                            return SingleChildScrollView(
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24),
-                                ),
-                                elevation: 12,
-                                color: Colors.white,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16),
+                      return SingleChildScrollView(
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              color: Colors.white,
+                              width: isLight ? 0 : 2,
+                            ),
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          elevation: 12,
+                          color: getCurrentTheme()['BackGorund'],
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Center(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
                                     children: [
-                                      Center(
-                                        child: Column(
-                                          children: [
-                                            Icon(Icons.gavel_rounded,
-                                                size: 44,
-                                                color: AppColors.darkBlue),
-                                            const SizedBox(height: 10),
-                                            Text(
-                                              'Session #${widget.sessionModel.sessionId}',
-                                              style: const TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 20),
-                                          ],
+                                      Icon(
+                                        Icons.gavel_rounded,
+                                        size: 44,
+                                        color: isLight
+                                            ? AppColors.darkBlue
+                                            : const Color.fromARGB(
+                                                255, 117, 165, 238),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Text(
+                                        'Session #${widget.sessionModel.sessionId}',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              getCurrentTheme()['NormalText'],
                                         ),
                                       ),
-                                      _buildInfoRow(
-                                          Icons.description,
-                                          'Outcome',
-                                          widget.sessionModel.outcome,
-                                          22,
-                                          16),
-                                      const Divider(),
-                                      _buildInfoRow(Icons.title, 'Issue Title',
-                                          issue.title, 22, 16),
-                                      const Divider(),
-                                      _buildInfoRow(Icons.person, 'Lawyer',
-                                          lawyer.name, 22, 16),
-                                      const Divider(),
-                                      _buildInfoRow(
-                                        Icons.check_circle,
-                                        'Is Attend',
-                                        widget.sessionModel.isAttend == 1
-                                            ? "Yes"
-                                            : "No",
-                                        22,
-                                        16,
-                                      ),
-                                      const Divider(),
-                                      _buildInfoRow(
-                                          Icons.category,
-                                          'Session Type',
-                                          sessionType.type,
-                                          22,
-                                          16),
-                                      const SizedBox(height: 30),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                              child:
-                                                  _buildAddDocButton(context)),
-                                          const SizedBox(width: 12),
-                                          Expanded(
-                                              child: _buildAppointmentsButton(
-                                                  context)),
-                                        ],
-                                      ),
+                                      const SizedBox(height: 20),
                                     ],
                                   ),
                                 ),
-                              ),
-                            );
-                          } else if (sessionTypeState is SessionTypeFail) {
-                            return Center(
-                                child: Text(
-                                    "Failed to load session type: ${sessionTypeState.errMsg}"));
-                          } else {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          }
-                        },
+                                GestureDetector(
+                                  onTap: () {
+                                    if (isCurrentLawyer) {
+                                      isAddingOutCome = !isAddingOutCome;
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: _buildInfoRow(
+                                      Icons.description,
+                                      'Outcome',
+                                      widget.sessionModel.outcome,
+                                      22,
+                                      16),
+                                ),
+                                if (isCurrentLawyer &&
+                                    isAddingOutCome &&
+                                    widget.sessionModel.isAttend == 1) ...[
+                                  CustomTextFeild(
+                                    text: "Add outcome...",
+                                    controller: TextEditingController(),
+                                    color: Colors.white,
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Center(
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        BlocProvider.of<SessionsBloc>(context)
+                                            .add(
+                                          UpdateSessionEvent(
+                                            outcome: '',
+                                            isAttend:
+                                                widget.sessionModel.isAttend,
+                                            sessionId:
+                                                widget.sessionModel.issueId,
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        "Confirm",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                                const Divider(),
+                                _buildInfoRow(Icons.title, 'Issue Title',
+                                    issue.title, 22, 16),
+                                const Divider(),
+                                _buildInfoRow(Icons.person, 'Lawyer',
+                                    widget.sessionModel.lawyer.name, 22, 16),
+                                const Divider(),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: isCurrentLawyer ? 0 : 8),
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Icon(
+                                              Icons.check_circle,
+                                              color: isLight
+                                                  ? AppColors.darkBlue
+                                                  : const Color.fromARGB(
+                                                      255, 117, 165, 238),
+                                              size: 22,
+                                            ),
+                                            const SizedBox(
+                                              width: 12,
+                                            ),
+                                            RichText(
+                                              text: TextSpan(
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                                children: [
+                                                  TextSpan(
+                                                    text: 'Is Attend: ',
+                                                    style: TextStyle(
+                                                      color: getCurrentTheme()[
+                                                          'NormalText'],
+                                                    ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: widget.sessionModel
+                                                                .isAttend ==
+                                                            1
+                                                        ? "Yes"
+                                                        : "No",
+                                                    style: TextStyle(
+                                                      color: isLight
+                                                          ? AppColors.darkBlue
+                                                          : const Color
+                                                              .fromARGB(255,
+                                                              117, 165, 238),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          width: 30,
+                                        ),
+                                        if (isCurrentLawyer)
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.white,
+                                            ),
+                                            onPressed: () {
+                                              BlocProvider.of<SessionsBloc>(
+                                                      context)
+                                                  .add(
+                                                UpdateSessionEvent(
+                                                  outcome: widget
+                                                      .sessionModel.outcome,
+                                                  isAttend: 1,
+                                                  sessionId: widget
+                                                      .sessionModel.issueId,
+                                                ),
+                                              );
+                                            },
+                                            child: Text(
+                                              "Set attendance",
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const Divider(),
+                                _buildInfoRow(Icons.category, 'Session Type',
+                                    sessionType.type, 22, 16),
+                                const Divider(),
+                                if (isCurrentLawyer &&
+                                    widget.sessionModel.isAttend != 1)
+                                  BlocConsumer<IssueProgressReportBloc,
+                                      IssueProgressReportState>(
+                                    listener: (context, state) {},
+                                    builder: (context, state) {
+                                      return Container(
+                                        margin: EdgeInsets.only(top: 20),
+                                        width: double.infinity,
+                                        padding: EdgeInsets.all(20),
+                                        decoration: BoxDecoration(
+                                          gradient: RadialGradient(
+                                            center: Alignment.center,
+                                            radius: 2,
+                                            colors: isLight
+                                                ? [
+                                                    AppColors.darkBlue,
+                                                    AppColors.softGray,
+                                                    AppColors.white,
+                                                  ]
+                                                : [
+                                                    Colors.black,
+                                                    AppColors.softGray,
+                                                    AppColors.white,
+                                                  ],
+                                          ),
+                                          border: Border.all(
+                                            strokeAlign: 2,
+                                            width: 3,
+                                            color: AppColors.white,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Enter your report here",
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            CustomTextFeild(
+                                              text: "Report...",
+                                              controller: reportController,
+                                              color: Colors.white,
+                                            ),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                            Center(
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  fixedSize: Size(
+                                                    200,
+                                                    30,
+                                                  ),
+                                                  backgroundColor: Colors.white,
+                                                ),
+                                                onPressed: () {},
+                                                child: Text(
+                                                  "Submit",
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                const SizedBox(height: 30),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                        child: _buildAddDocButton(context)),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                        child:
+                                            _buildAppointmentsButton(context)),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       );
-                    } else if (lawyerState is LawyerProfileFail) {
+                    } else if (sessionTypeState is SessionTypeFail) {
                       return Center(
                           child: Text(
-                              "Failed to load lawyer: ${lawyerState.errmsg}"));
+                              "Failed to load session type: ${sessionTypeState.errMsg}"));
                     } else {
                       return const Center(child: CircularProgressIndicator());
                     }

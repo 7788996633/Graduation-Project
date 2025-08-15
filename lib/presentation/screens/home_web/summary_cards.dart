@@ -6,7 +6,9 @@ import '../../../blocs/dashboard_bloc/dashboard_event.dart';
 import '../../../blocs/dashboard_bloc/dashboard_state.dart';
 
 class SummaryCards extends StatefulWidget {
-  const SummaryCards({super.key});
+  final Color cardColor;  // تمرير لون الخلفية للبطاقات (يمكن تلوين حسب الوضع)
+
+  const SummaryCards({super.key, required this.cardColor});
 
   @override
   State<SummaryCards> createState() => _SummaryCardsState();
@@ -22,13 +24,17 @@ class _SummaryCardsState extends State<SummaryCards> {
   @override
   void initState() {
     super.initState();
-    // إضافة حدث واحد فقط لأنه يقوم بجلب كل البيانات دفعة واحدة
     final bloc = context.read<DashboardBloc>();
     bloc.add(FetchDashboardData());
   }
 
   @override
   Widget build(BuildContext context) {
+    // النصوص تستخدم لون ثابت هنا، أو ممكن تضيف خاصية للون النص لو حبيت
+    final titleTextColor = widget.cardColor.computeLuminance() < 0.5
+        ? Colors.white70
+        : Colors.black54;
+
     return BlocListener<DashboardBloc, DashboardState>(
       listener: (context, state) {
         setState(() {
@@ -56,6 +62,8 @@ class _SummaryCardsState extends State<SummaryCards> {
                 title: "Open Cases",
                 amount: _formatAmount(openCases),
                 color: Colors.red,
+                backgroundColor: widget.cardColor,
+                titleColor: titleTextColor,
               ),
             ),
             const SizedBox(width: 12),
@@ -64,6 +72,8 @@ class _SummaryCardsState extends State<SummaryCards> {
                 title: "Total Clients",
                 amount: _formatAmount(totalClients),
                 color: Colors.indigo,
+                backgroundColor: widget.cardColor,
+                titleColor: titleTextColor,
               ),
             ),
             const SizedBox(width: 12),
@@ -72,14 +82,18 @@ class _SummaryCardsState extends State<SummaryCards> {
                 title: "Sessions This Month",
                 amount: _formatAmount(sessionsThisMonth),
                 color: Colors.orange,
+                backgroundColor: widget.cardColor,
+                titleColor: titleTextColor,
               ),
             ),
             const SizedBox(width: 12),
-            const Expanded(
+            Expanded(
               child: SummaryCard(
                 title: "Total Revenue",
                 amount: "\$12,340.00",
                 color: Colors.green,
+                backgroundColor: widget.cardColor,
+                titleColor: titleTextColor,
               ),
             ),
           ],
@@ -100,12 +114,16 @@ class SummaryCard extends StatelessWidget {
   final String title;
   final String amount;
   final Color color;
+  final Color backgroundColor;
+  final Color titleColor;
 
   const SummaryCard({
     super.key,
     required this.title,
     required this.amount,
     required this.color,
+    required this.backgroundColor,
+    required this.titleColor,
   });
 
   @override
@@ -113,13 +131,15 @@ class SummaryCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Colors.black12,
+            color: backgroundColor.computeLuminance() < 0.5
+                ? Colors.black54
+                : Colors.black12,
             blurRadius: 4,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           )
         ],
       ),
@@ -128,9 +148,9 @@ class SummaryCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
-              color: Colors.black54,
+              color: titleColor,
             ),
           ),
           const SizedBox(height: 8),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:graduation/themes.dart';
+
+import '../../themes.dart';
 
 Widget buildInfoTile(IconData icon, String label, String value,
     {Widget? customWidget}) {

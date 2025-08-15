@@ -20,7 +20,7 @@ class SessionTypeItem extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
           side: BorderSide(
-            color: Colors.grey.shade400, // الحواف بلون أزرق غامق
+            color: Colors.grey.shade400,
             width: 2,
           ),
         ),

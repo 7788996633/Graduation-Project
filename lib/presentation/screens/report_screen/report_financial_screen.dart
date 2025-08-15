@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:url_launcher/url_launcher.dart' as kisweb;
+
 import '../../../data/services/report_services.dart';
 import '../../../themes.dart';
 
@@ -32,15 +35,19 @@ class _ReportFinancialScreenState extends State<ReportFinancialScreen> {
       final data = await ReportService().reportFinancial();
       final pdfLink = data['link']?.toString();
 
-
       if (pdfLink != null && pdfLink.endsWith('.pdf')) {
-        final uri = Uri.parse(prepareFullUrl(pdfLink));
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        final url = prepareFullUrl(pdfLink);
+        if (kIsWeb) {
+          kisweb.launch(url);
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('لا يمكن فتح الرابط')),
-          );
+          final uri = Uri.parse(url);
+          if (await canLaunchUrl(uri)) {
+            await launchUrl(uri, mode: LaunchMode.externalApplication);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('لا يمكن فتح الرابط')),
+            );
+          }
         }
       }
 
@@ -94,13 +101,18 @@ class _ReportFinancialScreenState extends State<ReportFinancialScreen> {
                 ? GestureDetector(
               onTap: () async {
                 if (value.isEmpty) return;
-                final uri = Uri.parse(prepareFullUrl(value));
-                if (await canLaunchUrl(uri)) {
-                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                final url = prepareFullUrl(value);
+                if (kIsWeb) {
+                  kisweb.launch(url);
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('لا يمكن فتح الرابط')),
-                  );
+                  final uri = Uri.parse(url);
+                  if (await canLaunchUrl(uri)) {
+                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('لا يمكن فتح الرابط')),
+                    );
+                  }
                 }
               },
               child: Text(

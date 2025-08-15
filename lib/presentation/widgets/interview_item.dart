@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../blocs/interview_bloc/interview_bloc.dart';
 import '../../blocs/interview_bloc/interview_event.dart';
+import '../../blocs/job_application/job_application_bloc.dart';
 import '../../data/models/interview_model.dart';
 import '../../themes.dart';
 import '../screens/hr_screen/interview/interview_details_screen.dart';
@@ -29,9 +30,14 @@ class InterviewItem extends StatelessWidget {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => InterviewDetailsScreen(interviewModel: interviewModel),
-              ),
+                MaterialPageRoute(
+                  builder: (_) =>  BlocProvider(
+                    create: (_) => JobApplicationBloc(),
+                    child: InterviewDetailsScreen(interviewModel: interviewModel),
+                  ),
+                ),
+
+
             );
           },
           leading: Container(

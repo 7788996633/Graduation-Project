@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+ 
 import '../../../blocs/consultation_request_bloc/consultation_request_bloc.dart';
 import '../../../blocs/categories/categories_bloc.dart';
 import '../../../blocs/common_consultation_bloc/common _consultation_bloc.dart';
@@ -9,6 +9,7 @@ import '../../../blocs/furlough_request_bloc/furlough_request_bloc.dart';
 import '../../../blocs/issue_bloc/issues_bloc.dart';
 
 import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
+import '../../../blocs/legal_books_bloc/legal_books_bloc.dart';
 import '../../../blocs/permission_bloc/permission_bloc.dart';
 import '../../../blocs/required_document_bloc/required_document_bloc.dart';
 import '../../../blocs/session_type_bloc/session_type_bloc.dart';
@@ -20,7 +21,9 @@ import '../furloughs/list_furloughs_screen.dart';
 import '../home_web/main_page_web.dart';
 import '../hr_screen/employee_screens/list_employee_screen.dart';
 import '../issue_request/list_issue_requests_screen.dart';
+import '../legal_books_screen/logal_book_list.dart';
 import '../permission_screen/list_permission_screen.dart';
+import '../report_screen/report_invoices_screen.dart';
 import '../required_documents/list_required_document_screen.dart';
 import '../session_type/list_session_type_screen.dart';
 import 'drawer_web/custom_drawer_web.dart';
@@ -78,6 +81,11 @@ class _HomeWebPageState extends State<HomeWebPage> {
       create: (context) => CategoriesBloc(),
       child: const  ListIssueCategoriesScreen(),
     ),
+    BlocProvider(
+      create: (context) => LegalBookBloc(),
+      child: const  ListLegalBooksScreen(),
+    ),
+    const ReportInvoicesScreen(),
   ];
 
   void _onDrawerItemSelected(int index) {

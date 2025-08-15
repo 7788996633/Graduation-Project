@@ -1,3 +1,5 @@
+import 'package:graduation/data/models/lawyer_model.dart';
+
 class SessionModel {
   SessionModel({
     required this.sessionId,
@@ -8,6 +10,7 @@ class SessionModel {
     required this.isAttend,
     required this.sessionTypeId,
     this.createdAt,
+    required this.lawyer,
   });
 
   final int sessionId;
@@ -18,6 +21,7 @@ class SessionModel {
   final int isAttend;
   final int sessionTypeId;
   final DateTime? createdAt;
+  final LawyerModel lawyer;
 
   factory SessionModel.fromJson(Map<String, dynamic> json) {
     return SessionModel(
@@ -31,6 +35,9 @@ class SessionModel {
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'])
           : null,
+      lawyer: LawyerModel.fromJson(
+        json['lawyer'],
+      ),
     );
   }
 }

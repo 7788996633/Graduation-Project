@@ -35,12 +35,22 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
+    // خلفية السكافولد: لون أسود فاتح (مثلاً رمادي غامق جداً)
+    final scaffoldColor = isDarkMode ? Colors.grey[700] : AppColors.scaffold;
+
+    // لون الكاردات ثابت للوضع النهاري فقط
+    final cardBackgroundColor = AppColors.white;
+
+    // لون النص والأيقونات بناءً على الوضع:
+    final textAndIconColor = isDarkMode ? Colors.white70 : Colors.black87;
+
     return Scaffold(
-      backgroundColor: AppColors.scaffold,
+      backgroundColor: scaffoldColor,
       appBar: CustomMainAppBar(
-        isDarkMode: isDarkMode,
-        onToggleTheme: toggleTheme,
         languageKey: _languageKey,
+        isDark: isDarkMode,
+        onToggleTheme: toggleTheme,
+         // تأكد أنك تضيف هذا المتغير في CustomMainAppBar
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -49,18 +59,23 @@ class _MainScreenState extends State<MainScreen> {
           children: [
             Text(
               "dashboard_title".tr(),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
+                color: textAndIconColor,
               ),
             ),
             const SizedBox(height: 20),
+
             BlocProvider(
               create: (context) => DashboardBloc(),
-              child: const SummaryCards(),
-            ),
-            const SizedBox(height: 20),
+              child: SummaryCards(
+                cardColor: cardBackgroundColor,
 
+              ),
+            ),
+
+            const SizedBox(height: 20),
 
             screenWidth > 800
                 ? Row(
@@ -74,7 +89,7 @@ class _MainScreenState extends State<MainScreen> {
                 const SizedBox(width: 20),
                 Expanded(
                   child: SizedBox(
-                    height: 350, // ارتفاع كافي لـ CaseTypePercentagesScreen
+                    height: 350,
                     child: BlocProvider(
                       create: (context) => CaseTypeBloc(),
                       child: const CaseTypePercentagesScreen(),
@@ -91,7 +106,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
-                  height: 350, // نفس الارتفاع في الوضع الضيق
+                  height: 350,
                   child: BlocProvider(
                     create: (context) => CaseTypeBloc(),
                     child: const CaseTypePercentagesScreen(),
@@ -99,24 +114,24 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ],
             ),
-
             const SizedBox(height: 20),
             const RecentActivity(),
             const SizedBox(height: 20),
+
             screenWidth > 800
                 ? Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Expanded(child: OrdersTable()),
-                SizedBox(width: 20),
-                Expanded(child: ClientRequestsTable()),
+              children: [
+                OrdersTable(cardColor: cardBackgroundColor),
+                const SizedBox(width: 20),
+                ClientRequestsTable(cardColor: cardBackgroundColor),
               ],
             )
                 : Column(
-              children: const [
-                OrdersTable(),
-                SizedBox(height: 20),
-                ClientRequestsTable(),
+              children: [
+                OrdersTable(cardColor: cardBackgroundColor),
+                const SizedBox(height: 20),
+                ClientRequestsTable(cardColor: cardBackgroundColor),
               ],
             ),
           ],

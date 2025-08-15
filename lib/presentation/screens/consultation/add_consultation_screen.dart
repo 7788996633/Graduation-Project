@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/presentation/widgets/custom_text_field.dart';
 
 import '../../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
 import '../../../blocs/consultations_bloc/consultation_bloc.dart';
@@ -69,8 +70,9 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: AppBar(
-        backgroundColor: AppColors.darkBlue,
+        backgroundColor: getCurrentTheme()['AppBar'],
         title: Text(
           widget.consultationRequestModel.subject,
           style: TextStyle(
@@ -103,34 +105,70 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                 ),
         ],
       ),
-      body: Padding(
+      body: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: Colors.grey,
+            width: 2,
+          ),
+        ),
+        margin: const EdgeInsets.all(20),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Container(
-              child: Column(
-                children: [
-                  Row(
+            Column(
+              children: [
+                Container(
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                      40,
+                    ),
+                  ),
+                  child: Image.network(
+                    height: 200,
+                    fit: BoxFit.fill,
+                    widget.consultationRequestModel.user.profileModel.image,
+                  ),
+                ),
+                Text(
+                  widget.consultationRequestModel.user.name,
+                  style: TextStyle(
+                    color: getCurrentTheme()['NormalText'],
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      width: 2,
+                      color: getCurrentTheme()['Border']!,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(
-                          widget
-                              .consultationRequestModel.user.profileModel.image,
-                        ),
+                      Text(
+                        widget.consultationRequestModel.subject,
+                        style: TextStyle(
+                            color: getCurrentTheme()['NormalText'],
+                            fontSize: 18),
                       ),
                       Text(
-                        widget.consultationRequestModel.user.name,
+                        widget.consultationRequestModel.details,
+                        style: TextStyle(
+                            color: getCurrentTheme()['NormalText'],
+                            fontSize: 18),
                       ),
                     ],
                   ),
-                  Text(
-                    widget.consultationRequestModel.subject,
-                  ),
-                  Text(
-                    widget.consultationRequestModel.details,
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
             if (myRole == 'lawyer' &&
                 widget.consultationRequestModel.status.toLowerCase() ==
@@ -152,31 +190,44 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                   }
                 },
                 builder: (context, state) {
-                  return Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          controller: _resaultController,
-                          decoration: const InputDecoration(
-                            labelText: 'نتيجة الاستشارة',
-                            border: OutlineInputBorder(),
+                  return Container(
+                    margin: EdgeInsets.only(
+                      top: 10,
+                    ),
+                    color: Colors.amber,
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          CustomTextFeild(
+                            color: Colors.white,
+                            text: "Consultation",
+                            controller: _resaultController,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'يرجى إدخال نتيجة الاستشارة';
+                              }
+                              return null;
+                            },
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'يرجى إدخال نتيجة الاستشارة';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        state is ConsultationLoading
-                            ? const CircularProgressIndicator()
-                            : ElevatedButton(
-                                onPressed: _onSubmit,
-                                child: const Text('إرسال'),
-                              ),
-                      ],
+                          const SizedBox(height: 16),
+                          state is ConsultationLoading
+                              ? const CircularProgressIndicator()
+                              : ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                  ),
+                                  onPressed: _onSubmit,
+                                  child: const Text(
+                                    'Submit',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                        ],
+                      ),
                     ),
                   );
                 },

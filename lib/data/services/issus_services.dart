@@ -515,4 +515,101 @@ class IssusServices {
       return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
     }
   }
+
+  Future<String> archiveIssueService(
+    int issueId,
+  ) async {
+    var headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $myToken'
+    };
+
+    var url = Uri.parse('${myUrl}archive/issues/$issueId');
+
+    http.Response response;
+
+    var request = http.Request('POST', url);
+    request.headers.addAll(headers);
+
+    var streamedResponse = await request.send();
+    response = await http.Response.fromStream(streamedResponse);
+
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+    if (response.statusCode == 200) {
+      if (jsonResponse['status'] == 'success') {
+        return jsonResponse['message'];
+      } else {
+        return 'failed: ${jsonResponse['message']}';
+      }
+    } else {
+      return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+    }
+  }
+
+  Future<String> unArchiveIssueService(
+    int issueId,
+  ) async {
+    var headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $myToken'
+    };
+
+    var url = Uri.parse('${myUrl}unarchive/issues/$issueId');
+
+    http.Response response;
+
+    var request = http.Request('POST', url);
+    request.headers.addAll(headers);
+
+    var streamedResponse = await request.send();
+    response = await http.Response.fromStream(streamedResponse);
+
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+    if (response.statusCode == 200) {
+      if (jsonResponse['status'] == 'success') {
+        return jsonResponse['message'];
+      } else {
+        return 'failed: ${jsonResponse['message']}';
+      }
+    } else {
+      return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+    }
+  }
+
+  Future<List> getAllArchivedIssuesService() async {
+    var headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $myToken'
+    };
+    var url = Uri.parse('${myUrl}issuesArchived');
+    http.Response response;
+    if (kIsWeb) {
+      var request = http.Request('GET', url);
+      request.headers.addAll(headers);
+
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    } else {
+      var request = http.MultipartRequest('GET', url);
+      request.headers.addAll(headers);
+
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    }
+
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode == 200) {
+      if (jsonResponse['status'] == 'success') {
+        return jsonResponse['data'];
+      } else {
+        return [];
+      }
+    } else {
+      return [];
+    }
+  }
 }

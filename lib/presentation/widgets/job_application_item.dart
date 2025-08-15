@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../blocs/job_application/job_application_bloc.dart';
-
+import '../../blocs/job_application/job_application_event.dart';
 import '../../data/models/job_application_model.dart';
 import '../../themes.dart';
 import '../screens/hr_screen/job_application/job_application_details_screen.dart';
@@ -16,70 +16,116 @@ class JobApplicationItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.white, Colors.grey.shade100],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+      child: Card(
+        elevation: 8,
+        shadowColor: Colors.blueGrey.shade200,
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 12,
-              offset: const Offset(0, 6),
-            ),
-          ],
-          border: Border.all(color: AppColors.darkBlue, width: 1.5),
         ),
-        child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-          onTap: () {
-            Navigator.push(
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () async {
+            final updatedJob = await Navigator.push<JobApplicationModel>(
               context,
               MaterialPageRoute(
                 builder: (_) => BlocProvider(
                   create: (_) => JobApplicationBloc(),
-                  child: JobApplicationDetailsScreen(
-                    jobApplication: jobApplication,
-                  ),
+                  child: JobApplicationDetailsScreen(jobApplication: jobApplication),
                 ),
               ),
             );
+
+            if (updatedJob != null) {
+              // أعِد تحميل بيانات القائمة بعد التحديث
+              context.read<JobApplicationBloc>().add(
+                GetAllJobApplicationsEvent(hiringReqId: jobApplication.hiringRequestId),
+              );
+            }
           },
-          leading: CircleAvatar(
-            radius: 24,
-            backgroundColor: Colors.grey.withOpacity(0.1),
-            child: const Icon(
-              Icons.assignment_ind,
-              color: AppColors.darkBlue,
-              size: 24,
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(
+                colors: [Colors.white, Colors.blue.shade50],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
             ),
-          ),
-          title: Text(
-            'Applicant: ${jobApplication.userName}',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize:15,
-              color: AppColors.darkBlue,
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 30,
+                  backgroundColor: AppColors.darkBlue.withOpacity(0.1),
+                  child: const Icon(
+                    Icons.assignment_ind_rounded,
+                    color: AppColors.darkBlue,
+                    size: 32,
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        jobApplication.userName,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.darkBlue,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          const Icon(Icons.info_outline, size: 18, color: Colors.grey),
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: _statusColor(jobApplication.status).withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              jobApplication.status[0].toUpperCase() + jobApplication.status.substring(1),
+                              style: TextStyle(
+                                color: _statusColor(jobApplication.status),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: AppColors.darkBlue,
+                  size: 20,
+                ),
+              ],
             ),
-          ),
-          subtitle: Text(
-            'Job Title: ${jobApplication.jobTitle}',
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black54,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          trailing: const Icon(
-            Icons.arrow_forward_ios_rounded,
-            color: Color(0xFF1A237E),
-            size: 20,
           ),
         ),
       ),
     );
+  }
+
+  Color _statusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'approved':
+        return Colors.green;
+      case 'pending':
+        return Colors.orange;
+      case 'rejected':
+        return Colors.red;
+      case 'interview':
+        return Colors.blue;
+      default:
+        return Colors.grey;
+    }
   }
 }

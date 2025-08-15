@@ -10,58 +10,71 @@ class ReportService {
   };
 
   Future<Map<String, dynamic>> reportFinancial() async {
-    var url = Uri.parse('${myUrl}report-salaries');
-    http.Response response;
-
-    if (kIsWeb) {
-      var request = http.Request('POST', url);
-      request.headers.addAll(baseHeaders);
-      var streamedResponse = await request.send();
-      response = await http.Response.fromStream(streamedResponse);
-    } else {
-      var request = http.MultipartRequest('POST', url);
-      request.headers.addAll(baseHeaders);
-      var streamedResponse = await request.send();
-      response = await http.Response.fromStream(streamedResponse);
-    }
-    return _handleReportResponse(response, 'فشل إنشاء تقرير الرواتب');
+    return _sendRequest(
+      method: 'POST',
+      endpoint: 'report-salaries',
+      failMessage: 'فشل إنشاء تقرير الرواتب',
+    );
   }
-
 
   Future<Map<String, dynamic>> reportInvoices() async {
-    var url = Uri.parse('${myUrl}invoices-report');
-    http.Response response;
-    if (kIsWeb) {
-      var request = http.Request('GET', url);
-      request.headers.addAll(baseHeaders);
-      var streamedResponse = await request.send();
-      response = await http.Response.fromStream(streamedResponse);
-    } else {
-      response = await http.get(url, headers: baseHeaders);
-    }
-    return _handleReportResponse(response, 'فشل إنشاء تقرير الدفعات المالية');
+    return _sendRequest(
+      method: 'GET',
+      endpoint: 'invoices-report',
+      failMessage: 'فشل إنشاء تقرير الدفعات المالية',
+    );
   }
-
 
   Future<Map<String, dynamic>> reportHiring() async {
-    var url = Uri.parse('${myUrl}hiring-report');
-    http.Response response;
-
-    if (kIsWeb) {
-      var request = http.Request('GET', url);
-      request.headers.addAll(baseHeaders);
-      var streamedResponse = await request.send();
-      response = await http.Response.fromStream(streamedResponse);
-    } else {
-      response = await http.get(url, headers: baseHeaders);
-    }
-    return _handleReportResponse(
-        response, 'فشل إنشاء تقرير الوظائف والمتقدمين');
+    return _sendRequest(
+      method: 'GET',
+      endpoint: 'hiring-report',
+      failMessage: 'فشل إنشاء تقرير الوظائف والمتقدمين',
+    );
   }
 
+  Future<Map<String, dynamic>> reportSession(int sessionId) async {
+    return _sendRequest(
+      method: 'GET',
+      endpoint: 'session-report-pdf/$sessionId',
+      failMessage: 'فشل إنشاء تقرير الجلسة',
+    );
+  }
 
-  Future<Map<String, dynamic>> _handleReportResponse(http.Response response,
-      String failMessage) async {
+  Future<Map<String, dynamic>> _sendRequest({
+    required String method,
+    required String endpoint,
+    required String failMessage,
+  }) async {
+    try {
+      var url = Uri.parse('$myUrl$endpoint');
+      http.Response response;
+
+      if (kIsWeb) {
+        // للويب استخدم http.Request لجميع أنواع الطلبات
+        var request = http.Request(method, url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      } else {
+        // للمنصات الأخرى نستخدم http.Client وطلب مناسب
+        if (method.toUpperCase() == 'GET') {
+          response = await http.get(url, headers: baseHeaders);
+        } else if (method.toUpperCase() == 'POST') {
+          response = await http.post(url, headers: baseHeaders);
+        } else {
+          // يمكنك توسيع لتغطية طرق أخرى إذا لزم الأمر
+          throw Exception('Method $method not supported');
+        }
+      }
+
+      return _handleReportResponse(response, failMessage);
+    } catch (e) {
+      throw Exception('Error in $_sendRequest: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>> _handleReportResponse(http.Response response, String failMessage) async {
     final jsonResponse = json.decode(response.body);
     print(jsonResponse);
 
@@ -71,24 +84,4 @@ class ReportService {
       throw Exception('$failMessage: ${jsonResponse['message']}');
     }
   }
-
-
-
-
-
-
-Future<Map<String, dynamic>> reportSession(int sessionId) async {
-  var url = Uri.parse('${myUrl}session-report-pdf/$sessionId');
-  http.Response response;
-
-  if (kIsWeb) {
-    var request = http.Request('GET', url);
-    request.headers.addAll(baseHeaders);
-    var streamedResponse = await request.send();
-    response = await http.Response.fromStream(streamedResponse);
-  } else {
-    response = await http.get(url, headers: baseHeaders);
-  }
-  return _handleReportResponse(
-      response, 'فشل إنشاء تقرير الوظائف والمتقدمين');
-}}
+}

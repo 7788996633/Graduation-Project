@@ -126,3 +126,43 @@ class FilterIssues extends IssuesEvent {
 
   FilterIssues(this.filter);
 }
+
+class ArchiveIssueEvent extends IssuesEvent {
+  final int issueId;
+
+  ArchiveIssueEvent({required this.issueId});
+}
+
+class UnArchiveIssueEvent extends IssuesEvent {
+  final int issueId;
+
+  UnArchiveIssueEvent({required this.issueId});
+}
+
+class GetArchivedIssueEvent extends IssuesEvent {
+  final int issueId;
+
+  GetArchivedIssueEvent({required this.issueId});
+}
+
+class GetAllArchivedIssuesEvent extends IssuesEvent {}
+
+class GetMyArchivedIssuesEvent extends IssuesEvent {}
+
+class UpdateArchivedIssuesEvent extends IssuesEvent {
+  final int archiveId;
+  final int points;
+
+  UpdateArchivedIssuesEvent({
+    required this.archiveId,
+    required this.points,
+  });
+}
+
+class DeleteArchivedIssuesEvent extends IssuesEvent {
+  final int archiveId;
+
+  DeleteArchivedIssuesEvent({
+    required this.archiveId,
+  });
+}

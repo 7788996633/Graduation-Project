@@ -37,4 +37,13 @@ class IssuesRepository {
         )
         .toList();
   }
+
+  Future<List<IssuesModel>> getAllArchivedIssues() async {
+    var issueList = await IssusServices().getAllArchivedIssuesService();
+    return issueList
+        .map(
+          (e) => IssuesModel.fromJson(e),
+        )
+        .toList();
+  }
 }

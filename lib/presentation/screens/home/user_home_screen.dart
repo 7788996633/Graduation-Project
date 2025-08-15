@@ -1,9 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
 import '../../../blocs/attend_Demand_bloc/attend_demand_bloc.dart';
 import '../../../blocs/common_consultation_bloc/common _consultation_bloc.dart';
+import '../../../blocs/hiring_requests/hiring_requests_block.dart';
 import '../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
 import '../../../blocs/sessions_bloc/sessions_bloc.dart';
@@ -14,6 +16,7 @@ import '../AttendDemand/my_demands_screen.dart';
 import '../common_consulation/list_common_consul.dart';
 import '../consultation_request/all_consultation_requests_page.dart';
 import '../consultation_request/submit_consultation_request_screen.dart';
+import '../hr_screen/hiring_request/hiring_requests_published_screen.dart';
 import '../issue_request/add_issue_request.dart';
 import '../issue_request/user_issue_requests_screen.dart';
 import '../settings/setting_screen.dart';
@@ -102,6 +105,22 @@ class UserHomeScreen extends StatelessWidget {
           );
         },
       },
+      {
+        'icon': Icons.campaign,
+        'title': tr('hiring_requests_publish'),
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => HiringRequestsBloc(),
+                child: const ListHiringRequestsPublishScreen(),
+              ),
+            ),
+          );
+        },
+      },
+
       {
         'title': 'Request Legal Consultation',
         'icon': Icons.contact_support,

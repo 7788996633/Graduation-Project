@@ -26,7 +26,7 @@ class _HrHomePageState extends State<HrHomePage> {
     return Scaffold(
       body: _pages[_pageIndex],
       bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor:AppColors.scaffold,
         color: AppColors.darkBlue,
         buttonBackgroundColor: AppColors.darkBlue,
           animationDuration: const Duration(milliseconds: 300),

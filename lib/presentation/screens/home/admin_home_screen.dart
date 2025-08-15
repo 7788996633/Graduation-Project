@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/themes.dart';
+import 'package:graduation/blocs/delegations_bloc/delegations_bloc.dart';
+import 'package:graduation/presentation/screens/admin_screens/issues_screens.dart/archived_issues_screen.dart';
+import 'package:graduation/presentation/screens/ai_chat/chat_with_ai.dart';
+import 'package:graduation/presentation/screens/delegations_screen/list_delegation_screen.dart';
 
 import '../../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
 import '../../../blocs/categories/categories_bloc.dart';
@@ -12,6 +15,7 @@ import '../../../blocs/lawyer_bloc/lawyer_bloc.dart';
 import '../../../blocs/required_document_bloc/required_document_bloc.dart';
 import '../../../blocs/session_type_bloc/session_type_bloc.dart';
 import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
+import '../../../themes.dart';
 import '../../widgets/custom_app_drawer.dart';
 import '../../widgets/custom_home_appbar.dart';
 import '../../widgets/section_card.dart';
@@ -53,6 +57,36 @@ class AdminHomeScreen extends StatelessWidget {
               builder: (_) => BlocProvider(
                 create: (_) => IssuesBloc(),
                 child: const AllIssuesScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Archived issues',
+        'icon': Icons.archive_rounded,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => IssuesBloc(),
+                child: const ArchivedIssuesScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'All Delegations',
+        'icon': Icons.switch_access_shortcut_outlined,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => DelegationBloc(),
+                child: const ListDelegationsScreen(),
               ),
             ),
           );
@@ -174,6 +208,18 @@ class AdminHomeScreen extends StatelessWidget {
                 create: (context) => CategoriesBloc(),
                 child: const ListIssueCategoriesScreen(),
               ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Chat wit AI',
+        'icon': Icons.chat,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const ChatWithAi(),
             ),
           );
         },

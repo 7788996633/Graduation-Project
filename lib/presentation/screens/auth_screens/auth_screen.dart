@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
 
 import '../../../blocs/auth_bloc/auth_bloc.dart';
 import '../../../blocs/user_bloc/user_bloc.dart';
@@ -34,6 +35,9 @@ class _AuthScreenState extends State<AuthScreen> {
 
               BlocProvider.of<UserProfileBloc>(context)
                   .add(ShowUserProfileEvent());
+
+              BlocProvider.of<LawyerProfileBloc>(context)
+                  .add(ShowLawyerProfileEvent());
             } else if (state is AuthFail) {
               Navigator.of(context).pop();
               showDialog(
@@ -76,6 +80,18 @@ class _AuthScreenState extends State<AuthScreen> {
             }
           },
         ),
+        BlocListener<LawyerProfileBloc, LawyerProfileState>(
+          listener: (context, state) {
+            if (state is LawyerProfileLoadedSuccessfully) {
+              if (myRole == 'lawyer') {
+                print('object  $myLicenesNumber');
+                myLicenesNumber = state.lawyerModel.licenseNumber;
+                setState(() {});
+              }
+            }
+          },
+          child: Container(),
+        )
       ],
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) => Scaffold(

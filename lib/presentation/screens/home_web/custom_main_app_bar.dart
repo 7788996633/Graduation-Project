@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/notification_bloc/notification_bloc.dart';
 import '../../widgets/notifications_list.dart';
 import '../settings/setting_screen.dart';
+import '../../../themes.dart'; // يحتوي على متغير isLight
 
 class CustomMainAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final bool isDarkMode;
-  final VoidCallback onToggleTheme;
   final GlobalKey languageKey;
+  final bool isDark;
+  final VoidCallback onToggleTheme;
 
   const CustomMainAppBar({
     super.key,
-    required this.isDarkMode,
-    required this.onToggleTheme,
     required this.languageKey,
+    required this.isDark,
+    required this.onToggleTheme,
   });
 
   void _showLanguageMenu(BuildContext context, GlobalKey key) async {
@@ -49,9 +49,11 @@ class CustomMainAppBar extends StatelessWidget implements PreferredSizeWidget {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
+    // لون الأيقونات والنص حسب الوضع
+    final iconAndTextColor = isDark ? Colors.white70 : Colors.black87;
+
     return Material(
       color: Colors.transparent,
       child: Container(
@@ -61,17 +63,17 @@ class CustomMainAppBar extends StatelessWidget implements PreferredSizeWidget {
           children: [
             Expanded(
               child: Text(
-                tr('home_page'), // ترجم النص بدل كتابته ثابت
-                style: const TextStyle(
+                tr('home_page'),
+                style: TextStyle(
                   fontSize: 16,
-                  color: Colors.black87,
+                  color: iconAndTextColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             IconButton(
               tooltip: tr('notifications'),
-              icon: const Icon(Icons.notifications, size: 18, color: Colors.black87),
+              icon: Icon(Icons.notifications, size: 18, color: iconAndTextColor),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -84,30 +86,29 @@ class CustomMainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 );
               },
             ),
-
             const SizedBox(width: 8),
             TextButton(
               key: languageKey,
               onPressed: () => _showLanguageMenu(context, languageKey),
               child: Text(
                 tr('change_language'),
-                style: const TextStyle(fontSize: 13, color: Colors.black87),
+                style: TextStyle(fontSize: 13, color: iconAndTextColor),
               ),
             ),
             const SizedBox(width: 8),
             IconButton(
-              tooltip: isDarkMode ? tr('dark_mode') : tr('light_mode'),
+              tooltip: isDark ? tr('dark_mode') : tr('light_mode'),
               icon: Icon(
-                isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                isDark ? Icons.dark_mode : Icons.light_mode,
                 size: 18,
-                color: Colors.black87,
+                color: iconAndTextColor,
               ),
               onPressed: onToggleTheme,
             ),
             const SizedBox(width: 8),
             IconButton(
               tooltip: tr('settings'),
-              icon: const Icon(Icons.settings, size: 18, color: Colors.black87),
+              icon: Icon(Icons.settings, size: 18, color: iconAndTextColor),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -118,7 +119,7 @@ class CustomMainAppBar extends StatelessWidget implements PreferredSizeWidget {
             const SizedBox(width: 8),
             IconButton(
               tooltip: tr('logout'),
-              icon: const Icon(Icons.logout, size: 18, color: Colors.black87),
+              icon: Icon(Icons.logout, size: 18, color: iconAndTextColor),
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(tr('logged_out'))),

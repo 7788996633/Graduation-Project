@@ -9,12 +9,18 @@ import '../../../../blocs/job_application/job_application_state.dart';
 import '../../../../data/models/interview_model.dart';
 import '../../../../themes.dart';
 import '../../../widgets/custom_appbar_add.dart';
+import 'update_interview_screen.dart';
 
-class InterviewDetailsScreen extends StatelessWidget {
+class InterviewDetailsScreen extends StatefulWidget {
   final InterviewModel interviewModel;
 
   const InterviewDetailsScreen({super.key, required this.interviewModel});
 
+  @override
+  State<InterviewDetailsScreen> createState() => _InterviewDetailsScreenState();
+}
+
+class _InterviewDetailsScreenState extends State<InterviewDetailsScreen> {
   String getFormattedDate(DateTime dateTime) {
     return DateFormat('EEEE, d MMMM yyyy').format(dateTime);
   }
@@ -23,42 +29,29 @@ class InterviewDetailsScreen extends StatelessWidget {
     return DateFormat('hh:mm a').format(dateTime);
   }
 
-  Widget _buildInfoRow({
-    required IconData icon,
-    required String label,
-    required String value,
-    required double iconSize,
-    required double fontSize,
-    String? subValue,
-  }) {
+  Widget _buildInfoRow(String label, String value, {Color? valueColor}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: AppColors.darkBlue, size: iconSize),
+          Text(
+            '$label:',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Colors.deepPurple,
+            ),
+          ),
           const SizedBox(width: 12),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                RichText(
-                  text: TextSpan(
-                    style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w500),
-                    children: [
-                      TextSpan(text: '$label: ', style: const TextStyle(color: Colors.black87)),
-                      TextSpan(text: value, style: const TextStyle(color: AppColors.darkBlue)),
-                    ],
-                  ),
-                ),
-                if (subValue != null) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    subValue,
-                    style: TextStyle(fontSize: fontSize, color: AppColors.darkBlue),
-                  ),
-                ],
-              ],
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 18,
+                color: valueColor ?? Colors.black87,
+                height: 1.3,
+              ),
             ),
           ),
         ],
@@ -67,101 +60,121 @@ class InterviewDetailsScreen extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    BlocProvider.of<JobApplicationBloc>(context).add(
+      GetJobApplicationByIdEvent(jobApplicationId: widget.interviewModel.jobAppId),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final iconSize = screenWidth * 0.06;
-    final titleFontSize = screenWidth * 0.06;
-    final contentFontSize = screenWidth * 0.045;
-    final paddingValue = screenWidth * 0.04;
+    return Scaffold(
+      backgroundColor: Colors.deepPurple.shade50,
+      appBar: CustomActionAppBar(title: 'Interview Details'),
+      body: BlocBuilder<JobApplicationBloc, JobApplicationState>(
+        builder: (context, state) {
+          if (state is JobApplicationLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is JobApplicationLoaded) {
+            final job = state.jobApplication;
 
-    return BlocProvider(
-      create: (_) => JobApplicationBloc()
-        ..add(GetJobApplicationByIdEvent(jobApplicationId: interviewModel.jobAppId)),
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF2F4F8),
-        appBar: CustomActionAppBar(title: 'Interview Details'),
-        body: Padding(
-          padding: EdgeInsets.all(paddingValue),
-          child: BlocBuilder<JobApplicationBloc, JobApplicationState>(
-            builder: (context, jobState) {
-              if (jobState is JobApplicationLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (jobState is JobApplicationFail) {
-                return Center(child: Text("Failed: ${jobState.errMsg}"));
-              } else if (jobState is JobApplicationLoaded) {
-                final job = jobState.jobApplication;
-
-                return SingleChildScrollView(
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    elevation: 12,
-                    color: Colors.white,
-                    child: Padding(
-                      padding: EdgeInsets.all(paddingValue),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Center(
-                            child: Column(
-                              children: [
-                                Icon(Icons.event_note, size: iconSize * 2, color: AppColors.darkBlue),
-                                const SizedBox(height: 10),
-                                Text(
-                                  'Interview #${interviewModel.id}',
-                                  style: TextStyle(
-                                    fontSize: titleFontSize,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                              ],
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: Card(
+                elevation: 12,
+                shadowColor: Colors.deepPurple.shade100,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Icon(
+                          Icons.event_note_outlined,
+                          size: 80,
+                          color: AppColors.darkBlue,
+                          shadows: [
+                            Shadow(
+                              color: Colors.blueAccent.shade200.withOpacity(0.6),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
                             ),
-                          ),
-                          _buildInfoRow(
-                            icon: Icons.calendar_today,
-                            label: 'Date',
-                            value: getFormattedDate(interviewModel.date),
-                            subValue: getFormattedTime(interviewModel.date),
-                            iconSize: iconSize,
-                            fontSize: contentFontSize,
-                          ),
-                          const Divider(),
-                          _buildInfoRow(
-                            icon: Icons.assignment_turned_in,
-                            label: 'Result',
-                            value: interviewModel.result,
-                            iconSize: iconSize,
-                            fontSize: contentFontSize,
-                          ),
-                          const Divider(),
-                          _buildInfoRow(
-                            icon: Icons.notes,
-                            label: 'Note',
-                            value: interviewModel.note ?? 'Nothing',
-                            iconSize: iconSize,
-                            fontSize: contentFontSize,
-                          ),
-                          const Divider(),
-                          _buildInfoRow(
-                            icon: Icons.work_outline,
-                            label: 'Job Title',
-                            value: job.jobTitle,
-                            iconSize: iconSize,
-                            fontSize: contentFontSize,
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
+                      const SizedBox(height: 24),
+                      _buildInfoRow('Interview ID', widget.interviewModel.id.toString()),
+                      Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
+                      _buildInfoRow(
+                        'Date',
+                        '${getFormattedDate(widget.interviewModel.date)}\n${getFormattedTime(widget.interviewModel.date)}',
+                        valueColor: AppColors.darkBlue,
+                      ),
+                      Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
+                      _buildInfoRow('Result', widget.interviewModel.result),
+                      Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
+                      _buildInfoRow('Note', widget.interviewModel.note ?? 'Nothing'),
+                      Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
+                      _buildInfoRow('Job Title', job.jobTitle),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          } else if (state is JobApplicationFail) {
+            return Center(child: Text('Error: ${state.errMsg}'));
+          } else {
+            return const SizedBox.shrink();
+          }
+        },
+      ),
+      floatingActionButton: BlocBuilder<JobApplicationBloc, JobApplicationState>(
+        builder: (context, state) {
+          if (state is JobApplicationLoaded) {
+            return FloatingActionButton.extended(
+              onPressed: () async {
+                final result = await Navigator.push<InterviewModel>(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider(
+                      create: (_) => JobApplicationBloc(),
+                      child: UpdateInterviewScreen(interview: widget.interviewModel),
                     ),
                   ),
                 );
-              }
 
-              return const SizedBox();
-            },
-          ),
-        ),
+                if (result != null) {
+                  BlocProvider.of<JobApplicationBloc>(context).add(
+                    GetJobApplicationByIdEvent(jobApplicationId: widget.interviewModel.jobAppId),
+                  );
+                }
+              },
+              icon: const Icon(Icons.edit),
+              label: const Text(
+                'Edit',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              backgroundColor: AppColors.darkBlue,
+              elevation: 6,
+              hoverElevation: 12,
+              extendedPadding: const EdgeInsets.symmetric(horizontal: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+            );
+          } else {
+            return const SizedBox.shrink();
+          }
+        },
       ),
     );
   }

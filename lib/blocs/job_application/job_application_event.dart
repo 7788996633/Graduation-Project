@@ -29,11 +29,11 @@ class GetMyJobApplicationsEvent extends JobApplicationEvent {}
 
 class UpdateJobApplicationEvent extends JobApplicationEvent {
   final int jobApplicationId;
-  final String date;
+  final String status;
 
   UpdateJobApplicationEvent({
     required this.jobApplicationId,
-    required this.date,
+    required this.status,
   });
 }
 

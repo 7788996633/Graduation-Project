@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../blocs/interview_bloc/interview_bloc.dart';
 import '../../../../blocs/job_application/job_application_bloc.dart';
-
 import '../../../../data/models/job_application_model.dart';
 import '../../../../themes.dart';
 import '../../../widgets/custom_appbar_add.dart';
 import '../interview/add_interview_screen.dart';
 import '../interview/list_interview_screen.dart';
 import 'update_job_application.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class JobApplicationDetailsScreen extends StatefulWidget {
   final JobApplicationModel jobApplication;
@@ -110,7 +109,7 @@ class _JobApplicationDetailsScreenState extends State<JobApplicationDetailsScree
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.lightBlue.shade50,
-      appBar: CustomActionAppBar(title: 'Job Application Details'),
+      appBar: const CustomActionAppBar(title: 'Job Application Details'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Card(
@@ -158,6 +157,11 @@ class _JobApplicationDetailsScreenState extends State<JobApplicationDetailsScree
                   label: 'CV Link',
                   value: jobApplication.cvLink,
                   isLink: jobApplication.cvLink.isNotEmpty,
+                ),
+                _buildInfoRow(
+                  icon: Icons.insights_outlined,
+                  label: 'Status',
+                  value: jobApplication.status,
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton.icon(
@@ -212,7 +216,7 @@ class _JobApplicationDetailsScreenState extends State<JobApplicationDetailsScree
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          final result = await Navigator.push<JobApplicationModel>(
+          final updatedJob = await Navigator.push<JobApplicationModel>(
             context,
             MaterialPageRoute(
               builder: (_) => BlocProvider(
@@ -221,12 +225,16 @@ class _JobApplicationDetailsScreenState extends State<JobApplicationDetailsScree
               ),
             ),
           );
-          if (result != null) {
-            refreshData(result);
+
+          if (updatedJob != null) {
+            refreshData(updatedJob);
           }
         },
         icon: const Icon(Icons.edit, color: Colors.white),
-        label: const Text('Edit', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        label: const Text(
+          'Edit',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
         backgroundColor: AppColors.darkBlue,
       ),
     );

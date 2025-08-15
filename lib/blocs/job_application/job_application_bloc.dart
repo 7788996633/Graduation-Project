@@ -48,7 +48,7 @@ class JobApplicationBloc extends Bloc<JobApplicationEvent, JobApplicationState> 
         emit(JobApplicationLoading());
         try {
           String result = await JobApplicationServices()
-              .updateJobApplication(event.jobApplicationId, event.date);
+              .updateJobApplication(event.jobApplicationId, event.status);
           emit(JobApplicationSuccess(successMsg: result));
         } catch (e) {
           emit(JobApplicationFail(errMsg: e.toString()));

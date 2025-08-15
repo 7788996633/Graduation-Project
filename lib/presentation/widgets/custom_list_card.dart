@@ -56,8 +56,8 @@ class CustomListCard extends StatelessWidget {
                         ),
                       );
                     },
-                    child:
-                    const Text("Delete", style: TextStyle(color: Colors.red)),
+                    child: const Text("Delete",
+                        style: TextStyle(color: Colors.red)),
                   ),
                 ],
               ),

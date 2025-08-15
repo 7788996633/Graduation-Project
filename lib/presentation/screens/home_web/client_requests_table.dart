@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ClientRequestsTable extends StatelessWidget {
-  const ClientRequestsTable({super.key});
+  final Color cardColor;
+
+  const ClientRequestsTable({super.key, required this.cardColor});
 
   @override
   Widget build(BuildContext context) {
@@ -26,64 +28,53 @@ class ClientRequestsTable extends StatelessWidget {
       },
     ];
 
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      child: Padding(
-        padding: const EdgeInsets.all(12), // تقليل الحشو
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Client Requests',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // تصغير الخط
+    // نصوص بلون عكس لون الخلفية لقراءة أفضل
+    final textColor = cardColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Client Requests',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: textColor,
             ),
-            const SizedBox(height: 12), // تقليل الفراغ
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columnSpacing: 12, // تقليل المسافة بين الأعمدة
-                 headingRowHeight: 36, // تقليل ارتفاع رأس الجدول
-                columns: const [
-                  DataColumn(
-                    label: Text(
-                      'Client',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      'Request Type',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      'Date',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      'Status',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ),
-                ],
-                rows: requests.map((request) {
-                  return DataRow(
-                    cells: [
-                      DataCell(Text(request['client']!, style: const TextStyle(fontSize: 13))),
-                      DataCell(Text(request['type']!, style: const TextStyle(fontSize: 13))),
-                      DataCell(Text(request['date']!, style: const TextStyle(fontSize: 13))),
-                      DataCell(_buildStatusChip(request['status']!)),
-                    ],
-                  );
-                }).toList(),
-              ),
+          ),
+          const SizedBox(height: 12),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columnSpacing: 12,
+              headingRowHeight: 36,
+              headingTextStyle: TextStyle(color: textColor, fontSize: 14, fontWeight: FontWeight.bold),
+              dataTextStyle: TextStyle(color: textColor, fontSize: 13),
+              columns: const [
+                DataColumn(label: Text('Client')),
+                DataColumn(label: Text('Request Type')),
+                DataColumn(label: Text('Date')),
+                DataColumn(label: Text('Status')),
+              ],
+              rows: requests.map((request) {
+                return DataRow(
+                  cells: [
+                    DataCell(Text(request['client']!)),
+                    DataCell(Text(request['type']!)),
+                    DataCell(Text(request['date']!)),
+                    DataCell(_buildStatusChip(request['status']!)),
+                  ],
+                );
+              }).toList(),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -107,11 +98,11 @@ class ClientRequestsTable extends StatelessWidget {
     return Chip(
       label: Text(
         status,
-        style: const TextStyle(color: Colors.white, fontSize: 12), // تصغير الخط داخل الشيب
+        style: const TextStyle(color: Colors.white, fontSize: 12),
       ),
       backgroundColor: color,
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 0), // تقليل padding داخل الشيب
-      visualDensity: VisualDensity.compact, // لجعل الشيب مضغوط
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
+      visualDensity: VisualDensity.compact,
     );
   }
 }

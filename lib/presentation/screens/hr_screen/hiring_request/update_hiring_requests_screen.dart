@@ -10,35 +10,50 @@ import '../../../../data/models/hiring_request_model.dart';
 class UpdateHiringRequestStatusScreen extends StatefulWidget {
   final HiringRequestModel hiringRequest;
 
-  const UpdateHiringRequestStatusScreen({super.key, required this.hiringRequest});
+  const UpdateHiringRequestStatusScreen({
+    Key? key,
+    required this.hiringRequest,
+  }) : super(key: key);
 
   @override
-  State<UpdateHiringRequestStatusScreen> createState() => _UpdateHiringRequestStatusScreenState();
+  State<UpdateHiringRequestStatusScreen> createState() =>
+      _UpdateHiringRequestStatusScreenState();
 }
 
-class _UpdateHiringRequestStatusScreenState extends State<UpdateHiringRequestStatusScreen> {
+class _UpdateHiringRequestStatusScreenState
+    extends State<UpdateHiringRequestStatusScreen> {
   String? selectedStatus;
 
   final List<String> statusOptions = [
-    'Pending',
-    'Accepted',
-    'Rejected',
-    'Under Review',
+    'archived',
+    'canceled',
+    'closed',
+    'published',
+    ' draft',
   ];
+
+  late HiringRequestsBloc _bloc;
 
   @override
   void initState() {
     super.initState();
     selectedStatus = widget.hiringRequest.status;
+    _bloc = HiringRequestsBloc(); // Create the bloc instance
+  }
+
+  @override
+  void dispose() {
+    _bloc.close(); // Close the bloc when screen is disposed
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => HiringRequestsBloc(),
+    return BlocProvider<HiringRequestsBloc>(
+      create: (_) => _bloc,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Update Hiring Status'),
+          title: const Text('Update Hiring Status'),
           backgroundColor: Colors.blueGrey,
         ),
         body: BlocConsumer<HiringRequestsBloc, HiringRequestsState>(
@@ -47,9 +62,7 @@ class _UpdateHiringRequestStatusScreenState extends State<UpdateHiringRequestSta
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('✅ ${state.successmsg}')),
               );
-              Navigator.pop(
-                context,
-              );
+              Navigator.pop(context); // Pop the screen after success
             } else if (state is HiringRequestsFail) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('❌ ${state.errmsg}')),
@@ -59,54 +72,95 @@ class _UpdateHiringRequestStatusScreenState extends State<UpdateHiringRequestSta
           builder: (context, state) {
             return Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Job Title: ${widget.hiringRequest.jopTitle}',
-                      style: TextStyle(fontSize: 16)),
-                  SizedBox(height: 10),
-                  Text('Type: ${widget.hiringRequest.type}',
-                      style: TextStyle(fontSize: 14, color: Colors.grey[700])),
-                  SizedBox(height: 30),
-                  DropdownButtonFormField<String>(
-                    value: selectedStatus,
-                    items: statusOptions.map((String status) {
-                      return DropdownMenuItem<String>(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      margin: const EdgeInsets.symmetric(vertical: 20),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 20, horizontal: 16),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Job Title: ${widget.hiringRequest.jopTitle}',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'Type: ${widget.hiringRequest.type}',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey[700],
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Select New Status',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ...statusOptions.map((status) {
+                      return RadioListTile<String>(
+                        title: Text(status),
                         value: status,
-                        child: Text(status),
+                        groupValue: selectedStatus,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedStatus = value;
+                          });
+                        },
                       );
                     }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedStatus = value;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Select New Status',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  state is HiringRequestsLoading
-                      ? Center(child: CircularProgressIndicator())
-                      : ElevatedButton(
-                    onPressed: () {
-                      if (selectedStatus != null) {
-                        BlocProvider.of<HiringRequestsBloc>(context).add(
+                    const SizedBox(height: 30),
+                    state is HiringRequestsLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : ElevatedButton(
+                      onPressed: selectedStatus != null
+                          ? () {
+                        _bloc.add(
                           UpdateHiringRequest(
-                            hiringRequestId: widget.hiringRequest.id,
+                            hiringRequestId:
+                            widget.hiringRequest.id,
                             status: selectedStatus!,
                           ),
                         );
                       }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueGrey,
-                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueGrey,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 40,
+                          vertical: 14,
+                        ),
+                      ),
+                      child: const Text(
+                        'Update Status',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
-                    child: Text('Update Status', style: TextStyle(color: Colors.white)),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },
