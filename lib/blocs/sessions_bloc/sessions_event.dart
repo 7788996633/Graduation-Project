@@ -27,6 +27,14 @@ class UpdateSessionEvent extends SessionsEvent {
   });
 }
 
+class MarkSessionAsAttendanceEvent extends SessionsEvent {
+  final int sessionId;
+
+  MarkSessionAsAttendanceEvent({
+    required this.sessionId,
+  });
+}
+
 class GetAllSessionsEvent extends SessionsEvent {}
 
 class GetSessionsByIsssueIdEvent extends SessionsEvent {

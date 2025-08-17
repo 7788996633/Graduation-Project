@@ -21,7 +21,7 @@ import '../../session/list_session_screen.dart';
 class IssueScreen extends StatefulWidget {
   final IssuesModel issuesModel;
   const IssueScreen({super.key, required this.issuesModel});
-
+  
   @override
   State<IssueScreen> createState() => _IssueScreenState();
 }

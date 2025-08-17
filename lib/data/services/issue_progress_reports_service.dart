@@ -102,11 +102,11 @@ class IssueProgressReportServices {
     }
   }
 
-  Future<String> addReport(String report) async {
+  Future<String> addReport(int sessionId, String report) async {
     try {
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('${myUrl}issue-progress-reports/store/2'),
+        Uri.parse('${myUrl}issue-progress-reports/store/$sessionId'),
       );
 
       request.fields.addAll({

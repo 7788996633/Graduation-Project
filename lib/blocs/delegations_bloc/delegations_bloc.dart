@@ -29,9 +29,8 @@ class DelegationBloc extends Bloc<DelegationEvent, DelegationState> {
         emit(DelegationLoading());
         try {
           String result = await DelegationServices().addApproveDelegation(
-            sessionId: event.sessionId,
-            originalLawyerId: event.originalLawyerId,
-            delegateLawyerId: event.delegateLawyerId,
+            delegationId: event.delegationId,
+             delegateLawyerId: event.delegateLawyerId,
             adminNote: event.adminNote,
           );
           emit(DelegationSuccess(successMsg: result));

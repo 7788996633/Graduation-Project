@@ -171,6 +171,27 @@ class SessionsBloc extends Bloc<SessionsEvent, SessionsState> {
               ),
             );
           }
+        } else if (event is MarkSessionAsAttendanceEvent) {                                                  print('attendance');
+
+          emit(
+            SessionsLoading(),
+          );
+          try {
+            String result = await SessionServices().markSessionAsAttendance(
+              event.sessionId,
+            );
+            emit(
+              SessionsSuccess(
+                successmsg: result,
+              ),
+            );
+          } catch (e) {
+            emit(
+              SessionsFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
         }
       },
     );

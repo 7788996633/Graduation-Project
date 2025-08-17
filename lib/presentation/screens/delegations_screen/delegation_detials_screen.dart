@@ -25,111 +25,24 @@ class _DelegationDetailsScreenState extends State<DelegationDetailsScreen> {
   late int selectedLawyerId;
 
   bool isAddingNote = false;
-
+  TextEditingController noteController = TextEditingController();
   @override
   void initState() {
+    super.initState();
+    selectedLawyerId = widget.delegation.originalLawyerId;
+
     BlocProvider.of<LawyerInIssuesBloc>(context).add(
       GetAllLawyersInIssuesEvent(
         issueId: widget.delegation.issueId,
       ),
     );
-    super.initState();
   }
 
+  late int delegatedLawyerId;
   List<LawyerModel> lawyers = [];
+  bool isSelectingLawyer = false;
   @override
   Widget build(BuildContext context) {
-    void showLawyersSheet() {
-      showModalBottomSheet(
-        context: context,
-        builder: (context) => Container(
-          padding: const EdgeInsets.all(16),
-          height: MediaQuery.sizeOf(context).height * 0.7,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text("Select Lawyer",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              BlocBuilder<LawyerInIssuesBloc, LawyerInIssuesState>(
-                builder: (context, state) {
-                  if (state is LawyerInIssuesListLoadedSuccessfully) {
-                    if (lawyers.isEmpty) {
-                      return const Center(
-                        child: Text("No lawyers found."),
-                      );
-                    }
-                    return ListView.separated(
-                      itemCount: lawyers.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
-                      itemBuilder: (context, index) {
-                        return LawyerRadioItem(
-                          lawyerModel: lawyers[index],
-                          onChanged: (value) {
-                            setState(() {
-                              selectedLawyerId = value!;
-                            });
-                            // widget.onLawyerSelected?.call(value);
-                          },
-                          groupValue: selectedLawyerId,
-                        );
-                      },
-                    );
-                  } else {
-                    return Container();
-                  }
-                },
-              )
-              // BlocProvider(
-              //   create: (context) => LawyerInIssuesBloc(),
-              //   child: SelectLawyerForSessionList(
-              //     onLawyerSelected: (id) {
-              //       setState(() => selectedLawyerId = id!);
-              //     },
-              //   ),
-              // ),
-              // const SizedBox(height: 16),
-              // BlocConsumer<SessionsBloc, SessionsState>(
-              //   listener: (context, state) {
-              //     if (state is SessionsSuccess) {
-              //       ScaffoldMessenger.of(context).showSnackBar(
-              //         SnackBar(
-              //           content: Text(state.successmsg),
-              //           backgroundColor: Colors.green,
-              //         ),
-              //       );
-              //       Navigator.pop(context);
-              //     } else if (state is SessionsFail) {
-              //       ScaffoldMessenger.of(context).showSnackBar(
-              //         SnackBar(
-              //           content: Text(state.errmsg),
-              //           backgroundColor: Colors.red,
-              //         ),
-              //       );
-              //     }
-              //   },
-              //   builder: (context, state) {
-              //     return ElevatedButton(
-              //       onPressed: () {
-              //         if (selectedLawyerId == null) {
-              //           ScaffoldMessenger.of(context).showSnackBar(
-              //             const SnackBar(
-              //               content: Text("Please select a lawyer."),
-              //             ),
-              //           );
-              //           return;
-              //         }
-              //       },
-              //       child: const Text("Create"),
-              //     );
-              //   },
-              // ),
-            ],
-          ),
-        ),
-      );
-    }
-
     return Scaffold(
       backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: CustomActionAppBar(
@@ -149,10 +62,10 @@ class _DelegationDetailsScreenState extends State<DelegationDetailsScreen> {
                 },
                 child: _infoText(
                     'Admin Note', widget.delegation.adminNote ?? '-')),
-            if (isAddingNote) ...[
+            if (isAddingNote ) ...[
               CustomTextFeild(
                 text: "Add outcome...",
-                controller: TextEditingController(),
+                controller: noteController,
                 color: Colors.white,
               ),
               SizedBox(
@@ -190,20 +103,107 @@ class _DelegationDetailsScreenState extends State<DelegationDetailsScreen> {
                 widget.delegation.delegateLawyerId.toString()),
             _infoText(
                 'Delegation File', widget.delegation.delegationFile ?? '-'),
-            Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
+            Container(
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: isSelectingLawyer
+                      ? getCurrentTheme()['Border']!
+                      : Colors.transparent,
                 ),
-                onPressed: showLawyersSheet,
-                child: Text(
-                  "Select new lawyer",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+              ),
+              child: Column(
+                children: [
+                  Center(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                      ),
+                      onPressed: () {
+                        isSelectingLawyer = !isSelectingLawyer;
+                        setState(() {});
+                      },
+                      child: Text(
+                        "Select new lawyer",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  if (isSelectingLawyer &&widget.delegation.status=='pending') ...[
+                    SizedBox(
+                      height: 10,
+                    ),
+                    BlocBuilder<LawyerInIssuesBloc, LawyerInIssuesState>(
+                      builder: (context, state) {
+                        if (state is LawyerInIssuesListLoadedSuccessfully) {
+                          lawyers = state.lawyerInissues;
+                          if (lawyers.isEmpty) {
+                            return const Center(
+                              child: Text("No lawyers found."),
+                            );
+                          } else {
+                            return ListView.separated(
+                              shrinkWrap: true,
+                              itemCount: lawyers.length,
+                              separatorBuilder: (_, i) => SizedBox(
+                                height: 12,
+                              ),
+                              itemBuilder: (context, index) {
+                                return LawyerRadioItem(
+                                  lawyerModel: lawyers[index],
+                                  onChanged: (value) {
+                                    setState(
+                                      () {
+                                        selectedLawyerId = value!;
+                                      },
+                                    );
+                                    // widget.onLawyerSelected?.call(value);
+                                  },
+                                  groupValue: selectedLawyerId,
+                                );
+                              },
+                            );
+                          }
+                        } else if (state is LawyerInIssuesFail) {
+                          return Text(
+                            state.errmsg,
+                            style: TextStyle(
+                              color: getCurrentTheme()['NormalText'],
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                            ),
+                          );
+                        } else {
+                          return CircularProgressIndicator();
+                        }
+                      },
+                    ),
+                    Center(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                        ),
+                        onPressed: () {
+                          delegatedLawyerId = selectedLawyerId;
+                          setState(() {});
+                          print("delegatedLawyerId $delegatedLawyerId");
+                        },
+                        child: Text(
+                          "Confirm",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
             SizedBox(
@@ -238,10 +238,9 @@ class _DelegationDetailsScreenState extends State<DelegationDetailsScreen> {
                       onPressed: () {
                         BlocProvider.of<DelegationBloc>(context).add(
                           AddApproveDelegationEvent(
-                            adminNote: '',
-                            delegateLawyerId: 0,
-                            originalLawyerId: 0,
-                            sessionId: widget.delegation.issueId,
+                            delegationId: widget.delegation.id,
+                            adminNote: noteController.text,
+                            delegateLawyerId: delegatedLawyerId,
                           ),
                         );
                       },
@@ -265,7 +264,7 @@ class _DelegationDetailsScreenState extends State<DelegationDetailsScreen> {
                         BlocProvider.of<DelegationBloc>(context).add(
                           AddRejectDelegationEvent(
                             delegationId: widget.delegation.id,
-                            adminNote: '',
+                            adminNote: noteController.text,
                             originalLawyerId:
                                 widget.delegation.originalLawyerId,
                             sessionId: widget.delegation.issueId,

@@ -28,33 +28,29 @@ class _ListIssueProgressReportsScreenState
     bloc.add(GetAllIssueProgressReportsEvent());
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
         title: 'Issue_Progress_Reports',
-        actionIcon: Icons.add_circle_rounded,
-        tooltip: 'Add New Issue Progress Report',
-        onActionPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider.value(
-                value: bloc,
-                child: const AddIssueProgressReportScreen(),
-              ),
-            ),
-          );
-        },
+        // actionIcon: Icons.add_circle_rounded,
+        // tooltip: 'Add New Issue Progress Report',
+        // onActionPressed: () {
+        //   Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //       builder: (_) => BlocProvider.value(
+        //         value: bloc,
+        //         child: const AddIssueProgressReportScreen(),
+        //       ),
+        //     ),
+        //   );
+        // },
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child:
-            IssueProgressReportList(bloc: bloc),
-
+        child: IssueProgressReportList(bloc: bloc),
       ),
       floatingActionButton: RefreshButton(
         onPressed: () {

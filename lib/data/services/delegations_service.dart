@@ -133,19 +133,16 @@ class DelegationServices {
   }
 
   Future<String> addApproveDelegation({
-    required int sessionId,
-    required int originalLawyerId,
+    required int delegationId,
     required int delegateLawyerId,
     required String adminNote,
   }) async {
     try {
-      final url = Uri.parse('${myUrl}delegations');
+      final url = Uri.parse('${myUrl}delegations/$delegationId/approve');
       var request = http.MultipartRequest('POST', url);
       request.headers.addAll(baseHeaders);
 
       request.fields.addAll({
-        'session_id': sessionId.toString(),
-        'original_lawyer_id': originalLawyerId.toString(),
         'delegate_lawyer_id': delegateLawyerId.toString(),
         'admin_note': adminNote,
       });

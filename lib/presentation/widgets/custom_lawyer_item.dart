@@ -74,7 +74,7 @@ class CustomLawyerItem extends StatelessWidget {
             lawyer.name,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 18,
+              fontSize: 16,
               color: getCurrentTheme()['BoldText'],
             ),
           ),

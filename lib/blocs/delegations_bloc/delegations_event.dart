@@ -16,14 +16,12 @@ class AddDelegationEvent extends DelegationEvent {
 }
 
 class AddApproveDelegationEvent extends DelegationEvent {
-  final int sessionId;
-  final int originalLawyerId;
+  final int delegationId;
   final int delegateLawyerId;
   final String adminNote;
 
   AddApproveDelegationEvent({
-    required this.sessionId,
-    required this.originalLawyerId,
+    required this.delegationId,
     required this.delegateLawyerId,
     required this.adminNote,
   });

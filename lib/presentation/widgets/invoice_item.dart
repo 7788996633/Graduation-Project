@@ -21,13 +21,14 @@ class InvoiceItem extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
           side: BorderSide(
-            color: Colors.grey.shade400, // border color
+            color: Colors.grey.shade400,
             width: 2,
           ),
         ),
         shadowColor: AppColors.darkBlue.withOpacity(0.4),
         child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           onTap: () {
             Navigator.push(
               context,

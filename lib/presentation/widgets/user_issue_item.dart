@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../blocs/issue_bloc/issues_bloc.dart';
 import '../../blocs/user_profile_bloc/user_profile_bloc.dart';
-import '../../blocs/archive_bloc/archive_bloc.dart'; // استدعاء البلوك
-import '../../blocs/archive_bloc/archive_event.dart';
 
 import '../../constant.dart';
 import '../../data/models/issues_model.dart';
@@ -42,8 +40,12 @@ class _UserIssueItemState extends State<UserIssueItem>
         double.parse(widget.issuesModel.totalCost));
     issuePriority = stringToPriority(widget.issuesModel.priority);
     issueStatus = stringToStatus(widget.issuesModel.status);
-    animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    animationController = AnimationController(
+      vsync: this,
+      duration: Duration(
+        milliseconds: 1000,
+      ),
+    );
     animation = Tween<double>(begin: 0, end: 1).animate(animationController);
     animationController.forward();
     isArchived = (statusToString(issueStatus).toLowerCase() == 'archived');
