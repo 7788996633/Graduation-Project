@@ -1,0 +1,65 @@
+name: untitled11
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  flutter_bloc: ^9.1.0
+  bloc: ^9.0.0
+  meta: ^1.15.0
+  http: ^1.3.0
+  shared_preferences: ^2.5.3
+  syncfusion_flutter_pdfviewer: ^29.1.38
+  file_picker: ^10.1.9
+  path: ^1.9.0
+  lottie: ^3.2.0
+  image_picker: ^1.1.2
+  bloc_test: ^10.0.0
+  mocktail: ^1.0.4
+  curved_navigation_bar: ^1.0.6
+  salomon_bottom_bar: ^3.3.2
+  flutter_pdfview: ^1.4.0+1
+  flutter_svg:
+  camera:
+  path_provider:
+  video_player:
+  socket_io_client:
+  flutter_local_notifications: ^19.2.0
+  intl: ^0.20.0
+  open_filex: ^4.7.0
+  lucide_icons: ^0.257.0
+  easy_localization: ^3.0.5
+  fl_chart: ^0.66.2
+  http_parser: ^4.0.2
+  url_launcher: ^6.3.1
+  firebase_messaging: ^16.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.1   # ✅ أضفنا الباكيج الخاصة بالأيقونة
+
+flutter:
+
+  uses-material-design: true
+  assets:
+    - assets/translations/ar.json
+    - assets/translations/en.json
+    - assets/images/grad.jpg
+    - assets/images/person.png
+    - assets/images/download.jpeg
+
+# ✅ إعدادات الأيقونة
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/grad.jpg"
