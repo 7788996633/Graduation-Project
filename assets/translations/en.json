@@ -80,5 +80,7 @@
   "unarchive": "UnArchive",
   "edit": "Edit",
   "you": "You",
-  "payment_status": "Payment status"
+  "payment_status": "Payment status",
+  "error": "Error",
+  "back": "Back"
 }

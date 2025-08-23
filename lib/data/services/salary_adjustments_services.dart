@@ -10,36 +10,30 @@ class SalaryAdjustmentServices {
     'Authorization': 'Bearer $myToken',
   };
 
+
   Future<List> getSalaryAdjustments(int userId) async {
-    try {
-      var url = Uri.parse('${myUrl}salary-adjustments/$userId');
-      http.Response response;
+    var url = Uri.parse('${myUrl}salary-adjustments/$userId');
+    http.Response response;
 
-      if (kIsWeb) {
-        var request = http.Request('GET', url);
-        request.headers.addAll(baseHeaders);
-        var streamedResponse = await request.send();
-        response = await http.Response.fromStream(streamedResponse);
-      } else {
-        var request = http.MultipartRequest('GET', url);
-        request.headers.addAll(baseHeaders);
-        var streamedResponse = await request.send();
-        response = await http.Response.fromStream(streamedResponse);
-      }
+    if (kIsWeb) {
+      var request = http.Request('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    } else {
+      response = await http.get(url, headers: baseHeaders);
+    }
 
-      var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
 
-      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-        return jsonResponse['data'];
-      } else {
-        return [];
-      }
-    } catch (e) {
-      print('Error in getSalaryAdjustments: $e');
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return jsonResponse['data'];
+    } else {
       return [];
     }
   }
+
 
   Future<SalaryAdjustment> getSalaryAdjustmentById(int id) async {
     try {
@@ -76,7 +70,7 @@ class SalaryAdjustmentServices {
     try {
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('${myUrl}salary-adjustments'),
+        Uri.parse('${myUrl}salary-adjustments/$userId'),
       );
 
       request.fields.addAll({

@@ -59,19 +59,19 @@ class _ListLegalNewsScreenState extends State<ListLegalNewsScreen> {
             );
           }
         },
-        secondaryIcon: Icons.bookmark,
-        secondaryTooltip: 'My Saved News',
-        onSecondaryPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (_) => LegalNewsBloc(),
-                child: const MyNewsListScreen(),
-              ),
-            ),
-          );
-        },
+        // secondaryIcon: Icons.bookmark,
+        // secondaryTooltip: 'My Saved News',
+        // onSecondaryPressed: () {
+        //   Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //       builder: (_) => BlocProvider(
+        //         create: (_) => LegalNewsBloc(),
+        //         child: const MyNewsListScreen(),
+        //       ),
+        //     ),
+        //   );
+        // },
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -94,7 +94,7 @@ class _ListLegalNewsScreenState extends State<ListLegalNewsScreen> {
                         padding: const EdgeInsets.all(12),
                         itemCount: newsList.length,
                         itemBuilder: (context, index) {
-                          return LegalNewsItem(legalNews: newsList[index]);
+                          return LegalNewsItem(legalNews: newsList[index],  );
                         },
                       );
                     }

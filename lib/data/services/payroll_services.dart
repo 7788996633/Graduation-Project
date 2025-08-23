@@ -5,93 +5,69 @@ import '../../constant.dart';
 import '../models/payroll_model.dart';
 
 class PayrollServices {
-  final Map<String, String> baseHeaders = {
+  final Map<String, String> headers = {
     'Accept': 'application/json',
     'Authorization': 'Bearer $myToken',
   };
 
-  Future<List> getPayrolls() async {
-    try {
-      var url = Uri.parse('${myUrl}payrolls');
-      http.Response response;
+  Future<PayrollModel> addPayroll(int userId) async {
+    var url = Uri.parse('${myUrl}payrolls/$userId');
+    http.Response response;
 
-      if (kIsWeb) {
-        var request = http.Request('GET', url);
-        request.headers.addAll(baseHeaders);
-        var streamedResponse = await request.send();
-        response = await http.Response.fromStream(streamedResponse);
-      } else {
-        var request = http.MultipartRequest('GET', url);
-        request.headers.addAll(baseHeaders);
-        var streamedResponse = await request.send();
-        response = await http.Response.fromStream(streamedResponse);
-      }
+    if (kIsWeb) {
+      var request = http.Request('POST', url);
+      request.headers.addAll(headers);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    } else {
+      response = await http.post(url, headers:headers);
+    }
 
-      var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
 
-      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-        return jsonResponse['data'];
-      } else {
-        return [];
-      }
-    } catch (e) {
-      print('Error in getPayrolls: $e');
-      return [];
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return PayrollModel.fromJson(jsonResponse['data']);
+    } else {
+      throw Exception('failed: ${jsonResponse['message']}');
     }
   }
 
   Future<PayrollModel> getPayrollById(int payrollId) async {
-    try {
-      var url = Uri.parse('${myUrl}payrolls/$payrollId');
-      http.Response response;
+    final response = await http.get(
+      Uri.parse('${myUrl}payrolls/$payrollId'),
+      headers: headers,
+    );
 
-      if (kIsWeb) {
-        var request = http.Request('GET', url);
-        request.headers.addAll(baseHeaders);
-        var streamedResponse = await request.send();
-        response = await http.Response.fromStream(streamedResponse);
-      } else {
-        var request = http.MultipartRequest('GET', url);
-        request.headers.addAll(baseHeaders);
-        var streamedResponse = await request.send();
-        response = await http.Response.fromStream(streamedResponse);
-      }
-
-      var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
-
-      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-        return PayrollModel.fromJson(jsonResponse['data']);
-      } else {
-        throw Exception('failed: ${jsonResponse['message']}');
-      }
-    } catch (e) {
-      throw Exception('Error in getPayrollById: $e');
+    final jsonResponse = json.decode(response.body);
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return PayrollModel.fromJson(jsonResponse['data']);
+    } else {
+      throw Exception('فشل في تحميل الراتب');
     }
   }
 
-  Future<String> addPayroll( int userId) async {
-    try {
-      var request = http.MultipartRequest(
-        'POST',
-        Uri.parse('${myUrl}payrolls/$userId'),
-      );
 
-      request.headers.addAll(baseHeaders);
+  Future<List> getPayrolls() async {
+    var url = Uri.parse('${myUrl}payrolls');
+    http.Response response;
 
+    if (kIsWeb) {
+      var request = http.Request('GET', url);
+      request.headers.addAll(headers);
       var streamedResponse = await request.send();
-      var response = await http.Response.fromStream(streamedResponse);
-      var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
+      response = await http.Response.fromStream(streamedResponse);
+    } else {
+      response = await http.get(url, headers: headers);
+    }
 
-      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-        return jsonResponse['message'];
-      } else {
-        return 'failed: ${jsonResponse['message']}';
-      }
-    } catch (e) {
-      return 'Error in addPayroll: $e';
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return jsonResponse['data'];
+    } else {
+      return [];
     }
   }
 

@@ -82,5 +82,7 @@
   "edit": "تعديل",
   "confirm": "تأكيد",
   "you": "أنت",
-  "payment_status": "حالات الدفع"
+  "payment_status": "حالات الدفع",
+  "error": "خطأ",
+  "back": "رجوع"
 }

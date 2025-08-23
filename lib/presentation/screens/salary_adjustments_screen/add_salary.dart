@@ -18,7 +18,7 @@ class AddSalaryAdjustmentsScreen extends StatefulWidget {
 
 class _AddSalaryAdjustmentsScreenState
     extends State<AddSalaryAdjustmentsScreen> {
-  final TextEditingController _typeController = TextEditingController();
+  String _selectedType = 'deduction'; // القيمة الافتراضية
   final TextEditingController _reasonController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
@@ -33,11 +33,12 @@ class _AddSalaryAdjustmentsScreenState
         child: BlocConsumer<SalaryAdjustmentsBloc, SalaryAdjustmentsState>(
           listener: (context, state) {
             if (state is SalaryAdjustmentsSuccess) {
-
-              _typeController.clear();
               _reasonController.clear();
               _amountController.clear();
               _dateController.clear();
+              setState(() {
+                _selectedType = 'deduction'; // إعادة النوع الافتراضي
+              });
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -82,14 +83,33 @@ class _AddSalaryAdjustmentsScreenState
                     ),
                     const SizedBox(height: 25),
 
-                    /// userId
-
-                    const SizedBox(height: 20),
-
-                    /// type (Bonus / Deduction)
-                    CustomTextFieldAdd(
-                      controller: _typeController,
-                      label: 'Type (Bonus / Deduction)',
+                    /// type using Radio buttons
+                    const Text(
+                      "Type",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    RadioListTile<String>(
+                      title: const Text('deduction'),
+                      value: 'deduction',
+                      groupValue: _selectedType,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedType = value!;
+                        });
+                      },
+                    ),
+                    RadioListTile<String>(
+                      title: const Text('allowance'),
+                      value: 'allowance',
+                      groupValue: _selectedType,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedType = value!;
+                        });
+                      },
                     ),
                     const SizedBox(height: 20),
 
@@ -108,10 +128,26 @@ class _AddSalaryAdjustmentsScreenState
                     ),
                     const SizedBox(height: 20),
 
-                    /// effective date
+                    /// effective date using DatePicker
                     CustomTextFieldAdd(
                       controller: _dateController,
-                      label: 'Effective Date (YYYY-MM-DD)',
+                      label: 'Effective Date',
+                      readOnly: true,
+                      onTap: () async {
+                        DateTime? pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2100),
+                        );
+                        if (pickedDate != null) {
+                          String formattedDate =
+                              "${pickedDate.year}-${pickedDate.month.toString().padLeft(2,'0')}-${pickedDate.day.toString().padLeft(2,'0')}";
+                          setState(() {
+                            _dateController.text = formattedDate;
+                          });
+                        }
+                      },
                     ),
                     const SizedBox(height: 30),
 
@@ -126,10 +162,9 @@ class _AddSalaryAdjustmentsScreenState
                               .add(
                             AddSalaryAdjustmentEvent(
                               userId: widget.userId,
-                              type: _typeController.text,
+                              type: _selectedType,
                               reason: _reasonController.text,
-                              amount:
-                                  _amountController.text.trim(),
+                              amount: _amountController.text.trim(),
                               effectiveDate: _dateController.text,
                             ),
                           );

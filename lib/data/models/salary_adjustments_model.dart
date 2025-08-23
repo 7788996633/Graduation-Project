@@ -69,7 +69,7 @@ class Employable {
     required this.updatedAt,
   });
 
-  factory Employable.fromJson(Map<String, dynamic> data) {
+  factory Employable.fromJson(data) {
     return Employable(
       id: data['id'] ?? 0,
       salary: double.tryParse(data['salary']?.toString() ?? '0') ?? 0.0,

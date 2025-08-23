@@ -1,4 +1,4 @@
-import 'dart:core';
+import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import '../../data/models/payroll_model.dart';
@@ -11,33 +11,26 @@ class PayrollBloc extends Bloc<PayrollEvent, PayrollState> {
   PayrollBloc() : super(PayrollInitial()) {
     List<PayrollModel> allPayrolls = [];
 
-    on<PayrollEvent>((event, emit) async {
-      if (event is AddPayrollEvent) {
-        emit(PayrollLoading());
-        try {
-          String result = await PayrollServices()
-              .addPayroll(event.userId);
-          emit(PayrollSuccess(successMsg: result));
-        } catch (e) {
-          emit(PayrollFail(errMsg: e.toString()));
-        }
-      } else if (event is GetPayrollByIdEvent) {
-        emit(PayrollLoading());
-        try {
-          PayrollModel payroll = await PayrollServices()
-              .getPayrollById(event.payrollId);
-          emit(PayrollLoaded(payroll: payroll));
-        } catch (e) {
-          emit(PayrollFail(errMsg: e.toString()));
-        }
-      } else if (event is GetAllPayrollsEvent) {
-        emit(PayrollLoading());
-        try {
-          allPayrolls = await PayrollRepository().getPayrolls();
-          emit(PayrollListLoaded(list: allPayrolls));
-        } catch (e) {
-          emit(PayrollFail(errMsg: e.toString()));
-        }
+    // إضافة راتب
+    on<AddPayrollEvent>((event, emit) async {
+      emit(PayrollLoading());
+      try {
+        PayrollModel payroll = await PayrollServices().addPayroll(event.userId);
+        emit(PayrollLoaded(payroll: payroll)); // 🔄 بدل PayrollSuccess
+      } catch (e) {
+        emit(PayrollFail(errMsg: e.toString()));
+      }
+    });
+
+
+    // الحصول على جميع الرواتب
+    on<GetAllPayrollsEvent>((event, emit) async {
+      emit(PayrollLoading());
+      try {
+        allPayrolls = await PayrollRepository().getPayrolls();
+        emit(PayrollListLoaded(list: allPayrolls));
+      } catch (e) {
+        emit(PayrollFail(errMsg: e.toString()));
       }
     });
   }
