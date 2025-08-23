@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/role_bloc/role_bloc.dart';
 import '../../data/models/role_model.dart';
 import '../../themes.dart';
-import '../screens/roll_screen/role_details_screen.dart';
+import '../screens/role_screen/role_details_screen.dart';
+
 class RoleItem extends StatelessWidget {
   const RoleItem({super.key, required this.roleModel});
   final RoleModel roleModel;

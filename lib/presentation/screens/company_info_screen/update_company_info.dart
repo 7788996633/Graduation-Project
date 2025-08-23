@@ -28,8 +28,7 @@ class _UpdateCompanyInfoScreenState extends State<UpdateCompanyInfoScreen> {
 
   DateTime? _foundationDate;
 
-  bool _isSaving = false;
-  bool _hasRequestedFetch = false;
+  late CompanyInfoBloc _bloc;
 
   @override
   void initState() {
@@ -41,10 +40,11 @@ class _UpdateCompanyInfoScreenState extends State<UpdateCompanyInfoScreen> {
     _goalsController = TextEditingController(text: company.goals);
     _visionController = TextEditingController(text: company.vision);
 
-    // تحويل foundationDate من String إلى DateTime
     if (company.foundationDate.isNotEmpty) {
       _foundationDate = DateTime.tryParse(company.foundationDate);
     }
+
+    _bloc = CompanyInfoBloc();
   }
 
   @override
@@ -54,41 +54,11 @@ class _UpdateCompanyInfoScreenState extends State<UpdateCompanyInfoScreen> {
     _descriptionController.dispose();
     _goalsController.dispose();
     _visionController.dispose();
+    _bloc.close();
     super.dispose();
   }
 
-  void _submitUpdate() {
-    if (_formKey.currentState!.validate()) {
-      if (_foundationDate == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please select foundation date'),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return;
-      }
-
-      setState(() {
-        _isSaving = true;
-        _hasRequestedFetch = false;
-      });
-
-      BlocProvider.of<CompanyInfoBloc>(context).add(
-        UpdateCompanyEvent(
-
-          name: _nameController.text.trim(),
-          address: _addressController.text.trim(),
-          description: _descriptionController.text.trim(),
-          goals: _goalsController.text.trim(),
-          vision: _visionController.text.trim(),
-          foundationDate: _foundationDate!,
-        ),
-      );
-    }
-  }
-
-  Future<void> _pickFoundationDate() async {
+  void _pickFoundationDate() async {
     final pickedDate = await showDatePicker(
       context: context,
       initialDate: _foundationDate ?? DateTime.now(),
@@ -103,160 +73,133 @@ class _UpdateCompanyInfoScreenState extends State<UpdateCompanyInfoScreen> {
     }
   }
 
+  void _onUpdatePressed() {
+    if (_formKey.currentState!.validate() && _foundationDate != null) {
+      _bloc.add(UpdateCompanyEvent(
+        name: _nameController.text.trim(),
+        address: _addressController.text.trim(),
+        description: _descriptionController.text.trim(),
+        goals: _goalsController.text.trim(),
+        vision: _visionController.text.trim(),
+        foundationDate: _foundationDate!,
+      ));
+    } else if (_foundationDate == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select foundation date'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomActionAppBar(title: 'Update Company Info'),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: BlocConsumer<CompanyInfoBloc, CompanyInfoState>(
+    return BlocProvider<CompanyInfoBloc>.value(
+      value: _bloc,
+      child: Scaffold(
+        appBar: const CustomActionAppBar(title: 'Update Company Info'),
+        body: BlocConsumer<CompanyInfoBloc, CompanyInfoState>(
           listener: (context, state) {
-            if (state is CompanyInfoSuccess && !_hasRequestedFetch) {
-              _hasRequestedFetch = true;
-              BlocProvider.of<CompanyInfoBloc>(context).add(GetCompanyEvent());
-            } else if (state is CompanyInfoLoaded) {
-              setState(() {
-                _isSaving = false;
-              });
-              Navigator.pop(context, state.company);
+            if (state is CompanyInfoLoaded) {
+              Navigator.pop(
+                context,
+                state.company,
+              );
             } else if (state is CompanyInfoFail) {
-              setState(() {
-                _isSaving = false;
-              });
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.errorMsg),
-                  backgroundColor: Colors.red,
-                ),
+                SnackBar(content: Text('❌ ${state.errorMsg}')),
               );
             }
           },
           builder: (context, state) {
-            return Form(
-              key: _formKey,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: _nameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Name',
-                        border: OutlineInputBorder(),
+            final isLoading = state is CompanyInfoLoading;
+
+            return Padding(
+              padding: const EdgeInsets.all(16),
+              child: Form(
+                key: _formKey,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: const InputDecoration(labelText: 'Name'),
+                        validator: (value) =>
+                        value == null || value.isEmpty ? 'Required' : null,
+                        enabled: !isLoading,
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter company name';
-                        }
-                        return null;
-                      },
-                      enabled: !_isSaving,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _addressController,
-                      decoration: const InputDecoration(
-                        labelText: 'Address',
-                        border: OutlineInputBorder(),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _addressController,
+                        decoration: const InputDecoration(labelText: 'Address'),
+                        validator: (value) =>
+                        value == null || value.isEmpty ? 'Required' : null,
+                        enabled: !isLoading,
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter address';
-                        }
-                        return null;
-                      },
-                      enabled: !_isSaving,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _descriptionController,
-                      decoration: const InputDecoration(
-                        labelText: 'Description',
-                        border: OutlineInputBorder(),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _descriptionController,
+                        decoration: const InputDecoration(labelText: 'Description'),
+                        maxLines: 3,
+                        validator: (value) =>
+                        value == null || value.isEmpty ? 'Required' : null,
+                        enabled: !isLoading,
                       ),
-                      maxLines: 3,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter description';
-                        }
-                        return null;
-                      },
-                      enabled: !_isSaving,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _goalsController,
-                      decoration: const InputDecoration(
-                        labelText: 'Goals',
-                        border: OutlineInputBorder(),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _goalsController,
+                        decoration: const InputDecoration(labelText: 'Goals'),
+                        maxLines: 2,
+                        validator: (value) =>
+                        value == null || value.isEmpty ? 'Required' : null,
+                        enabled: !isLoading,
                       ),
-                      maxLines: 2,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter goals';
-                        }
-                        return null;
-                      },
-                      enabled: !_isSaving,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _visionController,
-                      decoration: const InputDecoration(
-                        labelText: 'Vision',
-                        border: OutlineInputBorder(),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _visionController,
+                        decoration: const InputDecoration(labelText: 'Vision'),
+                        maxLines: 2,
+                        validator: (value) =>
+                        value == null || value.isEmpty ? 'Required' : null,
+                        enabled: !isLoading,
                       ),
-                      maxLines: 2,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter vision';
-                        }
-                        return null;
-                      },
-                      enabled: !_isSaving,
-                    ),
-                    const SizedBox(height: 16),
-                    InkWell(
-                      onTap: _isSaving ? null : _pickFoundationDate,
-                      child: InputDecorator(
-                        decoration: const InputDecoration(
-                          labelText: 'Foundation Date',
-                          border: OutlineInputBorder(),
-                        ),
-                        child: Text(
-                          _foundationDate != null
-                              ? "${_foundationDate!.year}-${_foundationDate!.month.toString().padLeft(2,'0')}-${_foundationDate!.day.toString().padLeft(2,'0')}"
-                              : 'Select Date',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: _foundationDate != null
-                                ? Colors.black87
-                                : Colors.grey.shade600,
+                      const SizedBox(height: 16),
+                      InkWell(
+                        onTap: isLoading ? null : _pickFoundationDate,
+                        child: InputDecorator(
+                          decoration: const InputDecoration(labelText: 'Foundation Date'),
+                          child: Text(
+                            _foundationDate != null
+                                ? "${_foundationDate!.year}-${_foundationDate!.month.toString().padLeft(2,'0')}-${_foundationDate!.day.toString().padLeft(2,'0')}"
+                                : 'Select Date',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: _foundationDate != null
+                                  ? Colors.black87
+                                  : Colors.grey.shade600,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: _isSaving ? null : _submitUpdate,
+                      const SizedBox(height: 30),
+                      isLoading
+                          ? const CircularProgressIndicator()
+                          : ElevatedButton(
+                        onPressed: _onUpdatePressed,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.darkBlue,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 40, vertical: 14),
                         ),
-                        child: _isSaving
-                            ? const CircularProgressIndicator(color: Colors.white)
-                            : const Text(
+                        child: const Text(
                           'Update',
                           style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                              color: Colors.white, fontSize: 18),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );

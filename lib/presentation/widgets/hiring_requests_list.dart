@@ -60,15 +60,14 @@ class _HiringRequestListState extends State<HiringRequestList> {
             if (hiringRequestList.isEmpty) {
               return const Center(child: Text('There are no hiring requests.'));
             }
-            return Expanded(
-              child: ListView.builder(
+            return ListView.builder(
                 itemCount: hiringRequestList.length,
                 itemBuilder: (context, index) {
                   return HiringRequestItem(
                     hiringRequestModel: hiringRequestList[index],
                   );
                 },
-              ),
+
             );
           } else if (state is HiringRequestsFail) {
             return Column(

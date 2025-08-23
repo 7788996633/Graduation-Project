@@ -36,19 +36,6 @@ class _ListPayrollsScreenState extends State<ListPayrollsScreen> {
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
         title: 'Payrolls',
-        actionIcon: Icons.add_circle_rounded,
-        tooltip: 'Add New Payroll',
-        onActionPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (_) => PayrollBloc(),
-                child: const AddPayrollScreen(),
-              ),
-            ),
-          );
-        },
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

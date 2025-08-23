@@ -10,9 +10,9 @@ class SalaryAdjustmentServices {
     'Authorization': 'Bearer $myToken',
   };
 
-  Future<List> getSalaryAdjustments() async {
+  Future<List> getSalaryAdjustments(int userId) async {
     try {
-      var url = Uri.parse('${myUrl}salary-adjustments');
+      var url = Uri.parse('${myUrl}salary-adjustments/$userId');
       http.Response response;
 
       if (kIsWeb) {
@@ -71,7 +71,8 @@ class SalaryAdjustmentServices {
     }
   }
 
-  Future<String> addSalaryAdjustment(String type, int points, String description) async {
+  Future<String> addSalaryAdjustment(int  userId,String type,String reason ,String amount
+      ,String effectiveDate) async {
     try {
       var request = http.MultipartRequest(
         'POST',
@@ -79,9 +80,11 @@ class SalaryAdjustmentServices {
       );
 
       request.fields.addAll({
+        'user_id': userId.toString(),
         'type': type,
-        'points': points.toString(),
-        'description': description,
+        'reason': reason,
+        'amount':amount,
+        'effective_date':effectiveDate,
       });
 
       request.headers.addAll(baseHeaders);

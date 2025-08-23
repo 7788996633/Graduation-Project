@@ -33,8 +33,7 @@ class Company {
   final String description;
   final String goals;
   final String vision;
-  final String createdAt;
-  final String updatedAt;
+
 
   Company({
     required this.id,
@@ -44,8 +43,7 @@ class Company {
     required this.description,
     required this.goals,
     required this.vision,
-    required this.createdAt,
-    required this.updatedAt,
+
   });
 
   factory Company.fromJson(Map<String, dynamic> json) {
@@ -57,8 +55,7 @@ class Company {
       description: json["description"] ?? "",
       goals: json["goals"] ?? "",
       vision: json["vision"] ?? "",
-      createdAt: json["created_at"] ?? "",
-      updatedAt: json["updated_at"] ?? "",
+
     );
   }
 }

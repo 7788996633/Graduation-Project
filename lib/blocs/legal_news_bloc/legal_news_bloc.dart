@@ -91,16 +91,15 @@ else
         }
       }
       else if (event is SaveLegalNewsEvent) {
-        emit(LegalNewsLoading());
-        try {
-
-          String result = await LegalNewsServices()
-              .saveLegalNews(event.legalNewsId);
-          emit(LegalNewsSuccess(successMsg: result));
-        } catch (e) {
-          emit(LegalNewsFail(errMsg: e.toString()));
-        }
+      try {
+      String result = await LegalNewsServices()
+          .saveLegalNews(event.legalNewsId);
+      emit(LegalNewsSuccess(successMsg: result));
+      } catch (e) {
+      emit(LegalNewsFail(errMsg: e.toString()));
       }
+      }
+
     });
   }
 }

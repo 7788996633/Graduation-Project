@@ -1,35 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../blocs/salary_adjustments_bloc/salary_adjustments_bloc.dart';
-import '../../blocs/salary_adjustments_bloc/salary_adjustments_event.dart';
+import '../../blocs/permission_bloc/permission_bloc.dart';
+import '../../blocs/permission_bloc/permission_event.dart';
 
-import '../../data/models/salary_adjustments_model.dart';
-import 'salary_adjustments_item.dart';
+import '../../data/models/permission_model.dart';
+import 'permission_item.dart';
 
-class SalaryAdjustmentsList extends StatefulWidget {
- final int userId;
-  const SalaryAdjustmentsList({super.key, required this.bloc,required this.userId});
-  final SalaryAdjustmentsBloc bloc;
+class PermissionForRoleList extends StatefulWidget {
+  final PermissionBloc bloc;
+  final int roleId; // إضافة roleId كحقل مطلوب
+
+  const PermissionForRoleList({super.key, required this.bloc, required this.roleId});
 
   @override
-  State<SalaryAdjustmentsList> createState() => _SalaryAdjustmentsListState();
+  State<PermissionForRoleList> createState() => _PermissionForRoleListState();
 }
 
-class _SalaryAdjustmentsListState extends State<SalaryAdjustmentsList> {
+class _PermissionForRoleListState extends State<PermissionForRoleList> {
   @override
   void initState() {
     super.initState();
-    widget.bloc.add(GetAllSalaryAdjustmentsEvent(userId: widget.userId));
+
+    widget.bloc.add(GetPermissionForRoleEvent(roleId: widget.roleId));
   }
 
-  List<SalaryAdjustment> salaryAdjustmentsList = [];
+  List<PermissionModel> permissionList = [];
+
+  void _refreshPermissions() {
+    widget.bloc.add(GetPermissionForRoleEvent(roleId: widget.roleId));
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SalaryAdjustmentsBloc, SalaryAdjustmentsState>(
+    return BlocListener<PermissionBloc, PermissionState>(
       listener: (context, state) {
-        if (state is SalaryAdjustmentsSuccess) {
+        if (state is PermissionSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -39,8 +45,8 @@ class _SalaryAdjustmentsListState extends State<SalaryAdjustmentsList> {
               backgroundColor: Colors.green,
             ),
           );
-          widget.bloc.add(GetAllSalaryAdjustmentsEvent(userId: widget.userId));
-        } else if (state is SalaryAdjustmentsFail) {
+          _refreshPermissions(); // تحديث القائمة بعد النجاح
+        } else if (state is PermissionFail) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -52,24 +58,22 @@ class _SalaryAdjustmentsListState extends State<SalaryAdjustmentsList> {
           );
         }
       },
-      child: BlocBuilder<SalaryAdjustmentsBloc, SalaryAdjustmentsState>(
+      child: BlocBuilder<PermissionBloc, PermissionState>(
         builder: (context, state) {
-          if (state is SalaryAdjustmentsListLoaded) {
-            salaryAdjustmentsList = state.list;
-            if (salaryAdjustmentsList.isEmpty) {
-              return const Center(child: Text('There are no salary adjustments'));
+          if (state is PermissionListLoaded) {
+            permissionList = state.list;
+            if (permissionList.isEmpty) {
+              return const Center(child: Text('There are no permissions for role'));
             }
             return Expanded(
               child: ListView.builder(
-                itemCount: salaryAdjustmentsList.length,
+                itemCount: permissionList.length,
                 itemBuilder: (context, index) {
-                  return SalaryAdjustmentsItem(
-                    salaryAdjustmentsModel: salaryAdjustmentsList[index],
-                  );
+                  return PermissionItem(permissionModel: permissionList[index]);
                 },
               ),
             );
-          } else if (state is SalaryAdjustmentsFail) {
+          } else if (state is PermissionFail) {
             return Column(
               children: [
                 const Text(

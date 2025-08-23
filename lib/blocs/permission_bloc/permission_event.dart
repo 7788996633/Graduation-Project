@@ -30,6 +30,12 @@ class GetPermissionByIdEvent extends PermissionEvent {
   GetPermissionByIdEvent({required this.permissionId});
 }
 
+class GetPermissionForRoleEvent extends PermissionEvent {
+  final int roleId;
+
+  GetPermissionForRoleEvent({required this.roleId});
+}
+
 class GetAllPermissionsEvent extends PermissionEvent {}
 
 class UpdatePermissionEvent extends PermissionEvent {

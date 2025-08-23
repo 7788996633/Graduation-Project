@@ -105,7 +105,6 @@ class _CompanyInfoDetailsScreenState extends State<CompanyInfoDetailsScreen> {
                             ),
                           ),
                           const SizedBox(height: 24),
-                          _buildInfoRow('ID', company.id.toString()),
                           Divider(
                               color: Colors.deepPurple.shade100, thickness: 1.5),
                           _buildInfoRow('Name', company.name),
@@ -124,12 +123,7 @@ class _CompanyInfoDetailsScreenState extends State<CompanyInfoDetailsScreen> {
                           Divider(
                               color: Colors.deepPurple.shade100, thickness: 1.5),
                           _buildInfoRow('Vision', company.vision),
-                          Divider(
-                              color: Colors.deepPurple.shade100, thickness: 1.5),
-                          _buildInfoRow('Created At', company.createdAt),
-                          Divider(
-                              color: Colors.deepPurple.shade100, thickness: 1.5),
-                          _buildInfoRow('Updated At', company.updatedAt),
+
                         ],
                       ),
                     ),

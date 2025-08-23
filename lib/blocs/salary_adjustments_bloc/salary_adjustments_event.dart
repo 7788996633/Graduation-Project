@@ -4,14 +4,19 @@ import 'package:meta/meta.dart';
 sealed class SalaryAdjustmentsEvent {}
 
 class AddSalaryAdjustmentEvent extends SalaryAdjustmentsEvent {
+  final int userId;
   final String type;
-  final int points;
-  final String description;
+  final String reason;
+  final String amount;
+  final String effectiveDate;
 
   AddSalaryAdjustmentEvent({
+    required this.userId,
     required this.type,
-    required this.points,
-    required this.description,
+    required this.reason,
+    required this.amount,
+    required this.effectiveDate,
+
   });
 }
 
@@ -21,7 +26,10 @@ class GetSalaryAdjustmentByIdEvent extends SalaryAdjustmentsEvent {
   GetSalaryAdjustmentByIdEvent({required this.adjustmentId});
 }
 
-class GetAllSalaryAdjustmentsEvent extends SalaryAdjustmentsEvent {}
+class GetAllSalaryAdjustmentsEvent extends SalaryAdjustmentsEvent {
+  final int userId;
+  GetAllSalaryAdjustmentsEvent({required this.userId});
+}
 
 class SearchSalaryAdjustmentsByTypeEvent extends SalaryAdjustmentsEvent {
   final String type;

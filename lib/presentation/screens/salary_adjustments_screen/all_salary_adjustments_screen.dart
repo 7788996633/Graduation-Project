@@ -8,34 +8,25 @@ import '../../../themes.dart';
 import '../../widgets/custom_appbar_add.dart';
 import '../../widgets/refresh_button.dart';
 import '../../widgets/salary_adjustments_list.dart';
-import '../../widgets/custom_search_bar.dart';
-
-import 'add_salary.dart';
-
 
 class ListSalaryAdjustmentsScreen extends StatefulWidget {
-  const ListSalaryAdjustmentsScreen({super.key});
+  final int userId;
+  const ListSalaryAdjustmentsScreen({super.key, required this.userId});
 
   @override
-  State<ListSalaryAdjustmentsScreen> createState() => _ListSalaryAdjustmentsScreenState();
+  State<ListSalaryAdjustmentsScreen> createState() =>
+      _ListSalaryAdjustmentsScreenState();
 }
 
-class _ListSalaryAdjustmentsScreenState extends State<ListSalaryAdjustmentsScreen> {
+class _ListSalaryAdjustmentsScreenState
+    extends State<ListSalaryAdjustmentsScreen> {
   late SalaryAdjustmentsBloc bloc;
 
   @override
   void initState() {
     super.initState();
     bloc = BlocProvider.of<SalaryAdjustmentsBloc>(context);
-    bloc.add(GetAllSalaryAdjustmentsEvent());
-  }
-
-  void _onSearch(String type) {
-    if (type.trim().isNotEmpty) {
-      bloc.add(SearchSalaryAdjustmentsByTypeEvent(type: type));
-    } else {
-      bloc.add(GetAllSalaryAdjustmentsEvent());
-    }
+    bloc.add(GetAllSalaryAdjustmentsEvent(userId: widget.userId));
   }
 
   @override
@@ -44,36 +35,24 @@ class _ListSalaryAdjustmentsScreenState extends State<ListSalaryAdjustmentsScree
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
         title: 'Salary Adjustments',
-        actionIcon: Icons.add_circle_rounded,
-        tooltip: 'Add New Salary Adjustment',
-        onActionPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (_) => SalaryAdjustmentsBloc(),
-                child: const AddSalaryAdjustmentsScreen(),
-              ),
-            ),
-          );
-        },
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            CustomSearchBar(
-              hint: 'Search by Type',
-              onSearch: _onSearch,
-            ),
             const SizedBox(height: 20),
-            SalaryAdjustmentsList(bloc: bloc),
+            Expanded(
+              child: SalaryAdjustmentsList(
+                bloc: bloc,
+                userId: widget.userId,
+              ),
+            ),
           ],
         ),
       ),
       floatingActionButton: RefreshButton(
         onPressed: () {
-          bloc.add(GetAllSalaryAdjustmentsEvent());
+          bloc.add(GetAllSalaryAdjustmentsEvent(userId: widget.userId));
         },
       ),
     );

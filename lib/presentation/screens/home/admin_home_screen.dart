@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
 import '../../../blocs/categories/categories_bloc.dart';
 import '../../../blocs/common_consultation_bloc/common _consultation_bloc.dart';
+import '../../../blocs/complaints_bloc/complaint_bloc.dart';
 import '../../../blocs/delegations_bloc/delegations_bloc.dart';
 import '../../../blocs/expenses_bloc/expenses_bloc.dart';
 import '../../../blocs/furlough_request_bloc/furlough_request_bloc.dart';
@@ -27,6 +27,8 @@ import '../ai_chat/chat_with_ai.dart';
 import '../all_lawyers_screen.dart';
 import '../categories_screen/issue_categories_screen.dart';
 import '../common_consulation/list_common_consul.dart';
+import '../complaint_screen/add_complaint_screen.dart';
+import '../complaint_screen/list_complaint_screen.dart';
 import '../consultation_request/all_consultation_requests_page.dart';
 import '../delegations_screen/list_delegation_screen.dart';
 import '../expenses_screen/expenses_list_screen.dart';
@@ -38,8 +40,8 @@ import '../legal_news_screen/latest_news_list.dart';
 import '../legal_news_screen/list_legal_news_screen.dart';
 import '../legal_news_screen/my_saved_news_list.dart';
 import '../required_documents/list_required_document_screen.dart';
-import '../roll_screen/add_role_screen.dart';
-import '../roll_screen/all_role_screen.dart';
+import '../role_screen/all_role_screen.dart';
+
 import '../session_type/list_session_type_screen.dart';
 
 class AdminHomeScreen extends StatelessWidget {
@@ -237,26 +239,8 @@ class AdminHomeScreen extends StatelessWidget {
         },
       },
       {
-        'title': 'News',
-        'icon': Icons.group,
-        'onTap': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (context) => LegalNewsBloc(),
-                child: const ListLegalNewsScreen(),
-              ),
-            ),
-          );
-        },
-
-      },
-
-
-      {
-        'title': 'expenses',
-        'icon': Icons.group,
+        'title': 'Expenses',
+        'icon': Icons.attach_money_outlined,
         'onTap': () {
           Navigator.push(
             context,
@@ -268,26 +252,10 @@ class AdminHomeScreen extends StatelessWidget {
             ),
           );
         },
-
       },
       {
-        'title': ' saved library',
-        'icon': Icons.group,
-        'onTap': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (context) => LegalBookBloc(),
-                child: const MySavedBookListScreen(),
-              ),
-            ),
-          );
-        },
-      },
-      {
-        'title': 'library',
-        'icon': Icons.group,
+        'title': 'Library',
+        'icon': Icons.book_outlined,
         'onTap': () {
           Navigator.push(
             context,
@@ -301,8 +269,23 @@ class AdminHomeScreen extends StatelessWidget {
         },
       },
       {
-        'title': ' Role',
-        'icon': Icons.admin_panel_settings,
+        'title': 'News',
+        'icon':  Icons.newspaper,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => LegalNewsBloc(),
+                child: const ListLegalNewsScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Roles & Permissions',
+        'icon': Icons.admin_panel_settings_outlined,
         'onTap': () {
           Navigator.push(
             context,
@@ -314,7 +297,21 @@ class AdminHomeScreen extends StatelessWidget {
             ),
           );
         },
-
+      },
+      {
+        'title': 'Complaints',
+        'icon': Icons.report_problem_outlined,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => ComplaintBloc(),
+                child: const ListComplaintsScreen(),
+              ),
+            ),
+          );
+        },
       },
     ];
 

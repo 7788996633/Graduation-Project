@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../blocs/hiring_requests/hiring_requests_block.dart';
 import '../../../../blocs/job_application/job_application_bloc.dart';
+import '../../../../constant.dart';
 import '../../../../data/models/hiring_request_model.dart';
 import '../../../../themes.dart';
 import '../../../widgets/custom_appbar_add.dart';
 import '../job_application/job_application_list_screen.dart';
-
 import '../job_application/add_job_application.dart';
 import 'update_hiring_requests_screen.dart';
 
@@ -22,9 +22,6 @@ class HiringRequestDetailsScreen extends StatefulWidget {
 
 class _HiringRequestDetailsScreenState extends State<HiringRequestDetailsScreen> {
   late HiringRequestModel hiringRequest;
-
-  // دور المستخدم الحالي (عدل حسب إدارة الحالة لديك)
-  String myRole = 'user'; // مثال: 'user' أو 'admin'
 
   @override
   void initState() {
@@ -110,18 +107,38 @@ class _HiringRequestDetailsScreenState extends State<HiringRequestDetailsScreen>
                 _buildInfoRow('Status', hiringRequest.status),
                 const SizedBox(height: 30),
 
-                if (myRole == 'user')
+                // زر مختلف حسب الدور
+
+                  if(myRole != null &&
+        (myRole.toLowerCase() == 'user'))
                   Center(
-                    child: ElevatedButton.icon(
-                      icon: const Icon(Icons.send),
-                      label: const Text("Apply for Job"),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Colors.blue, Colors.purple], // الألوان المموجة
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
+                        borderRadius: BorderRadius.circular(12),
                       ),
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.list, color: Colors.white),
+                        label: const Text(
+                          "Apply For Job",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent, // شفاف
+                          shadowColor: Colors.transparent, // بدون ظل أسود
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -136,43 +153,62 @@ class _HiringRequestDetailsScreenState extends State<HiringRequestDetailsScreen>
                         );
                       },
                     ),
-                  ),
-
-                const SizedBox(height: 16),
-
-                Center(
-                  child: ElevatedButton.icon(
-                    icon: const Icon(Icons.list),
-                    label: const Text("View Applications"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                  )
+                ,)else
+                    if(myRole != null &&
+                        (myRole.toLowerCase() == 'hr'))
+                  Center(
+                    child: Container(
+                decoration: BoxDecoration(
+              gradient: const LinearGradient(
+               colors: [Colors.blue, Colors.purple], // الألوان المموجة
+                 begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => BlocProvider(
-                            create: (_) => JobApplicationBloc(),
-                            child: ListJobApplicationsScreen(
-                              hiringReqId: hiringRequest.id,
+                   borderRadius: BorderRadius.circular(12),
+    ),
+              child: ElevatedButton.icon(
+              icon: const Icon(Icons.list, color: Colors.white),
+              label: const Text(
+              "View Applications",
+              style: TextStyle(
+               color: Colors.white,
+                   fontWeight: FontWeight.bold,
+                ),
+    ),
+             style: ElevatedButton.styleFrom(
+               backgroundColor: Colors.transparent, // شفاف
+                 shadowColor: Colors.transparent, // بدون ظل أسود
+             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+             shape: RoundedRectangleBorder(
+               borderRadius: BorderRadius.circular(12),
+    ),
+    ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BlocProvider(
+                              create: (_) => JobApplicationBloc(),
+                              child: ListJobApplicationsScreen(
+                                hiringReqId: hiringRequest.id,
+                              ),
                             ),
                           ),
-                        ),
-
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
+    )],
             ),
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+
+
+      floatingActionButton: (myRole != null &&
+          (myRole!.toLowerCase() == 'admin' || myRole!.toLowerCase() == 'hr'))
+          ? FloatingActionButton.extended(
         onPressed: () async {
           final result = await Navigator.push<HiringRequestModel>(
             context,
@@ -204,7 +240,8 @@ class _HiringRequestDetailsScreenState extends State<HiringRequestDetailsScreen>
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-      ),
+      )
+          : null,
     );
   }
 }

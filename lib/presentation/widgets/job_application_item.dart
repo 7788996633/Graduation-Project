@@ -15,12 +15,12 @@ class JobApplicationItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal:8, vertical: 5),
       child: Card(
         elevation: 8,
         shadowColor: Colors.blueGrey.shade200,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(10),
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
@@ -116,7 +116,7 @@ class JobApplicationItem extends StatelessWidget {
 
   Color _statusColor(String status) {
     switch (status.toLowerCase()) {
-      case 'approved':
+      case 'accepted':
         return Colors.green;
       case 'pending':
         return Colors.orange;

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law/blocs/company_info_bloc/company_info_bloc.dart';
+import 'package:law/presentation/screens/company_info_screen/company_info_details.dart';
 
 import '../../../themes.dart';
 
@@ -128,7 +131,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _buildCard(
               icon: Icons.contact_mail,
               title: tr('official_contact_info'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider(
+                      create: (_) => CompanyInfoBloc(),
+                      child: const CompanyInfoDetailsScreen(),
+                    ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 24),
             _buildSectionTitle(tr('security')), // "الأمان"

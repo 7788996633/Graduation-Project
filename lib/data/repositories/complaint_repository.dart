@@ -5,18 +5,14 @@ class ComplaintRepository {
   Future<List<ComplaintModel>> getComplaints() async {
     var complaintsList = await ComplaintServices().getComplaints();
     return complaintsList
-        .map(
-          (e) => ComplaintModel.fromJson(e),
-    )
+        .map((e) => ComplaintModel.fromJson(e))
         .toList();
   }
 
-  Future<List<ComplaintModel>> myComplaints() async {
+  Future<List<ComplaintModel>> getMyComplaints() async {
     var complaintsList = await ComplaintServices().getMyComplaints();
     return complaintsList
-        .map(
-          (e) => ComplaintModel.fromJson(e),
-    )
+        .map((e) => ComplaintModel.fromJson(e))
         .toList();
   }
 }

@@ -21,7 +21,7 @@ import '../../session/list_session_screen.dart';
 class IssueScreen extends StatefulWidget {
   final IssuesModel issuesModel;
   const IssueScreen({super.key, required this.issuesModel});
-  
+
   @override
   State<IssueScreen> createState() => _IssueScreenState();
 }
@@ -92,14 +92,10 @@ class _IssueScreenState extends State<IssueScreen> {
         leading: Icon(icon, color: kPrimaryDarkBlue),
         title: Text(title,
             style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.black54)),
+                fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black54)),
         subtitle: Text(value,
             style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: kPrimaryDarkBlue)),
+                fontSize: 16, fontWeight: FontWeight.bold, color: kPrimaryDarkBlue)),
       ),
     );
   }
@@ -109,192 +105,226 @@ class _IssueScreenState extends State<IssueScreen> {
     return Scaffold(
       appBar: const CustomActionAppBar(title: 'Issue Details'),
       backgroundColor: const Color(0xFFF5F6FA),
-      body: SingleChildScrollView(
-        child: BlocBuilder<UserProfileBloc, UserProfileState>(
-          builder: (context, state) {
-            if (state is UserProfileLoadedSuccessfully) {
-              final user = state.userProfileModel;
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 100),
+            child: BlocBuilder<UserProfileBloc, UserProfileState>(
+              builder: (context, state) {
+                if (state is UserProfileLoadedSuccessfully) {
+                  final user = state.userProfileModel;
 
-              return Column(
-                children: [
-                  const SizedBox(height: 16),
-                  buildProfileCard(user),
-                  const SizedBox(height: 10),
-                  BlocProvider(
-                    create: (context) => LawyerInIssuesBloc(),
-                    child: LawyersInIssueList(
+                  return Column(
+                    children: [
+                      const SizedBox(height: 16),
+                      buildProfileCard(user),
+                      const SizedBox(height: 10),
+
+                      // قائمة المحامين في القضية
+                      BlocProvider(
+                        create: (context) => LawyerInIssuesBloc(),
+                        child: LawyersInIssueList(
+                          issueId: widget.issuesModel.id,
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // أزرار Sessions, Demands, Add Invoice, View Invoices في سطر واحد
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: kPrimaryDarkBlue,
+                                  foregroundColor: Colors.white,
+                                  minimumSize: const Size.fromHeight(50),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BlocProvider(
+                                        create: (context) => SessionsBloc(),
+                                        child: ListSessionsScreen(
+                                          issueId: widget.issuesModel.id,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: const Text("Sessions", textAlign: TextAlign.center),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: kPrimaryDarkBlue,
+                                  foregroundColor: Colors.white,
+                                  minimumSize: const Size.fromHeight(50),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AllAttendDemandScreen(
+                                        issueId: widget.issuesModel.id,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: const Text("Demands", textAlign: TextAlign.center),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: kPrimaryDarkBlue,
+                                  foregroundColor: Colors.white,
+                                  minimumSize: const Size.fromHeight(50),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BlocProvider(
+                                        create: (context) => InvoiceBloc(),
+                                        child: AddInvoiceScreen(
+                                          issueId: widget.issuesModel.id,
+                                          userId: user.userId,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: const Text("Add Invoice", textAlign: TextAlign.center),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: kPrimaryDarkBlue,
+                                  foregroundColor: Colors.white,
+                                  minimumSize: const Size.fromHeight(50),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BlocProvider(
+                                        create: (context) => InvoiceBloc(),
+                                        child: ListInvoicesByIssueScreen(
+                                          issueId: widget.issuesModel.id,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: const Text("View Invoices", textAlign: TextAlign.center),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // بقية تفاصيل القضية
+                      buildSectionCard(
+                          icon: Icons.title,
+                          title: "Title",
+                          value: widget.issuesModel.title),
+                      buildSectionCard(
+                          icon: Icons.numbers,
+                          title: "Issue Number",
+                          value: widget.issuesModel.issueNumber),
+                      buildSectionCard(
+                          icon: Icons.title,
+                          title: "Court Name",
+                          value: widget.issuesModel.courtName),
+                      buildSectionCard(
+                          icon: Icons.payments,
+                          title: "Number of Payments",
+                          value: widget.issuesModel.numberOfPayments.toString()),
+                      buildSectionCard(
+                          icon: Icons.attach_money,
+                          title: "Total Cost",
+                          value: widget.issuesModel.totalCost.toString()),
+                      buildSectionCard(
+                          icon: Icons.info,
+                          title: "Status",
+                          value: widget.issuesModel.status),
+                      buildSectionCard(
+                          icon: Icons.priority_high,
+                          title: "Priority",
+                          value: widget.issuesModel.priority),
+                      buildSectionCard(
+                          icon: Icons.date_range,
+                          title: "Start Date",
+                          value: widget.issuesModel.startDate),
+                      buildSectionCard(
+                          icon: Icons.date_range,
+                          title: "Created At",
+                          value: widget.issuesModel.createdAt),
+                      buildSectionCard(
+                          icon: Icons.date_range,
+                          title: "Updated At",
+                          value: widget.issuesModel.updatedAt),
+
+                      const SizedBox(height: 20),
+                    ],
+                  );
+                } else if (state is UserProfileFail) {
+                  return Center(child: Text(state.errmsg));
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
+          ),
+
+          // زر ثابت أسفل المنتصف لإضافة محامين
+          Positioned(
+            bottom: 20,
+            left: MediaQuery.of(context).size.width * 0.5 - 90,
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF0D47A1),
+                foregroundColor: Colors.white,
+                minimumSize: const Size(180, 45),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+              ),
+              icon: const Icon(Icons.add, size: 20),
+              label: const Text(
+                "Add Lawyers",
+                style: TextStyle(fontSize: 16, color: Colors.white),
+              ),
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (context) => MultiBlocProvider(
+                    providers: [
+                      BlocProvider(create: (context) => LawyerBloc()),
+                      BlocProvider(create: (context) => IssuesBloc()),
+                    ],
+                    child: AddLawyersToIssueSheet(
                       issueId: widget.issuesModel.id,
                     ),
                   ),
-                  buildSectionCard(
-                      icon: Icons.title,
-                      title: "Title",
-                      value: widget.issuesModel.title),
-                  buildSectionCard(
-                      icon: Icons.numbers,
-                      title: "Issue Number",
-                      value: widget.issuesModel.issueNumber),
-                  buildSectionCard(
-                      icon: Icons.title,
-                      title: "Court Name",
-                      value: widget.issuesModel.courtName),
-                  buildSectionCard(
-                      icon: Icons.payments,
-                      title: "Number of Payments",
-                      value: widget.issuesModel.numberOfPayments.toString()),
-                  buildSectionCard(
-                      icon: Icons.attach_money,
-                      title: "Total Cost",
-                      value: widget.issuesModel.totalCost.toString()),
-                  buildSectionCard(
-                      icon: Icons.info,
-                      title: "Status",
-                      value: widget.issuesModel.status),
-                  buildSectionCard(
-                      icon: Icons.priority_high,
-                      title: "Priority",
-                      value: widget.issuesModel.priority),
-                  buildSectionCard(
-                      icon: Icons.date_range,
-                      title: "Start Date",
-                      value: widget.issuesModel.startDate),
-                  buildSectionCard(
-                      icon: Icons.date_range,
-                      title: "Created At",
-                      value: widget.issuesModel.createdAt),
-                  buildSectionCard(
-                      icon: Icons.date_range,
-                      title: "Updated At",
-                      value: widget.issuesModel.updatedAt),
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      children: [
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: kPrimaryDarkBlue,
-                            foregroundColor: Colors.white,
-                            minimumSize: const Size.fromHeight(50),
-                          ),
-                          onPressed: () {
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (context) => MultiBlocProvider(
-                                providers: [
-                                  BlocProvider(
-                                    create: (context) => LawyerBloc(),
-                                  ),
-                                  BlocProvider(
-                                    create: (context) => IssuesBloc(),
-                                  ),
-                                ],
-                                child: AddLawyersToIssueSheet(
-                                    issueId: widget.issuesModel.id),
-                              ),
-                            );
-                          },
-                          child: const Text("Add Lawyers"),
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: kPrimaryDarkBlue,
-                            foregroundColor: Colors.white,
-                            minimumSize: const Size.fromHeight(50),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BlocProvider(
-                                  create: (context) => SessionsBloc(),
-                                  child: ListSessionsScreen(
-                                    issueId: widget.issuesModel.id,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Text("Sessions"),
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: kPrimaryDarkBlue,
-                            foregroundColor: Colors.white,
-                            minimumSize: const Size.fromHeight(50),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AllAttendDemandScreen(
-                                  issueId: widget.issuesModel.id,
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Text("Demands"),
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: kPrimaryDarkBlue,
-                            foregroundColor: Colors.white,
-                            minimumSize: const Size.fromHeight(50),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BlocProvider(
-                                  create: (context) => InvoiceBloc(),
-                                  child: AddInvoiceScreen(
-                                    issueId: widget.issuesModel.id,
-                                    userId: user.userId,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Text("Add Invoice"),
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: kPrimaryDarkBlue,
-                            foregroundColor: Colors.white,
-                            minimumSize: const Size.fromHeight(50),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BlocProvider(
-                                  create: (context) => InvoiceBloc(),
-                                  child: ListInvoicesByIssueScreen(
-                                    issueId: widget.issuesModel.id,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Text("View Invoices"),
-                        ),
-                        const SizedBox(height: 20),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            } else if (state is UserProfileFail) {
-              return Center(child: Text(state.errmsg));
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
-        ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

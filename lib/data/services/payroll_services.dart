@@ -71,18 +71,12 @@ class PayrollServices {
     }
   }
 
-  Future<String> addPayroll(String type, int points, String description) async {
+  Future<String> addPayroll( int userId) async {
     try {
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('${myUrl}payrolls'),
+        Uri.parse('${myUrl}payrolls/$userId'),
       );
-
-      request.fields.addAll({
-        'type': type,
-        'points': points.toString(),
-        'description': description,
-      });
 
       request.headers.addAll(baseHeaders);
 

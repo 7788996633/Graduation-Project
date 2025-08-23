@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../blocs/user_bloc/user_bloc.dart';
 import '../../../blocs/role_bloc/role_bloc.dart';
 import '../../../blocs/role_bloc/role_event.dart';
-import '../../../blocs/user_bloc/user_bloc.dart';
-import '../../../data/models/role_model.dart';
+import '../../../blocs/permission_bloc/permission_bloc.dart';
 import '../../../themes.dart';
 import '../../widgets/custom_appbar_add.dart';
+import '../../widgets/permission_for_role_list.dart';
 import '../../widgets/user_item.dart';
 
 class RoleDetailsScreen extends StatefulWidget {
-  final RoleModel roleModel;
-
+  final dynamic roleModel; // استبدل dynamic بالنوع الصحيح إذا موجود
   const RoleDetailsScreen({super.key, required this.roleModel});
 
   @override
@@ -20,47 +20,50 @@ class RoleDetailsScreen extends StatefulWidget {
 
 class _RoleDetailsScreenState extends State<RoleDetailsScreen> {
   late UserBloc userBloc;
+  late PermissionBloc permissionBloc;
 
-  Widget _buildInfoRow(String label, String value, {Color? valueColor}) {
+  @override
+  void initState() {
+    super.initState();
+
+    // طلب بيانات الدور
+    BlocProvider.of<RoleBloc>(context).add(
+      GetRoleByIdEvent(roleId: widget.roleModel.id),
+    );
+
+    // تهيئة bloc للصلاحيات
+    permissionBloc = PermissionBloc();
+  }
+
+  Widget _buildInfoRow(String title, String value, {Color? valueColor}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start, // مهم للنصوص الطويلة
         children: [
-          Text(
-            '$label:',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: Colors.deepPurple,
+          SizedBox(
+            width: 120, // عرض ثابت للعنوان
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 16),
           Expanded(
             child: Text(
               value,
               style: TextStyle(
-                fontSize: 18,
-                color: valueColor ?? Colors.black87,
-                height: 1.3,
+                fontSize: 16,
+                color: valueColor ?? Colors.black,
               ),
             ),
           ),
         ],
       ),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-
-    BlocProvider.of<RoleBloc>(context).add(
-      GetRoleByIdEvent(roleId: widget.roleModel.id),
-    );
-
-
   }
 
   @override
@@ -96,7 +99,6 @@ class _RoleDetailsScreenState extends State<RoleDetailsScreen> {
                       ),
                     ),
                     const SizedBox(height: 24),
-
                     _buildInfoRow('Role Name', widget.roleModel.name),
                     Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
                     _buildInfoRow('Description', widget.roleModel.description,
@@ -107,7 +109,32 @@ class _RoleDetailsScreenState extends State<RoleDetailsScreen> {
             ),
             const SizedBox(height: 24),
 
-            // قائمة المستخدمين
+            // زر عرض الصلاحيات المرتبطة بالدور
+            ElevatedButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (_) => Padding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                    ),
+                    child: BlocProvider.value(
+                      value: permissionBloc,
+                      child: PermissionForRoleList(
+                        bloc: permissionBloc,
+                        roleId: widget.roleModel.id,
+                      ),
+                    ),
+                  ),
+                );
+              },
+              child: const Text('عرض الصلاحيات لهذا الدور'),
+            ),
+
+            const SizedBox(height: 24),
+
+            // قائمة المستخدمين المرتبطين بالدور
             Text(
               'المستخدمين المرتبطين بهذا الدور:',
               style: TextStyle(

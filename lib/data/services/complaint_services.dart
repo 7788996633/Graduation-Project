@@ -10,201 +10,231 @@ class ComplaintServices {
     'Authorization': 'Bearer $myToken',
   };
 
+
   Future<List> getComplaints() async {
-    var url = Uri.parse('${myUrl}complaints');
-    http.Response response;
+    try {
+      var url = Uri.parse('${myUrl}complaints');
+      http.Response response;
 
-    if (kIsWeb) {
-      var request = http.Request('GET', url);
-      request.headers.addAll(baseHeaders);
-      var streamedResponse = await request.send();
-      response = await http.Response.fromStream(streamedResponse);
-    } else {
-      var request = http.MultipartRequest('GET', url);
-      request.headers.addAll(baseHeaders);
-      var streamedResponse = await request.send();
-      response = await http.Response.fromStream(streamedResponse);
-    }
+      if (kIsWeb) {
+        var request = http.Request('GET', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      } else {
+        var request = http.MultipartRequest('GET', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      }
 
-    var jsonResponse = json.decode(response.body);
-    print(jsonResponse);
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
 
-    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-      return (jsonResponse['data'] as List)
-          .map((item) => ComplaintModel.fromJson(item))
-          .toList();
-    } else {
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+        return jsonResponse['data'];
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print('Error in getSessionTypes: $e');
       return [];
     }
   }
+
 
   Future<List> getMyComplaints() async {
-    var url = Uri.parse('${myUrl}complaints/my/complaints');
-    http.Response response;
+    try {
+      var url = Uri.parse('${myUrl}my-complaints');
+      http.Response response;
 
-    if (kIsWeb) {
-      var request = http.Request('GET', url);
-      request.headers.addAll(baseHeaders);
-      var streamedResponse = await request.send();
-      response = await http.Response.fromStream(streamedResponse);
-    } else {
-      var request = http.MultipartRequest('GET', url);
-      request.headers.addAll(baseHeaders);
-      var streamedResponse = await request.send();
-      response = await http.Response.fromStream(streamedResponse);
-    }
+      if (kIsWeb) {
+        var request = http.Request('GET', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      } else {
+        var request = http.MultipartRequest('GET', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      }
 
-    var jsonResponse = json.decode(response.body);
-    print(jsonResponse);
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
 
-    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-      return (jsonResponse['data'] as List)
-          .map((item) => ComplaintModel.fromJson(item))
-          .toList();
-    } else {
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+        return jsonResponse['data'];
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print('Error in getSessionTypes: $e');
       return [];
     }
   }
 
+
+
+  // Get complaint by ID
   Future<ComplaintModel> getComplaintById(int complaintId) async {
-    var url = Uri.parse('${myUrl}complaints/$complaintId');
-    http.Response response;
+    try {
+      var url = Uri.parse('${myUrl}complaints/$complaintId');
+      http.Response response;
 
-    if (kIsWeb) {
-      var request = http.Request('GET', url);
-      request.headers.addAll(baseHeaders);
-      var streamedResponse = await request.send();
-      response = await http.Response.fromStream(streamedResponse);
-    } else {
-      var request = http.MultipartRequest('GET', url);
-      request.headers.addAll(baseHeaders);
-      var streamedResponse = await request.send();
-      response = await http.Response.fromStream(streamedResponse);
-    }
+      if (kIsWeb) {
+        var request = http.Request('GET', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      } else {
+        var request = http.Request('GET', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      }
 
-    var jsonResponse = json.decode(response.body);
-    print(jsonResponse);
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
 
-    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-      return ComplaintModel.fromJson(jsonResponse['data']);
-    } else {
-      throw Exception('failed: ${jsonResponse['message']}');
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+        return ComplaintModel.fromJson(jsonResponse['data']);
+      } else {
+        throw Exception('Failed: ${jsonResponse['message']}');
+      }
+    } catch (e) {
+      throw Exception('Error in getComplaintById: $e');
     }
   }
 
+  // Add complaint
   Future<String> addComplaint(String description) async {
-    http.Response response;
+    try {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('${myUrl}complaints'),
+      );
 
-    if (kIsWeb) {
-      var request = http.Request('POST', Uri.parse('${myUrl}complaints'));
-      request.headers.addAll({
-        ...baseHeaders,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      });
-      request.bodyFields = {
-        'description': description,
-
-      };
-      var streamedResponse = await request.send();
-      response = await http.Response.fromStream(streamedResponse);
-    } else {
-      var request = http.MultipartRequest('POST', Uri.parse('${myUrl}complaints'));
-      request.fields.addAll({
-        'description': description,
-
-      });
+      request.fields.addAll({'description': description});
       request.headers.addAll(baseHeaders);
+
       var streamedResponse = await request.send();
-      response = await http.Response.fromStream(streamedResponse);
-    }
+      var response = await http.Response.fromStream(streamedResponse);
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
 
-    var jsonResponse = json.decode(response.body);
-    print(jsonResponse);
-
-    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-      return jsonResponse['message'];
-    } else {
-      return 'failed: ${jsonResponse['message']}';
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+        return jsonResponse['message'];
+      } else {
+        return 'Failed: ${jsonResponse['message']}';
+      }
+    } catch (e) {
+      return 'Error in addComplaint: $e';
     }
   }
 
+  // Update complaint
   Future<String> updateComplaint(int complaintId, String description) async {
-    var url = Uri.parse('${myUrl}complaints/$complaintId');
-    var body = {'description': description};
-    http.Response response;
+    try {
+      var url = Uri.parse('${myUrl}complaints/$complaintId');
+      var body = {'description': description};
+      http.Response response;
 
-    if (kIsWeb) {
-      var request = http.Request('PUT', url);
-      request.headers.addAll({
-        ...baseHeaders,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      });
-      request.bodyFields = body;
-      var streamedResponse = await request.send();
-      response = await http.Response.fromStream(streamedResponse);
-    } else {
-      var request = http.MultipartRequest('PUT', url);
-      request.fields.addAll(body);
-      request.headers.addAll(baseHeaders);
-      var streamedResponse = await request.send();
-      response = await http.Response.fromStream(streamedResponse);
-    }
+      if (kIsWeb) {
+        var request = http.Request('PUT', url);
+        request.headers.addAll({
+          ...baseHeaders,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        });
+        request.bodyFields = body;
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      } else {
+        var request = http.MultipartRequest('PUT', url);
+        request.fields.addAll(body);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      }
 
-    var jsonResponse = json.decode(response.body);
-    print(jsonResponse);
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
 
-    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-      return jsonResponse['message'];
-    } else {
-      return 'failed: ${jsonResponse['message']}';
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+        return jsonResponse['message'];
+      } else {
+        return 'Failed: ${jsonResponse['message']}';
+      }
+    } catch (e) {
+      return 'Error in updateComplaint: $e';
     }
   }
 
+  // Update complaint status
   Future<String> updateComplaintStatus(int complaintId, String status) async {
-    var url = Uri.parse('${myUrl}complaints/status/$complaintId');
+    try {
+      var url = Uri.parse('${myUrl}complaints/$complaintId');
+      var body = {'status': status};
+      http.Response response;
 
-    var request = http.Request('PUT', url);
-    request.headers.addAll({
-      ...baseHeaders,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    });
-    request.bodyFields = {'status': status};
+      if (kIsWeb) {
+        var request = http.Request('PUT', url);
+        request.headers.addAll({
+          ...baseHeaders,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        });
+        request.bodyFields = body;
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      } else {
+        var request = http.MultipartRequest('PUT', url);
+        request.fields.addAll(body);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      }
 
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
-    var jsonResponse = json.decode(response.body);
-    print(jsonResponse);
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
 
-    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-      return jsonResponse['message'];
-    } else {
-      return 'failed: ${jsonResponse['message']}';
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+        return jsonResponse['message'];
+      } else {
+        return 'Failed: ${jsonResponse['message']}';
+      }
+    } catch (e) {
+      return 'Error in updateComplaintStatus: $e';
     }
   }
 
+  // Delete complaint
   Future<String> deleteComplaint(int complaintId) async {
-    var url = Uri.parse('${myUrl}complaints/$complaintId');
-    http.Response response;
+    try {
+      var url = Uri.parse('${myUrl}complaints/$complaintId');
+      http.Response response;
 
-    if (kIsWeb) {
-      var request = http.Request('DELETE', url);
-      request.headers.addAll(baseHeaders);
-      var streamedResponse = await request.send();
-      response = await http.Response.fromStream(streamedResponse);
-    } else {
-      var request = http.MultipartRequest('DELETE', url);
-      request.headers.addAll(baseHeaders);
-      var streamedResponse = await request.send();
-      response = await http.Response.fromStream(streamedResponse);
-    }
+      if (kIsWeb) {
+        var request = http.Request('DELETE', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      } else {
+        var request = http.Request('DELETE', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      }
 
-    var jsonResponse = json.decode(response.body);
-    print(jsonResponse);
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
 
-    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-      return jsonResponse['message'];
-    } else {
-      return 'failed: ${jsonResponse['message']}';
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+        return jsonResponse['message'];
+      } else {
+        return 'Failed: ${jsonResponse['message']}';
+      }
+    } catch (e) {
+      return 'Error in deleteComplaint: $e';
     }
   }
 }

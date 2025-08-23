@@ -16,7 +16,7 @@ class PayrollBloc extends Bloc<PayrollEvent, PayrollState> {
         emit(PayrollLoading());
         try {
           String result = await PayrollServices()
-              .addPayroll(event.description, event.employeeId, event.description);
+              .addPayroll(event.userId);
           emit(PayrollSuccess(successMsg: result));
         } catch (e) {
           emit(PayrollFail(errMsg: e.toString()));

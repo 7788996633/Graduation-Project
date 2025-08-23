@@ -60,6 +60,7 @@ class _LegalNewsItemState extends State<LegalNewsItem> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
+                // العنوان + الصورة
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -73,8 +74,8 @@ class _LegalNewsItemState extends State<LegalNewsItem> {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    Expanded(
-                      child: const Text(
+                    const Expanded(
+                      child: Text(
                         'Legal News',
                         style: TextStyle(
                           fontSize: 17,
@@ -83,8 +84,57 @@ class _LegalNewsItemState extends State<LegalNewsItem> {
                         ),
                       ),
                     ),
+                    if (myRole != null && myRole.toLowerCase() == 'admin')
+                      IconButton(
+                        onPressed: () {
+                          BlocProvider.of<LegalNewsBloc>(context).add(
+                            DeleteLegalNewsEvent(legalNewsId: widget.legalNews.id),
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.delete,
+                          color: AppColors.darkBlue,
+                          size: 20,
+                        ),
+                        tooltip: 'Delete News',
+                      ),
+                  ],
+                ),
 
+                const SizedBox(height: 10),
+                Divider(
+                  color: Colors.grey.shade300,
+                  thickness: 1,
+                  height: 1,
+                ),
+                const SizedBox(height: 12),
 
+                // العنوان قبل الوصف
+                Text(
+                  widget.legalNews.title,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.darkBlue,
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // الوصف + أيقونة الحفظ بجانبه
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        widget.legalNews.description.length > 100
+                            ? '${widget.legalNews.description.substring(0, 100)}...'
+                            : widget.legalNews.description,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
                     BlocConsumer<LegalNewsBloc, LegalNewsState>(
                       listener: (context, state) {
                         if (state is LegalNewsSuccess) {
@@ -108,11 +158,13 @@ class _LegalNewsItemState extends State<LegalNewsItem> {
                           onPressed: () {
                             if (isSaved) {
                               BlocProvider.of<LegalNewsBloc>(context).add(
-                                UnSaveLegalNewsEvent(legalNewsId: widget.legalNews.id),
+                                UnSaveLegalNewsEvent(
+                                    legalNewsId: widget.legalNews.id),
                               );
                             } else {
                               BlocProvider.of<LegalNewsBloc>(context).add(
-                                SaveLegalNewsEvent(legalNewsId: widget.legalNews.id),
+                                SaveLegalNewsEvent(
+                                    legalNewsId: widget.legalNews.id),
                               );
                             }
                             setState(() {
@@ -127,46 +179,7 @@ class _LegalNewsItemState extends State<LegalNewsItem> {
                         );
                       },
                     ),
-
-                    if (myRole == 'admin')
-                      IconButton(
-                        onPressed: () {
-                          BlocProvider.of<LegalNewsBloc>(context).add(
-                            DeleteLegalNewsEvent(legalNewsId: widget.legalNews.id),
-                          );
-                        },
-                        icon: const Icon(
-                          Icons.delete,
-                          color: AppColors.darkBlue,
-                          size: 20,
-                        ),
-                        tooltip: 'Delete News',
-                      ),
                   ],
-                ),
-
-                const SizedBox(height: 12),
-
-                // العنوان قبل الوصف
-                Text(
-                  widget.legalNews.title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.darkBlue,
-                  ),
-                ),
-                const SizedBox(height: 8),
-
-                // الوصف
-                Text(
-                  widget.legalNews.description.length > 100
-                      ? '${widget.legalNews.description.substring(0, 100)}...'
-                      : widget.legalNews.description,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.black87,
-                  ),
                 ),
               ],
             ),

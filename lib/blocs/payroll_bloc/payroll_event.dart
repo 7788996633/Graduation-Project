@@ -4,14 +4,13 @@ import 'package:meta/meta.dart';
 sealed class PayrollEvent {}
 
 class AddPayrollEvent extends PayrollEvent {
-  final double salary;
-  final int employeeId;
-  final String description;
+
+  final int userId;
 
   AddPayrollEvent({
-    required this.salary,
-    required this.employeeId,
-    required this.description,
+
+    required this.userId,
+
   });
 }
 

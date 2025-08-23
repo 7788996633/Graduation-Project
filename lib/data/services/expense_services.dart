@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../../constant.dart';
-
 import '../models/expenses_model.dart';
 
 class ExpenseServices {
@@ -42,8 +41,6 @@ class ExpenseServices {
     }
   }
 
-
-  // Get expense by ID
   Future<ExpenseModel> getExpenseById(int expenseId) async {
     try {
       var url = Uri.parse('${myUrl}expenses/$expenseId');
@@ -55,7 +52,7 @@ class ExpenseServices {
         var streamedResponse = await request.send();
         response = await http.Response.fromStream(streamedResponse);
       } else {
-        var request = http.Request('GET', url);
+        var request = http.MultipartRequest('GET', url);
         request.headers.addAll(baseHeaders);
         var streamedResponse = await request.send();
         response = await http.Response.fromStream(streamedResponse);
@@ -74,22 +71,14 @@ class ExpenseServices {
     }
   }
 
-  // Add new expense
-  Future<String> addExpense(String description, double amount, String type,
-     ) async {
+  Future<String> addExpense(String description, double amount, String type) async {
     try {
-      var request = http.MultipartRequest(
-        'POST',
-        Uri.parse('${myUrl}expenses'),
-      );
-
+      var request = http.MultipartRequest('POST', Uri.parse('${myUrl}expenses'));
       request.fields.addAll({
         'description': description,
         'amount': amount.toString(),
         'type': type,
-
       });
-
       request.headers.addAll(baseHeaders);
 
       var streamedResponse = await request.send();
@@ -107,7 +96,6 @@ class ExpenseServices {
     }
   }
 
-  // Update expense (for example, only amount)
   Future<String> updateExpense(int expenseId, String description, double amount) async {
     try {
       var url = Uri.parse('${myUrl}expenses/$expenseId');
@@ -141,14 +129,13 @@ class ExpenseServices {
       if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
         return jsonResponse['message'];
       } else {
-        return 'failed: ${jsonResponse['message']}';
+        return 'Failed: ${jsonResponse['message']}';
       }
     } catch (e) {
       return 'Error in updateExpense: $e';
     }
   }
 
-  // Delete expense
   Future<String> deleteExpense(int expenseId) async {
     try {
       var url = Uri.parse('${myUrl}expenses/$expenseId');

@@ -33,7 +33,7 @@ class ComplaintBloc extends Bloc<ComplaintEvent, ComplaintState> {
         emit(ComplaintLoading());
         try {
           List<ComplaintModel> complaintsList =
-          await ComplaintRepository().myComplaints();
+          await ComplaintRepository().getMyComplaints();
           emit(ComplaintListLoaded(list: complaintsList));
         } catch (e) {
           emit(ComplaintFail(errMsg: e.toString()));
