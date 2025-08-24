@@ -7,7 +7,8 @@ import '../../widgets/custom_text_field_add.dart';
 import '../../widgets/elevated_button_submit.dart';
 
 class AddPermissionScreen extends StatefulWidget {
-  const AddPermissionScreen({super.key});
+  final int roleId;
+  const AddPermissionScreen({super.key,required this.roleId});
 
   @override
   State<AddPermissionScreen> createState() => _AddPermissionScreenState();

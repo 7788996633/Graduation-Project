@@ -5,7 +5,7 @@ import '../../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../../data/models/issues_model.dart';
 import '../../../widgets/custom_appbar_add.dart';
 import '../../../widgets/user_issue_item.dart';
- 
+
 class LawyerIssuesListScreen extends StatefulWidget {
   const LawyerIssuesListScreen({super.key});
   @override
@@ -39,7 +39,7 @@ class _LawyerIssuesListScreenState extends State<LawyerIssuesListScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
       appBar: CustomActionAppBar(
-        title: 'Lawyer Issues ',
+        title: 'Lawyer Cases ',
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

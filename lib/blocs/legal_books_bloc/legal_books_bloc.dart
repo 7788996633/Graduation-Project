@@ -1,6 +1,6 @@
 import 'dart:core';
 import 'package:bloc/bloc.dart';
- import '../../data/models/legal_book_model.dart';
+import '../../data/models/legal_book_model.dart';
 
 import '../../data/repositories/legal_book_repository.dart';
 import '../../data/services/legal_book_services.dart';
@@ -15,9 +15,16 @@ class LegalBookBloc extends Bloc<LegalBookEvent, LegalBookState> {
       if (event is AddLegalBookEvent) {
         emit(LegalBookLoading());
         try {
-          // هنا يجب تمرير file و bookTitle و fileName حسب تعريف event لديك
           String result = await LegalBookServices()
               .addLegalBook(event.file, event.bookTitle, event.fileName);
+          emit(LegalBookSuccess(successMsg: result));
+        } catch (e) {
+          emit(LegalBookFail(errMsg: e.toString()));
+        }
+      } else if (event is SaveLegalBookEvent) {
+        emit(LegalBookLoading());
+        try {
+          String result = await LegalBookServices().saveLegalBook(event.bookId);
           emit(LegalBookSuccess(successMsg: result));
         } catch (e) {
           emit(LegalBookFail(errMsg: e.toString()));
@@ -25,8 +32,8 @@ class LegalBookBloc extends Bloc<LegalBookEvent, LegalBookState> {
       } else if (event is GetLegalBookByIdEvent) {
         emit(LegalBookLoading());
         try {
-          LegalBookModel book = await LegalBookServices()
-              .getLegalBookById(event.bookId);
+          LegalBookModel book =
+              await LegalBookServices().getLegalBookById(event.bookId);
           emit(LegalBookLoaded(book: book));
         } catch (e) {
           emit(LegalBookFail(errMsg: e.toString()));
@@ -35,6 +42,14 @@ class LegalBookBloc extends Bloc<LegalBookEvent, LegalBookState> {
         emit(LegalBookLoading());
         try {
           allBooks = await LegalBookRepository().getLegalBooks();
+          emit(LegalBookListLoaded(list: allBooks));
+        } catch (e) {
+          emit(LegalBookFail(errMsg: e.toString()));
+        }
+      } else if (event is GetMySavedLegalBooksEvent) {
+        emit(LegalBookLoading());
+        try {
+          allBooks = await LegalBookRepository().getMySavedLegalBooks();
           emit(LegalBookListLoaded(list: allBooks));
         } catch (e) {
           emit(LegalBookFail(errMsg: e.toString()));
@@ -56,12 +71,11 @@ class LegalBookBloc extends Bloc<LegalBookEvent, LegalBookState> {
       } else if (event is UpdateLegalBookEvent) {
         emit(LegalBookLoading());
         try {
-          // تمرير file و bookTitle و fileName حسب تعريف event
           String result = await LegalBookServices().updateLegalBook(
             bookId: event.bookId,
             bookTitle: event.bookTitle,
             fileName: event.fileName,
-            file: event.file, // يمكن أن تكون null إذا لم يتغير الملف
+            file: event.file,
           );
           emit(LegalBookSuccess(successMsg: result));
         } catch (e) {
@@ -70,8 +84,17 @@ class LegalBookBloc extends Bloc<LegalBookEvent, LegalBookState> {
       } else if (event is DeleteLegalBookEvent) {
         emit(LegalBookLoading());
         try {
-          String result = await LegalBookServices()
-              .deleteLegalBook(event.bookId);
+          String result =
+              await LegalBookServices().deleteLegalBook(event.bookId);
+          emit(LegalBookSuccess(successMsg: result));
+        } catch (e) {
+          emit(LegalBookFail(errMsg: e.toString()));
+        }
+      } else if (event is UnSaveLegalBookEvent) {
+        emit(LegalBookLoading());
+        try {
+          String result =
+              await LegalBookServices().unSaveLegalBook(event.bookId);
           emit(LegalBookSuccess(successMsg: result));
         } catch (e) {
           emit(LegalBookFail(errMsg: e.toString()));

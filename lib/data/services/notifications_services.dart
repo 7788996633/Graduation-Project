@@ -1,9 +1,7 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart'; // kIsWeb
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 import '../../../constant.dart';
-import '../../localnotification.dart';
 
 class NotificationsServices {
   final _firebaseMessaging = FirebaseMessaging.instance;
@@ -64,7 +62,8 @@ class NotificationsServices {
 
   /// إرسال توكن FCM إلى السيرفر
   Future<String> sendFcmTokenToServer(String fcmToken) async {
-    final url = Uri.parse('${myUrl}save-fcm-token');//'${myUrl}issue-categories'
+    final url =
+        Uri.parse('${myUrl}save-fcm-token'); //'${myUrl}issue-categories'
 
     final body = json.encode({'fcm_token': fcmToken});
 

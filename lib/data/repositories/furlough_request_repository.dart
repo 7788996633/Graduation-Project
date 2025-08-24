@@ -11,4 +11,13 @@ class FurloughRequestRepository {
     )
         .toList();
   }
+
+  Future<List<FurloughRequestModel>> myFurloughRequests() async {
+    var furloughRequestsList = await FurloughRequestsServices().getMyFurloughRequests();
+    return furloughRequestsList
+        .map(
+          (e) => FurloughRequestModel.fromJson(e),
+    )
+        .toList();
+  }
 }

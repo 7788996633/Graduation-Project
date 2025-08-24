@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../blocs/user_bloc/user_bloc.dart';
+import '../../../blocs/payroll_bloc/payroll_bloc.dart';
 import '../../../data/models/user_model.dart';
+import '../../blocs/payroll_bloc/payroll_event.dart';
 import '../../themes.dart';
 import 'custom_user_item.dart';
 
@@ -16,11 +19,6 @@ class UserItem extends StatefulWidget {
 
 class _UserItemState extends State<UserItem> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return CustomUserItem(
       userModel: widget.userModel,
@@ -30,110 +28,105 @@ class _UserItemState extends State<UserItem> {
         ),
         widget.userModel.roleName,
       ),
-      trailing: widget.userModel.id == 1
-          ? const Text("")
-          : PopupMenuButton<String>(
-              onSelected: (value) async {
-                final confirmed = await showDialog<bool>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text("Confirm Role Change"),
-                    content: Text(
-                        "Are you sure you want to change the role to '$value'?"),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, false),
-                        child: const Text("Cancel"),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, true),
-                        child: const Text("Confirm"),
-                      ),
-                    ],
-                  ),
-                );
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // زر إضافة الراتب
+          IconButton(
+            icon: Icon(Icons.attach_money, color: getCurrentTheme()['Icons']),
+            tooltip: tr("add_payroll"),
+            onPressed: () {
+              BlocProvider.of<PayrollBloc>(context).add(
+                AddPayrollEvent(userId: widget.userModel.id),
+              );
+            },
+          ),
 
-                // التأكد إذا كان الـ context لسه موجود
-                if (!context.mounted) return;
+          // القائمة المنسدلة للأدوار
+          widget.userModel.id == 1
+              ? const SizedBox()
+              : PopupMenuButton<String>(
+            onSelected: (value) async {
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text(tr("confirm_role_change")),
+                  content: Text(tr("are_you_sure_change_role", args: [value])),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Text(tr("cancel")),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: Text(tr("confirm")),
+                    ),
+                  ],
+                ),
+              );
 
-                if (confirmed == true) {
-                  if (value == 'Delete') {
-                    BlocProvider.of<UserBloc>(context).add(
-                      DeleteUserById(userId: widget.userModel.id),
-                    );
-                  } else {
-                    print(value);
-                    BlocProvider.of<UserBloc>(context).add(
-                      ChangeUserRole(
-                        userId: widget.userModel.id,
-                        role: value.toLowerCase(),
-                      ),
-                    );
-                  }
+              if (!context.mounted) return;
+
+              if (confirmed == true) {
+                if (value == 'Delete') {
+                  BlocProvider.of<UserBloc>(context).add(
+                    DeleteUserById(userId: widget.userModel.id),
+                  );
+                } else {
+                  BlocProvider.of<UserBloc>(context).add(
+                    ChangeUserRole(
+                      userId: widget.userModel.id,
+                      role: value.toLowerCase(),
+                    ),
+                  );
                 }
-              },
-              icon: Icon(
-                Icons.settings,
-                color: getCurrentTheme()['Icons'],
-              ),
-              itemBuilder: (context) =>
-                  getPopupItems(widget.userModel.roleName),
+              }
+            },
+            icon: Icon(
+              Icons.settings,
+              color: getCurrentTheme()['Icons'],
             ),
+            itemBuilder: (context) => getPopupItems(widget.userModel.roleName),
+          ),
+        ],
+      ),
     );
   }
 
   List<PopupMenuEntry<String>> getPopupItems(String currentRole) {
     final roleOptions = <String, PopupMenuItem<String>>{
-      'Lawyer': const PopupMenuItem<String>(
+      'Lawyer': PopupMenuItem<String>(
         value: 'Lawyer',
-        child: Text("Change Role To Lawyer",
-            style: TextStyle(color: Colors.brown)),
+        child: Text(tr("change_role_to_lawyer"), style: const TextStyle(color: Colors.brown)),
       ),
-      'Intern': const PopupMenuItem<String>(
+      'Intern': PopupMenuItem<String>(
         value: 'Intern',
-        child: Text("Change Role To Intern",
-            style: TextStyle(color: Colors.orange)),
+        child: Text(tr("change_role_to_intern"), style: const TextStyle(color: Colors.orange)),
       ),
-      'HR': const PopupMenuItem<String>(
+      'HR': PopupMenuItem<String>(
         value: 'HR',
-        child: Text("Change Role To HR",
-            style: TextStyle(color: Colors.yellowAccent)),
+        child: Text(tr("change_role_to_hr"), style: const TextStyle(color: Colors.yellowAccent)),
       ),
-      'Accountant': const PopupMenuItem<String>(
+      'Accountant': PopupMenuItem<String>(
         value: 'Accountant',
-        child: Text("Change Role To Accountant",
-            style: TextStyle(color: Colors.green)),
+        child: Text(tr("change_role_to_accountant"), style: const TextStyle(color: Colors.green)),
       ),
-      'User': const PopupMenuItem<String>(
+      'User': PopupMenuItem<String>(
         value: 'User',
-        child: Text("Change Role To User",
-            style: TextStyle(color: Colors.blueGrey)),
+        child: Text(tr("change_role_to_user"), style: const TextStyle(color: Colors.blueGrey)),
       ),
-      'Admin': const PopupMenuItem<String>(
+      'Admin': PopupMenuItem<String>(
         value: 'Admin',
-        child: Text(
-          "You are the admin",
-          style: TextStyle(
-            color: Color.fromARGB(255, 179, 34, 106),
-          ),
-        ),
+        child: Text(tr("you_are_admin"), style: const TextStyle(color: Color.fromARGB(255, 179, 34, 106))),
       ),
-      'Delete': const PopupMenuItem<String>(
+      'Delete': PopupMenuItem<String>(
         value: 'Delete',
-        child: Text(
-          "Delete this user",
-          style: TextStyle(
-            color: Color.fromARGB(255, 179, 34, 106),
-          ),
-        ),
+        child: Text(tr("delete_this_user"), style: const TextStyle(color: Color.fromARGB(255, 179, 34, 106))),
       ),
     };
 
     final current = currentRole.toUpperCase();
-
-    if (current == 'ADMIN') {
-      return [roleOptions['Admin']!];
-    }
+    if (current == 'ADMIN') return [roleOptions['Admin']!];
 
     final allowedTransitions = <String, List<String>>{
       'LAWYER': ['User'],
@@ -145,9 +138,6 @@ class _UserItemState extends State<UserItem> {
 
     final allowed = allowedTransitions[current];
     if (allowed == null) return [];
-
     return allowed.map((r) => roleOptions[r]!).toList();
   }
-
-  String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 }

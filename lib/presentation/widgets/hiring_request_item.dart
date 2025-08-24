@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../blocs/hiring_requests/hiring_requests_block.dart';
 import '../../blocs/hiring_requests/hiring_requests_event.dart';
+import '../../constant.dart';
 import '../../data/models/hiring_request_model.dart';
 import '../../themes.dart';
 import '../screens/hr_screen/hiring_request/hiring_request_detials.dart';
@@ -14,7 +15,7 @@ class HiringRequestItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      padding: const EdgeInsets.symmetric( vertical: 12),
       child: GestureDetector(
         onTap: () {
           Navigator.push(
@@ -85,10 +86,12 @@ class HiringRequestItem extends StatelessWidget {
               ),
             ),
             trailing: SizedBox(
-              width: 80, // حجم مناسب لتجنب overflow
+              width: 100, // حجم مناسب لتجنب overflow
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+              if (myRole != null &&
+              (myRole.toLowerCase() == 'hr'))
                   IconButton(
                     icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
                     onPressed: () {

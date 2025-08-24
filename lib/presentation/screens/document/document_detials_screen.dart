@@ -17,7 +17,7 @@ class DocumentDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _infoText('ID', document.id.toString()),
+
             _infoText('Privacy', document.privacy),
             _infoText('Session ID', document.sessionId.toString()),
             _infoText('File: ', document.file),

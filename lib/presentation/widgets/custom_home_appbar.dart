@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../screens/notifications_screen.dart';
 import '../../../../themes.dart';
+import '../screens/notification_screen/all_notifications_screen.dart';
 
 class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;

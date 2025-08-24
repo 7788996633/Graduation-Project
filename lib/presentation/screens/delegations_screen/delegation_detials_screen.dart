@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/delegations_bloc/delegations_bloc.dart';
-import 'package:graduation/blocs/delegations_bloc/delegations_event.dart';
-import 'package:graduation/blocs/delegations_bloc/delegations_state.dart';
-import 'package:graduation/blocs/lawyer_in_issues_bloc/lawyer_in_issues_bloc.dart';
-import 'package:graduation/data/models/lawyer_model.dart';
-import 'package:graduation/presentation/widgets/custom_text_field.dart';
-import 'package:graduation/themes.dart';
+
+import '../../../blocs/delegations_bloc/delegations_bloc.dart';
+import '../../../blocs/delegations_bloc/delegations_event.dart';
+import '../../../blocs/delegations_bloc/delegations_state.dart';
+import '../../../blocs/lawyer_in_issues_bloc/lawyer_in_issues_bloc.dart';
 import '../../../data/models/delegations_model.dart';
+import '../../../data/models/lawyer_model.dart';
+import '../../../themes.dart';
 import '../../widgets/custom_appbar_add.dart';
+import '../../widgets/custom_text_field.dart';
 import '../../widgets/lawyer_radio_item.dart';
 import '../../widgets/select_lawyer_for_session_list.dart';
 

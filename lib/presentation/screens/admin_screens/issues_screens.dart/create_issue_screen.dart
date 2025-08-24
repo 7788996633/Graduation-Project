@@ -75,7 +75,10 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
     showModalBottomSheet(
       context: context,
       builder: (context) => BlocProvider(
-        create: (context) => CategoriesBloc()..add(GetAllCategoriesEvent()),
+        create: (context) => CategoriesBloc()
+          ..add(
+            GetAllCategoriesEvent(),
+          ),
         child: IssueCategorySelecter(
           onSelected: (id, name) {
             setState(() {
@@ -201,7 +204,7 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: CustomActionAppBar(
-        title: 'Create Issue',
+        title: 'Create Case',
       ),
       body: Padding(
         padding: const EdgeInsets.all(12),
@@ -260,7 +263,7 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
                     ),
                     _buildTextField(
                       controller: issuenumberController,
-                      label: 'Issue Number',
+                      label: 'Case Number',
                       icon: Icons.confirmation_number_outlined,
                       inputType: TextInputType.number,
                     ),
@@ -298,7 +301,7 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              selectedCategoryName ?? "Selcet issue category",
+                              selectedCategoryName ?? "Selcet Case category",
                             ),
                           ],
                         ),
@@ -333,30 +336,35 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
                 content: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const SizedBox(height: 10),
+
                     _buildDatePicker(
                       label: 'Start Date',
                       selectedDate: startDate,
                       onTap: () => _pickDate(context, true),
                     ),
-                    const SizedBox(height: 12),
-                    _buildDatePicker(
-                      label: 'End Date',
-                      selectedDate: endDate,
-                      onTap: () => _pickDate(context, false),
-                    ),
-                    const SizedBox(height: 20),
+                    // const SizedBox(height: 12),
+                    // _buildDatePicker(
+                    //   label: 'End Date',
+                    //   selectedDate: endDate,
+                    //   onTap: () => _pickDate(context, false),
+                    // ),
+                    const SizedBox(height: 10),
                     _buildTextField(
                       controller: totalcostController,
                       label: 'Total Cost',
                       icon: Icons.monetization_on_outlined,
                       inputType: TextInputType.number,
                     ),
+                    const SizedBox(height: 10),
+
                     _buildTextField(
                       controller: numberofpaymentsController,
                       label: 'Number of Payments',
                       icon: Icons.payments_outlined,
                       inputType: TextInputType.number,
                     ),
+                    const SizedBox(height: 10),
                   ],
                 ),
               ),
@@ -398,12 +406,13 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     _buildTextField(
                       controller: opponentnameController,
                       label: 'Opponent Name',
                       icon: Icons.person_outline,
                     ),
+                    const SizedBox(height: 10),
                   ],
                 ),
               ),

@@ -1,9 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/constant.dart';
+import 'package:graduation/responsive.dart';
 
 import '../../blocs/lawyer_in_issues_bloc/lawyer_in_issues_bloc.dart';
 import '../../data/models/lawyer_model.dart';
+import '../../themes.dart';
 import 'custom_lawyer_item.dart';
 
 class LawyersInIssueList extends StatefulWidget {
@@ -39,40 +42,97 @@ class _LawyersInIssueListState extends State<LawyersInIssueList> {
         } else if (state is LawyerInIssuesListLoadedSuccessfully) {
           _allLawyers = state.lawyerInissues;
           selectedLawyerIds = _allLawyers.map((lawyer) => lawyer.id).toList();
-
-          return LayoutBuilder(
-            builder: (context, constraints) {
-              double width = constraints.maxWidth;
-              double aspectRatio;
-              int crossAxisCount;
-
-              if (kIsWeb) {
-                crossAxisCount = 2;     // ✅ سطر يحتوي على محاميين في الويب
-                aspectRatio = 4;       // ✅ كارد بعرض أصغر وطول مناسب
-              } else {
-                crossAxisCount = 2;     // ✅ على الموبايل أيضًا سطرين
-                aspectRatio = 2.2;
-              }
-
-              return GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: _allLawyers.length,
-                padding: const EdgeInsets.all(8),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  mainAxisSpacing: 8,
-                  crossAxisSpacing: 8,
-                  childAspectRatio: aspectRatio,
-                ),
-                itemBuilder: (context, index) {
-                  return CustomLawyerItem(
-                    lawyer: _allLawyers[index],
-                    isSelected: selectedLawyerIds.contains(_allLawyers[index].id),
+          return SizedBox(
+            height: 150,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              separatorBuilder: (context, index) => SizedBox(width: s10),
+              itemCount: _allLawyers.length + 1, // +1 لعنصر "Add Lawyers"
+              padding: const EdgeInsets.all(8),
+              itemBuilder: (context, index) {
+                if (index < _allLawyers.length) {
+                  // عنصر المحامي
+                  return Container(
+                    width: s120,
+                    padding: EdgeInsets.all(s8),
+                    decoration: BoxDecoration(
+                      gradient: RadialGradient(
+                        center: Alignment.center,
+                        radius: 2,
+                        colors: isLight
+                            ? [
+                                AppColors.darkBlue,
+                                AppColors.softGray,
+                                AppColors.white
+                              ]
+                            : [
+                                Colors.black,
+                                AppColors.softGray,
+                                AppColors.white
+                              ],
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: s30,
+                          backgroundImage:
+                              NetworkImage(_allLawyers[index].image),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          _allLawyers[index].name,
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
                   );
-                },
-              );
-            },
+                } else {
+                  if (myRole == 'admin') {
+                    return Container(
+                      width: s120,
+                      padding: EdgeInsets.all(s8),
+                      decoration: BoxDecoration(
+                        gradient: RadialGradient(
+                          center: Alignment.center,
+                          radius: 2,
+                          colors: isLight
+                              ? [
+                                  AppColors.darkBlue,
+                                  AppColors.softGray,
+                                  AppColors.white
+                                ]
+                              : [
+                                  Colors.black,
+                                  AppColors.softGray,
+                                  AppColors.white
+                                ],
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.add, color: Colors.white),
+                          SizedBox(height: 10),
+                          Text(
+                            'Add Lawyers',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                }
+              },
+            ),
           );
         } else if (state is LawyerInIssuesFail) {
           return Center(

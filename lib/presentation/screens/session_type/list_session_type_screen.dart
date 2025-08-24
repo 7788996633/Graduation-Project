@@ -6,10 +6,8 @@ import '../../../blocs/session_type_bloc/session_type_event.dart';
 
 import '../../../themes.dart';
 import '../../widgets/custom_appbar_add.dart';
-import '../../widgets/refresh_button.dart';
 import '../../widgets/session_type_list.dart';
-
-import '../../widgets/custom_search_bar.dart';  // إضافة ويدجت البحث
+import '../../widgets/custom_search_bar.dart';
 
 import 'add_session_type.dart';
 
@@ -38,6 +36,11 @@ class _ListSessionTypesScreenState extends State<ListSessionTypesScreen> {
     }
   }
 
+  Future<void> _onRefresh() async {
+    bloc.add(GetAllSessionTypesEvent());
+    await Future.delayed(const Duration(milliseconds: 400));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,19 +65,19 @@ class _ListSessionTypesScreenState extends State<ListSessionTypesScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            CustomSearchBar(          // إضافة شريط البحث هنا
+            CustomSearchBar(
               hint: 'Search by Type',
               onSearch: _onSearch,
             ),
             const SizedBox(height: 20),
-            SessionTypeList(bloc: bloc),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: _onRefresh,
+                child: SessionTypeList(bloc: bloc), // صارت مباشرة قابلة للسحب
+              ),
+            ),
           ],
         ),
-      ),
-      floatingActionButton: RefreshButton(
-        onPressed: () {
-          bloc.add(GetAllSessionTypesEvent());
-        },
       ),
     );
   }

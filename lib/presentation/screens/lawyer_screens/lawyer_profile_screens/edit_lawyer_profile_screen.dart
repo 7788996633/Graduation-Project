@@ -139,7 +139,7 @@ class _EditLawyerProfileScreenState extends State<EditLawyerProfileScreen> {
                       backgroundImage: _pickedImage != null
                           ? FileImage(_pickedImage!)
                           : (widget.lawyer.image.startsWith("http")
-                              ? NetworkImage(widget.lawyer.image)
+                              ? NetworkImage(widget.lawyer.image!)
                               : const AssetImage(
                                   'assets/default_image.png')) as ImageProvider,
                       backgroundColor: Colors.grey[300],

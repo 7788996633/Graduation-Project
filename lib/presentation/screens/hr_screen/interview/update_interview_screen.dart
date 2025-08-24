@@ -19,23 +19,23 @@ class UpdateInterviewScreen extends StatefulWidget {
 }
 
 class _UpdateInterviewScreenState extends State<UpdateInterviewScreen> {
-  final _formKey = GlobalKey<FormState>();
-
   late TextEditingController _dateController;
   late DateTime selectedDate;
-
-  bool _isSaving = false;
+  late InterviewBloc _bloc;
 
   @override
   void initState() {
     super.initState();
     selectedDate = widget.interview.date;
-    _dateController = TextEditingController(text: DateFormat('yyyy-MM-dd').format(selectedDate));
+    _dateController =
+        TextEditingController(text: DateFormat('yyyy-MM-dd').format(selectedDate));
+    _bloc = InterviewBloc();
   }
 
   @override
   void dispose() {
     _dateController.dispose();
+    _bloc.close();
     super.dispose();
   }
 
@@ -57,96 +57,88 @@ class _UpdateInterviewScreenState extends State<UpdateInterviewScreen> {
     }
   }
 
-  void _submitUpdate() {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isSaving = true;
-      });
-
-      BlocProvider.of<InterviewBloc>(context).add(
-        UpdateInterviewEvent(
-          interviewId: widget.interview.id,
-          date: selectedDate.toIso8601String(),
-        ),
-      );
-    }
+  void _onUpdatePressed() {
+    _bloc.add(UpdateInterviewEvent(
+      interviewId: widget.interview.id,
+      date: selectedDate.toIso8601String(),
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomActionAppBar(title: 'Update Interview Date'),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: BlocConsumer<InterviewBloc, InterviewState>(
+    return BlocProvider<InterviewBloc>.value(
+      value: _bloc,
+      child: Scaffold(
+        appBar: const CustomActionAppBar(title: 'Update Interview Date'),
+        body: BlocConsumer<InterviewBloc, InterviewState>(
           listener: (context, state) {
             if (state is InterviewSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.successMsg),
-                  backgroundColor: Colors.green,
-                ),
+                SnackBar(content: Text('✅ ${state.successMsg}')),
               );
-              Navigator.pop(context);
+
+              Navigator.pop(
+                context,
+                  InterviewModel(
+                    id: widget.interview.id,
+                    jobAppId: widget.interview.jobAppId,
+                    userId: widget.interview.userId,
+                    result: '', // أو القيمة الجديدة اللي بدك تحفظها
+                    date: selectedDate, // التاريخ الجديد
+                    note: widget.interview.note, // إذا عندك ملاحظات
+                  )
+
+              );
             } else if (state is InterviewFail) {
-              setState(() {
-                _isSaving = false;
-              });
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.errMsg),
-                  backgroundColor: Colors.red,
-                ),
+                SnackBar(content: Text('❌ ${state.errMsg}')),
               );
             }
           },
           builder: (context, state) {
-            return Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'Interview ID: ${widget.interview.id}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _dateController,
-                    readOnly: true,
-                    onTap: () => _selectDate(context),
-                    decoration: const InputDecoration(
-                      labelText: 'Select New Date',
-                      border: OutlineInputBorder(),
-                      suffixIcon: Icon(Icons.calendar_today),
+            final isLoading = state is InterviewLoading;
+
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'Interview ID: ${widget.interview.id}',
+                      style: const TextStyle(fontSize: 16),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please select a date';
-                      }
-                      return null;
-                    },
-                    enabled: !_isSaving,
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: _isSaving ? null : _submitUpdate,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.darkBlue,
-                      minimumSize: const Size.fromHeight(50),
-                    ),
-                    child: _isSaving
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
-                      'Update',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _dateController,
+                      readOnly: true,
+                      onTap: () => _selectDate(context),
+                      decoration: const InputDecoration(
+                        labelText: 'Select New Date',
+                        border: OutlineInputBorder(),
+                        suffixIcon: Icon(Icons.calendar_today),
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 24),
+                    isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : ElevatedButton(
+                      onPressed: _onUpdatePressed,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.darkBlue,
+                        minimumSize: const Size.fromHeight(50),
+                      ),
+                      child: const Text(
+                        'Update',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           },

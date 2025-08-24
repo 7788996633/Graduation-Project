@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../blocs/consultations_bloc/consultation_bloc.dart';
 
 import '../../../themes.dart';
- import '../../widgets/consultations_lawyer_list.dart';
+import '../../widgets/consultations_lawyer_list.dart';
 import '../../widgets/custom_appbar_add.dart';
 import '../../widgets/refresh_button.dart';
 

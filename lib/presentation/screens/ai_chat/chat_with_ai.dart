@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:graduation/presentation/widgets/custom_appbar_add.dart';
-import 'package:graduation/presentation/widgets/custom_text_field.dart';
-import 'package:graduation/themes.dart';
+
+import '../../../themes.dart';
+import '../../widgets/custom_appbar_add.dart';
+import '../../widgets/custom_text_field.dart';
 
 class ChatWithAi extends StatefulWidget {
   const ChatWithAi({super.key});

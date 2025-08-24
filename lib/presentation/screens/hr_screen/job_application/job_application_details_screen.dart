@@ -132,11 +132,7 @@ class _JobApplicationDetailsScreenState extends State<JobApplicationDetailsScree
                   ),
                 ),
                 const SizedBox(height: 20),
-                _buildInfoRow(
-                  icon: Icons.badge_outlined,
-                  label: 'ID',
-                  value: jobApplication.id.toString(),
-                ),
+
                 _buildInfoRow(
                   icon: Icons.person,
                   label: 'Name',

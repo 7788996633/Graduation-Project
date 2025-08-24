@@ -33,7 +33,7 @@ class _ListIssueCategoriesScreenState extends State<ListIssueCategoriesScreen> {
     return Scaffold(
       backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: CustomActionAppBar(
-        title: 'Issue Categories',
+        title: 'Cases Categories',
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),

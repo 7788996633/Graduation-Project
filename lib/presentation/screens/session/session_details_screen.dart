@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/delegations_bloc/delegations_bloc.dart';
-import 'package:graduation/blocs/issue_progress_reports/issue_progress_reports_bloc.dart';
-import 'package:graduation/blocs/issue_progress_reports/issue_progress_reports_event.dart';
-import 'package:graduation/blocs/issue_progress_reports/issue_progress_reports_state.dart';
-import 'package:graduation/blocs/sessions_bloc/sessions_bloc.dart';
-import 'package:graduation/blocs/sessions_bloc/sessions_event.dart';
-import 'package:graduation/blocs/sessions_bloc/sessions_state.dart';
-import 'package:graduation/constant.dart';
-import 'package:graduation/data/models/lawyer_model.dart';
-import 'package:graduation/presentation/screens/delegations_screen/submit_delegation_screen.dart';
-import 'package:graduation/presentation/widgets/custom_text_field.dart';
+import 'package:graduation/responsive.dart';
 
+import '../../../blocs/delegations_bloc/delegations_bloc.dart';
 import '../../../blocs/documents_bloc/document_bloc.dart';
 import '../../../blocs/issue_bloc/issues_bloc.dart';
+import '../../../blocs/issue_progress_reports/issue_progress_reports_bloc.dart';
+import '../../../blocs/issue_progress_reports/issue_progress_reports_event.dart';
+import '../../../blocs/issue_progress_reports/issue_progress_reports_state.dart';
 import '../../../blocs/session_points_bloc/session_points_bloc.dart';
 import '../../../blocs/session_type_bloc/session_type_bloc.dart';
 import '../../../blocs/session_type_bloc/session_type_event.dart';
+import '../../../blocs/sessions_bloc/sessions_bloc.dart';
+import '../../../blocs/sessions_bloc/sessions_event.dart';
+import '../../../blocs/sessions_bloc/sessions_state.dart';
+import '../../../constant.dart';
+import '../../../data/models/lawyer_model.dart';
 import '../../../data/models/session_model.dart';
 import '../../../themes.dart';
 import '../../widgets/custom_appbar_add.dart';
+import '../../widgets/custom_text_field.dart';
 import '../appiontment_session_screen/appointment_session_list_screen.dart';
+import '../delegations_screen/submit_delegation_screen.dart';
 import '../document/add_document_screen.dart';
 
 class SessionDetailsScreen extends StatefulWidget {
@@ -41,11 +42,7 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon,
-              color: isLight
-                  ? AppColors.darkBlue
-                  : const Color.fromARGB(255, 117, 165, 238),
-              size: iconSize),
+          Icon(icon, color: Colors.white, size: iconSize),
           const SizedBox(width: 12),
           Expanded(
             child: RichText(
@@ -56,15 +53,13 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
                   TextSpan(
                     text: '$label: ',
                     style: TextStyle(
-                      color: getCurrentTheme()['NormalText'],
+                      color: Colors.white,
                     ),
                   ),
                   TextSpan(
                     text: value,
                     style: TextStyle(
-                      color: isLight
-                          ? AppColors.darkBlue
-                          : const Color.fromARGB(255, 117, 165, 238),
+                      color: Colors.white,
                     ),
                   ),
                 ],
@@ -242,7 +237,9 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
                       : null,
               onActionPressed: myRole == 'admin'
                   ? showPointsEvaluate
-                  : myRole == 'lawyer' && isCurrentLawyer
+                  : myRole == 'lawyer' &&
+                          isCurrentLawyer &&
+                          widget.sessionModel.isAttend != 1
                       ? () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
@@ -271,136 +268,72 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
                         if (sessionTypeState is SessionTypeLoaded) {
                           final sessionType = sessionTypeState.session;
 
-                          return SingleChildScrollView(
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  color: Colors.white,
-                                  width: isLight ? 0 : 2,
+                          return Center(
+                            child: SingleChildScrollView(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(s10),
+                                  gradient: RadialGradient(
+                                    center: Alignment.center,
+                                    radius: s8,
+                                    colors: isLight
+                                        ? [
+                                            AppColors.darkBlue,
+                                            AppColors.softGray,
+                                            AppColors.white
+                                          ]
+                                        : [
+                                            Colors.black,
+                                            AppColors.softGray,
+                                            AppColors.white
+                                          ],
+                                  ),
                                 ),
-                                borderRadius: BorderRadius.circular(24),
-                              ),
-                              elevation: 12,
-                              color: getCurrentTheme()['BackGorund'],
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Center(
-                                      child: Column(
-                                        children: [
-                                          Icon(
-                                            Icons.gavel_rounded,
-                                            size: 44,
-                                            color: isLight
-                                                ? AppColors.darkBlue
-                                                : const Color.fromARGB(
-                                                    255, 117, 165, 238),
-                                          ),
-                                          const SizedBox(height: 10),
-                                          Text(
-                                            'Session #${widget.sessionModel.sessionId}',
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                              color: getCurrentTheme()[
-                                                  'NormalText'],
-                                            ),
-                                          ),
-                                          const SizedBox(height: 20),
-                                        ],
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        if (isCurrentLawyer) {
-                                          isAddingOutCome = !isAddingOutCome;
-                                          setState(() {});
-                                        }
-                                      },
-                                      child: _buildInfoRow(
-                                          Icons.description,
-                                          'Outcome',
-                                          widget.sessionModel.outcome,
-                                          22,
-                                          16),
-                                    ),
-                                    if (isCurrentLawyer &&
-                                        isAddingOutCome &&
-                                        widget.sessionModel.isAttend == 1) ...[
-                                      CustomTextFeild(
-                                        text: "Add outcome...",
-                                        controller: outComeController,
-                                        color: Colors.white,
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(s20),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
                                       Center(
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.white,
-                                          ),
-                                          onPressed: () {
-                                            BlocProvider.of<SessionsBloc>(
-                                                    context)
-                                                .add(
-                                              UpdateSessionEvent(
-                                                outcome: outComeController.text,
-                                                isAttend: widget
-                                                    .sessionModel.isAttend,
-                                                sessionId: widget
-                                                    .sessionModel.sessionId,
-                                              ),
-                                            );
-                                          },
-                                          child: Text(
-                                            "Confirm",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
+                                        child: Column(
+                                          children: [
+                                            Icon(
+                                              Icons.gavel_rounded,
+                                              size: 44,
+                                              color: Colors.white,
                                             ),
-                                          ),
+                                            const SizedBox(height: 10),
+                                            Text(
+                                              'Session #${widget.sessionModel.sessionId}',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 20),
+                                          ],
                                         ),
                                       ),
-                                    ],
-                                    const Divider(),
-                                    _buildInfoRow(Icons.title, 'Issue Title',
-                                        issue.title, 22, 16),
-                                    const Divider(),
-                                    _buildInfoRow(
-                                        Icons.person,
-                                        'Lawyer',
-                                        widget.sessionModel.lawyer.name,
-                                        22,
-                                        16),
-                                    const Divider(),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: isCurrentLawyer ? 0 : 8),
-                                      child: FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 8),
+                                            child: Row(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Icon(
-                                                  Icons.check_circle,
-                                                  color: isLight
-                                                      ? AppColors.darkBlue
-                                                      : const Color.fromARGB(
-                                                          255, 117, 165, 238),
+                                                  Icons.description,
+                                                  color: Colors.white,
                                                   size: 22,
                                                 ),
-                                                const SizedBox(
-                                                  width: 12,
-                                                ),
+                                                const SizedBox(width: 12),
                                                 RichText(
                                                   text: TextSpan(
                                                     style: TextStyle(
@@ -409,29 +342,17 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
                                                             FontWeight.w500),
                                                     children: [
                                                       TextSpan(
-                                                        text: 'Is Attend: ',
+                                                        text: 'Outcome: ',
                                                         style: TextStyle(
-                                                          color:
-                                                              getCurrentTheme()[
-                                                                  'NormalText'],
+                                                          color: Colors.white,
                                                         ),
                                                       ),
                                                       TextSpan(
-                                                        text: widget.sessionModel
-                                                                    .isAttend ==
-                                                                1
-                                                            ? "Yes"
-                                                            : "No",
+                                                        text: widget
+                                                            .sessionModel
+                                                            .outcome,
                                                         style: TextStyle(
-                                                          color: isLight
-                                                              ? AppColors
-                                                                  .darkBlue
-                                                              : const Color
-                                                                  .fromARGB(
-                                                                  255,
-                                                                  117,
-                                                                  165,
-                                                                  238),
+                                                          color: Colors.white,
                                                         ),
                                                       ),
                                                     ],
@@ -439,179 +360,311 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
                                                 ),
                                               ],
                                             ),
-                                            SizedBox(
-                                              width: 30,
+                                          ),
+                                          if (isCurrentLawyer &&
+                                              widget.sessionModel.isAttend == 1)
+                                            IconButton(
+                                              onPressed: () {
+                                                isAddingOutCome =
+                                                    !isAddingOutCome;
+                                                setState(() {});
+                                              },
+                                              icon: Icon(
+                                                isAddingOutCome
+                                                    ? Icons
+                                                        .arrow_drop_up_outlined
+                                                    : Icons
+                                                        .arrow_drop_down_rounded,
+                                                color: Colors.white,
+                                                size: 40,
+                                              ),
                                             ),
-                                            if (isCurrentLawyer &&
-                                                widget.sessionModel.isAttend !=
-                                                    1)
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Colors.white,
+                                        ],
+                                      ),
+                                      if (isCurrentLawyer &&
+                                          isAddingOutCome &&
+                                          widget.sessionModel.isAttend ==
+                                              1) ...[
+                                        CustomTextFeild(
+                                          text: "Add outcome...",
+                                          controller: outComeController,
+                                          color: Colors.white,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Center(
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.white,
+                                            ),
+                                            onPressed: () {
+                                              BlocProvider.of<SessionsBloc>(
+                                                      context)
+                                                  .add(
+                                                UpdateSessionEvent(
+                                                  outcome:
+                                                      outComeController.text,
+                                                  isAttend: widget
+                                                      .sessionModel.isAttend,
+                                                  sessionId: widget
+                                                      .sessionModel.sessionId,
                                                 ),
-                                                onPressed: () {
-                                                  BlocProvider.of<SessionsBloc>(
-                                                          context)
-                                                      .add(
-                                                    MarkSessionAsAttendanceEvent(
-                                                      sessionId: widget
-                                                          .sessionModel
-                                                          .sessionId,
+                                              );
+                                            },
+                                            child: Text(
+                                              "Confirm",
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                      const Divider(),
+                                      _buildInfoRow(Icons.title, 'Issue Title',
+                                          issue.title, 22, 16),
+                                      const Divider(),
+                                      _buildInfoRow(
+                                          Icons.person,
+                                          'Lawyer',
+                                          widget.sessionModel.lawyer.name,
+                                          22,
+                                          16),
+                                      const Divider(),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: isCurrentLawyer ? 0 : 8),
+                                        child: FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Icon(
+                                                    Icons.check_circle,
+                                                    color: Colors.white,
+                                                    size: 22,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 12,
+                                                  ),
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                      children: [
+                                                        TextSpan(
+                                                          text: 'Is Attend: ',
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                        TextSpan(
+                                                          text: widget.sessionModel
+                                                                      .isAttend ==
+                                                                  1
+                                                              ? "Yes"
+                                                              : "No",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  );
-                                                },
-                                                child: Text(
-                                                  "Set attendance",
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16,
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                width: 30,
+                                              ),
+                                              if (isCurrentLawyer &&
+                                                  widget.sessionModel
+                                                          .isAttend !=
+                                                      1)
+                                                ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                  ),
+                                                  onPressed: () {
+                                                    BlocProvider.of<
+                                                                SessionsBloc>(
+                                                            context)
+                                                        .add(
+                                                      MarkSessionAsAttendanceEvent(
+                                                        sessionId: widget
+                                                            .sessionModel
+                                                            .sessionId,
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: Text(
+                                                    "Set attendance",
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 16,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    const Divider(),
-                                    _buildInfoRow(
-                                        Icons.category,
-                                        'Session Type',
-                                        sessionType.type,
-                                        22,
-                                        16),
-                                    const Divider(),
-                                    if (isCurrentLawyer &&
-                                        widget.sessionModel.isAttend == 1)
-                                      BlocConsumer<IssueProgressReportBloc,
-                                          IssueProgressReportState>(
-                                        listener: (context, state) {
-                                          if (state
-                                              is IssueProgressReportSuccess) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(state.successMsg),
-                                                backgroundColor:
-                                                    Colors.greenAccent,
-                                              ),
-                                            );
-                                            reportController.clear();
-                                          } else if (state
-                                              is IssueProgressReportFail) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(state.errMsg),
-                                                backgroundColor:
-                                                    Colors.redAccent,
-                                              ),
-                                            );
-                                          }
-                                        },
-                                        builder: (context, state) {
-                                          return Container(
-                                            margin: EdgeInsets.only(top: 20),
-                                            width: double.infinity,
-                                            padding: EdgeInsets.all(20),
-                                            decoration: BoxDecoration(
-                                              gradient: RadialGradient(
-                                                center: Alignment.center,
-                                                radius: 5,
-                                                colors: isLight
-                                                    ? [
-                                                        AppColors.darkBlue,
-                                                        AppColors.softGray,
-                                                        AppColors.white,
-                                                      ]
-                                                    : [
-                                                        Colors.black,
-                                                        AppColors.softGray,
-                                                        AppColors.white,
-                                                      ],
-                                              ),
-                                              border: Border.all(
-                                                strokeAlign: 2,
-                                                width: 3,
-                                                color: AppColors.white,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                8,
-                                              ),
-                                            ),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "Enter your report here",
+                                      const Divider(),
+                                      _buildInfoRow(
+                                          Icons.category,
+                                          'Session Type',
+                                          sessionType.type,
+                                          22,
+                                          16),
+                                      const Divider(),
+                                      if (isCurrentLawyer &&
+                                          widget.sessionModel.isAttend == 1)
+                                        BlocConsumer<IssueProgressReportBloc,
+                                            IssueProgressReportState>(
+                                          listener: (context, state) {
+                                            if (state
+                                                is IssueProgressReportSuccess) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content:
+                                                      Text(state.successMsg),
+                                                  backgroundColor:
+                                                      Colors.greenAccent,
                                                 ),
-                                                SizedBox(
-                                                  height: 10,
+                                              );
+                                              reportController.clear();
+                                            } else if (state
+                                                is IssueProgressReportFail) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(state.errMsg),
+                                                  backgroundColor:
+                                                      Colors.redAccent,
                                                 ),
-                                                CustomTextFeild(
-                                                  text: "Report...",
-                                                  controller: reportController,
-                                                  color: Colors.white,
+                                              );
+                                            }
+                                          },
+                                          builder: (context, state) {
+                                            return Container(
+                                              margin: EdgeInsets.only(top: 20),
+                                              width: double.infinity,
+                                              padding: EdgeInsets.all(20),
+                                              decoration: BoxDecoration(
+                                                gradient: RadialGradient(
+                                                  center: Alignment.center,
+                                                  radius: 5,
+                                                  colors: isLight
+                                                      ? [
+                                                          AppColors.darkBlue,
+                                                          AppColors.softGray,
+                                                          AppColors.white,
+                                                        ]
+                                                      : [
+                                                          Colors.black,
+                                                          AppColors.softGray,
+                                                          AppColors.white,
+                                                        ],
                                                 ),
-                                                SizedBox(
-                                                  height: 20,
+                                                border: Border.all(
+                                                  strokeAlign: 2,
+                                                  width: 3,
+                                                  color: AppColors.white,
                                                 ),
-                                                Center(
-                                                  child: ElevatedButton(
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      fixedSize: Size(
-                                                        200,
-                                                        30,
-                                                      ),
-                                                      backgroundColor:
-                                                          Colors.white,
-                                                    ),
-                                                    onPressed: () {
-                                                      BlocProvider.of<
-                                                                  IssueProgressReportBloc>(
-                                                              context)
-                                                          .add(
-                                                        AddIssueProgressReportEvent(
-                                                          sessionId: widget
-                                                              .sessionModel
-                                                              .sessionId,
-                                                          report:
-                                                              reportController
-                                                                  .text,
-                                                        ),
-                                                      );
-                                                    },
-                                                    child: Text(
-                                                      "Submit",
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 16,
-                                                      ),
-                                                    ),
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                  8,
+                                                ),
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Enter your report here",
                                                   ),
-                                                )
-                                              ],
-                                            ),
-                                          );
-                                        },
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  CustomTextFeild(
+                                                    text: "Report...",
+                                                    controller:
+                                                        reportController,
+                                                    color: Colors.white,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 20,
+                                                  ),
+                                                  Center(
+                                                    child: ElevatedButton(
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                        fixedSize: Size(
+                                                          200,
+                                                          30,
+                                                        ),
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                      ),
+                                                      onPressed: () {
+                                                        BlocProvider.of<
+                                                                    IssueProgressReportBloc>(
+                                                                context)
+                                                            .add(
+                                                          AddIssueProgressReportEvent(
+                                                            sessionId: widget
+                                                                .sessionModel
+                                                                .sessionId,
+                                                            report:
+                                                                reportController
+                                                                    .text,
+                                                          ),
+                                                        );
+                                                      },
+                                                      child: Text(
+                                                        "Submit",
+                                                        style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      const SizedBox(height: 30),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                              child:
+                                                  _buildAddDocButton(context)),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                              child: _buildAppointmentsButton(
+                                                  context)),
+                                        ],
                                       ),
-                                    const SizedBox(height: 30),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                            child: _buildAddDocButton(context)),
-                                        const SizedBox(width: 12),
-                                        Expanded(
-                                            child: _buildAppointmentsButton(
-                                                context)),
-                                      ],
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -656,11 +709,21 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
           ),
         );
       },
-      icon: const Icon(Icons.upload_file, size: 22),
-      label: const Text('Add Document', style: TextStyle(fontSize: 16)),
+      icon: const Icon(
+        Icons.upload_file,
+        size: 22,
+        color: Colors.black,
+      ),
+      label: Text(
+        'Add Document',
+        style: TextStyle(
+          fontSize: 16,
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.darkBlue,
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.white,
         padding: const EdgeInsets.symmetric(vertical: 14),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         elevation: 5,
@@ -679,12 +742,21 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
           ),
         );
       },
-      icon: const Icon(Icons.event_available, size: 22),
-      label: const Text('Appointments', style: TextStyle(fontSize: 16)),
+      icon: const Icon(
+        Icons.event_available,
+        size: 22,
+        color: Colors.black,
+      ),
+      label: const Text(
+        'Appointments',
+        style: TextStyle(
+          fontSize: 16,
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        foregroundColor: AppColors.darkBlue,
-        side: BorderSide(color: AppColors.darkBlue, width: 2),
+        backgroundColor: AppColors.white,
         padding: const EdgeInsets.symmetric(vertical: 14),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         elevation: 2,

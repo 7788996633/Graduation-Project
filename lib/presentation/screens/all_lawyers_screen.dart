@@ -32,7 +32,9 @@ class _AllLawyersScreenState extends State<AllLawyersScreen> {
   }
 
   void _onSearch(String lawyerName) {
-    if (lawyerName.trim().isNotEmpty) {
+    if (lawyerName
+        .trim()
+        .isNotEmpty) {
       bloc.add(
         SearchLawyersByNameEvent(
           name: lawyerName,
@@ -58,7 +60,7 @@ class _AllLawyersScreenState extends State<AllLawyersScreen> {
             ),
             onPressed: () async {
               final filter =
-                  await showModalBottomSheet<FiltersStrategy<LawyerModel>>(
+              await showModalBottomSheet<FiltersStrategy<LawyerModel>>(
                 context: context,
                 builder: (_) => const LawyerFilterBottomSheet(),
               );

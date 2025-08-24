@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+ import '../../../blocs/payroll_bloc/payroll_bloc.dart';
+import '../../../blocs/user_bloc/user_bloc.dart';
 import '../../widgets/section_card.dart';
+ import '../all_users_list.dart';
+import '../pyroll_screen/all_payroll_screen.dart';
 import '../settings/setting_screen.dart';
 import '../../widgets/custom_home_appbar.dart';
 
@@ -9,17 +14,37 @@ class AccountanHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sections = [
+
       {
-        'title': 'Employee Salaries List',
-        'icon': Icons.list_alt,
+        'title': ' list Payroll',
+        'icon': Icons.report,
         'onTap': () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => const SettingsScreen (),
+              builder: (_) =>
+                  BlocProvider(
+                    create: (context) => PayrollBloc(),
+                    child: const ListPayrollsScreen(),
+                  ),
             ),
           );
         },
+      },
+    {
+    'title': ' add Payroll',
+    'icon': Icons.report,
+    'onTap': () {
+    Navigator.push(
+    context,
+    MaterialPageRoute(
+    builder: (_) => BlocProvider(
+    create: (context) => UserBloc(),
+    child:ListUsersScreen(),
+    ),
+    ),
+    );
+    },
       },
       {
         'title': 'Verify Salary Delivery',

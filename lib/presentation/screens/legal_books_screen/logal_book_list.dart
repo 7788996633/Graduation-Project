@@ -7,10 +7,10 @@ import '../../../blocs/legal_books_bloc/legal_books_event.dart';
 import '../../../themes.dart';
 import '../../widgets/custom_appbar_add.dart';
 import '../../widgets/legal_book_list.dart';
-import '../../widgets/refresh_button.dart';
-import '../../widgets/custom_search_bar.dart';  // إضافة ويدجت البحث
+import '../../widgets/custom_search_bar.dart';  // ويدجت البحث
 
-import 'add_logal_book.dart';  // شاشة إضافة كتاب قانوني (لازم تنشئها بنفس مسار add_session_type.dart)
+import 'add_logal_book.dart';
+import 'my_saved_book_list.dart';  // شاشة إضافة كتاب قانوني
 
 class ListLegalBooksScreen extends StatefulWidget {
   const ListLegalBooksScreen({super.key});
@@ -21,6 +21,10 @@ class ListLegalBooksScreen extends StatefulWidget {
 
 class _ListLegalBooksScreenState extends State<ListLegalBooksScreen> {
   late LegalBookBloc bloc;
+
+  // هنا تقدر تجيب الدور من أي مكان (API, SharedPreferences, Provider...)
+  // حالياً رح أفترض إنك جبت الدور بهالمتغير
+  final String myRole = "admin"; // جرّب غيّرها لـ "user" وشوف
 
   @override
   void initState() {
@@ -43,9 +47,10 @@ class _ListLegalBooksScreenState extends State<ListLegalBooksScreen> {
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
         title: 'Legal Books',
-        actionIcon: Icons.add_circle_rounded,
-        tooltip: 'Add New Legal Book',
-        onActionPressed: () {
+        actionIcon: myRole == "admin" ? Icons.add_circle_rounded : null,
+        tooltip: myRole == "admin" ? 'Add New Legal Book' : null,
+        onActionPressed: myRole == "admin"
+            ? () {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -55,8 +60,25 @@ class _ListLegalBooksScreenState extends State<ListLegalBooksScreen> {
               ),
             ),
           );
+        }
+            : null,
+        secondaryIcon: Icons.bookmark, // أيقونة لزر "My Saved News"
+        secondaryTooltip: 'My Saved News',
+        onSecondaryPressed: () {
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => LegalBookBloc(),
+                child: const MySavedBookListScreen(),
+              ),
+            ),
+
+          );
         },
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -66,14 +88,17 @@ class _ListLegalBooksScreenState extends State<ListLegalBooksScreen> {
               onSearch: _onSearch,
             ),
             const SizedBox(height: 20),
-            LegalBookList(bloc: bloc),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  bloc.add(GetAllLegalBooksEvent());
+                  await Future.delayed(const Duration(seconds: 1));
+                },
+                child: LegalBookList(bloc: bloc),
+              ),
+            ),
           ],
         ),
-      ),
-      floatingActionButton: RefreshButton(
-        onPressed: () {
-          bloc.add(GetAllLegalBooksEvent());
-        },
       ),
     );
   }

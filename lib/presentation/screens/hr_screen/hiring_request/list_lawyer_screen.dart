@@ -7,15 +7,9 @@ import '../../../../blocs/lawyer_bloc/lawyer_event.dart';
 import '../../../../themes.dart';
 import '../../../widgets/custom_appbar_add.dart';
 import '../../../widgets/lawyer_list.dart';
-import '../../../widgets/refresh_button.dart';
 
 class ListLawyersScreen extends StatefulWidget {
-
-
-  const ListLawyersScreen({
-    super.key,
-
-  });
+  const ListLawyersScreen({super.key});
 
   @override
   State<ListLawyersScreen> createState() => _ListLawyersScreenState();
@@ -40,19 +34,13 @@ class _ListLawyersScreenState extends State<ListLawyersScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            LawyerList(
-            ),
-
-          ],
+        child: RefreshIndicator(
+          onRefresh: () async {
+            bloc.add(GetAllLawyersEvent());
+            await Future.delayed(const Duration(seconds: 1));
+          },
+          child: LawyerList(),
         ),
-      ),
-      floatingActionButton: RefreshButton(
-        onPressed: () {
-          bloc.add(GetAllLawyersEvent());
-        },
       ),
     );
   }

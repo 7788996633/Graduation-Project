@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../blocs/session_type_bloc/session_type_bloc.dart';
 import '../../blocs/session_type_bloc/session_type_event.dart';
@@ -16,17 +17,13 @@ class SessionTypeItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Card(
-        elevation: 8,
+        elevation: 10,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(
-            color: Colors.grey.shade400,
-            width: 2,
-          ),
+          borderRadius: BorderRadius.circular(24),
         ),
-        shadowColor: AppColors.darkBlue.withOpacity(0.4),
-        child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        shadowColor: AppColors.darkBlue.withOpacity(0.3),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(24),
           onTap: () {
             Navigator.push(
               context,
@@ -40,45 +37,63 @@ class SessionTypeItem extends StatelessWidget {
               ),
             );
           },
-          leading: Container(
-            decoration: BoxDecoration(
-              color: AppColors.darkBlue.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    sessionTypeModel.type,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.darkBlue,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                ),
+                Row(
+                  children: [
+                    // أيقونة الحذف
+                    InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () {
+                        BlocProvider.of<SessionTypeBloc>(context).add(
+                          DeleteSessionTypeEvent(
+                              sessionTypeId: sessionTypeModel.id),
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: AppColors.darkBlue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(
+                          Icons.delete_forever,
+                          color: AppColors.darkBlue,
+                          size: 24,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    // أيقونة الانتقال
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: AppColors.darkBlue.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        color: AppColors.darkBlue,
+                        size: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            child: IconButton(
-              onPressed: () {
-                BlocProvider.of<SessionTypeBloc>(context).add(
-                  DeleteSessionTypeEvent(sessionTypeId: sessionTypeModel.id),
-                );
-              },
-              icon: Icon(
-                Icons.delete_forever,
-                color: AppColors.darkBlue,
-                size: 28,
-              ),
-              tooltip: 'Delete Session Type',
-            ),
-          ),
-          title: Text(
-            sessionTypeModel.type,
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w700,
-              color: AppColors.darkBlue,
-              letterSpacing: 0.5,
-            ),
-          ),
-          subtitle: Text(
-            'Session Type',
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.darkBlue.withOpacity(0.6),
-            ),
-          ),
-          trailing: Icon(
-            Icons.keyboard_arrow_right,
-            color: AppColors.darkBlue.withOpacity(0.7),
-            size: 32,
           ),
         ),
       ),

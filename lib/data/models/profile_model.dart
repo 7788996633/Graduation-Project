@@ -1,4 +1,3 @@
-
 import '../../constant.dart';
 
 class ProfileModel {
@@ -11,11 +10,11 @@ class ProfileModel {
 
   ProfileModel(
       {required this.id,
-      required this.address,
-      required this.phone,
-      required this.scientificLevel,
-      required this.age,
-      required this.image});
+        required this.address,
+        required this.phone,
+        required this.scientificLevel,
+        required this.age,
+        required this.image});
 
   factory ProfileModel.fromjson(data) {
     return ProfileModel(

@@ -6,7 +6,6 @@ import '../../../../themes.dart';
 
 import '../../../widgets/custom_appbar_add.dart';
 import '../../../widgets/employee_list.dart';
-import '../../../widgets/refresh_button.dart';
 
 class ListEmployeesScreen extends StatefulWidget {
   const ListEmployeesScreen({super.key});
@@ -17,7 +16,7 @@ class ListEmployeesScreen extends StatefulWidget {
 
 class _ListEmployeesScreenState extends State<ListEmployeesScreen> {
   late UserBloc bloc;
-  int? selectedUserId; // تم إضافة هذا السطر لتعريف المتغير
+  int? selectedUserId;
 
   @override
   void initState() {
@@ -35,19 +34,19 @@ class _ListEmployeesScreenState extends State<ListEmployeesScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child:  EmployeeList(
-                onUserSelected: (userId) {
-                  setState(() {
-                    selectedUserId = userId;
-                  });
-                },
-              ),
-            ),
-
-      floatingActionButton: RefreshButton(
-        onPressed: () {
-          bloc.add(GetAllEmployees());
-        },
+        child: RefreshIndicator(
+          onRefresh: () async {
+            bloc.add(GetAllEmployees());
+            await Future.delayed(const Duration(seconds: 1));
+          },
+          child: EmployeeList(
+            onUserSelected: (userId) {
+              setState(() {
+                selectedUserId = userId;
+              });
+            },
+          ),
+        ),
       ),
     );
   }

@@ -15,6 +15,12 @@ class AddLegalBookEvent extends LegalBookEvent {
   });
 }
 
+class SaveLegalBookEvent extends LegalBookEvent {
+  final int bookId;
+  SaveLegalBookEvent({
+    required this.bookId,
+  });
+}
 
 class GetLegalBookByIdEvent extends LegalBookEvent {
   final int bookId;
@@ -24,6 +30,8 @@ class GetLegalBookByIdEvent extends LegalBookEvent {
 
 class GetAllLegalBooksEvent extends LegalBookEvent {}
 
+class GetMySavedLegalBooksEvent extends LegalBookEvent {}
+
 class SearchLegalBooksByTitleEvent extends LegalBookEvent {
   final String bookTitle;
 
@@ -32,7 +40,7 @@ class SearchLegalBooksByTitleEvent extends LegalBookEvent {
 
 class UpdateLegalBookEvent extends LegalBookEvent {
   final int bookId;
-  final dynamic? file; // يمكن null
+  final dynamic file; // يمكن null
   final String bookTitle;
   final String fileName;
 
@@ -44,9 +52,13 @@ class UpdateLegalBookEvent extends LegalBookEvent {
   });
 }
 
-
 class DeleteLegalBookEvent extends LegalBookEvent {
   final int bookId;
 
   DeleteLegalBookEvent({required this.bookId});
+}
+
+class UnSaveLegalBookEvent extends LegalBookEvent {
+  final int bookId;
+  UnSaveLegalBookEvent({required this.bookId});
 }

@@ -5,7 +5,6 @@ import '../../../blocs/common_consultation_bloc/common _consultation_event.dart'
 import '../../../themes.dart';
 import '../../widgets/common_consul_list.dart';
 import '../../widgets/custom_appbar_add.dart';
-import '../../widgets/refresh_button.dart';
 import '../../widgets/custom_search_bar.dart';
 
 import 'add_common_consul.dart';
@@ -37,6 +36,10 @@ class _ListCommonConsultationsScreenState
     }
   }
 
+  Future<void> _onRefresh() async {
+    bloc.add(GetAllCommonConsultation());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,14 +69,15 @@ class _ListCommonConsultationsScreenState
               onSearch: _onSearch,
             ),
             const SizedBox(height: 20),
-            CommonConsultationList(bloc: bloc),
+            // سحب للتحديث
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: _onRefresh,
+                child: CommonConsultationList(bloc: bloc),
+              ),
+            ),
           ],
         ),
-      ),
-      floatingActionButton: RefreshButton(
-        onPressed: () {
-          bloc.add(GetAllCommonConsultation());
-        },
       ),
     );
   }

@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../blocs/user_bloc/user_bloc.dart';
- import '../../../../themes.dart';
+import '../../../../themes.dart';
 
-import '../../../widgets/clients_list1.dart'; // تم تعديل اسم الويدجيت
+import '../../../widgets/clients_list1.dart';
 import '../../../widgets/custom_appbar_add.dart';
-import '../../../widgets/refresh_button.dart';
 
 class ListUsersScreen extends StatefulWidget {
   const ListUsersScreen({super.key});
@@ -17,13 +16,13 @@ class ListUsersScreen extends StatefulWidget {
 
 class _ListUsersScreenState extends State<ListUsersScreen> {
   late UserBloc bloc;
-  int? selectedUserId; // تعريف المتغير لحفظ المستخدم المختار
+  int? selectedUserId;
 
   @override
   void initState() {
     super.initState();
     bloc = BlocProvider.of<UserBloc>(context);
-    bloc.add(GetAllClients()); // تحميل العملاء عند بداية الشاشة
+    bloc.add(GetAllClients());
   }
 
   @override
@@ -35,23 +34,19 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-           ClientsList1(
-               onUserSelected: (userId) {
-                setState(() {
-                  selectedUserId = userId;
-                });
-              },
-            ),
-          ],
+        child: RefreshIndicator(
+          onRefresh: () async {
+            bloc.add(GetAllClients());
+            await Future.delayed(const Duration(seconds: 1));
+          },
+          child: ClientsList1(
+            onUserSelected: (userId) {
+              setState(() {
+                selectedUserId = userId;
+              });
+            },
+          ),
         ),
-      ),
-      floatingActionButton: RefreshButton(
-        onPressed: () {
-          bloc.add(GetAllClients()); // إعادة تحميل العملاء
-        },
       ),
     );
   }

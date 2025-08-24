@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data/models/notification_model.dart';
 import '../../../blocs/notification_bloc/notification_bloc.dart';
+import '../screens/notification_screen/notification_details_screen.dart';
+
 
 class NotificationItem extends StatelessWidget {
   const NotificationItem({super.key, required this.notificationModel});
@@ -11,13 +13,23 @@ class NotificationItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        // علامة كمقروء عند الضغط
         BlocProvider.of<NotificationBloc>(context).add(
           MarkNotificationReadEvent(notificationId: notificationModel.id),
         );
+
+        // الانتقال إلى صفحة التفاصيل
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NotificationDetailsPage(
+              notification: notificationModel,
+            ),
+          ),
+        );
       },
       child: Card(
-        color:
-            notificationModel.isRead ? Colors.white : const Color(0xFFF1F8E9),
+        color: notificationModel.isRead ? Colors.white : const Color(0xFFF1F8E9),
         elevation: 2,
         child: ListTile(
           leading: Icon(
@@ -29,9 +41,8 @@ class NotificationItem extends StatelessWidget {
           title: Text(
             notificationModel.title,
             style: TextStyle(
-              fontWeight: notificationModel.isRead
-                  ? FontWeight.normal
-                  : FontWeight.bold,
+              fontWeight:
+              notificationModel.isRead ? FontWeight.normal : FontWeight.bold,
               color: notificationModel.isRead ? Colors.black : Colors.black87,
             ),
           ),

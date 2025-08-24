@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/constant.dart';
+import 'package:graduation/presentation/screens/session/create_session.dart';
+import 'package:graduation/responsive.dart';
 
 import '../../blocs/sessions_bloc/sessions_bloc.dart';
 import '../../blocs/sessions_bloc/sessions_event.dart';
@@ -19,6 +22,7 @@ class _SessionsListState extends State<SessionsList> {
   List<SessionModel> sessionsList = [];
   Widget buildSessionModel() {
     return ListView.builder(
+      padding: EdgeInsets.all(0),
       itemCount: sessionsList.length,
       shrinkWrap: true,
       physics: const ClampingScrollPhysics(),
@@ -65,9 +69,37 @@ class _SessionsListState extends State<SessionsList> {
         builder: (context, state) {
           if (state is SessionsListLoaded) {
             sessionsList = state.sessionsList;
-            return sessionsList.isEmpty
-                ? const Text('There is no sessions')
-                : buildSessionModel();
+            return Column(
+              children: [
+                sessionsList.isEmpty
+                    ? const Text('There is no sessions')
+                    : buildSessionModel(),
+                if (myRole == 'admin')
+                  ElevatedButton(
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => BlocProvider(
+                            create: (_) => SessionsBloc(),
+                            child:
+                                CreateSessionScreen(issueId: widget.issueId!),
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Add session",
+                      style: TextStyle(
+                          fontSize: s18,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+              ],
+            );
           } else if (state is SessionsFail) {
             return Column(
               children: [

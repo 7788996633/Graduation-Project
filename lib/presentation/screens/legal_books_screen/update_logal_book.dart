@@ -1,10 +1,8 @@
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 
 import '../../../blocs/legal_books_bloc/legal_books_bloc.dart';
 import '../../../blocs/legal_books_bloc/legal_books_event.dart';
@@ -23,28 +21,28 @@ class UpdateLegalBookScreen extends StatefulWidget {
 }
 
 class _UpdateLegalBookScreenState extends State<UpdateLegalBookScreen> {
-  final _formKey = GlobalKey<FormState>();
   late TextEditingController _bookTitleController;
-
-  dynamic? _selectedFile; // ممكن تكون File أو Uint8List (للويب)
+  dynamic? _selectedFile; // File أو Uint8List (للويب)
   String? _fileName;
+  late LegalBookBloc _bloc;
 
   @override
   void initState() {
     super.initState();
     _bookTitleController = TextEditingController(text: widget.legalBook.bookTitle);
-    _fileName = null; // لحتى نعرف إذا اختار المستخدم ملف جديد أو لا
+    _fileName =widget.legalBook.book;
+    _bloc = LegalBookBloc();
   }
 
   @override
   void dispose() {
     _bookTitleController.dispose();
+    _bloc.close();
     super.dispose();
   }
 
   Future<void> _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
-
     if (result != null) {
       setState(() {
         _fileName = result.files.single.name;
@@ -57,104 +55,80 @@ class _UpdateLegalBookScreenState extends State<UpdateLegalBookScreen> {
     }
   }
 
+  void _onUpdatePressed() {
+    _bloc.add(UpdateLegalBookEvent(
+      bookId: widget.legalBook.id!,
+      bookTitle: _bookTitleController.text.trim(),
+      file: _selectedFile,
+      fileName: _fileName ?? '',
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomActionAppBar(
-        title: 'Update Legal Book',
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: BlocConsumer<LegalBookBloc, LegalBookState>(
+    return BlocProvider<LegalBookBloc>.value(
+      value: _bloc,
+      child: Scaffold(
+        appBar: const CustomActionAppBar(title: 'Update Legal Book'),
+        body: BlocConsumer<LegalBookBloc, LegalBookState>(
           listener: (context, state) {
             if (state is LegalBookSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    state.successMsg,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Colors.green,
-                ),
+                SnackBar(content: Text('✅ ${state.successMsg}')),
               );
               Navigator.pop(
                 context,
                 LegalBookModel(
                   id: widget.legalBook.id,
-                  bookTitle: '', book: '', createdAt: '', updatedAt: '',
+                  bookTitle: _bookTitleController.text.trim(),
+                  book: widget.legalBook.book,
+                  createdAt: widget.legalBook.createdAt,
+                  updatedAt: DateTime.now().toIso8601String(),
                 ),
               );
             } else if (state is LegalBookFail) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    state.errMsg,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            } else if (state is LegalBookLoading) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    "Loading ...",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Colors.grey,
-                ),
+                SnackBar(content: Text('❌ ${state.errMsg}')),
               );
             }
           },
           builder: (context, state) {
-            return Form(
-              key: _formKey,
+            final isLoading = state is LegalBookLoading;
+
+            return Padding(
+              padding: const EdgeInsets.all(16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   TextFormField(
                     controller: _bookTitleController,
-                    keyboardType: TextInputType.text,
-                    decoration: const InputDecoration(labelText: 'Book Title'),
+                    decoration: const InputDecoration(
+                      labelText: 'Book Title',
+                    ),
                     validator: (value) =>
-                    value == null || value.isEmpty ? 'Please enter book title' : null,
+                    value == null || value.isEmpty ? 'Required' : null,
                   ),
                   const SizedBox(height: 20),
 
-                  // زر لاختيار ملف جديد
+                  // اختيار ملف جديد
                   ElevatedButton.icon(
-                    onPressed: _pickFile,
+                    onPressed: isLoading ? null : _pickFile,
                     icon: const Icon(Icons.attach_file),
                     label: Text(_fileName ?? 'Choose New File (optional)'),
                   ),
-                  const SizedBox(height: 30),
 
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        BlocProvider.of<LegalBookBloc>(context).add(
-                          UpdateLegalBookEvent(
-                            bookId: widget.legalBook.id!,
-                            file: _selectedFile, // ممكن يكون null
-                            bookTitle: _bookTitleController.text.trim(),
-                            fileName: _fileName ?? '', // إذا ما اخترنا ملف جديد، ترسل '' أو يمكنك تعديل حسب المنطق
-                          ),
-                        );
-                      }
-                    },
+                  const SizedBox(height: 30),
+                  isLoading
+                      ? const CircularProgressIndicator()
+                      : ElevatedButton(
+                    onPressed: _onUpdatePressed,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.darkBlue,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 14),
                     ),
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 14),
-                      child: Text(
-                        'Update',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                    child: const Text(
+                      'Update',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
                   ),
                 ],

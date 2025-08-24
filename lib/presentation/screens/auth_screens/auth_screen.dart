@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
 
 import '../../../blocs/auth_bloc/auth_bloc.dart';
+import '../../../blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
 import '../../../blocs/user_bloc/user_bloc.dart';
 import '../../../blocs/user_profile_bloc/user_profile_bloc.dart'; // استيراد البلوك الجديد
 import '../../../constant.dart';

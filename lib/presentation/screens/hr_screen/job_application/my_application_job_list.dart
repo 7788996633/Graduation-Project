@@ -5,7 +5,7 @@ import '../../../../blocs/job_application/job_application_bloc.dart';
 import '../../../../blocs/job_application/job_application_event.dart';
 import '../../../../themes.dart';
 import '../../../widgets/custom_appbar_add.dart';
- import '../../../widgets/my_job_application_list.dart';
+import '../../../widgets/my_job_application_list.dart';
 import '../../../widgets/refresh_button.dart';
 
 class  MyListJobApplicationsScreen extends StatefulWidget {

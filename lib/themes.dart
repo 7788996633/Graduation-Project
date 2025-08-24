@@ -27,7 +27,7 @@ Map<String, Color> currentTheme = {
 };
 
 Map<String, Color> lightTheme = {
-  'BackGorund': AppColors.scaffold,
+  'BackGorund': AppColors.white,
   'AppBar': AppColors.darkBlue,
   'Border': AppColors.softGray,
   'AppBarTitle': AppColors.white,

@@ -76,7 +76,7 @@ class _SelectCategoryForIssueScreenState
                             selectedindex = index;
 
                             setState(() {});
-                           }
+                          }
                         },
                         child: Container(
                           decoration: BoxDecoration(

@@ -2,7 +2,7 @@ class SessionPointsModel {
   final int sessionId;
   final String lawyerName;
   final double percentage;
-  final int amount;
+  final double amount;
   final int sessionPoints;
 
   SessionPointsModel(
@@ -12,17 +12,14 @@ class SessionPointsModel {
       required this.amount,
       required this.sessionPoints});
 
-  factory SessionPointsModel.fromJson(data) {
+  factory SessionPointsModel.fromJson(json) {
     return SessionPointsModel(
-      sessionId: int.parse(
-        data['session_id'],
-      ),
-      lawyerName: data['lawyer_name'].toString(),
-      percentage: double.parse(data['percentage']),
-      amount: int.parse(
-        data['amount'],
-      ),
-      sessionPoints: int.parse(data['point for this session']),
+      sessionId: int.tryParse(json['session_id'].toString()) ?? 0,
+      lawyerName: json['lawyer_name'] ?? 'Unknown',
+      percentage: double.tryParse(json['percentage'].toString()) ?? 0.0,
+      amount: double.tryParse(json['amount'].toString()) ?? 0.0,
+      sessionPoints:
+          int.tryParse(json['point for this session'].toString()) ?? 0,
     );
   }
 }

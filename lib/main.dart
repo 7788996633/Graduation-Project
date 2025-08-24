@@ -4,39 +4,39 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:graduation/blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
 
+import 'blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
 import 'blocs/my_bloc_observere.dart';
 import 'blocs/user_bloc/user_bloc.dart';
 import 'blocs/auth_bloc/auth_bloc.dart';
 import 'blocs/user_profile_bloc/user_profile_bloc.dart';
 import 'data/services/notifications_services.dart';
-import 'firebase_options.dart';
+
 import 'presentation/screens/auth_screens/auth_screen.dart';
 import 'presentation/widgets/auth_web_wedgets/auth_web_screen.dart';
 
-/// معالجة رسائل الخلفية (Android / iOS)
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // هنا ممكن تضيف منطق لمعالجة الإشعار
-  print("Handling a background message: ${message.messageId}");
-}
+// /// معالجة رسائل الخلفية (Android / iOS)
+// Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+//   // هنا ممكن تضيف منطق لمعالجة الإشعار
+//   print("Handling a background message: ${message.messageId}");
+// }
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   Bloc.observer = MyBlocObserver();
-
-  // تهيئة Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  // تهيئة إشعارات Firebase Messaging
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  //
+  // // تهيئة Firebase
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
+  //
+  // // تهيئة إشعارات Firebase Messaging
+  // FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   // تهيئة الإشعارات المحلية
-  await NotificationsServices().initNotifications();
+ // await NotificationsServices().initNotifications();
 
   // تهيئة EasyLocalization
   await EasyLocalization.ensureInitialized();

@@ -99,8 +99,7 @@ class _SessionTypeDetailsScreenState extends State<SessionTypeDetailsScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 24),
-                      _buildInfoRow('ID', sessionType.id.toString()),
+
                       Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
                       _buildInfoRow('Type', sessionType.type),
                       Divider(color: Colors.deepPurple.shade100, thickness: 1.5),

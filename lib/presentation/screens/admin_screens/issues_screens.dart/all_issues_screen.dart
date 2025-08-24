@@ -29,7 +29,10 @@ class _AllIssuesScreenState extends State<AllIssuesScreen> {
   List<IssuesModel> allIssuesList = [];
 
   Widget buildIssuesList() {
-    return ListView.builder(
+    return ListView.separated(
+      separatorBuilder: (context, index) => SizedBox(
+        height: 10,
+      ),
       shrinkWrap: true,
       itemCount: _searchText.isEmpty ? allIssuesList.length : filterd.length,
       itemBuilder: (context, index) => UserIssueItem(
@@ -62,7 +65,7 @@ class _AllIssuesScreenState extends State<AllIssuesScreen> {
             issuesBloc.add(FilterIssues(filter));
           }
         },
-        title: 'Issues',
+        title: 'Cases',
         actionIcon: Icons.add_circle_rounded,
         tooltip: 'Add New Issue',
         onActionPressed: () {

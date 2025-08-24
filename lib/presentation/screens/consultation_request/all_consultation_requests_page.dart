@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
 
+import '../../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
 import '../../../themes.dart';
 import '../../widgets/consultation_request_list.dart';
 

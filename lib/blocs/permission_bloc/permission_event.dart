@@ -6,17 +6,34 @@ sealed class PermissionEvent {}
 class AddPermissionEvent extends PermissionEvent {
   final String name;
 
-
   AddPermissionEvent({
     required this.name,
 
   });
 }
+class AssignPermissionEvent extends PermissionEvent {
+  final int roleId;
+  final int permissionId;
+  final String name;
+
+  AssignPermissionEvent({
+    required this.roleId,
+    required this.permissionId,
+    required this.name,
+  });
+}
+
 
 class GetPermissionByIdEvent extends PermissionEvent {
   final int permissionId;
 
   GetPermissionByIdEvent({required this.permissionId});
+}
+
+class GetPermissionForRoleEvent extends PermissionEvent {
+  final int roleId;
+
+  GetPermissionForRoleEvent({required this.roleId});
 }
 
 class GetAllPermissionsEvent extends PermissionEvent {}

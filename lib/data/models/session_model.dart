@@ -1,4 +1,5 @@
-import 'package:graduation/data/models/lawyer_model.dart';
+
+import 'lawyer_model.dart';
 
 class SessionModel {
   SessionModel({

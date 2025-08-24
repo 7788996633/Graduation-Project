@@ -38,7 +38,7 @@ class RequiredDocumentItem extends StatelessWidget {
             ),
           ],
           border: Border.all(
-            color: AppColors.darkBlue, // ✅ تم تغيير اللون للأزرق الغامق
+            color: AppColors.darkBlue,
             width: 1.5,
           ),
         ),

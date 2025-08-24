@@ -35,12 +35,12 @@ class _ListInvoicesScreenState extends State<ListInvoicesScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-     child:Column(
-    children: [
-    const SizedBox(height: 20),
+        child:Column(
+          children: [
+            const SizedBox(height: 20),
             InvoiceList(bloc: bloc),
-    ],
-     ),
+          ],
+        ),
       ),
       floatingActionButton: RefreshButton(
         onPressed: () {

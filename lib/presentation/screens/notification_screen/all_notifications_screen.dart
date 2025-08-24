@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../blocs/notification_bloc/notification_bloc.dart';
-import '../widgets/notifications_list.dart';
+import '../../../blocs/notification_bloc/notification_bloc.dart';
+import '../../widgets/notifications_list.dart';
 
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
