@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
 import '../../../themes.dart';
 import '../../widgets/consultation_request_list.dart';
+import '../../widgets/custom_appbar_add.dart';
 
 class AllConsultationRequestsPage extends StatefulWidget {
   const AllConsultationRequestsPage({super.key});
@@ -19,15 +20,9 @@ class _AllConsultationRequestsPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'All Consultation Requests',
-          style: TextStyle(
-            color: AppColors.white,
-          ),
-        ),
-        backgroundColor: AppColors.darkBlue,
-      ),
+      appBar: CustomActionAppBar(
+        title: 'Consultation Request ',),
+
       body: BlocProvider(
         create: (context) => ConsultationRequestBloc(),
         child: ConsultationRequestList(),

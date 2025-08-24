@@ -39,6 +39,7 @@ class DrawerItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        width: 50,
         margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         decoration: BoxDecoration(

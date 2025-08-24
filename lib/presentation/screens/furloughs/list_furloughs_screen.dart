@@ -39,19 +39,7 @@ class _ListFurloughsScreenState extends State<ListFurloughsScreen> {
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
         title: 'list_furloughs',
-        actionIcon: Icons.add_circle_rounded,
-        tooltip: 'Add New Furlough',
-        onActionPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (_) => FurloughRequestsBloc(),
-                child: const AddFurloughScreen(),
-              ),
-            ),
-          );
-        },
+
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
