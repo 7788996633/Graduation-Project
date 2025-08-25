@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/presentation/screens/user_screens/user_profile_screens/create_user_profile_screen.dart';
 
 import '../../../blocs/auth_bloc/auth_bloc.dart';
 import '../../../blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
@@ -63,11 +64,6 @@ class _AuthScreenState extends State<AuthScreen> {
               setState(() {
                 myRole = state.successmsg;
               });
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => const HomePage(),
-                ),
-              );
             }
           },
         ),
@@ -77,6 +73,16 @@ class _AuthScreenState extends State<AuthScreen> {
               setState(() {
                 myUserId = state.userProfileModel.userId;
               });
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const HomePage()),
+                (route) => false,
+              );
+            } else if (state is UserProfileFail) {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                    builder: (_) => const CreateUserProfileScreen()),
+                (route) => false,
+              );
             }
           },
         ),
@@ -91,12 +97,12 @@ class _AuthScreenState extends State<AuthScreen> {
             }
           },
           child: Container(),
-        )
+        ),
       ],
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) => Scaffold(
           backgroundColor: AppColors.scaffold,
-          body: const Stack(
+          body: Stack(
             children: [
               AuthTopBlueCurvedContainor(),
               Align(

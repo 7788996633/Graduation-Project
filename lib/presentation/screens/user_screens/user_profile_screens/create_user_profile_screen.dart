@@ -6,13 +6,15 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../../../themes.dart';
 import '../../../widgets/custom_text_field.dart';
+import '../../home/home_page.dart';
 import '../../home/user_home_page.dart';
 
 class CreateUserProfileScreen extends StatefulWidget {
   const CreateUserProfileScreen({super.key});
 
   @override
-  State<CreateUserProfileScreen> createState() => _CreateUserProfileScreenState();
+  State<CreateUserProfileScreen> createState() =>
+      _CreateUserProfileScreenState();
 }
 
 class _CreateUserProfileScreenState extends State<CreateUserProfileScreen> {
@@ -21,7 +23,8 @@ class _CreateUserProfileScreenState extends State<CreateUserProfileScreen> {
   final TextEditingController ageController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-  final TextEditingController scientificLevelController = TextEditingController();
+  final TextEditingController scientificLevelController =
+      TextEditingController();
 
   File? _pickedImage;
   final ImagePicker _picker = ImagePicker();
@@ -70,7 +73,8 @@ class _CreateUserProfileScreenState extends State<CreateUserProfileScreen> {
     return Scaffold(
       backgroundColor: AppColors.scaffold,
       appBar: AppBar(
-        title: const Text("Create User Profile", style: TextStyle(color: Colors.white)),
+        title: const Text("Create User Profile",
+            style: TextStyle(color: Colors.white)),
         centerTitle: true,
         backgroundColor: AppColors.darkBlue,
         elevation: 0,
@@ -94,9 +98,12 @@ class _CreateUserProfileScreenState extends State<CreateUserProfileScreen> {
                       CircleAvatar(
                         radius: 60,
                         backgroundColor: AppColors.darkBlue.withOpacity(0.2),
-                        backgroundImage: _pickedImage != null ? FileImage(_pickedImage!) : null,
+                        backgroundImage: _pickedImage != null
+                            ? FileImage(_pickedImage!)
+                            : null,
                         child: _pickedImage == null
-                            ? const Icon(Icons.camera_alt, size: 30, color: Colors.white)
+                            ? const Icon(Icons.camera_alt,
+                                size: 30, color: Colors.white)
                             : null,
                       ),
                     ],
@@ -145,19 +152,20 @@ class _CreateUserProfileScreenState extends State<CreateUserProfileScreen> {
                   if (state is UserProfileSuccess) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(state.successmsg, style: const TextStyle(fontSize: 16)),
+                        content: Text(state.successmsg,
+                            style: const TextStyle(fontSize: 16)),
                         backgroundColor: Colors.green,
                       ),
                     );
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => const UserHomePage(),
-                      ),
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (_) => const UserHomePage()),
+                      (route) => false,
                     );
                   } else if (state is UserProfileFail) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(state.errmsg, style: const TextStyle(fontSize: 16)),
+                        content: Text(state.errmsg,
+                            style: const TextStyle(fontSize: 16)),
                         backgroundColor: Colors.red,
                       ),
                     );

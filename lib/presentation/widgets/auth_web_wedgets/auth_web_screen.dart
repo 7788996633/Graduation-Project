@@ -27,7 +27,8 @@ class _AuthWebScreenState extends State<AuthWebScreen> {
                 barrierDismissible: false,
                 builder: (_) => const Center(
                   child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
                     strokeWidth: 4,
                   ),
                 ),
@@ -59,16 +60,16 @@ class _AuthWebScreenState extends State<AuthWebScreen> {
                 padding: const EdgeInsets.all(48),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 1000),
-          child: Card(
-          color: Color(0xFFCFD8DC),
-         elevation: 24,
-         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-         shadowColor: Colors.black,
-         child: Padding(
-         padding: const EdgeInsets.all(32.0),
-         child: LayoutBuilder(
-         builder: (context, constraints) {
-
+                  child: Card(
+                    color: Color(0xFFCFD8DC),
+                    elevation: 24,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24)),
+                    shadowColor: Colors.black,
+                    child: Padding(
+                      padding: const EdgeInsets.all(32.0),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
                           if (constraints.maxWidth < 700) {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -96,17 +97,16 @@ class _AuthWebScreenState extends State<AuthWebScreen> {
                                     child: Image.asset(
                                       'assets/images/grad.jpg',
                                       height: 380,
-
                                       fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
                                 const SizedBox(width: 32),
-
                                 Expanded(
                                   flex: 1,
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
                                     child: const AuthForm(),
                                   ),
                                 ),
