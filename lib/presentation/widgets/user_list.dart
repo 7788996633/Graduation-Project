@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/user_bloc/user_bloc.dart';
+import '../../blocs/payroll_bloc/payroll_bloc.dart'; // ✅ استدعاء البلوك
 import '../../data/models/user_model.dart';
 import 'user_item.dart';
 
@@ -59,8 +60,11 @@ class _UserListState extends State<UserList> {
               child: ListView.builder(
                 itemCount: userList.length,
                 itemBuilder: (context, index) {
-                  return UserItem(
-                    userModel: userList[index],
+                  return BlocProvider(
+                    create: (_) => PayrollBloc(), // ✅ إضافة البلوك هون
+                    child: UserItem(
+                      userModel: userList[index],
+                    ),
                   );
                 },
               ),

@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 
 import '../../constant.dart';
@@ -11,15 +11,29 @@ class ConsultationRequestServices {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken'
     };
-    var request = http.MultipartRequest(
-        'POST', Uri.parse('${myUrl}consultation_requests'));
-    request.fields.addAll({'subject': subject, 'details': details});
 
-    request.headers.addAll(headers);
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
+    http.Response response;
+
+    if (kIsWeb) {
+      // للويب
+      response = await http.post(
+        Uri.parse('${myUrl}consultation_requests'),
+        headers: headers,
+        body: {'subject': subject, 'details': details},
+      );
+    } else {
+      // للموبايل
+      var request = http.MultipartRequest(
+          'POST', Uri.parse('${myUrl}consultation_requests'));
+      request.fields.addAll({'subject': subject, 'details': details});
+      request.headers.addAll(headers);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    }
+
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
+
     if (response.statusCode == 200) {
       if (jsonResponse['status'] == 'success') {
         return jsonResponse['message'];
@@ -36,20 +50,28 @@ class ConsultationRequestServices {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken'
     };
-    var request = http.MultipartRequest(
-        'GET', Uri.parse('${myUrl}consultation_requests/$id'));
 
-    request.headers.addAll(headers);
+    http.Response response;
 
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
+    if (kIsWeb) {
+      response = await http.get(
+        Uri.parse('${myUrl}consultation_requests/$id'),
+        headers: headers,
+      );
+    } else {
+      var request = http.MultipartRequest(
+          'GET', Uri.parse('${myUrl}consultation_requests/$id'));
+      request.headers.addAll(headers);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    }
+
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
+
     if (response.statusCode == 200) {
       if (jsonResponse['status'] == 'success') {
-        return ConsReqModel.fromJson(
-          jsonResponse['data'],
-        );
+        return ConsReqModel.fromJson(jsonResponse['data']);
       } else {
         throw Exception('failed: ${jsonResponse['message']}');
       }
@@ -64,13 +86,22 @@ class ConsultationRequestServices {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken'
     };
-    var request = http.MultipartRequest(
-        'GET', Uri.parse('${myUrl}consultation_requests'));
 
-    request.headers.addAll(headers);
-    var streamedResponse = await request.send();
+    http.Response response;
 
-    var response = await http.Response.fromStream(streamedResponse);
+    if (kIsWeb) {
+      response = await http.get(
+        Uri.parse('${myUrl}consultation_requests'),
+        headers: headers,
+      );
+    } else {
+      var request =
+      http.MultipartRequest('GET', Uri.parse('${myUrl}consultation_requests'));
+      request.headers.addAll(headers);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    }
+
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
 
@@ -90,13 +121,22 @@ class ConsultationRequestServices {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken'
     };
-    var request = http.MultipartRequest(
-        'GET', Uri.parse('${myUrl}consultation_requests/showMyRequests'));
 
-    request.headers.addAll(headers);
-    var streamedResponse = await request.send();
+    http.Response response;
 
-    var response = await http.Response.fromStream(streamedResponse);
+    if (kIsWeb) {
+      response = await http.get(
+        Uri.parse('${myUrl}consultation_requests/showMyRequests'),
+        headers: headers,
+      );
+    } else {
+      var request = http.MultipartRequest(
+          'GET', Uri.parse('${myUrl}consultation_requests/showMyRequests'));
+      request.headers.addAll(headers);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    }
+
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
 
@@ -117,15 +157,27 @@ class ConsultationRequestServices {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': 'Bearer $myToken'
     };
-    var request =
-        http.Request('PUT', Uri.parse('${myUrl}consultation_requests/$id'));
-    request.bodyFields = {'subject': subject};
-    request.headers.addAll(headers);
 
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
+    http.Response response;
+
+    if (kIsWeb) {
+      response = await http.put(
+        Uri.parse('${myUrl}consultation_requests/$id'),
+        headers: headers,
+        body: {'subject': subject},
+      );
+    } else {
+      var request =
+      http.Request('PUT', Uri.parse('${myUrl}consultation_requests/$id'));
+      request.bodyFields = {'subject': subject};
+      request.headers.addAll(headers);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    }
+
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
+
     if (response.statusCode == 200) {
       if (jsonResponse['status'] == 'success') {
         return jsonResponse['message'];
@@ -143,15 +195,27 @@ class ConsultationRequestServices {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': 'Bearer $myToken'
     };
-    var request = http.Request(
-        'PUT', Uri.parse('${myUrl}consultation_requests/status/$id'));
-    request.bodyFields = {'status': status};
-    request.headers.addAll(headers);
 
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
+    http.Response response;
+
+    if (kIsWeb) {
+      response = await http.put(
+        Uri.parse('${myUrl}consultation_requests/status/$id'),
+        headers: headers,
+        body: {'status': status},
+      );
+    } else {
+      var request = http.Request(
+          'PUT', Uri.parse('${myUrl}consultation_requests/status/$id'));
+      request.bodyFields = {'status': status};
+      request.headers.addAll(headers);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    }
+
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
+
     if (response.statusCode == 200) {
       if (jsonResponse['status'] == 'success') {
         return jsonResponse['message'];
@@ -168,14 +232,25 @@ class ConsultationRequestServices {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken'
     };
-    var request =
-        http.Request('DELETE', Uri.parse('${myUrl}consultation_requests/$id'));
-    request.bodyFields = {};
-    request.headers.addAll(headers);
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
+
+    http.Response response;
+
+    if (kIsWeb) {
+      response = await http.delete(
+        Uri.parse('${myUrl}consultation_requests/$id'),
+        headers: headers,
+      );
+    } else {
+      var request =
+      http.Request('DELETE', Uri.parse('${myUrl}consultation_requests/$id'));
+      request.headers.addAll(headers);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    }
+
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
+
     if (response.statusCode == 200) {
       if (jsonResponse['status'] == 'success') {
         return jsonResponse['message'];

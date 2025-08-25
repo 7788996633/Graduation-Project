@@ -39,29 +39,30 @@ class LegalNewsServices {
     }
   }
 
-  Future<String> saveLegalNews(int legalNewsId) async {
-    try {
-      var request = http.MultipartRequest(
-        'POST',
-        Uri.parse('${myUrl}legal-news/$legalNewsId/save'),
-      );
 
+  Future<LegalNewsModel> saveLegalNews(int legalNewsId)  async {
+    var url = Uri.parse('${myUrl}legal-news/$legalNewsId/save');
+    http.Response response;
 
-
+    if (kIsWeb) {
+      var request = http.Request('GET', url);
       request.headers.addAll(baseHeaders);
-
       var streamedResponse = await request.send();
-      var response = await http.Response.fromStream(streamedResponse);
-      var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
+      response = await http.Response.fromStream(streamedResponse);
+    } else {
+      var request = http.MultipartRequest('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    }
 
-      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-        return jsonResponse['message'];
-      } else {
-        return 'failed: ${jsonResponse['message']}';
-      }
-    } catch (e) {
-      return 'Error in addLegalNews: $e';
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return LegalNewsModel.fromJson(jsonResponse['data']);
+    } else {
+      throw Exception('failed: ${jsonResponse['message']}');
     }
   }
 

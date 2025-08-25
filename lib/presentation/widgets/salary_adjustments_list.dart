@@ -56,6 +56,8 @@ class _SalaryAdjustmentsListState extends State<SalaryAdjustmentsList> {
         builder: (context, state) {
           if (state is SalaryAdjustmentsListLoaded) {
             salaryAdjustmentsList = state.list;
+            print('===============================sz $salaryAdjustmentsList');
+
             if (salaryAdjustmentsList.isEmpty) {
               return const Center(child: Text('There are no salary adjustments'));
             }

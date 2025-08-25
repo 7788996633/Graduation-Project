@@ -25,11 +25,35 @@ class _CustomDrawerWebState extends State<CustomDrawerWeb> {
 
   @override
   Widget build(BuildContext context) {
+    final drawerItems = [
+      {'icon': Icons.home, 'title': tr('home')},
+      {'icon': Icons.people, 'title': tr('employees')},
+      {'icon': Icons.work, 'title': tr('lawyers')},
+      {'icon': Icons.vpn_key, 'title': tr('permissions')},
+      {'icon': Icons.gavel, 'title': tr('issues')},
+      {'icon': Icons.archive, 'title': tr('archived_issues')},
+      {'icon': Icons.group, 'title': tr('delegations')},
+      {'icon': Icons.request_page_outlined, 'title': tr('issue_request')},
+      {'icon': Icons.beach_access_outlined, 'title': tr('furloughs')},
+      {'icon': Icons.category_outlined, 'title': tr('session_type')},
+      {'icon': Icons.assignment_turned_in_outlined, 'title': tr('required_documents')},
+      {'icon': Icons.forum_outlined, 'title': tr('Consultation_Requests')},
+      {'icon': Icons.question_answer_rounded, 'title': tr('Common_Consultation')},
+      {'icon': Icons.question_answer_rounded, 'title': tr('Issue_categories')},
+      {'icon': Icons.report, 'title': tr('report')},
+      {'icon': Icons.smart_toy, 'title': tr('AI Chat')},
+      {'icon': Icons.money, 'title': tr('expenses')},
+      {'icon': Icons.newspaper, 'title': tr('legal_books')},
+      {'icon': Icons.newspaper, 'title': tr('legal_news')},
+      {'icon': Icons.admin_panel_settings, 'title': tr('roles')},
+      {'icon': Icons.feedback, 'title': tr('complaints')},
+    ];
+
     return Container(
       width: 190,
       color: AppColors.darkBlue,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListView(
+        padding: EdgeInsets.zero,
         children: [
           const SizedBox(height: 30),
           Padding(
@@ -63,107 +87,15 @@ class _CustomDrawerWebState extends State<CustomDrawerWeb> {
             ),
           ),
           const SizedBox(height: 20),
-
-          DrawerItem.build(
-            index: 0,
-            icon: Icons.home,
-            title: tr('home'),
-            isSelected: selectedIndex == 0,
-            onTap: () => _handleTap(0),
-          ),
-
-          DrawerItem.build(
-            index: 1,
-            icon: Icons.people,
-            title: tr('employees'),
-            isSelected: selectedIndex == 1,
-            onTap: () => _handleTap(1),
-          ),
-
-          DrawerItem.build(
-            index: 2,
-            icon: Icons.vpn_key,
-            title: tr('permissions'),
-            isSelected: selectedIndex == 2,
-            onTap: () => _handleTap(2),
-          ),
-
-          DrawerItem.build(
-            index: 3,
-            icon: Icons.gavel,
-            title: tr('issues'),
-            isSelected: selectedIndex == 3,
-            onTap: () => _handleTap(3),
-          ),
-
-          DrawerItem.build(
-            index: 4,
-            icon: Icons.request_page_outlined,
-            title: tr('issue_request'),
-            isSelected: selectedIndex == 4,
-            onTap: () => _handleTap(4),
-          ),
-
-          DrawerItem.build(
-            index: 5,
-            icon: Icons.beach_access_outlined,
-            title: tr('furloughs'),
-            isSelected: selectedIndex == 5,
-            onTap: () => _handleTap(5),
-          ),
-
-          DrawerItem.build(
-            index: 6,
-            icon: Icons.category_outlined,
-            title: tr('session_type'),
-            isSelected: selectedIndex == 6,
-            onTap: () => _handleTap(6),
-          ),
-
-          DrawerItem.build(
-            index: 7,
-            icon: Icons.assignment_turned_in_outlined,
-            title: tr('required_documents'),
-            isSelected: selectedIndex == 7,
-            onTap: () => _handleTap(7),
-          ),
-
-          DrawerItem.build(
-            index: 8,
-            icon: Icons.forum_outlined,
-            title: tr('Consultation_Requests'),
-            isSelected: selectedIndex == 8,
-            onTap: () => _handleTap(8),
-          ),
-
-          DrawerItem.build(
-            index: 9,
-            icon: Icons.question_answer_rounded,
-            title: tr('Common_Consultation'),
-            isSelected: selectedIndex == 9,
-            onTap: () => _handleTap(9),
-          ),
-
-          DrawerItem.build(
-            index: 10,
-            icon: Icons.question_answer_rounded,
-            title: tr('Issue_categories'),
-            isSelected: selectedIndex == 10,
-            onTap: () => _handleTap(10),
-          ),
-          DrawerItem.build(
-            index: 11,
-            icon: Icons.question_answer_rounded,
-            title: tr('Legal_Book'),
-            isSelected: selectedIndex == 11,
-            onTap: () => _handleTap(11),
-          ),
-          DrawerItem.build(
-            index: 12,
-            icon: Icons.question_answer_rounded,
-            title: tr('report'),
-            isSelected: selectedIndex == 12,
-            onTap: () => _handleTap(12),
+          ...List.generate(
+            drawerItems.length,
+                (index) => DrawerItem.build(
+              index: index,
+              icon: drawerItems[index]['icon'] as IconData,
+              title: drawerItems[index]['title'] as String,
+              isSelected: selectedIndex == index,
+              onTap: () => _handleTap(index),
+            ),
           ),
         ],
       ),

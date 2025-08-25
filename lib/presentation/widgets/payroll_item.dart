@@ -6,10 +6,19 @@ import '../../blocs/payroll_bloc/payroll_event.dart';
 import '../../data/models/payroll_model.dart';
 import '../../themes.dart';
 
-class PayrollItem extends StatelessWidget {
+class PayrollItem extends StatefulWidget {
   const PayrollItem({super.key, required this.payrollModel});
   final PayrollModel payrollModel;
 
+  @override
+  State<PayrollItem> createState() => _PayrollItemState();
+}
+
+class _PayrollItemState extends State<PayrollItem> {
+  @override
+  void initState() {
+print("--------------------------------- ${widget.payrollModel.payment}") ;   super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -34,7 +43,7 @@ class PayrollItem extends StatelessWidget {
                   child: IconButton(
                     onPressed: () {
                       BlocProvider.of<PayrollBloc>(context).add(
-                        DeletePayrollEvent(payrollId: payrollModel.id),
+                        DeletePayrollEvent(payrollId: widget.payrollModel.id),
                       );
                     },
                     icon: Icon(
@@ -48,7 +57,7 @@ class PayrollItem extends StatelessWidget {
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
-                    payrollModel.type,
+                    widget.payrollModel.payment.toString(),
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

@@ -9,7 +9,13 @@ class PayrollModel {
   final DateTime effectiveDate;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final EmployableModel employable;
+
+
+  // الحقول الجديدة
+  final double payment;
+  final double allowances;
+  final double deductions;
+  final String status;
 
   PayrollModel({
     required this.id,
@@ -22,7 +28,11 @@ class PayrollModel {
     required this.effectiveDate,
     required this.createdAt,
     required this.updatedAt,
-    required this.employable,
+
+    required this.payment,
+    required this.allowances,
+    required this.deductions,
+    required this.status,
   });
 
   factory PayrollModel.fromJson(Map<String, dynamic> data) {
@@ -43,59 +53,11 @@ class PayrollModel {
       updatedAt: data['updated_at'] != null
           ? DateTime.parse(data['updated_at'])
           : DateTime.now(),
-      employable: data['employable'] != null
-          ? EmployableModel.fromJson(data['employable'])
-          : EmployableModel.empty(),
-    );
-  }
-}
 
-class EmployableModel {
-  final int id;
-  final double salary;
-  final String certificate;
-  final DateTime hireDate;
-  final int userId;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-
-  EmployableModel({
-    required this.id,
-    required this.salary,
-    required this.certificate,
-    required this.hireDate,
-    required this.userId,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-
-  factory EmployableModel.fromJson(Map<String, dynamic> data) {
-    return EmployableModel(
-      id: data['id'] ?? 0,
-      salary: double.tryParse(data['salary']?.toString() ?? '0') ?? 0.0,
-      certificate: data['certificate'] ?? '',
-      hireDate: data['hire_date'] != null
-          ? DateTime.parse(data['hire_date'])
-          : DateTime.now(),
-      userId: data['user_id'] ?? 0,
-      createdAt: data['created_at'] != null
-          ? DateTime.parse(data['created_at'])
-          : DateTime.now(),
-      updatedAt: data['updated_at'] != null
-          ? DateTime.parse(data['updated_at'])
-          : DateTime.now(),
-    );
-  }
-
-  factory EmployableModel.empty() {
-    return EmployableModel(
-      id: 0,
-      salary: 0.0,
-      certificate: '',
-      hireDate: DateTime.now(),
-      userId: 0,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
+      payment: double.tryParse(data['payment']?.toString() ?? '0') ?? 0.0,
+      allowances: double.tryParse(data['allowances']?.toString() ?? '0') ?? 0.0,
+      deductions: double.tryParse(data['deductions']?.toString() ?? '0') ?? 0.0,
+      status: data['status'] ?? '',
     );
   }
 }

@@ -1,5 +1,5 @@
 String myToken = '';
-String myUrl = 'http://$ip:8000/api/';
+String myUrl = 'https://azhri.net/api/';
 String myRole = '';
 String myLicenesNumber = '';
 String ip = "10.60.197.86";
