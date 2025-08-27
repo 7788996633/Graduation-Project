@@ -43,9 +43,9 @@ class ComplaintServices {
   }
 
 
-  Future<List> getMyComplaints() async {
+  Future<List> getMyComplaints()async {
     try {
-      var url = Uri.parse('${myUrl}my-complaints');
+      var url = Uri.parse('${myUrl}complaints/my/complaints');
       http.Response response;
 
       if (kIsWeb) {
@@ -73,6 +73,7 @@ class ComplaintServices {
       return [];
     }
   }
+
 
 
 

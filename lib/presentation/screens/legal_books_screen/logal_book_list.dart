@@ -3,14 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/legal_books_bloc/legal_books_bloc.dart';
 import '../../../blocs/legal_books_bloc/legal_books_event.dart';
-
+import '../../../blocs/legal_books_bloc/legal_books_state.dart';
+import '../../../constant.dart';
+import '../../../data/models/legal_book_model.dart';
 import '../../../themes.dart';
-import '../../widgets/custom_appbar_add.dart';
-import '../../widgets/legal_book_list.dart';
-import '../../widgets/custom_search_bar.dart';  // ويدجت البحث
 
+import '../../widgets/custom_appbar_add.dart';
+import '../../widgets/legal_book_item.dart';
 import 'add_logal_book.dart';
-import 'my_saved_book_list.dart';  // شاشة إضافة كتاب قانوني
+import 'my_saved_book_list.dart';
 
 class ListLegalBooksScreen extends StatefulWidget {
   const ListLegalBooksScreen({super.key});
@@ -22,10 +23,6 @@ class ListLegalBooksScreen extends StatefulWidget {
 class _ListLegalBooksScreenState extends State<ListLegalBooksScreen> {
   late LegalBookBloc bloc;
 
-  // هنا تقدر تجيب الدور من أي مكان (API, SharedPreferences, Provider...)
-  // حالياً رح أفترض إنك جبت الدور بهالمتغير
-  final String myRole = "admin"; // جرّب غيّرها لـ "user" وشوف
-
   @override
   void initState() {
     super.initState();
@@ -33,12 +30,9 @@ class _ListLegalBooksScreenState extends State<ListLegalBooksScreen> {
     bloc.add(GetAllLegalBooksEvent());
   }
 
-  void _onSearch(String bookTitle) {
-    if (bookTitle.trim().isNotEmpty) {
-      bloc.add(SearchLegalBooksByTitleEvent(bookTitle: bookTitle));
-    } else {
-      bloc.add(GetAllLegalBooksEvent());
-    }
+  Future<void> _onRefresh() async {
+    bloc.add(GetAllLegalBooksEvent());
+    await Future.delayed(const Duration(milliseconds: 400));
   }
 
   @override
@@ -47,25 +41,26 @@ class _ListLegalBooksScreenState extends State<ListLegalBooksScreen> {
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
         title: 'Legal Books',
-        actionIcon: myRole == "admin" ? Icons.add_circle_rounded : null,
-        tooltip: myRole == "admin" ? 'Add New Legal Book' : null,
-        onActionPressed: myRole == "admin"
-            ? () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (_) => LegalBookBloc(),
-                child: const AddLegalBookScreen(),
-              ),
-            ),
-          );
-        }
+        actionIcon: (myRole != null && myRole== 'admin')
+            ? Icons.add_circle_rounded
             : null,
-        secondaryIcon: Icons.bookmark, // أيقونة لزر "My Saved News"
-        secondaryTooltip: 'My Saved News',
+        tooltip: 'Add New Legal Book',
+        onActionPressed: () {
+          if (myRole != null && myRole == 'admin') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => BlocProvider(
+                  create: (_) => LegalBookBloc(),
+                  child: const AddLegalBookScreen(),
+                ),
+              ),
+            );
+          }
+        },
+        secondaryIcon: Icons.bookmark,
+        secondaryTooltip: 'My Saved Books',
         onSecondaryPressed: () {
-
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -74,30 +69,59 @@ class _ListLegalBooksScreenState extends State<ListLegalBooksScreen> {
                 child: const MySavedBookListScreen(),
               ),
             ),
-
           );
         },
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            CustomSearchBar(
-              hint: 'Search by Title',
-              onSearch: _onSearch,
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  bloc.add(GetAllLegalBooksEvent());
-                  await Future.delayed(const Duration(seconds: 1));
-                },
-                child: LegalBookList(bloc: bloc),
-              ),
-            ),
-          ],
+        child: RefreshIndicator(
+          onRefresh: _onRefresh,
+          child: BlocBuilder<LegalBookBloc, LegalBookState>(
+            builder: (context, state) {
+              if (state is LegalBookLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is LegalBookFail) {
+                // حتى الخطأ بدنا نخليه يقدر يعمل Refresh
+                return ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Text(state.errMsg),
+                      ),
+                    ),
+                  ],
+                );
+              } else if (state is LegalBookListLoaded) {
+                final List<LegalBookModel> bookList = state.list;
+                if (bookList.isEmpty) {
+                  return ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: const [
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(20),
+                          child: Text('No Legal Books Available'),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+                return ListView.builder(
+                  padding: const EdgeInsets.all(12),
+                  itemCount: bookList.length,
+                  itemBuilder: (context, index) {
+                    return LegalBookItem(legalBook: bookList[index]);
+                  },
+                );
+              }
+              // الحالة المبدئية: نخليها قابلة للسحب كمان
+              return ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+              );
+            },
+          ),
         ),
       ),
     );

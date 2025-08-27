@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 import '../../../blocs/complaints_bloc/complaint_bloc.dart';
 import '../../../blocs/complaints_bloc/complaint_event.dart';
 import '../../../themes.dart';
 
 import '../../widgets/custom_appbar_add.dart';
 import '../../widgets/my_complaint_list.dart';
-import '../../widgets/refresh_button.dart';
 
 class MyListComplaintsScreen extends StatefulWidget {
   const MyListComplaintsScreen({super.key});
@@ -27,6 +25,10 @@ class _MyListComplaintsScreenState extends State<MyListComplaintsScreen> {
     bloc.add(GetMyComplaintsEvent());
   }
 
+  Future<void> _onRefresh() async {
+    bloc.add(GetMyComplaintsEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,17 +38,13 @@ class _MyListComplaintsScreenState extends State<MyListComplaintsScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            MyComplaintList(bloc: bloc),
-          ],
+        child: Expanded(
+          child: RefreshIndicator(
+            onRefresh: _onRefresh,
+            color: AppColors.darkBlue,
+            child: MyComplaintList(bloc: bloc),
+          ),
         ),
-      ),
-      floatingActionButton: RefreshButton(
-        onPressed: () {
-          bloc.add(GetMyComplaintsEvent());
-        },
       ),
     );
   }

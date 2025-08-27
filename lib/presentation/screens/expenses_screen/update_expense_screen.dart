@@ -18,7 +18,6 @@ class UpdateExpenseScreen extends StatefulWidget {
 }
 
 class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
-  final _formKey = GlobalKey<FormState>();
   late TextEditingController _descriptionController;
   late TextEditingController _amountController;
   late ExpenseBloc _bloc;
@@ -42,24 +41,22 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
   }
 
   void _onUpdatePressed() {
-    if (_formKey.currentState!.validate()) {
-      final amount = double.tryParse(_amountController.text.trim());
-      if (amount == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please enter a valid number for amount'),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return;
-      }
-
-      _bloc.add(UpdateExpenseEvent(
-        expenseId: widget.expense.id,
-        description: _descriptionController.text.trim(),
-        amount: amount,
-      ));
+    final amount = double.tryParse(_amountController.text.trim());
+    if (amount == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid number for amount'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
     }
+
+    _bloc.add(UpdateExpenseEvent(
+      expenseId: widget.expense.id,
+      description: _descriptionController.text.trim(),
+      amount: amount,
+    ));
   }
 
   @override
@@ -93,48 +90,37 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
             final isLoading = state is ExpenseLoading;
 
             return Padding(
-              padding: const EdgeInsets.all(16),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: _descriptionController,
-                      maxLines: 3, // مثل LegalNewsScreen
-                      decoration:
-                      const InputDecoration(labelText: 'Description'),
-                      validator: (value) =>
-                      value == null || value.isEmpty ? 'Required' : null,
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
+                    controller: _descriptionController,
+                    decoration: const InputDecoration(labelText: 'Description'),
+                    maxLines: 3,
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: _amountController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(labelText: 'Amount'),
+                  ),
+                  const SizedBox(height: 30),
+                  isLoading
+                      ? const CircularProgressIndicator()
+                      : ElevatedButton(
+                    onPressed: _onUpdatePressed,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.darkBlue,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 14),
                     ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _amountController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: 'Amount'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) return 'Required';
-                        if (double.tryParse(value) == null) return 'Invalid number';
-                        return null;
-                      },
+                    child: const Text(
+                      'Update Expense',
+                      style: TextStyle(color: Colors.white),
                     ),
-                    const SizedBox(height: 30),
-                    isLoading
-                        ? const CircularProgressIndicator()
-                        : ElevatedButton(
-                      onPressed: _onUpdatePressed,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.darkBlue,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 14),
-                      ),
-                      child: const Text(
-                        'Update',
-                        style:
-                        TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           },

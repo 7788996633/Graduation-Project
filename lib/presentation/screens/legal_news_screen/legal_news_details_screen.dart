@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../blocs/legal_news_bloc/legal_news_bloc.dart';
 import '../../../data/models/legal_news_model.dart';
-import '../../widgets/custom_appbar_add.dart';
 import '../../../themes.dart';
+import '../../widgets/custom_appbar_add.dart';
 import 'update_legal_news.dart';
 
-
 class LegalNewsDetailsScreen extends StatefulWidget {
-  const LegalNewsDetailsScreen({super.key, required this.legalNews});
   final LegalNewsModel legalNews;
+
+  const LegalNewsDetailsScreen({super.key, required this.legalNews});
 
   @override
   State<LegalNewsDetailsScreen> createState() => _LegalNewsDetailsScreenState();
@@ -31,106 +32,134 @@ class _LegalNewsDetailsScreenState extends State<LegalNewsDetailsScreen> {
     });
   }
 
+  String prepareFullUrl(String value) {
+    const String baseUrl = 'http://192.168.1.10/LawCompany/public/';
+    if (value.startsWith('http')) {
+      return value;
+    } else {
+      return '$baseUrl$value';
+    }
+  }
+
+  Widget _buildInfoRow({
+    required IconData icon,
+    required String label,
+    required String value,
+    bool isLink = false,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: AppColors.darkBlue, size: 22),
+          const SizedBox(width: 10),
+          Text(
+            '$label:',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: AppColors.darkBlue,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: isLink
+                ? GestureDetector(
+              onTap: () async {
+                if (value.isEmpty) return;
+                final uri = Uri.parse(prepareFullUrl(value));
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Could not open URL')),
+                  );
+                }
+              },
+              child: Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: AppColors.darkBlue,
+                  decoration: TextDecoration.underline,
+                  height: 1.3,
+                ),
+              ),
+            )
+                : Text(
+              value,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+                height: 1.3,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomActionAppBar(
-        title: 'Legal News Details',
-      ),
+      backgroundColor: Colors.lightBlue.shade50,
+      appBar: const CustomActionAppBar(title: 'Legal News Details'),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // البطاقة الرئيسية
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // العنوان
-                    Text(
-                      news.title,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.darkBlue,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-
-                    // وصف الخبر
-                    Text(
-                      news.description,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black87,
-                        height: 1.5,
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // أي معلومات إضافية يمكن وضعها هنا
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: const [
-                        Icon(Icons.article, color: AppColors.darkBlue, size: 28),
-                      ],
-                    ),
-                  ],
+        padding: const EdgeInsets.all(20.0),
+        child: Card(
+          elevation: 10,
+          color: Colors.white,
+          shadowColor: Colors.blueGrey.shade100,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Icon(Icons.article, size: 72, color: AppColors.darkBlue),
                 ),
-              ),
+                const SizedBox(height: 20),
+                _buildInfoRow(
+                  icon: Icons.title,
+                  label: 'Title',
+                  value: news.title,
+                ),
+                _buildInfoRow(
+                  icon: Icons.description_outlined,
+                  label: 'Description',
+                  value: news.description,
+                ),
+                // إضافة أي معلومات إضافية هنا إذا رغبت
+              ],
             ),
-          ],
+          ),
         ),
       ),
-      backgroundColor: Colors.grey.shade100,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          // فتح شاشة تعديل الخبر
-          final result = await Navigator.push<LegalNewsModel>(
+          final updatedNews = await Navigator.push<LegalNewsModel>(
             context,
             MaterialPageRoute(
-              builder: (context) => BlocProvider(
-                create: (_) => LegalNewsBloc(), // ضع هنا البلوك المناسب إذا أردت
+              builder: (_) => BlocProvider(
+                create: (_) => LegalNewsBloc(),
                 child: UpdateLegalNewsScreen(legalNews: news),
               ),
             ),
           );
 
-          if (result != null) {
-            refreshData(result);
+          if (updatedNews != null) {
+            refreshData(updatedNews);
           }
         },
-        icon: const Icon(Icons.edit),
+        icon: const Icon(Icons.edit, color: Colors.white),
         label: const Text(
           'Edit',
-          style: TextStyle(
-            fontSize: 20,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: AppColors.darkBlue,
-        elevation: 6,
-        hoverElevation: 12,
-        extendedPadding: const EdgeInsets.symmetric(horizontal: 20),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
       ),
     );
   }

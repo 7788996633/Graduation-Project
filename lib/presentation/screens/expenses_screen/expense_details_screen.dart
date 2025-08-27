@@ -3,14 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/expenses_bloc/expenses_bloc.dart';
 import '../../../data/models/expenses_model.dart';
-import '../../widgets/custom_appbar_add.dart';
 import '../../../themes.dart';
+import '../../widgets/custom_appbar_add.dart';
 import '../expenses_screen/update_expense_screen.dart';
 
-
 class ExpenseDetailsScreen extends StatefulWidget {
-  const ExpenseDetailsScreen({super.key, required this.expenseModel});
   final ExpenseModel expenseModel;
+
+  const ExpenseDetailsScreen({super.key, required this.expenseModel});
 
   @override
   State<ExpenseDetailsScreen> createState() => _ExpenseDetailsScreenState();
@@ -31,125 +31,105 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
     });
   }
 
+  Widget _buildInfoRow({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: AppColors.darkBlue, size: 22),
+          const SizedBox(width: 10),
+          Text(
+            '$label:',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: AppColors.darkBlue,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+                height: 1.3,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomActionAppBar(
-        title: 'Expense Details',
-      ),
+      backgroundColor: Colors.grey.shade100,
+      appBar: const CustomActionAppBar(title: 'Expense Details'),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // البطاقة الرئيسية
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // الأيقونة الرئيسية
-                    Center(
-                      child: Icon(
-                        Icons.attach_money_rounded,
-                        size: 80,
-                        color: AppColors.darkBlue,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // الوصف
-                    Text(
-                      expense.description,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black87,
-                        height: 1.5,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-
-                    // المبلغ
-                    Text(
-                      'Amount: ${expense.amount}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.darkBlue,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-
-                    // النوع
-                    Text(
-                      'Type: ${expense.type}',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // أيقونة إضافية
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: const [
-                        Icon(Icons.article, color: AppColors.darkBlue, size: 28),
-                      ],
-                    ),
-                  ],
+        padding: const EdgeInsets.all(20.0),
+        child: Card(
+          elevation: 10,
+          color: Colors.white,
+          shadowColor: Colors.blueGrey.shade100,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Icon(Icons.attach_money_rounded, size: 72, color: AppColors.darkBlue),
                 ),
-              ),
+                const SizedBox(height: 20),
+                _buildInfoRow(
+                  icon: Icons.description_outlined,
+                  label: 'Description',
+                  value: expense.description,
+                ),
+                _buildInfoRow(
+                  icon: Icons.monetization_on,
+                  label: 'Amount',
+                  value: expense.amount.toString(),
+                ),
+                _buildInfoRow(
+                  icon: Icons.category,
+                  label: 'Type',
+                  value: expense.type,
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
-      backgroundColor: Colors.grey.shade100,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          // فتح شاشة تعديل المصروف
-          final result = await Navigator.push<ExpenseModel>(
+          final updatedExpense = await Navigator.push<ExpenseModel>(
             context,
             MaterialPageRoute(
-              builder: (context) => BlocProvider(
+              builder: (_) => BlocProvider(
                 create: (_) => ExpenseBloc(),
                 child: UpdateExpenseScreen(expense: expense),
               ),
             ),
           );
 
-          if (result != null) {
-            refreshData(result);
+          if (updatedExpense != null) {
+            refreshData(updatedExpense);
           }
         },
-        icon: const Icon(Icons.edit),
+        icon: const Icon(Icons.edit, color: Colors.white),
         label: const Text(
           'Edit',
-          style: TextStyle(
-            fontSize: 20,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: AppColors.darkBlue,
-        elevation: 6,
-        hoverElevation: 12,
-        extendedPadding: const EdgeInsets.symmetric(horizontal: 20),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
       ),
     );
   }

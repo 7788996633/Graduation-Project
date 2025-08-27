@@ -24,7 +24,8 @@ class _UpdateComplaintScreenState extends State<UpdateComplaintScreen> {
   @override
   void initState() {
     super.initState();
-    _descriptionController = TextEditingController(text: widget.complaint.description);
+    _descriptionController =
+        TextEditingController(text: widget.complaint.description);
     _bloc = ComplaintBloc();
   }
 
@@ -54,10 +55,7 @@ class _UpdateComplaintScreenState extends State<UpdateComplaintScreen> {
           listener: (context, state) {
             if (state is ComplaintSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('✅ ${state.successMsg}'),
-                  backgroundColor: Colors.green,
-                ),
+                SnackBar(content: Text('✅ ${state.successMsg}')),
               );
 
               Navigator.pop(
@@ -71,10 +69,7 @@ class _UpdateComplaintScreenState extends State<UpdateComplaintScreen> {
               );
             } else if (state is ComplaintFail) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('❌ ${state.errMsg}'),
-                  backgroundColor: Colors.red,
-                ),
+                SnackBar(content: Text('❌ ${state.errMsg}')),
               );
             }
           },
@@ -84,15 +79,12 @@ class _UpdateComplaintScreenState extends State<UpdateComplaintScreen> {
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextFormField(
+                  TextField(
                     controller: _descriptionController,
-                    decoration: const InputDecoration(
-                      labelText: 'Description',
-                      border: OutlineInputBorder(),
-                    ),
-                    maxLines: 3,
-                    enabled: !isLoading,
+                    decoration: const InputDecoration(labelText: 'Description'),
+                    maxLines: 5,
                   ),
                   const SizedBox(height: 30),
                   isLoading
@@ -105,7 +97,7 @@ class _UpdateComplaintScreenState extends State<UpdateComplaintScreen> {
                           horizontal: 40, vertical: 14),
                     ),
                     child: const Text(
-                      'Update',
+                      'Update Complaint',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),

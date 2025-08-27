@@ -19,7 +19,7 @@ class _MyComplaintListState extends State<MyComplaintList> {
   @override
   void initState() {
     super.initState();
-    widget.bloc.add(GetAllComplaintsEvent()); // إذا تريد فقط شكاوى المستخدم يمكن إضافة حدث مخصص
+    widget.bloc.add(GetMyComplaintsEvent()); // إذا تريد فقط شكاوى المستخدم يمكن إضافة حدث مخصص
   }
 
   List<ComplaintModel> complaintList = [];
@@ -35,7 +35,7 @@ class _MyComplaintListState extends State<MyComplaintList> {
               backgroundColor: Colors.green,
             ),
           );
-          widget.bloc.add(GetAllComplaintsEvent());
+          widget.bloc.add(GetMyComplaintsEvent());
         } else if (state is ComplaintFail) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

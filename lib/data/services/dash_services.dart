@@ -8,38 +8,31 @@ class DashServices {
     'Authorization': 'Bearer $myToken',
   };
 
-  Future<int> getMonthlyCosts() async {
+  Future<List<dynamic>> fetchMonthlyCosts() async {
     final response = await http.get(
-      Uri.parse('${myUrl}payrolls'),
+      Uri.parse('${myUrl}payrolls/getMonthlyCosts'),
       headers: headers,
     );
 
     final jsonResponse = json.decode(response.body);
-    print(jsonResponse);
-
     if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
       return jsonResponse['data'];
     } else {
-      print('Response error: ${response.body}');
-      throw Exception('فشل في تحميل عدد القضايا المفتوحة');
+      throw Exception('فشل في تحميل التكاليف الشهرية');
     }
   }
 
-
-  Future<int> getMonthlyRevenues() async {
+  Future<List<dynamic>> fetchMonthlyRevenues() async {
     final response = await http.get(
       Uri.parse('${myUrl}invoices/reports/monthly-revenues'),
       headers: headers,
     );
 
     final jsonResponse = json.decode(response.body);
-    print(jsonResponse);
-
     if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
       return jsonResponse['data'];
     } else {
-      print('Response error: ${response.body}');
-      throw Exception('فشل في تحميل عدد الجلسات لهذا الشهر');
+      throw Exception('فشل في تحميل الإيرادات الشهرية');
     }
   }
 }

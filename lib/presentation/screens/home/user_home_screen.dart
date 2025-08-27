@@ -18,6 +18,7 @@ import '../../widgets/section_card.dart';
 import '../AttendDemand/my_demands_screen.dart';
 import '../common_consulation/list_common_consul.dart';
 import '../complaint_screen/add_complaint_screen.dart';
+import '../complaint_screen/my_list_complaints_screen.dart';
 import '../consultation_request/all_consultation_requests_page.dart';
 import '../consultation_request/submit_consultation_request_screen.dart';
 import '../hr_screen/hiring_request/hiring_requests_published_screen.dart';
@@ -169,12 +170,32 @@ class UserHomeScreen extends StatelessWidget {
         },
       },
       {
-        'title': 'Legal Library',
-        'icon': Icons.library_books,
+        'title': 'Complaints',
+        'icon': Icons.report_problem_outlined,
         'onTap': () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const SettingsScreen()),
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => ComplaintBloc(),
+                child: const AddComplaintScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': ' my Complaints',
+        'icon': Icons.report_problem_outlined,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => ComplaintBloc(),
+                child: const MyListComplaintsScreen(),
+              ),
+            ),
           );
         },
       },

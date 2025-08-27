@@ -34,12 +34,9 @@ class _LegalBookDetailsScreenState extends State<LegalBookDetailsScreen> {
   }
 
   String prepareFullUrl(String value) {
-    const String baseUrl = 'http://192.168.1.10/LawCompany/public/';
-    if (value.startsWith('http')) {
-      return value;
-    } else {
-      return '$baseUrl$value';
-    }
+    const String baseUrl = 'http://192.168.137.130/LawCompany/public/';
+    if (value.startsWith('http')) return value;
+    return '$baseUrl$value';
   }
 
   Widget _buildInfoRow({
@@ -76,7 +73,7 @@ class _LegalBookDetailsScreenState extends State<LegalBookDetailsScreen> {
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                        content: Text('❌ Could not open file')),
+                        content: Text('❌ Could not open URL')),
                   );
                 }
               },
@@ -115,9 +112,8 @@ class _LegalBookDetailsScreenState extends State<LegalBookDetailsScreen> {
           elevation: 10,
           color: Colors.white,
           shadowColor: Colors.blueGrey.shade100,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
+          shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
@@ -173,7 +169,6 @@ class _LegalBookDetailsScreenState extends State<LegalBookDetailsScreen> {
               ),
             ),
           );
-
           if (updatedBook != null) {
             refreshData(updatedBook);
           }

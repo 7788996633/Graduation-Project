@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 import '../../../blocs/complaints_bloc/complaint_bloc.dart';
 import '../../../blocs/complaints_bloc/complaint_event.dart';
 import '../../../blocs/complaints_bloc/complaint_state.dart';
@@ -15,110 +14,97 @@ class UpdateComplaintStatusScreen extends StatefulWidget {
   const UpdateComplaintStatusScreen({super.key, required this.complaint});
 
   @override
-  State<UpdateComplaintStatusScreen> createState() => _UpdateComplaintStatusScreenState();
+  State<UpdateComplaintStatusScreen> createState() =>
+      _UpdateComplaintStatusScreenState();
 }
 
-class _UpdateComplaintStatusScreenState extends State<UpdateComplaintStatusScreen> {
-  final _formKey = GlobalKey<FormState>();
+class _UpdateComplaintStatusScreenState
+    extends State<UpdateComplaintStatusScreen> {
   late TextEditingController _statusController;
+  late ComplaintBloc _bloc;
 
   @override
   void initState() {
     super.initState();
     _statusController = TextEditingController(text: widget.complaint.status);
+    _bloc = ComplaintBloc();
   }
 
   @override
   void dispose() {
     _statusController.dispose();
+    _bloc.close();
     super.dispose();
+  }
+
+  void _onUpdatePressed() {
+    if (_statusController.text.trim().isEmpty) return;
+
+    _bloc.add(UpdateComplaintStatusEvent(
+      complaintId: widget.complaint.id,
+      status: _statusController.text.trim(),
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomActionAppBar(
-        title: 'Update Complaint Status',
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: BlocConsumer<ComplaintBloc, ComplaintState>(
+    return BlocProvider<ComplaintBloc>.value(
+      value: _bloc,
+      child: Scaffold(
+        appBar: const CustomActionAppBar(title: 'Update Complaint Status'),
+        body: BlocConsumer<ComplaintBloc, ComplaintState>(
           listener: (context, state) {
             if (state is ComplaintSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(
-                    state.successMsg,
-                    style: const TextStyle(fontSize: 16),
-                  ),
+                  content: Text('✅ ${state.successMsg}'),
                   backgroundColor: Colors.green,
                 ),
               );
+
               Navigator.pop(
                 context,
                 ComplaintModel(
                   id: widget.complaint.id,
                   description: widget.complaint.description,
-                  status: _statusController.text.trim(), userId: widget.complaint.userId,
+                  status: _statusController.text.trim(),
+                  userId: widget.complaint.userId,
                 ),
               );
             } else if (state is ComplaintFail) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(
-                    state.errMsg,
-                    style: const TextStyle(fontSize: 16),
-                  ),
+                  content: Text('❌ ${state.errMsg}'),
                   backgroundColor: Colors.red,
-                ),
-              );
-            } else if (state is ComplaintLoading) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    "Loading ...",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Colors.grey,
                 ),
               );
             }
           },
           builder: (context, state) {
-            return Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: _statusController,
-                    keyboardType: TextInputType.text,
-                    decoration: const InputDecoration(labelText: 'Status'),
-                    validator: (value) =>
-                    value == null || value.isEmpty ? 'Please enter status' : null,
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        BlocProvider.of<ComplaintBloc>(context).add(
-                          UpdateComplaintStatusEvent (
-                            complaintId: widget.complaint.id,
+            final isLoading = state is ComplaintLoading;
 
-                            status: _statusController.text.trim(),
-                          ),
-                        );
-                      }
-                    },
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
+                    controller: _statusController,
+                    decoration: const InputDecoration(labelText: 'Status'),
+                  ),
+                  const SizedBox(height: 30),
+                  isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : ElevatedButton(
+                    onPressed: _onUpdatePressed,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.darkBlue,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 14),
                     ),
                     child: const Text(
-                      'Update',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      'Update Status',
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ],

@@ -70,7 +70,7 @@ class SessionTypeItem extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Icon(
-                          Icons.delete_forever,
+                          Icons.delete,
                           color: AppColors.darkBlue,
                           size: 24,
                         ),

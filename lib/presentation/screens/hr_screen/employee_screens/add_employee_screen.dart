@@ -26,7 +26,7 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
   String? _selectedType;
   File? _certificateFile;
 
-  final List<String> _employeeTypes = ['Lawyer', 'Intern', 'HR', 'Accountant'];
+  final List<String> _employeeTypes = ['lawyer', 'intern', 'hr', 'accountant'];
 
   void _clearFields() {
     _salaryController.clear();

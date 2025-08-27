@@ -1,6 +1,3 @@
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,20 +18,16 @@ class UpdateLegalNewsScreen extends StatefulWidget {
 }
 
 class _UpdateLegalNewsScreenState extends State<UpdateLegalNewsScreen> {
-  final _formKey = GlobalKey<FormState>();
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
-
-  dynamic? _selectedFile; // File أو Uint8List (للويب)
-  String? _fileName;
   late LegalNewsBloc _bloc;
 
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.legalNews.title);
-    _descriptionController = TextEditingController(text: widget.legalNews.description);
-    _fileName = null;
+    _descriptionController =
+        TextEditingController(text: widget.legalNews.description);
     _bloc = LegalNewsBloc();
   }
 
@@ -46,29 +39,12 @@ class _UpdateLegalNewsScreenState extends State<UpdateLegalNewsScreen> {
     super.dispose();
   }
 
-  Future<void> _pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      setState(() {
-        _fileName = result.files.single.name;
-        if (kIsWeb) {
-          _selectedFile = result.files.single.bytes;
-        } else {
-          _selectedFile = File(result.files.single.path!);
-        }
-      });
-    }
-  }
-
   void _onUpdatePressed() {
-    if (_formKey.currentState!.validate()) {
-      _bloc.add(UpdateLegalNewsEvent(
-        newsId: widget.legalNews.id,
-        title: _titleController.text.trim(),
-        description: _descriptionController.text.trim(),
-
-      ));
-    }
+    _bloc.add(UpdateLegalNewsEvent(
+      newsId: widget.legalNews.id,
+      title: _titleController.text.trim(),
+      description: _descriptionController.text.trim(),
+    ));
   }
 
   @override
@@ -83,6 +59,7 @@ class _UpdateLegalNewsScreenState extends State<UpdateLegalNewsScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('✅ ${state.successMsg}')),
               );
+
               Navigator.pop(
                 context,
                 LegalNewsModel(
@@ -103,46 +80,36 @@ class _UpdateLegalNewsScreenState extends State<UpdateLegalNewsScreen> {
             final isLoading = state is LegalNewsLoading;
 
             return Padding(
-              padding: const EdgeInsets.all(16),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: _titleController,
-                      decoration: const InputDecoration(labelText: 'Title'),
-                      validator: (value) =>
-                      value == null || value.isEmpty ? 'Required' : null,
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
+                    controller: _titleController,
+                    decoration: const InputDecoration(labelText: 'Title'),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: _descriptionController,
+                    decoration: const InputDecoration(labelText: 'Description'),
+                    maxLines: 5,
+                  ),
+                  const SizedBox(height: 30),
+                  isLoading
+                      ? const CircularProgressIndicator()
+                      : ElevatedButton(
+                    onPressed: _onUpdatePressed,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.darkBlue,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 14),
                     ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _descriptionController,
-                      maxLines: 5,
-                      decoration: const InputDecoration(labelText: 'Description'),
-                      validator: (value) =>
-                      value == null || value.isEmpty ? 'Required' : null,
+                    child: const Text(
+                      'Update News',
+                      style: TextStyle(color: Colors.white),
                     ),
-                    const SizedBox(height: 20),
-
-
-                    const SizedBox(height: 30),
-                    isLoading
-                        ? const CircularProgressIndicator()
-                        : ElevatedButton(
-                      onPressed: _onUpdatePressed,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.darkBlue,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 14),
-                      ),
-                      child: const Text(
-                        'Update',
-                        style: TextStyle(
-                            color: Colors.white, fontSize: 18),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           },

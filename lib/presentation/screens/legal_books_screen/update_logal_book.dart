@@ -21,7 +21,7 @@ class UpdateLegalBookScreen extends StatefulWidget {
 }
 
 class _UpdateLegalBookScreenState extends State<UpdateLegalBookScreen> {
-  late TextEditingController _bookTitleController;
+  late TextEditingController _titleController;
   dynamic? _selectedFile; // File أو Uint8List (للويب)
   String? _fileName;
   late LegalBookBloc _bloc;
@@ -29,14 +29,14 @@ class _UpdateLegalBookScreenState extends State<UpdateLegalBookScreen> {
   @override
   void initState() {
     super.initState();
-    _bookTitleController = TextEditingController(text: widget.legalBook.bookTitle);
-    _fileName =widget.legalBook.book;
+    _titleController = TextEditingController(text: widget.legalBook.bookTitle);
+    _fileName = widget.legalBook.book;
     _bloc = LegalBookBloc();
   }
 
   @override
   void dispose() {
-    _bookTitleController.dispose();
+    _titleController.dispose();
     _bloc.close();
     super.dispose();
   }
@@ -46,11 +46,7 @@ class _UpdateLegalBookScreenState extends State<UpdateLegalBookScreen> {
     if (result != null) {
       setState(() {
         _fileName = result.files.single.name;
-        if (kIsWeb) {
-          _selectedFile = result.files.single.bytes;
-        } else {
-          _selectedFile = File(result.files.single.path!);
-        }
+        _selectedFile = kIsWeb ? result.files.single.bytes : File(result.files.single.path!);
       });
     }
   }
@@ -58,7 +54,7 @@ class _UpdateLegalBookScreenState extends State<UpdateLegalBookScreen> {
   void _onUpdatePressed() {
     _bloc.add(UpdateLegalBookEvent(
       bookId: widget.legalBook.id!,
-      bookTitle: _bookTitleController.text.trim(),
+      bookTitle: _titleController.text.trim(),
       file: _selectedFile,
       fileName: _fileName ?? '',
     ));
@@ -76,12 +72,13 @@ class _UpdateLegalBookScreenState extends State<UpdateLegalBookScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('✅ ${state.successMsg}')),
               );
+
               Navigator.pop(
                 context,
                 LegalBookModel(
                   id: widget.legalBook.id,
-                  bookTitle: _bookTitleController.text.trim(),
-                  book: widget.legalBook.book,
+                  bookTitle: _titleController.text.trim(),
+                  book: _fileName ?? widget.legalBook.book,
                   createdAt: widget.legalBook.createdAt,
                   updatedAt: DateTime.now().toIso8601String(),
                 ),
@@ -96,26 +93,20 @@ class _UpdateLegalBookScreenState extends State<UpdateLegalBookScreen> {
             final isLoading = state is LegalBookLoading;
 
             return Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextFormField(
-                    controller: _bookTitleController,
-                    decoration: const InputDecoration(
-                      labelText: 'Book Title',
-                    ),
-                    validator: (value) =>
-                    value == null || value.isEmpty ? 'Required' : null,
+                  TextField(
+                    controller: _titleController,
+                    decoration: const InputDecoration(labelText: 'Book Title'),
                   ),
-                  const SizedBox(height: 20),
-
-                  // اختيار ملف جديد
+                  const SizedBox(height: 15),
                   ElevatedButton.icon(
                     onPressed: isLoading ? null : _pickFile,
                     icon: const Icon(Icons.attach_file),
-                    label: Text(_fileName ?? 'Choose New File (optional)'),
+                    label: Text(_fileName ?? 'Choose File (optional)'),
                   ),
-
                   const SizedBox(height: 30),
                   isLoading
                       ? const CircularProgressIndicator()
@@ -123,12 +114,11 @@ class _UpdateLegalBookScreenState extends State<UpdateLegalBookScreen> {
                     onPressed: _onUpdatePressed,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.darkBlue,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 14),
+                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
                     ),
                     child: const Text(
-                      'Update',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      'Update Book',
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ],

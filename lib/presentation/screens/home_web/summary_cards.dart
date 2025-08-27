@@ -18,6 +18,7 @@ class _SummaryCardsState extends State<SummaryCards> {
   int? openCases;
   int? totalClients;
   int? sessionsThisMonth;
+  int? totalRevenue;
   bool isLoading = false;
   bool hasError = false;
 
@@ -50,6 +51,7 @@ class _SummaryCardsState extends State<SummaryCards> {
             openCases = state.openCases;
             totalClients = state.totalClients;
             sessionsThisMonth = state.sessionsThisMonth;
+            totalRevenue=state.totalRevenue;
           }
         });
       },
@@ -90,7 +92,7 @@ class _SummaryCardsState extends State<SummaryCards> {
             Expanded(
               child: SummaryCard(
                 title: "Total Revenue",
-                amount: "\$12,340.00",
+                amount: _formatAmount(totalRevenue),
                 color: Colors.green,
                 backgroundColor: widget.cardColor,
                 titleColor: titleTextColor,

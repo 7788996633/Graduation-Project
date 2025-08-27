@@ -50,13 +50,14 @@ class _AllLawyersScreenState extends State<AllLawyersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: getCurrentTheme()['BackGorund'],
+    backgroundColor: AppColors.scaffold,
       appBar: AppBar(
+        backgroundColor:  AppColors.scaffold,
         actions: [
           IconButton(
             icon: const Icon(
               Icons.filter_list,
-              color: Colors.white,
+              color: AppColors.darkBlue,
             ),
             onPressed: () async {
               final filter =
@@ -72,11 +73,11 @@ class _AllLawyersScreenState extends State<AllLawyersScreen> {
         ],
         title: const Text(
           'Lawyers Directory',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: AppColors.darkBlue,fontSize: 20),
         ),
         centerTitle: true,
         elevation: 8,
-        backgroundColor: getCurrentTheme()['BackGorund'],
+
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

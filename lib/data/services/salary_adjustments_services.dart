@@ -11,25 +11,34 @@ class SalaryAdjustmentServices {
   };
 
 
+
   Future<List> getSalaryAdjustments(int userId) async {
-    var url = Uri.parse('${myUrl}salary-adjustments/$userId');
-    http.Response response;
+    try {
+      var url = Uri.parse('${myUrl}salary-adjustments/$userId');
+      http.Response response;
 
-    if (kIsWeb) {
-      var request = http.Request('GET', url);
-      request.headers.addAll(baseHeaders);
-      var streamedResponse = await request.send();
-      response = await http.Response.fromStream(streamedResponse);
-    } else {
-      response = await http.get(url, headers: baseHeaders);
-    }
+      if (kIsWeb) {
+        var request = http.Request('GET', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      } else {
+        var request = http.MultipartRequest('GET', url);
+        request.headers.addAll(baseHeaders);
+        var streamedResponse = await request.send();
+        response = await http.Response.fromStream(streamedResponse);
+      }
 
-    var jsonResponse = json.decode(response.body);
-    print(jsonResponse);
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
 
-    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-      return jsonResponse['data'];
-    } else {
+      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+        return jsonResponse['data'];
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print('Error in getSessionTypes: $e');
       return [];
     }
   }
@@ -61,10 +70,9 @@ class SalaryAdjustmentServices {
         throw Exception('failed: ${jsonResponse['message']}');
       }
     } catch (e) {
-      throw Exception('Error in getSalaryAdjustmentById: $e');
+      throw Exception('Error in getSessionTypeById: $e');
     }
   }
-
   Future<String> addSalaryAdjustment(int  userId,String type,String reason ,String amount
       ,String effectiveDate) async {
     try {

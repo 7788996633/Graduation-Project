@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law/blocs/salary_adjustments_bloc/salary_adjustments_bloc.dart';
+import 'package:law/presentation/screens/all_users_list.dart';
+import 'package:law/presentation/screens/salary_adjustments_screen/all_salary_adjustments_screen.dart';
  
 import '../../../blocs/complaints_bloc/complaint_bloc.dart';
 import '../../../blocs/consultation_request_bloc/consultation_request_bloc.dart';
@@ -19,6 +22,7 @@ import '../../../blocs/permission_bloc/permission_bloc.dart';
 import '../../../blocs/required_document_bloc/required_document_bloc.dart';
 import '../../../blocs/role_bloc/role_bloc.dart';
 import '../../../blocs/session_type_bloc/session_type_bloc.dart';
+import '../../../blocs/user_bloc/user_bloc.dart';
 import '../admin_screens/issues_screens.dart/all_issues_screen.dart';
 import '../admin_screens/issues_screens.dart/archived_issues_screen.dart';
 import '../ai_chat/chat_with_ai.dart';
@@ -59,6 +63,10 @@ class _HomeWebPageState extends State<HomeWebPage> {
     BlocProvider(
       create: (_) => LawyerBloc(),
       child: const AllLawyersScreen(),
+    ),
+    BlocProvider(
+      create: (context) => UserBloc(),
+      child: const  ListUsersScreen(),
     ),
     BlocProvider(
       create: (context) => PermissionBloc(),
@@ -132,9 +140,6 @@ class _HomeWebPageState extends State<HomeWebPage> {
   create: (context) => ComplaintBloc(),
   child: const ListComplaintsScreen(),
   ),
-
-
-
 
 
   ];

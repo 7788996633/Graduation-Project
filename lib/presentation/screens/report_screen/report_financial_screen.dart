@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:url_launcher/url_launcher.dart' as kisweb;
-
 import '../../../data/services/report_services.dart';
 import '../../../themes.dart';
 
@@ -36,18 +33,13 @@ class _ReportFinancialScreenState extends State<ReportFinancialScreen> {
       final pdfLink = data['link']?.toString();
 
       if (pdfLink != null && pdfLink.endsWith('.pdf')) {
-        final url = prepareFullUrl(pdfLink);
-        if (kIsWeb) {
-          kisweb.launch(url);
+        final uri = Uri.parse(_prepareFullUrl(pdfLink));
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
         } else {
-          final uri = Uri.parse(url);
-          if (await canLaunchUrl(uri)) {
-            await launchUrl(uri, mode: LaunchMode.externalApplication);
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('لا يمكن فتح الرابط')),
-            );
-          }
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('لا يمكن فتح الرابط')),
+          );
         }
       }
 
@@ -56,7 +48,7 @@ class _ReportFinancialScreenState extends State<ReportFinancialScreen> {
       });
     } catch (e) {
       setState(() {
-        _error = e.toString();
+        _error = 'حدث خطأ أثناء جلب البيانات: $e';
       });
     } finally {
       setState(() {
@@ -65,7 +57,7 @@ class _ReportFinancialScreenState extends State<ReportFinancialScreen> {
     }
   }
 
-  String prepareFullUrl(String value) {
+  String _prepareFullUrl(String value) {
     const String baseUrl = 'http://192.168.1.10/LawCompany/public/';
     if (value.startsWith('http')) {
       return value;
@@ -101,18 +93,14 @@ class _ReportFinancialScreenState extends State<ReportFinancialScreen> {
                 ? GestureDetector(
               onTap: () async {
                 if (value.isEmpty) return;
-                final url = prepareFullUrl(value);
-                if (kIsWeb) {
-                  kisweb.launch(url);
+                final uri = Uri.parse(_prepareFullUrl(value));
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri,
+                      mode: LaunchMode.externalApplication);
                 } else {
-                  final uri = Uri.parse(url);
-                  if (await canLaunchUrl(uri)) {
-                    await launchUrl(uri, mode: LaunchMode.externalApplication);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('لا يمكن فتح الرابط')),
-                    );
-                  }
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('لا يمكن فتح الرابط')),
+                  );
                 }
               },
               child: Text(
@@ -153,7 +141,7 @@ class _ReportFinancialScreenState extends State<ReportFinancialScreen> {
           children: [
             const Center(
               child: Icon(
-                Icons.insert_drive_file,
+                Icons.attach_money,
                 size: 72,
                 color: AppColors.darkBlue,
               ),
@@ -168,22 +156,15 @@ class _ReportFinancialScreenState extends State<ReportFinancialScreen> {
               ),
             ),
             const Divider(height: 30, thickness: 1.2),
-            _buildInfoRow(
-              icon: Icons.link,
-              label: 'رابط التقرير',
-              value: _reportData!['link'] ?? '',
-              isLink: true,
-            ),
-            _buildInfoRow(
-              icon: Icons.confirmation_num,
-              label: 'رقم التقرير',
-              value: _reportData!['report_id'].toString(),
-            ),
-            _buildInfoRow(
-              icon: Icons.monetization_on,
-              label: 'المبلغ الإجمالي المدفوع',
-              value: _reportData!['summary_total_paid'].toString(),
-            ),
+            ..._reportData!.entries.map((entry) {
+              final isLink = entry.key.toLowerCase().contains('link');
+              return _buildInfoRow(
+                icon: isLink ? Icons.link : Icons.info,
+                label: entry.key,
+                value: entry.value.toString(),
+                isLink: isLink,
+              );
+            }).toList(),
           ],
         ),
       ),

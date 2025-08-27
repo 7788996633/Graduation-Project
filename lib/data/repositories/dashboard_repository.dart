@@ -13,4 +13,7 @@ class DashboardRepository {
   Future<int> getThisMonthSessionCount() async {
     return await _dashboardServices.fetchThisMonthSessionCount();
   }
+  Future<int> getTotalRevenues() async {
+    return await _dashboardServices.fetchTotalRevenues();
+  }
 }

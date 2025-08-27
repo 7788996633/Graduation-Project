@@ -59,15 +59,14 @@ class _LegalBookListState extends State<LegalBookList> {
             if (legalBookList.isEmpty) {
               return const Center(child: Text('There are no legal books.'));
             }
-            return Expanded(
-              child: ListView.builder(
+            return  ListView.builder(
                 itemCount: legalBookList.length,
                 itemBuilder: (context, index) {
                   return LegalBookItem(
                     legalBook: legalBookList[index],
                   );
                 },
-              ),
+
             );
           } else if (state is LegalBookFail) {
             return Column(

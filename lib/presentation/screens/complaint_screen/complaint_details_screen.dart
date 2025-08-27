@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../blocs/user_bloc/user_bloc.dart';
+
+import '../../../constant.dart';
 import '../../../data/models/complaint_model.dart';
-import '../../widgets/custom_appbar_add.dart';
 import '../../../themes.dart';
-import 'update_complaint_screen.dart'; // شاشة تعديل الشكوى
+import '../../widgets/custom_appbar_add.dart';
+import '../complaint_screen/update_complaint_screen.dart';
+
+import 'update_complaint_status.dart';
 
 class ComplaintDetailsScreen extends StatefulWidget {
-  const ComplaintDetailsScreen({super.key, required this.complaint});
+  const ComplaintDetailsScreen({
+    super.key,
+    required this.complaint,
+    required this.myRole, // أضف هذا
+  });
+
   final ComplaintModel complaint;
+  final String myRole; // تعريف المتغير
 
   @override
   State<ComplaintDetailsScreen> createState() => _ComplaintDetailsScreenState();
@@ -29,37 +40,36 @@ class _ComplaintDetailsScreenState extends State<ComplaintDetailsScreen> {
     });
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value,
-      {Color? valueColor}) {
+  Widget _buildInfoRow({
+    required IconData icon,
+    required String label,
+    required String value,
+    Color? valueColor,
+  }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: Colors.blue.shade900, size: 28),
-          const SizedBox(width: 12),
+          Icon(icon, color: AppColors.darkBlue, size: 22),
+          const SizedBox(width: 10),
+          Text(
+            '$label:',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: AppColors.darkBlue,
+            ),
+          ),
+          const SizedBox(width: 8),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Colors.blue.shade900,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: valueColor ?? Colors.black87,
-                    height: 1.4,
-                  ),
-                ),
-              ],
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 16,
+                color: valueColor ?? Colors.black87,
+                height: 1.3,
+              ),
             ),
           ),
         ],
@@ -72,54 +82,40 @@ class _ComplaintDetailsScreenState extends State<ComplaintDetailsScreen> {
     return BlocProvider(
       create: (_) => UserBloc()..add(GetUserById(userId: complaint.userId)),
       child: Scaffold(
-        backgroundColor: Colors.blue.shade50,
-        appBar: CustomActionAppBar(title: 'Complaint Details'),
+        backgroundColor: Colors.lightBlue.shade50,
+        appBar: const CustomActionAppBar(title: 'Complaint Details'),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.blue.shade800, Colors.blue.shade50],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(28),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.blue.shade800.withOpacity(0.4),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
+          padding: const EdgeInsets.all(20.0),
+          child: Card(
+            elevation: 10,
+            color: Colors.white,
+            shadowColor: Colors.blueGrey.shade100,
+            shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+              padding: const EdgeInsets.all(24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
-                    child: Icon(
-                      Icons.report,
-                      color: Colors.grey.shade300,
-                      size: 60,
-                    ),
+                    child:
+                    Icon(Icons.report, size: 72, color: AppColors.darkBlue),
                   ),
-                  const SizedBox(height: 24),
-
-                  // بيانات الشكوى
-                  _buildInfoRow(Icons.description, 'Description', complaint.description),
-                  Divider(color: Colors.blue.shade200, thickness: 1.5),
+                  const SizedBox(height: 20),
                   _buildInfoRow(
-                    Icons.info,
-                    'Status',
-                    complaint.status,
+                    icon: Icons.description,
+                    label: 'Description',
+                    value: complaint.description,
+                  ),
+                  _buildInfoRow(
+                    icon: Icons.info,
+                    label: 'Status',
+                    value: complaint.status,
                     valueColor: complaint.status.toLowerCase() == 'pending'
                         ? Colors.orange
                         : Colors.green,
                   ),
-                  Divider(color: Colors.blue.shade200, thickness: 1.5),
-
-                  // بيانات المستخدم
+                  const SizedBox(height: 20),
                   BlocBuilder<UserBloc, UserState>(
                     builder: (context, state) {
                       if (state is UserLoading) {
@@ -129,11 +125,14 @@ class _ComplaintDetailsScreenState extends State<ComplaintDetailsScreen> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildInfoRow(Icons.person, 'User Name', user.name),
-                            Divider(color: Colors.blue.shade200, thickness: 1.5),
-                            _buildInfoRow(Icons.email, 'Email', user.email),
-                            Divider(color: Colors.blue.shade200, thickness: 1.5),
-                            _buildInfoRow(Icons.verified_user, 'Role', user.roleName),
+                            _buildInfoRow(
+                                icon: Icons.person,
+                                label: 'User Name',
+                                value: user.name),
+                            _buildInfoRow(
+                                icon: Icons.email,
+                                label: 'Email',
+                                value: user.email),
                           ],
                         );
                       } else if (state is UserFail) {
@@ -152,13 +151,14 @@ class _ComplaintDetailsScreenState extends State<ComplaintDetailsScreen> {
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () async {
+            // تحديد الشاشة حسب الدور
             final result = await Navigator.push<ComplaintModel>(
               context,
               MaterialPageRoute(
-                builder: (context) => BlocProvider(
-                  create: (_) => UserBloc(),
-                  child: UpdateComplaintScreen(complaint: complaint),
-                ),
+                builder: (_) => widget.myRole != null &&
+                    widget.myRole!.toLowerCase() == 'admin'
+                    ? UpdateComplaintStatusScreen(complaint: complaint)
+                    : UpdateComplaintScreen(complaint: complaint),
               ),
             );
 
@@ -166,9 +166,12 @@ class _ComplaintDetailsScreenState extends State<ComplaintDetailsScreen> {
               refreshData(result);
             }
           },
-          icon: const Icon(Icons.edit),
-          label: const Text('Edit'),
-          backgroundColor: Colors.blue.shade900,
+          icon: const Icon(Icons.edit, color: Colors.white),
+          label: const Text(
+            'Edit',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          backgroundColor: AppColors.darkBlue,
         ),
       ),
     );

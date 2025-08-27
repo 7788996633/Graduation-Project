@@ -29,6 +29,7 @@ class _CustomDrawerWebState extends State<CustomDrawerWeb> {
       {'icon': Icons.home, 'title': tr('home')},
       {'icon': Icons.people, 'title': tr('employees')},
       {'icon': Icons.work, 'title': tr('lawyers')},
+      {'icon': Icons.group, 'title': tr('users')},
       {'icon': Icons.vpn_key, 'title': tr('permissions')},
       {'icon': Icons.gavel, 'title': tr('issues')},
       {'icon': Icons.archive, 'title': tr('archived_issues')},

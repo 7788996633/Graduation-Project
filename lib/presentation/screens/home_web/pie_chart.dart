@@ -32,8 +32,7 @@ class CaseTypePercentagesScreen extends StatelessWidget {
             final hasNonZero = data.any((item) => item.percentage > 0);
 
             final topThree = hasNonZero
-                ? (data
-              ..sort((a, b) => b.percentage.compareTo(a.percentage)))
+                ? (data..sort((a, b) => b.percentage.compareTo(a.percentage)))
                 .where((e) => e.percentage > 0)
                 .take(3)
                 .toList()
@@ -45,11 +44,11 @@ class CaseTypePercentagesScreen extends StatelessWidget {
                 ? topThree.asMap().entries.map((entry) {
               final index = entry.key;
               final item = entry.value;
-              final name = (item.type.isNotEmpty) ? item.type[0].name : 'Unknown';
+              final name = item.type.isNotEmpty ? item.type : 'Unknown';
 
               return PieChartSectionData(
                 color: colors[index % colors.length],
-                value: item.percentage,
+                value: item.percentage.toDouble(),
                 title: '${item.percentage.toStringAsFixed(1)}%',
                 radius: 50,
                 titleStyle: const TextStyle(
@@ -81,7 +80,8 @@ class CaseTypePercentagesScreen extends StatelessWidget {
                   children: [
                     const Text(
                       'Case Type Percentages',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style:
+                      TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 5),
                     SizedBox(
@@ -98,7 +98,8 @@ class CaseTypePercentagesScreen extends StatelessWidget {
                     if (hasNonZero && topThree.isNotEmpty) ...[
                       const Text(
                         'Top 3 Types:',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                       const SizedBox(height: 10),
                       Wrap(
@@ -107,7 +108,7 @@ class CaseTypePercentagesScreen extends StatelessWidget {
                         children: topThree.asMap().entries.map((entry) {
                           final index = entry.key;
                           final item = entry.value;
-                          final name = (item.type.isNotEmpty) ? item.type[0].name : 'Unknown';
+                          final name = item.type.isNotEmpty ? item.type : 'Unknown';
 
                           return LegendItem(
                             color: colors[index % colors.length],
