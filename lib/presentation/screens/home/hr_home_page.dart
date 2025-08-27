@@ -1,8 +1,13 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../themes.dart';
 
+import '../../../blocs/common_consultation_bloc/common _consultation_bloc.dart';
+import '../../../blocs/legal_news_bloc/legal_news_bloc.dart';
+import '../common_consulation/list_common_consul.dart';
+import '../legal_news_screen/latest_news_list.dart';
 import 'hr_home_screen.dart';
 
 class HrHomePage extends StatefulWidget {
@@ -17,8 +22,15 @@ class _HrHomePageState extends State<HrHomePage> {
 
   final List<Widget> _pages = [
     const HrHomeScreen(),
-    const StatisticsPage(),
-    const MyTasksPage(),
+    BlocProvider(
+      create: (context) => LegalNewsBloc(),
+      child: const LatestNewsListScreen(),
+    ),
+
+    BlocProvider(
+      create: (context) => CommonConsultationBloc(),
+      child: const ListCommonConsultationsScreen(),
+    ),
   ];
 
   @override
@@ -32,8 +44,8 @@ class _HrHomePageState extends State<HrHomePage> {
           animationDuration: const Duration(milliseconds: 300),
         items: const <Widget>[
           Icon(Icons.home, size: 30, color: AppColors.white),
-          Icon(Icons.bar_chart, size: 30, color: AppColors.white),
-          Icon(Icons.task, size: 30, color: AppColors.white),
+          Icon(Icons.article, size: 30, color: AppColors.white),
+          Icon(Icons.question_answer, size: 30, color: AppColors.white),
         ],
         onTap: (index) {
           setState(() {

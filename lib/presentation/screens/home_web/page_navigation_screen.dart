@@ -6,7 +6,6 @@ class NavigationPagesRow extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onPageSelected;
   final Color scaffoldColor;
-  final Color textAndIconColor;
 
   const NavigationPagesRow({
     super.key,
@@ -14,7 +13,6 @@ class NavigationPagesRow extends StatelessWidget {
     required this.selectedIndex,
     required this.onPageSelected,
     required this.scaffoldColor,
-    required this.textAndIconColor,
   });
 
   @override
@@ -24,35 +22,28 @@ class NavigationPagesRow extends StatelessWidget {
       child: Row(
         children: List.generate(pages.length, (index) {
           final isSelected = selectedIndex == index;
-          return GestureDetector(
-            onTap: () => onPageSelected(index),
-            child: Container(
-              margin: const EdgeInsets.only(right: 15),
-              padding: const EdgeInsets.symmetric(
-                vertical: 20,
-                horizontal: 25,
-              ),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? AppColors.darkBlue.withOpacity(0.8)
-                    : scaffoldColor,
+          return Padding(
+            padding: const EdgeInsets.only(right: 15),
+            child: Material(
+              color: isSelected ? AppColors.darkBlue.withOpacity(0.8) : scaffoldColor,
+              borderRadius: BorderRadius.circular(10),
+              child: InkWell(
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.darkBlue),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    spreadRadius: 1,
-                    blurRadius: 5,
-                    offset: const Offset(0, 3),
+                splashColor: AppColors.darkBlue.withOpacity(0.3),
+                onTap: () => onPageSelected(index),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 20,
+                    horizontal: 25,
                   ),
-                ],
-              ),
-              child: Text(
-                pages[index],
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: isSelected ? Colors.white : textAndIconColor,
+                  child: Text(
+                    pages[index],
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey, // اللون الرمادي للنص
+                    ),
+                  ),
                 ),
               ),
             ),

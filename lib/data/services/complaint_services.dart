@@ -172,28 +172,18 @@ class ComplaintServices {
   }
 
   // Update complaint status
+
   Future<String> updateComplaintStatus(int complaintId, String status) async {
     try {
-      var url = Uri.parse('${myUrl}complaints/$complaintId');
-      var body = {'status': status};
-      http.Response response;
+      var url = Uri.parse('${myUrl}complaints/status/$complaintId');
 
-      if (kIsWeb) {
-        var request = http.Request('PUT', url);
-        request.headers.addAll({
-          ...baseHeaders,
-          'Content-Type': 'application/x-www-form-urlencoded',
-        });
-        request.bodyFields = body;
-        var streamedResponse = await request.send();
-        response = await http.Response.fromStream(streamedResponse);
-      } else {
-        var request = http.MultipartRequest('PUT', url);
-        request.fields.addAll(body);
-        request.headers.addAll(baseHeaders);
-        var streamedResponse = await request.send();
-        response = await http.Response.fromStream(streamedResponse);
-      }
+      var body = jsonEncode({'status': status});
+      var headers = {
+        ...baseHeaders,
+        'Content-Type': 'application/json',  // مهم جداً
+      };
+
+      var response = await http.put(url, headers: headers, body: body);
 
       var jsonResponse = json.decode(response.body);
       print(jsonResponse);
@@ -205,9 +195,7 @@ class ComplaintServices {
       }
     } catch (e) {
       return 'Error in updateComplaintStatus: $e';
-    }
-  }
-
+    }}
   // Delete complaint
   Future<String> deleteComplaint(int complaintId) async {
     try {

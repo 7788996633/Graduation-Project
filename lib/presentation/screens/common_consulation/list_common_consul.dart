@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../blocs/common_consultation_bloc/common _consultation_bloc.dart';
 import '../../../blocs/common_consultation_bloc/common _consultation_event.dart';
+import '../../../constant.dart';
 import '../../../themes.dart';
 import '../../widgets/common_consul_list.dart';
 import '../../widgets/custom_appbar_add.dart';
@@ -46,18 +47,22 @@ class _ListCommonConsultationsScreenState
       backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: CustomActionAppBar(
         title: 'List Common Consultations',
-        actionIcon: Icons.add_circle_rounded,
+        actionIcon: (myRole != null && myRole.toLowerCase() == 'admin')
+            ? Icons.add_circle_rounded
+            : null,
         tooltip: 'Add New Consultation',
         onActionPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (_) => CommonConsultationBloc(),
-                child: const AddCommonConsultationScreen(),
+          if (myRole != null && myRole.toLowerCase() == 'admin') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => BlocProvider(
+                  create: (_) => CommonConsultationBloc(),
+                  child: const AddCommonConsultationScreen(),
+                ),
               ),
-            ),
-          );
+            );
+          }
         },
       ),
       body: Padding(
@@ -69,7 +74,6 @@ class _ListCommonConsultationsScreenState
               onSearch: _onSearch,
             ),
             const SizedBox(height: 20),
-            // سحب للتحديث
             Expanded(
               child: RefreshIndicator(
                 onRefresh: _onRefresh,

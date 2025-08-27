@@ -4,6 +4,7 @@ import '../../../blocs/legal_news_bloc/legal_news_bloc.dart';
 import '../../../blocs/legal_news_bloc/legal_news_event.dart';
 import '../../../blocs/legal_news_bloc/legal_news_state.dart';
 import '../../widgets/build_custom_appbar_detials.dart';
+import '../../widgets/custom_appbar_add.dart';
 import '../../widgets/custom_text_field_add.dart';
 import '../../widgets/elevated_button_submit.dart';
 
@@ -22,7 +23,8 @@ class _AddLegalNewsScreenState extends State<AddLegalNewsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
-      appBar: buildCustomAppBar("Add Legal News"),
+      appBar:CustomActionAppBar(
+          title: "Add Legal News"),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: BlocConsumer<LegalNewsBloc, LegalNewsState>(

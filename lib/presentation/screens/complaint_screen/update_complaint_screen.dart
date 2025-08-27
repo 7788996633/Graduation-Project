@@ -64,7 +64,7 @@ class _UpdateComplaintScreenState extends State<UpdateComplaintScreen> {
                   id: widget.complaint.id,
                   description: _descriptionController.text.trim(),
                   status: widget.complaint.status,
-                  userId: widget.complaint.userId,
+                  userName: widget.complaint.userName,
                 ),
               );
             } else if (state is ComplaintFail) {

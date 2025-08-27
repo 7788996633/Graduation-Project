@@ -84,5 +84,16 @@
   "you": "أنت",
   "payment_status": "حالات الدفع",
   "error": "خطأ",
-  "back": "رجوع"
+  "back": "رجوع",
+
+  "archived_issues": "القضايا المؤرشفة",
+  "delegations": "الوكالات",
+
+  "report": "التقارير",
+  "AI_Chat": "دردشة الذكاء الاصطناعي",
+  "expenses": "المصروفات",
+  "legal_books": "الكتب القانونية",
+  "legal_news": "الأخبار القانونية",
+  "complaints": "الشكاوى"
+
 }

@@ -61,15 +61,15 @@ class _CommonConsultationListState extends State<CommonConsultationList> {
             if (consultationList.isEmpty) {
               return const Center(child: Text('There are no consultations'));
             }
-            return Expanded(
-              child: ListView.builder(
+            return
+               ListView.builder(
                 itemCount: consultationList.length,
                 itemBuilder: (context, index) {
                   return CommonConsultationItem(
                     consultationModel: consultationList[index],
                   );
                 },
-              ),
+
             );
           } else if (state is CommonConsultationFail) {
             return Column(

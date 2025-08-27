@@ -27,26 +27,19 @@ class _CustomDrawerWebState extends State<CustomDrawerWeb> {
   Widget build(BuildContext context) {
     final drawerItems = [
       {'icon': Icons.home, 'title': tr('home')},
-      {'icon': Icons.people, 'title': tr('employees')},
-      {'icon': Icons.work, 'title': tr('lawyers')},
-      {'icon': Icons.group, 'title': tr('users')},
-      {'icon': Icons.vpn_key, 'title': tr('permissions')},
       {'icon': Icons.gavel, 'title': tr('issues')},
       {'icon': Icons.archive, 'title': tr('archived_issues')},
       {'icon': Icons.group, 'title': tr('delegations')},
       {'icon': Icons.request_page_outlined, 'title': tr('issue_request')},
       {'icon': Icons.beach_access_outlined, 'title': tr('furloughs')},
-      {'icon': Icons.category_outlined, 'title': tr('session_type')},
       {'icon': Icons.assignment_turned_in_outlined, 'title': tr('required_documents')},
-      {'icon': Icons.forum_outlined, 'title': tr('Consultation_Requests')},
-      {'icon': Icons.question_answer_rounded, 'title': tr('Common_Consultation')},
-      {'icon': Icons.question_answer_rounded, 'title': tr('Issue_categories')},
+      {'icon': Icons.forum_outlined, 'title': tr('consultation_requests')},
+      {'icon': Icons.question_answer_rounded, 'title': tr('common_consultation')},
       {'icon': Icons.report, 'title': tr('report')},
-      {'icon': Icons.smart_toy, 'title': tr('AI Chat')},
+      {'icon': Icons.smart_toy, 'title': tr('ai_chat')},
       {'icon': Icons.money, 'title': tr('expenses')},
       {'icon': Icons.newspaper, 'title': tr('legal_books')},
       {'icon': Icons.newspaper, 'title': tr('legal_news')},
-      {'icon': Icons.admin_panel_settings, 'title': tr('roles')},
       {'icon': Icons.feedback, 'title': tr('complaints')},
     ];
 
@@ -73,7 +66,7 @@ class _CustomDrawerWebState extends State<CustomDrawerWeb> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    tr('Yaghmur'),
+                    tr('username'), // هنا استبدلت الاسم النصي بمفتاح للترجمة
                     style: const TextStyle(
                       fontFamily: 'Barrio',
                       color: AppColors.scaffold,

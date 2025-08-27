@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law/blocs/common_consultation_bloc/common%20_consultation_bloc.dart';
 
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 import '../../../../themes.dart';
+import '../../../blocs/legal_news_bloc/legal_news_bloc.dart';
+import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
+import '../../../constant.dart';
+import '../common_consulation/list_common_consul.dart';
 import '../factories/role_screen.dart';
+import '../legal_news_screen/latest_news_list.dart';
+import '../user_screens/user_profile_screens/user_profile_screen.dart';
 import 'lawyer_home_screen.dart';
 
 class LawyerHomePage extends StatefulWidget implements RoleScreen {
@@ -25,11 +33,21 @@ class _LawyerHomePageState extends State<LawyerHomePage> {
     // الصفحة الرئيسية
     const LawyerHomeScreen(),
     // المفضلات
-    const Center(child: Text('مفضلتي')),
-    // المواعيد
-    const Center(child: Text('مواعيدي')),
-    // الأخبار القانونية
-    const Center(child: Text('الأخبار القانونية')),
+    BlocProvider(
+      create: (context) => LegalNewsBloc(),
+      child: const LatestNewsListScreen(),
+    ),
+
+    BlocProvider(
+      create: (context) => CommonConsultationBloc(),
+      child: const ListCommonConsultationsScreen(),
+    ),
+
+    BlocProvider(
+      create: (context) => UserProfileBloc(),
+      child: UserProfileScreen(userId: myUserId),
+    ),
+
   ];
 
   @override
@@ -44,29 +62,29 @@ class _LawyerHomePageState extends State<LawyerHomePage> {
           });
         },
         items: [
-          // الواجهة الرئيسية
+
           SalomonBottomBarItem(
-            icon: const Icon(Icons.home),
+            icon: const Icon(Icons.home_filled), // أيقونة للرئيسية أكثر وضوحًا
             title: const Text("الرئيسية"),
-            selectedColor: AppColors.darkBlue ,
-          ),
-          // المفضلات
-          SalomonBottomBarItem(
-            icon: const Icon(Icons.favorite),
-            title: const Text("المفضلة"),
-            selectedColor: AppColors.darkBlue ,
-          ),
-          // المواعيد
-          SalomonBottomBarItem(
-            icon: const Icon(Icons.schedule),
-            title: const Text("مواعيدي"),
-            selectedColor: AppColors.darkBlue ,
+            selectedColor: AppColors.darkBlue,
           ),
 
           SalomonBottomBarItem(
-            icon: const Icon(Icons.new_releases),
-            title: const Text("الأخبار القانونية"),
-            selectedColor: AppColors.darkBlue ,
+            icon: const Icon(Icons.article_outlined), // أيقونة للأخبار
+            title: const Text("اخر الاخبار"),
+            selectedColor: AppColors.darkBlue,
+          ),
+
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.chat_bubble_outline), // أيقونة للاستشارات
+            title: const Text("الاستشارات الشائعة"),
+            selectedColor: AppColors.darkBlue,
+          ),
+
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.person_outline), // أيقونة لصفحتي
+            title: const Text("صفحتي"),
+            selectedColor: AppColors.darkBlue,
           ),
         ],
       ),

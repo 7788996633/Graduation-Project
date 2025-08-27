@@ -25,6 +25,18 @@ class _LegalNewsItemState extends State<LegalNewsItem> {
     isSaved = widget.legalNews.isSaved ?? false;
   }
 
+  String _formatDate(DateTime date) {
+    // صيغة التاريخ والوقت: يوم/شهر/سنة - ساعة:دقيقة
+    String day = date.day.toString().padLeft(2, '0');
+    String month = date.month.toString().padLeft(2, '0');
+    String year = date.year.toString();
+
+    String hour = date.hour.toString().padLeft(2, '0');
+    String minute = date.minute.toString().padLeft(2, '0');
+
+    return "$day/$month/$year - $hour:$minute";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -60,7 +72,7 @@ class _LegalNewsItemState extends State<LegalNewsItem> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-                // العنوان + الصورة
+                // الصورة + العنوان + التاريخ
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -74,14 +86,27 @@ class _LegalNewsItemState extends State<LegalNewsItem> {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    const Expanded(
-                      child: Text(
-                        'Legal News',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.darkBlue,
-                        ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Legal News',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.darkBlue,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            _formatDate(DateTime.parse(widget.legalNews.createdAt)),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     if (myRole != null && myRole.toLowerCase() == 'admin')

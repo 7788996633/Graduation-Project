@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/complaints_bloc/complaint_bloc.dart';
 import '../../../blocs/complaints_bloc/complaint_event.dart';
+import '../../../blocs/complaints_bloc/complaint_state.dart';
 import '../../../themes.dart';
 
-import '../../widgets/complaint_list.dart';
 import '../../widgets/custom_appbar_add.dart';
-import '../../widgets/custom_search_bar.dart';
+import '../../widgets/complaint_item.dart';
 import 'add_complaint_screen.dart';
 
 class ListComplaintsScreen extends StatefulWidget {
@@ -27,10 +27,9 @@ class _ListComplaintsScreenState extends State<ListComplaintsScreen> {
     bloc.add(GetAllComplaintsEvent());
   }
 
-
-
   Future<void> _onRefresh() async {
     bloc.add(GetAllComplaintsEvent());
+    await Future.delayed(const Duration(milliseconds: 400));
   }
 
   @override
@@ -38,7 +37,7 @@ class _ListComplaintsScreenState extends State<ListComplaintsScreen> {
     return Scaffold(
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
-        title: 'List Complaints',
+        title: 'Complaints',
         actionIcon: Icons.add_circle_rounded,
         tooltip: 'Add New Complaint',
         onActionPressed: () {
@@ -55,15 +54,54 @@ class _ListComplaintsScreenState extends State<ListComplaintsScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-       child:
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: _onRefresh,
-                color: AppColors.darkBlue,
-                child: ComplaintList(bloc: bloc),
-              ),
-            ),
-
+        child: RefreshIndicator(
+          onRefresh: _onRefresh,
+          child: BlocBuilder<ComplaintBloc, ComplaintState>(
+            builder: (context, state) {
+              if (state is ComplaintLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is ComplaintFail) {
+                return ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Text(state.errMsg),
+                      ),
+                    ),
+                  ],
+                );
+              } else if (state is ComplaintListLoaded) {
+                final complaintsList = state.list;
+                if (complaintsList.isEmpty) {
+                  return ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: const [
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(20),
+                          child: Text('No Complaints Available'),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+                return ListView.builder(
+                  padding: const EdgeInsets.all(12),
+                  itemCount: complaintsList.length,
+                  itemBuilder: (context, index) {
+                    return ComplaintItem(complaintModel: complaintsList[index]);
+                  },
+                );
+              }
+              // الحالة المبدئية قابلة للسحب
+              return ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+              );
+            },
+          ),
+        ),
       ),
     );
   }

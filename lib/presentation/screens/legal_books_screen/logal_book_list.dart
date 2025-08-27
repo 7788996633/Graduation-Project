@@ -41,12 +41,12 @@ class _ListLegalBooksScreenState extends State<ListLegalBooksScreen> {
       backgroundColor: AppColors.scaffold,
       appBar: CustomActionAppBar(
         title: 'Legal Books',
-        actionIcon: (myRole != null && myRole== 'admin')
+        actionIcon: (myRole== 'admin')
             ? Icons.add_circle_rounded
-            : null,
+            : Icons.book,
         tooltip: 'Add New Legal Book',
         onActionPressed: () {
-          if (myRole != null && myRole == 'admin') {
+          if (myRole == 'admin') {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -58,7 +58,7 @@ class _ListLegalBooksScreenState extends State<ListLegalBooksScreen> {
             );
           }
         },
-        secondaryIcon: Icons.bookmark,
+         secondaryIcon: Icons.bookmark,
         secondaryTooltip: 'My Saved Books',
         onSecondaryPressed: () {
           Navigator.push(

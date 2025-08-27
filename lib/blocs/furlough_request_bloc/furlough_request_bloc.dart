@@ -36,7 +36,7 @@ class FurloughRequestsBloc extends Bloc<FurloughRequestsEvent, FurloughRequestsS
         emit(FurloughRequestsLoading());
         try {
           List<FurloughRequestModel> furloughRequestsList =
-          await FurloughRequestRepository().furloughRequests();
+          await FurloughRequestRepository().myFurloughRequests();
           emit(FurloughRequestsListLoaded(furloughRequestsList: furloughRequestsList));
         } catch (e) {
           emit(FurloughRequestsFail(errmsg: e.toString()));

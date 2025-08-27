@@ -4,8 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../blocs/furlough_request_bloc/furlough_request_bloc.dart';
 import '../../../blocs/furlough_request_bloc/furlough_request_event.dart';
 import '../../../blocs/furlough_request_bloc/furlough_request_state.dart';
-
- import '../../../data/models/furlough_request_model.dart';
+import '../../../data/models/furlough_request_model.dart';
 import '../../../themes.dart';
 import '../../widgets/custom_appbar_add.dart';
 
@@ -19,113 +18,109 @@ class UpdateFurloughScreen extends StatefulWidget {
 }
 
 class _UpdateFurloughScreenState extends State<UpdateFurloughScreen> {
+  late String _cause;
+  late FurloughRequestsBloc _bloc;
+
   final _formKey = GlobalKey<FormState>();
-  late TextEditingController _causeController;
 
   @override
   void initState() {
     super.initState();
-    _causeController = TextEditingController(text: widget.furlough.cause);
+    _cause = widget.furlough.cause;
+    _bloc = BlocProvider.of<FurloughRequestsBloc>(context);
   }
 
-  @override
-  void dispose() {
-    _causeController.dispose();
-    super.dispose();
+  void _onUpdatePressed() {
+    if (_formKey.currentState!.validate()) {
+      _bloc.add(UpdateFurloughRequestsEvent(
+        furloughRequestId: widget.furlough.id,
+        cause: _cause.trim(),
+      ));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomActionAppBar(
-        title: 'Update Furlough cause',
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: BlocConsumer<FurloughRequestsBloc, FurloughRequestsState>(
+    return BlocProvider.value(
+      value: _bloc,
+      child: Scaffold(
+        appBar: const CustomActionAppBar(title: 'Update Furlough Cause'),
+        body: BlocConsumer<FurloughRequestsBloc, FurloughRequestsState>(
           listener: (context, state) {
             if (state is FurloughRequestsSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(
-                    state.successmsg,
-                    style: const TextStyle(fontSize: 16),
-                  ),
+                  content: Text('✅ ${state.successmsg}'),
                   backgroundColor: Colors.green,
                 ),
               );
+
               Navigator.pop(
                 context,
                 FurloughRequestModel(
                   id: widget.furlough.id,
-                  cause: _causeController.text.trim(),
+                  cause: _cause.trim(),
                   status: widget.furlough.status,
                   startDate: widget.furlough.startDate,
                   endDate: widget.furlough.endDate,
                   covetByType: widget.furlough.covetByType,
                   covetById: widget.furlough.covetById,
-
                 ),
               );
             } else if (state is FurloughRequestsFail) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(
-                    state.errmsg,
-                    style: const TextStyle(fontSize: 16),
-                  ),
+                  content: Text('❌ ${state.errmsg}'),
                   backgroundColor: Colors.red,
-                ),
-              );
-            } else if (state is FurloughRequestsLoading) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    "Loading ...",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Colors.grey,
                 ),
               );
             }
           },
           builder: (context, state) {
-            return Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: _causeController,
-                    keyboardType: TextInputType.text,
-                    decoration: const InputDecoration(labelText: 'Cause'),
-                    validator: (value) =>
-                    value == null || value.isEmpty ? 'Please enter status' : null,
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        BlocProvider.of<FurloughRequestsBloc>(context).add(
-                          UpdateFurloughRequestsEvent(
-                            furloughRequestId: widget.furlough.id ,
-                            cause: _causeController.text.trim(),
-                          ),
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.darkBlue,
-                    ),
-                    child: const Text(
-                      'Update',
+            final isLoading = state is FurloughRequestsLoading;
+
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Cause:',
                       style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      initialValue: _cause,
+                      onChanged: (val) => _cause = val,
+                      decoration: const InputDecoration(
+                        hintText: 'Enter cause',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) =>
+                      value == null || value.isEmpty ? 'Please enter cause' : null,
+                    ),
+                    const SizedBox(height: 30),
+                    isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : ElevatedButton(
+                      onPressed: _onUpdatePressed,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.darkBlue,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 14),
+                      ),
+                      child: const Text(
+                        'Update Cause',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           },

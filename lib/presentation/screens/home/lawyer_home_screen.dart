@@ -6,6 +6,8 @@ import '../../../blocs/consultations_bloc/consultation_bloc.dart';
 import '../../../blocs/furlough_request_bloc/furlough_request_bloc.dart';
 import '../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
+import '../../../blocs/legal_books_bloc/legal_books_bloc.dart';
+import '../../../blocs/legal_news_bloc/legal_news_bloc.dart';
 import '../../../blocs/sessions_bloc/sessions_bloc.dart';
 
 import '../../widgets/custom_lawyer_drawer.dart';
@@ -19,6 +21,8 @@ import '../furloughs/add_furlough_screen.dart';
 import '../furloughs/my_list_furloughs_screen.dart';
 import '../lawyer_screens/lawyer_issues_screens/lawyer_issues_list_screen.dart';
 import '../lawyer_screens/lawyer_sessions_screen.dart/lawyer_sessions_screen.dart';
+import '../legal_books_screen/logal_book_list.dart';
+import '../legal_news_screen/list_legal_news_screen.dart';
 
 class LawyerHomeScreen extends StatelessWidget {
   const LawyerHomeScreen({super.key});
@@ -124,6 +128,36 @@ class LawyerHomeScreen extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (_) => const AllConsultationRequestsPage(),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Library',
+        'icon': Icons.book_outlined,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => LegalBookBloc(),
+                child: const ListLegalBooksScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'News',
+        'icon':  Icons.newspaper,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => LegalNewsBloc(),
+                child: const ListLegalNewsScreen(),
+              ),
             ),
           );
         },

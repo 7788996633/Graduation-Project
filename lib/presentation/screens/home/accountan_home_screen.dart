@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:law/presentation/screens/pyroll_screen/all_payroll_screen.dart';
+import '../../../blocs/legal_books_bloc/legal_books_bloc.dart';
+import '../../../blocs/legal_news_bloc/legal_news_bloc.dart';
 import '../../../blocs/payroll_bloc/payroll_bloc.dart';
 import '../../../blocs/user_bloc/user_bloc.dart';
 import '../../widgets/section_card.dart';
 import '../../widgets/user_list.dart';
 import '../all_users_list.dart';
+import '../legal_books_screen/logal_book_list.dart';
+import '../legal_news_screen/list_legal_news_screen.dart';
 import '../settings/setting_screen.dart';
 import '../../widgets/custom_home_appbar.dart';
 
@@ -67,6 +71,37 @@ class AccountanHomeScreen extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (_) => const SettingsScreen(),
+            ),
+          );
+        },
+      },
+
+      {
+        'title': 'Library',
+        'icon': Icons.book_outlined,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => LegalBookBloc(),
+                child: const ListLegalBooksScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'News',
+        'icon':  Icons.newspaper,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => LegalNewsBloc(),
+                child: const ListLegalNewsScreen(),
+              ),
             ),
           );
         },

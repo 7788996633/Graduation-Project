@@ -20,29 +20,28 @@ class UpdateComplaintStatusScreen extends StatefulWidget {
 
 class _UpdateComplaintStatusScreenState
     extends State<UpdateComplaintStatusScreen> {
-  late TextEditingController _statusController;
+  late String _selectedStatus;
   late ComplaintBloc _bloc;
+
+  final List<String> _statusOptions = ['pending', 'approved', 'rejected'];
 
   @override
   void initState() {
     super.initState();
-    _statusController = TextEditingController(text: widget.complaint.status);
+    _selectedStatus = widget.complaint.status;
     _bloc = ComplaintBloc();
   }
 
   @override
   void dispose() {
-    _statusController.dispose();
     _bloc.close();
     super.dispose();
   }
 
   void _onUpdatePressed() {
-    if (_statusController.text.trim().isEmpty) return;
-
     _bloc.add(UpdateComplaintStatusEvent(
       complaintId: widget.complaint.id,
-      status: _statusController.text.trim(),
+      status: _selectedStatus,
     ));
   }
 
@@ -67,8 +66,9 @@ class _UpdateComplaintStatusScreenState
                 ComplaintModel(
                   id: widget.complaint.id,
                   description: widget.complaint.description,
-                  status: _statusController.text.trim(),
-                  userId: widget.complaint.userId,
+                  status: _selectedStatus,
+
+                  userName: widget.complaint.userName,
                 ),
               );
             } else if (state is ComplaintFail) {
@@ -88,13 +88,29 @@ class _UpdateComplaintStatusScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextField(
-                    controller: _statusController,
-                    decoration: const InputDecoration(labelText: 'Status'),
+                  const Text(
+                    'Select Status:',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ..._statusOptions.map(
+                        (status) => RadioListTile<String>(
+                      title: Text(status),
+                      value: status,
+                      groupValue: _selectedStatus,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedStatus = value!;
+                        });
+                      },
+                    ),
                   ),
                   const SizedBox(height: 30),
                   isLoading
-                      ? const Center(child: CircularProgressIndicator())
+                      ? const CircularProgressIndicator()
                       : ElevatedButton(
                     onPressed: _onUpdatePressed,
                     style: ElevatedButton.styleFrom(

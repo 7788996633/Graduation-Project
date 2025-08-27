@@ -27,8 +27,8 @@ class _AddFurloughScreenState extends State<AddFurloughScreen> {
   @override
   void initState() {
     super.initState();
-    _startDateController = TextEditingController(text: 'Select Date');
-    _endDateController = TextEditingController(text: 'Select Date');
+    _startDateController = TextEditingController();
+    _endDateController = TextEditingController();
   }
 
   @override
@@ -60,8 +60,13 @@ class _AddFurloughScreenState extends State<AddFurloughScreen> {
   }
 
   String _formatDate(DateTime date) {
-    return DateFormat('yyyy-MM-dd').format(date);
+    return "${date.year.toString().padLeft(4,'0')}-"
+        "${date.month.toString().padLeft(2,'0')}-"
+        "${date.day.toString().padLeft(2,'0')}";
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +79,8 @@ class _AddFurloughScreenState extends State<AddFurloughScreen> {
           listener: (context, state) {
             if (state is FurloughRequestsSuccess) {
               _causeController.clear();
-              _startDateController.text = 'Select Date';
-              _endDateController.text = 'Select Date';
+              _startDateController.clear();
+              _endDateController.clear();
               setState(() {
                 _startDate = null;
                 _endDate = null;

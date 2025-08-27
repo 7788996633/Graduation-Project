@@ -55,23 +55,7 @@ class _HomeWebPageState extends State<HomeWebPage> {
 
   final List<Widget> pages = [
     const MainScreen(),
-    //employee
-    BlocProvider(
-      create: (context) => EmployeeBloc(),
-      child: const  ListEmployeesScreen(),
-    ),
-    BlocProvider(
-      create: (_) => LawyerBloc(),
-      child: const AllLawyersScreen(),
-    ),
-    BlocProvider(
-      create: (context) => UserBloc(),
-      child: const  ListUsersScreen(),
-    ),
-    BlocProvider(
-      create: (context) => PermissionBloc(),
-      child: const  ListPermissionsScreen(),
-    ),
+
     //issue
     BlocProvider(
       create: (_) => IssuesBloc(),
@@ -95,10 +79,7 @@ class _HomeWebPageState extends State<HomeWebPage> {
       create: (context) => FurloughRequestsBloc(),
       child: const  ListFurloughsScreen(),
     ),
-    BlocProvider(
-      create: (context) => SessionTypeBloc(),
-      child: const  ListSessionTypesScreen(),
-    ),
+
     BlocProvider(
       create: (context) => RequiredDocumentsBloc(),
       child: const  ListRequiredDocumentsScreen(),
@@ -111,10 +92,6 @@ class _HomeWebPageState extends State<HomeWebPage> {
     BlocProvider(
       create: (context) => CommonConsultationBloc(),
       child: const  ListCommonConsultationsScreen(),
-    ),
-    BlocProvider(
-      create: (context) => CategoriesBloc(),
-      child: const  ListIssueCategoriesScreen(),
     ),
 
     const ReportInvoicesScreen(),
@@ -132,10 +109,7 @@ class _HomeWebPageState extends State<HomeWebPage> {
   create: (context) => LegalNewsBloc(),
   child: const ListLegalNewsScreen(),
   ),
-  BlocProvider(
-  create: (context) => RoleBloc(),
-  child: const ListRolesScreen(),
-  ),
+
   BlocProvider(
   create: (context) => ComplaintBloc(),
   child: const ListComplaintsScreen(),

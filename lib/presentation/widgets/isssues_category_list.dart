@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law/responsive.dart';
 
 import '../../blocs/issue_bloc/issues_bloc.dart';
 import '../../data/models/categories_model.dart';
@@ -12,8 +13,8 @@ class IsssuesCategoryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+maxCrossAxisExtent: s201,
         childAspectRatio: 1.5,
         mainAxisSpacing: 20,
         crossAxisSpacing: 20,

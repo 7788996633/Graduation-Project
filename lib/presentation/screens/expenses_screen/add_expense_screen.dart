@@ -5,6 +5,7 @@ import '../../../blocs/expenses_bloc/expanses_event.dart';
 import '../../../blocs/expenses_bloc/expanses_state.dart';
 import '../../../blocs/expenses_bloc/expenses_bloc.dart';
 import '../../widgets/build_custom_appbar_detials.dart';
+import '../../widgets/custom_appbar_add.dart';
 import '../../widgets/custom_text_field_add.dart';
 import '../../widgets/elevated_button_submit.dart';
 
@@ -26,7 +27,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
-      appBar: buildCustomAppBar("Add Expense"),
+      appBar: CustomActionAppBar(
+          title: "Add Expense"),
+
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: BlocConsumer<ExpenseBloc, ExpenseState>(

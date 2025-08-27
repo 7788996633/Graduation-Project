@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../themes.dart';
+import '../../../blocs/common_consultation_bloc/common _consultation_bloc.dart';
+import '../../../blocs/legal_news_bloc/legal_news_bloc.dart';
+import '../common_consulation/list_common_consul.dart';
+import '../legal_news_screen/latest_news_list.dart';
 import 'user_home_screen.dart';
 
 
@@ -17,14 +22,24 @@ class _MainClientPageState extends State<UserHomePage> {
 
   final List<Widget> _screens = [
     const UserHomeScreen(),
-    const FavoritesScreen(),
-    const LegalNewsScreen(),
+    BlocProvider(
+      create: (context) => LegalNewsBloc(),
+      child: const LatestNewsListScreen(),
+    ),
+
+    BlocProvider(
+      create: (context) => CommonConsultationBloc(),
+      child: const ListCommonConsultationsScreen(),
+    ),
+
+
   ];
 
   final List<Widget> _items = [
-    const Icon(Icons.home, size: 30),
-    const Icon(Icons.favorite, size: 30),
-    const Icon(Icons.newspaper, size: 30),
+
+    const Icon(Icons.home_filled, size: 30),        // الصفحة الرئيسية
+    const Icon(Icons.newspaper, size: 30),          // الأخبار القانونية
+    const Icon(Icons.chat_bubble_outline, size: 30) // الاستشارات الشائعة
   ];
 
   @override

@@ -9,6 +9,7 @@ import '../../../blocs/legal_books_bloc/legal_books_bloc.dart';
 import '../../../blocs/legal_books_bloc/legal_books_event.dart';
 import '../../../blocs/legal_books_bloc/legal_books_state.dart';
 import '../../../themes.dart';
+import '../../widgets/custom_appbar_add.dart';
 
 class AddLegalBookScreen extends StatefulWidget {
   const AddLegalBookScreen({super.key});
@@ -164,16 +165,11 @@ class _AddLegalBookScreenState extends State<AddLegalBookScreen> {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Add Legal Book',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        centerTitle: true,
-        backgroundColor: AppColors.darkBlue,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
+      appBar:
+        CustomActionAppBar(
+            title: "Add Legal Book"),
+
+
       body: Container(
         color: Colors.grey.shade200,
         child: content,

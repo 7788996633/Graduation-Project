@@ -82,5 +82,15 @@
   "you": "You",
   "payment_status": "Payment status",
   "error": "Error",
-  "back": "Back"
+  "back": "Back",
+
+  "archived_issues": "Archived Issues",
+
+  "report": "Report",
+  "AI_Chat": "AI Chat",
+  "expenses": "Expenses",
+  "legal_books": "Legal Books",
+  "legal_news": "Legal News",
+  "complaints": "Complaints"
+
 }

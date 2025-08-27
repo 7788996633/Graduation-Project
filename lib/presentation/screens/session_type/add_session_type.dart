@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../blocs/session_type_bloc/session_type_bloc.dart';
 import '../../../blocs/session_type_bloc/session_type_event.dart';
 import '../../widgets/build_custom_appbar_detials.dart';
+import '../../widgets/custom_appbar_add.dart';
 import '../../widgets/custom_text_field_add.dart';
 import '../../widgets/elevated_button_submit.dart';
 
@@ -22,7 +23,8 @@ class _AddSessionTypeScreenState extends State<AddSessionTypeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
-      appBar: buildCustomAppBar("Add Session Type"),
+      appBar: CustomActionAppBar(
+    title: "Add Session Type"),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: BlocConsumer<SessionTypeBloc, SessionTypeState>(

@@ -4,8 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../blocs/furlough_request_bloc/furlough_request_bloc.dart';
 import '../../../blocs/furlough_request_bloc/furlough_request_event.dart';
 import '../../../blocs/furlough_request_bloc/furlough_request_state.dart';
-
- import '../../../data/models/furlough_request_model.dart';
+import '../../../data/models/furlough_request_model.dart';
 import '../../../themes.dart';
 import '../../widgets/custom_appbar_add.dart';
 
@@ -15,114 +14,121 @@ class UpdateFurloughStatusScreen extends StatefulWidget {
   const UpdateFurloughStatusScreen({super.key, required this.furlough});
 
   @override
-  State<UpdateFurloughStatusScreen> createState() => _UpdateFurloughStatusScreenState();
+  State<UpdateFurloughStatusScreen> createState() =>
+      _UpdateFurloughStatusScreenState();
 }
 
-class _UpdateFurloughStatusScreenState extends State<UpdateFurloughStatusScreen> {
+class _UpdateFurloughStatusScreenState
+    extends State<UpdateFurloughStatusScreen> {
+  late String _status;
+  late FurloughRequestsBloc _bloc;
+
   final _formKey = GlobalKey<FormState>();
-  late TextEditingController _statusController;
+
+  final List<String> _statusOptions = [
+    'pending',
+    'approved',
+    'rejected',
+  ];
 
   @override
   void initState() {
     super.initState();
-    _statusController = TextEditingController(text: widget.furlough.status);
+    _status = widget.furlough.status;
+    _bloc = BlocProvider.of<FurloughRequestsBloc>(context);
   }
 
-  @override
-  void dispose() {
-    _statusController.dispose();
-    super.dispose();
+  void _onUpdatePressed() {
+    _bloc.add(UpdateFurloughRequestsStatusEvent(
+      furloughRequestId: widget.furlough.id,
+      status: _status.trim(),
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomActionAppBar(
-        title: 'Update Furlough Status',
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: BlocConsumer<FurloughRequestsBloc, FurloughRequestsState>(
+    return BlocProvider.value(
+      value: _bloc,
+      child: Scaffold(
+        appBar: const CustomActionAppBar(title: 'Update Furlough Status'),
+        body: BlocConsumer<FurloughRequestsBloc, FurloughRequestsState>(
           listener: (context, state) {
             if (state is FurloughRequestsSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(
-                    state.successmsg,
-                    style: const TextStyle(fontSize: 16),
-                  ),
+                  content: Text('✅ ${state.successmsg}'),
                   backgroundColor: Colors.green,
                 ),
               );
+
               Navigator.pop(
                 context,
                 FurloughRequestModel(
                   id: widget.furlough.id,
                   cause: widget.furlough.cause,
-                  status: _statusController.text.trim(),
+                  status: _status.trim(),
                   startDate: widget.furlough.startDate,
                   endDate: widget.furlough.endDate,
                   covetByType: widget.furlough.covetByType,
                   covetById: widget.furlough.covetById,
-
                 ),
               );
             } else if (state is FurloughRequestsFail) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(
-                    state.errmsg,
-                    style: const TextStyle(fontSize: 16),
-                  ),
+                  content: Text('❌ ${state.errmsg}'),
                   backgroundColor: Colors.red,
-                ),
-              );
-            } else if (state is FurloughRequestsLoading) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    "Loading ...",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Colors.grey,
                 ),
               );
             }
           },
           builder: (context, state) {
-            return Form(
-              key: _formKey,
+            final isLoading = state is FurloughRequestsLoading;
+
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextFormField(
-                    controller: _statusController,
-                    keyboardType: TextInputType.text,
-                    decoration: const InputDecoration(labelText: 'Status'),
-                    validator: (value) =>
-                    value == null || value.isEmpty ? 'Please enter status' : null,
+                  const Text(
+                    'Status:',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        BlocProvider.of<FurloughRequestsBloc>(context).add(
-                          UpdateFurloughRequestsStatusEvent(
-                            furloughRequestId: widget.furlough.id,
-                            status: _statusController.text.trim(),
-                          ),
-                        );
-                      }
-                    },
+                  const SizedBox(height: 10),
+                  Column(
+                    children: _statusOptions
+                        .map(
+                          (option) => RadioListTile<String>(
+                        title: Text(option),
+                        value: option,
+                        groupValue: _status,
+                        onChanged: (val) {
+                          if (val != null) {
+                            setState(() {
+                              _status = val;
+                            });
+                          }
+                        },
+                      ),
+                    )
+                        .toList(),
+                  ),
+                  const SizedBox(height: 30),
+                  isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : ElevatedButton(
+                    onPressed: _onUpdatePressed,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.darkBlue,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 14),
                     ),
                     child: const Text(
-                      'Update',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      'Update Status',
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
