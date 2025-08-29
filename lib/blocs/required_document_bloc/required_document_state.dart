@@ -28,7 +28,7 @@ final class RequiredDocumentsFail extends RequiredDocumentsState {
 }
 
 final class RequiredDocumentsListLoaded extends RequiredDocumentsState {
-  late final List<RequiredDocumentModel> requiredDocumentsList;
+  final List<RequiredDocumentModel> requiredDocumentsList;
 
   RequiredDocumentsListLoaded({required this.requiredDocumentsList});
 }

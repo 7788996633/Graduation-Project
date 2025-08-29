@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/required_document_bloc/required_document_bloc.dart';
+import 'package:graduation/blocs/required_document_bloc/required_document_event.dart';
+import 'package:graduation/constant.dart';
+import 'package:graduation/presentation/screens/required_documents/upload_required_documents.dart';
 import '../../../data/models/required_document_model.dart';
 import '../../../themes.dart';
 import '../../widgets/custom_appbar_add.dart';
 
 class RequiredDocumentDetailsScreen extends StatelessWidget {
-  const RequiredDocumentDetailsScreen({super.key, required this.requiredDocument});
+  const RequiredDocumentDetailsScreen(
+      {super.key, required this.requiredDocument});
   final RequiredDocumentModel requiredDocument;
 
   Widget _buildInfoRow(IconData icon, String label, String value) {
@@ -18,10 +24,15 @@ class RequiredDocumentDetailsScreen extends StatelessWidget {
           Expanded(
             child: RichText(
               text: TextSpan(
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 children: [
-                  TextSpan(text: '$label: ', style: const TextStyle(color: Colors.black87)),
-                  TextSpan(text: value, style: const TextStyle(color: AppColors.darkBlue)),
+                  TextSpan(
+                      text: '$label: ',
+                      style: const TextStyle(color: Colors.black87)),
+                  TextSpan(
+                      text: value,
+                      style: const TextStyle(color: AppColors.darkBlue)),
                 ],
               ),
             ),
@@ -35,7 +46,28 @@ class RequiredDocumentDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF2F4F8),
-      appBar: CustomActionAppBar(title: 'Require Document Details'),
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: getCurrentTheme()['AppBar'],
+        title: Text(
+          ' ',
+          style: TextStyle(color: Colors.white),
+        ),
+        actions: [
+          if (myRole == 'user')
+            IconButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) => RequiredDocumentsBloc(),
+                      child: UploadDocumentScreen(
+                          issueId: requiredDocument.issueId),
+                    ),
+                  ));
+                },
+                icon: Icon(Icons.upload_file))
+        ],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Card(
@@ -52,28 +84,27 @@ class RequiredDocumentDetailsScreen extends StatelessWidget {
                 Center(
                   child: Column(
                     children: [
-                      Icon(Icons.insert_drive_file_rounded, size: 60, color: AppColors.darkBlue),
+                      Icon(Icons.insert_drive_file_rounded,
+                          size: 60, color: AppColors.darkBlue),
                       const SizedBox(height: 10),
                       const Text(
                         'Document Info',
-                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 20),
                     ],
                   ),
                 ),
-
-
-
-                _buildInfoRow(Icons.file_present, 'Type', requiredDocument.requireFileType),
+                _buildInfoRow(Icons.file_present, 'Type',
+                    requiredDocument.requireFileType),
                 const Divider(),
-
-                _buildInfoRow(Icons.verified, 'Status', requiredDocument.status),
+                _buildInfoRow(
+                    Icons.verified, 'Status', requiredDocument.status),
                 const Divider(),
-
-                _buildInfoRow(Icons.notes, 'Note', requiredDocument.note ?? 'No note'),
+                _buildInfoRow(
+                    Icons.notes, 'Note', requiredDocument.note ?? 'No note'),
                 const SizedBox(height: 30),
-
                 const Text(
                   'Attached File',
                   style: TextStyle(
@@ -83,14 +114,15 @@ class RequiredDocumentDetailsScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-
-                if (requiredDocument.file != null && requiredDocument.file!.isNotEmpty)
+                if (requiredDocument.file != null &&
+                    requiredDocument.file!.isNotEmpty)
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => ImageFullScreen(url: requiredDocument.file!),
+                          builder: (_) =>
+                              ImageFullScreen(url: requiredDocument.file!),
                         ),
                       );
                     },
@@ -105,9 +137,11 @@ class RequiredDocumentDetailsScreen extends StatelessWidget {
                           width: double.infinity,
                           loadingBuilder: (context, child, loadingProgress) {
                             if (loadingProgress == null) return child;
-                            return const Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           },
-                          errorBuilder: (context, error, stackTrace) => Container(
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
                             height: 250,
                             alignment: Alignment.center,
                             color: Colors.grey.shade200,

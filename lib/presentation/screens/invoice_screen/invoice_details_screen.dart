@@ -159,8 +159,7 @@ class InvoiceDetailsScreen extends StatelessWidget {
                                     issue.priority, 22, 16),
                                 _buildInfoRow(Icons.date_range, 'Start Date',
                                     issue.startDate, 22, 16),
-                                _buildInfoRow(Icons.date_range, 'End Date',
-                                    issue.endDate, 22, 16),
+
                                 const SizedBox(height: 30),
                                 _buildEditButton(context, invoiceModel),
                               ],

@@ -30,7 +30,7 @@ class DelegationBloc extends Bloc<DelegationEvent, DelegationState> {
         try {
           String result = await DelegationServices().addApproveDelegation(
             delegationId: event.delegationId,
-             delegateLawyerId: event.delegateLawyerId,
+            delegateLawyerId: event.delegateLawyerId,
             adminNote: event.adminNote,
           );
           emit(DelegationSuccess(successMsg: result));
@@ -51,6 +51,14 @@ class DelegationBloc extends Bloc<DelegationEvent, DelegationState> {
           emit(DelegationFail(errMsg: e.toString()));
         }
       } else if (event is GetAllDelegationsEvent) {
+        emit(DelegationLoading());
+        try {
+          allDelegations = await DelegationRepository().getDelegations();
+          emit(DelegationListLoaded(list: allDelegations));
+        } catch (e) {
+          emit(DelegationFail(errMsg: e.toString()));
+        }
+      } else if (event is GetAllDelegationsBySessionEvent) {
         emit(DelegationLoading());
         try {
           allDelegations = await DelegationRepository().getDelegations();

@@ -47,12 +47,11 @@ class ConsultationBloc extends Bloc<ConsultationEvent, ConsultationState> {
               ),
             );
           }
-        }
-        else if (event is GetMyConsultationsLawyer) {
+        } else if (event is GetConsultationsByRequestIdEvent) {
           emit(ConsultationLoading());
           try {
-            List<ConsultationModel> value =
-            await ConsultationRepositories().getMyConsultationsLawyer();
+            List<ConsultationModel> value = await ConsultationRepositories()
+                .getConsultationsByRequestId(event.reqId);
             emit(
               ConsultationsListLoadedSuccessfully(
                 consultations: value,
@@ -65,7 +64,24 @@ class ConsultationBloc extends Bloc<ConsultationEvent, ConsultationState> {
               ),
             );
           }
-        }else if (event is GetConsultationByIdEvent) {
+        } else if (event is GetMyConsultationsLawyer) {
+          emit(ConsultationLoading());
+          try {
+            List<ConsultationModel> value =
+                await ConsultationRepositories().getMyConsultationsLawyer();
+            emit(
+              ConsultationsListLoadedSuccessfully(
+                consultations: value,
+              ),
+            );
+          } catch (e) {
+            emit(
+              ConsultationFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is GetConsultationByIdEvent) {
           emit(
             ConsultationLoading(),
           );
@@ -109,6 +125,23 @@ class ConsultationBloc extends Bloc<ConsultationEvent, ConsultationState> {
             emit(
               ConsultationSuccess(
                 successmsg: value,
+              ),
+            );
+          } catch (e) {
+            emit(
+              ConsultationFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is GetConsultationByIdEvent) {
+          emit(ConsultationLoading());
+          try {
+            List<ConsultationModel> value =
+                await ConsultationRepositories().getAllConsultations();
+            emit(
+              ConsultationsListLoadedSuccessfully(
+                consultations: value,
               ),
             );
           } catch (e) {

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/presentation/widgets/custom_text_field.dart';
+import 'package:graduation/responsive.dart';
 
 import '../../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
 import '../../../themes.dart';
@@ -38,129 +40,131 @@ class _SubmitConsultationRequestScreenState
       ),
       body: Container(
         padding: EdgeInsets.all(10),
-        child: Form(
-          key: formKey,
-          child: Container(
-            padding: EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Consultation subject",
+        child: Center(
+          child: Form(
+            key: formKey,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: s20, vertical: s20),
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  center: Alignment.center,
+                  radius: 2,
+                  colors: isLight
+                      ? [
+                          AppColors.darkBlue,
+                          AppColors.softGray,
+                          AppColors.white,
+                        ]
+                      : [
+                          Colors.black,
+                          AppColors.softGray,
+                          AppColors.white,
+                        ],
                 ),
-                SizedBox(
-                  height: 10,
+                border: Border.all(
+                  strokeAlign: 2,
+                  width: 3,
+                  color: AppColors.white,
                 ),
-                Container(
-                  margin: EdgeInsets.only(
-                    bottom: 20,
-                  ),
-                  clipBehavior: Clip.hardEdge,
-                  decoration: BoxDecoration(
-                    color: AppColors.darkBlue,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: TextFormField(
-                    validator: Validator.nameValidator,
+                borderRadius: BorderRadius.circular(
+                  8,
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Consultation subject",
                     style: TextStyle(
                       color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  CustomTextFeild(
+                    color: Colors.white,
+                    text: 'Enter your consultation subject',
+                    validator: Validator.nameValidator,
                     controller: subjectController,
-                    decoration: InputDecoration(
-                      hintStyle: TextStyle(
-                        color: Colors.white,
-                      ),
-                      border: OutlineInputBorder(),
-                      hintText: "Enter your consultation subject",
-                      prefixIcon: Icon(
-                        Icons.title,
-                        color: Colors.white,
-                      ),
-                    ),
                   ),
-                ),
-                Text(
-                  "Consultation details",
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                    bottom: 20,
+                  SizedBox(
+                    height: 10,
                   ),
-                  clipBehavior: Clip.hardEdge,
-                  decoration: BoxDecoration(
-                    color: AppColors.darkBlue,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: TextFormField(
-                    validator: Validator.nameValidator,
+                  Text(
+                    "Consultation details",
                     style: TextStyle(
                       color: Colors.white,
-                    ),
-                    controller: detailsController,
-                    decoration: InputDecoration(
-                      hintStyle: TextStyle(
-                        color: Colors.white,
-                      ),
-                      border: OutlineInputBorder(),
-                      hintText: "Enter your consultation details",
-                      prefixIcon: Icon(
-                        Icons.post_add_rounded,
-                        color: Colors.white,
-                      ),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
-                BlocConsumer<ConsultationRequestBloc, ConsultationRequestState>(
-                  listener: (context, state) async {
-                    if (state is ConsultationRequestSuccess) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('✅ ${state.successmsg}')),
-                      );
-                      await Future.delayed(
-                        Duration(
-                          milliseconds: 500,
-                        ),
-                      );
+                  SizedBox(
+                    height: 10,
+                  ),
+                  CustomTextFeild(
+                    validator: Validator.nameValidator,
+                    color: Colors.white,
+                    text: 'Enter your consultation details',
+                    controller: detailsController,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  BlocConsumer<ConsultationRequestBloc,
+                      ConsultationRequestState>(
+                    listener: (context, state) async {
+                      if (state is ConsultationRequestSuccess) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('✅ ${state.successmsg}')),
+                        );
+                        await Future.delayed(
+                          Duration(
+                            milliseconds: 500,
+                          ),
+                        );
 
-                      Navigator.pop(context);
-                    } else if (state is ConsultationRequestFail) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('❌ ${state.errmsg}')),
-                      );
-                    }
-                  },
-                  builder: (context, state) {
-                    return ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.darkBlue,
-                        fixedSize: Size(
-                          400,
-                          40,
-                        ),
-                      ),
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          BlocProvider.of<ConsultationRequestBloc>(context).add(
-                            AddConsultationRequestEvent(
-                              subject: subjectController.text,
-                              details: detailsController.text,
+                        Navigator.pop(context);
+                      } else if (state is ConsultationRequestFail) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('❌ ${state.errmsg}')),
+                        );
+                      }
+                    },
+                    builder: (context, state) {
+                      return Center(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.white,
+                          ),
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              BlocProvider.of<ConsultationRequestBloc>(context)
+                                  .add(
+                                AddConsultationRequestEvent(
+                                  subject: subjectController.text,
+                                  details: detailsController.text,
+                                ),
+                              );
+                            }
+                          },
+                          child: Text(
+                            "Submit",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
-                          );
-                        }
-                      },
-                      child: Text(
-                        "Save",
-                        style: TextStyle(
-                          color: Colors.white,
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

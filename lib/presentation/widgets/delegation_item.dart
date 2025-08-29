@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../../blocs/delegations_bloc/delegations_bloc.dart';
-import '../../blocs/delegations_bloc/delegations_event.dart';
 import '../../blocs/lawyer_in_issues_bloc/lawyer_in_issues_bloc.dart';
 import '../../data/models/delegations_model.dart';
+import '../../responsive.dart';
 import '../../themes.dart';
 import '../screens/delegations_screen/delegation_detials_screen.dart';
 
@@ -35,7 +36,35 @@ class DelegationItem extends StatelessWidget {
           ),
         );
       },
-      child: Card(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: s12, vertical: s10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(s8),
+          border: Border.all(
+            color: Colors.grey,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              delegation.status,
+              style: TextStyle(
+                  color: getCurrentTheme()['NormalText'],
+                  fontSize: s16,
+                  fontWeight: FontWeight.bold),
+            ),
+            // Text(
+            //   DateFormat('d-M-yyyy').format(delegation.createdAt),
+            //   style: TextStyle(
+            //     color: getCurrentTheme()['NormalText'],
+            //     fontSize: s14,
+            //   ),
+            // ),
+          ],
+        ),
+      ),
+      /* Card(
         elevation: 6,
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -88,7 +117,7 @@ class DelegationItem extends StatelessWidget {
             ],
           ),
         ),
-      ),
+      ), */
     );
   }
 

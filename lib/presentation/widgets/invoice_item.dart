@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../blocs/invoices_bloc/invoices_bloc.dart';
 import '../../blocs/invoices_bloc/invoices_event.dart';
+import '../../constant.dart';
 import '../../data/models/invoice_model.dart';
 import '../../themes.dart';
 
@@ -62,7 +63,7 @@ class InvoiceItem extends StatelessWidget {
             ),
           ),
           title: Text(
-            'Invoice #${invoiceModel.id}',
+            invoiceModel.status,
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w700,
@@ -77,11 +78,13 @@ class InvoiceItem extends StatelessWidget {
               color: AppColors.darkBlue.withOpacity(0.6),
             ),
           ),
-          trailing: Icon(
-            Icons.keyboard_arrow_right,
-            color: AppColors.darkBlue.withOpacity(0.7),
-            size: 32,
-          ),
+          trailing: myRole == 'admin'
+              ? Icon(
+                  Icons.keyboard_arrow_right,
+                  color: AppColors.darkBlue.withOpacity(0.7),
+                  size: 32,
+                )
+              : SizedBox(),
         ),
       ),
     );

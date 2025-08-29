@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/auth_bloc/auth_bloc.dart';
+import 'package:graduation/blocs/payroll_bloc/payroll_bloc.dart';
 import '../../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
 import '../../../blocs/categories/categories_bloc.dart';
 import '../../../blocs/common_consultation_bloc/common _consultation_bloc.dart';
@@ -57,7 +59,10 @@ class AdminHomeScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (_) => const ModifyUsersPermissionsScreen()),
+                builder: (_) => BlocProvider(
+                      create: (context) => PayrollBloc(),
+                      child: const ModifyUsersPermissionsScreen(),
+                    )),
           );
         },
       },
@@ -181,21 +186,21 @@ class AdminHomeScreen extends StatelessWidget {
           );
         },
       },
-      {
-        'title': 'All required decoument ',
-        'icon': Icons.group,
-        'onTap': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (_) => RequiredDocumentsBloc(),
-                child: const ListRequiredDocumentsScreen(),
-              ),
-            ),
-          );
-        },
-      },
+      // {
+      //   'title': 'All required decoument ',
+      //   'icon': Icons.group,
+      //   'onTap': () {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(
+      //         builder: (_) => BlocProvider(
+      //           create: (_) => RequiredDocumentsBloc(),
+      //           child: const ListRequiredDocumentsScreen(),
+      //         ),
+      //       ),
+      //     );
+      //   },
+      // },
       {
         'title': 'All session type ',
         'icon': Icons.group,
@@ -318,8 +323,15 @@ class AdminHomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: const CustomHomeAppBar(title: 'Admin Panel'),
-      drawer: BlocProvider(
-        create: (context) => UserProfileBloc()..add(ShowUserProfileEvent()),
+      drawer: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => UserProfileBloc()..add(ShowUserProfileEvent()),
+          ),
+          BlocProvider(
+            create: (context) => AuthBloc(),
+          ),
+        ],
         child: const CustomAppDrawer(),
       ),
       body: SingleChildScrollView(

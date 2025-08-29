@@ -42,6 +42,8 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
   @override
   void initState() {
     consultationBloc = BlocProvider.of<ConsultationBloc>(context);
+    consultationBloc.add(GetConsultationsByRequestIdEvent(
+        reqId: widget.consultationRequestModel.id));
     if (myRole == 'lawyer') {
       consultationBloc.add(
         StartConsultationRequestReview(
@@ -74,8 +76,8 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
       appBar: AppBar(
         backgroundColor: getCurrentTheme()['AppBar'],
         title: Text(
-          widget.consultationRequestModel.subject,
-          style: TextStyle(
+          widget.consultationRequestModel.user.name,
+          style: const TextStyle(
             color: Colors.white,
           ),
         ),
@@ -96,11 +98,11 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                       ),
                     );
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.edit,
                   ),
                 )
-              : SizedBox(
+              : const SizedBox(
                   width: 0,
                 ),
         ],
@@ -141,7 +143,7 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -170,68 +172,111 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                 ),
               ],
             ),
-            if (myRole == 'lawyer' &&
-                widget.consultationRequestModel.status.toLowerCase() ==
-                    'approved' &&
-                widget.consultationRequestModel.isLocked == 0)
-              BlocConsumer<ConsultationBloc, ConsultationState>(
-                listener: (context, state) {
-                  print('locked ${widget.consultationRequestModel.isLocked}');
-                  if (state is ConsultationSuccess) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.successmsg)),
-                    );
-                  } else if (state is ConsultationFail) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('خطأ: ${state.errmsg}'),
-                      ),
-                    );
-                  }
-                },
+            Expanded(
+              child: BlocBuilder<ConsultationBloc, ConsultationState>(
                 builder: (context, state) {
-                  return Container(
-                    margin: EdgeInsets.only(
-                      top: 10,
-                    ),
-                    color: Colors.amber,
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          CustomTextFeild(
-                            color: Colors.white,
-                            text: "Consultation",
-                            controller: _resaultController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'يرجى إدخال نتيجة الاستشارة';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 16),
-                          state is ConsultationLoading
-                              ? const CircularProgressIndicator()
-                              : ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                  ),
-                                  onPressed: _onSubmit,
-                                  child: const Text(
-                                    'Submit',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
+                  if (state is ConsultationLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is ConsultationFail) {
+                    return Center(child: Text('خطأ: ${state.errmsg}'));
+                  } else if (state is ConsultationsListLoadedSuccessfully) {
+                    final consultations = state.consultations;
+
+                    if (true) {
+                      return Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: consultations.length,
+                              itemBuilder: (context, index) {
+                                final consultation = consultations[index];
+                                return Card(
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 8),
+                                  child: ListTile(
+                                    title: Text(
+                                      consultation.resault,
+                                      style: TextStyle(
+                                        color: getCurrentTheme()['NormalText'],
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
-                                ),
-                        ],
-                      ),
-                    ),
-                  );
+                                );
+                              },
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            if (myRole == 'lawyer' &&
+                                widget.consultationRequestModel.status
+                                        .toLowerCase() ==
+                                    'approved' &&
+                                widget.consultationRequestModel.isLocked ==
+                                    0) ...[
+                              CustomTextFeild(
+                                color: Colors.white,
+                                text: "Consultation",
+                                controller: _resaultController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'يرجى إدخال نتيجة الاستشارة';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              state is ConsultationLoading
+                                  ? const CircularProgressIndicator()
+                                  : ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                      ),
+                                      onPressed: _onSubmit,
+                                      child: const Text(
+                                        'Submit',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                            ]
+                          ],
+                        ),
+                      );
+                    } else {
+                      return const Center(
+                        child: Text('لا توجد استشارات بعد'),
+                      );
+                    }
+
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: consultations.length,
+                      itemBuilder: (context, index) {
+                        final consultation = consultations[index];
+                        return Card(
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          child: ListTile(
+                            title: Text(
+                              consultation.resault,
+                              style: TextStyle(
+                                color: getCurrentTheme()['NormalText'],
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                  return const SizedBox();
                 },
               ),
+            ),
           ],
         ),
       ),

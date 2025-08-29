@@ -61,6 +61,12 @@ class GetDelegationByIdEvent extends DelegationEvent {
 
 class GetAllDelegationsEvent extends DelegationEvent {}
 
+class GetAllDelegationsBySessionEvent extends DelegationEvent {
+  final int sessionId;
+
+  GetAllDelegationsBySessionEvent({required this.sessionId});
+}
+
 class SearchDelegationsByTypeEvent extends DelegationEvent {
   final String type;
 

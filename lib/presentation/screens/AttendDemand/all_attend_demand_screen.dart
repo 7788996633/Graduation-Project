@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/attend_Demand_bloc/attend_demand_bloc.dart';
+import '../../../themes.dart';
 import '../../widgets/attend_demand_list.dart';
 import 'add_attend_demand_screen.dart';
 
@@ -11,7 +12,9 @@ class AllAttendDemandScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      backgroundColor: getCurrentTheme()['BackGorund'],
+
+      /*  appBar: AppBar(
         actions: [
           IconButton(
             onPressed: () {
@@ -31,7 +34,7 @@ class AllAttendDemandScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
+      ), */
       body: Column(
         children: [
           BlocProvider(

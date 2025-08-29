@@ -13,7 +13,7 @@ class AppColors {
 }
 
 Map<String, Color> currentTheme = {
-  'BackGorund': AppColors.scaffold,
+  'BackGorund': AppColors.white,
   'AppBar': AppColors.darkBlue,
   'Border': AppColors.softGray,
   'AppBarTitle': AppColors.white,

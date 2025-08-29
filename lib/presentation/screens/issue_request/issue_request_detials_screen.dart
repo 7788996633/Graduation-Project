@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/issue_requests_bloc/issue_requests_state.dart';
 
 import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
 import '../../../blocs/issue_requests_bloc/issue_requests_event.dart';
@@ -92,7 +93,44 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
                   "Admin note",
                   request.adminNote!,
                 ),
-              const SizedBox(height: 30),
+              if (widget.issueRequest.status.toLowerCase() == 'pending')
+                BlocConsumer<IssueRequestsBloc, IssueRequestsState>(
+                  listener: (context, state) {
+                    if (state is IssueRequestsSuccess) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Success: ${state.successmsg}"),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    } else if (state is IssueRequestsFail) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Success: ${state.errmsg}"),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  },
+                  builder: (context, state) {
+                    return IconButton(
+                      onPressed: () {
+                        BlocProvider.of<IssueRequestsBloc>(context).add(
+                          DeleteIssueRequestEvent(
+                            issueRequestId: widget.issueRequest.id,
+                          ),
+                        );
+                        if (state is IssueRequestsSuccess) {
+                          Navigator.pop(context);
+                        }
+                      },
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                    );
+                  },
+                ),
             ],
           ),
         ),
@@ -106,17 +144,18 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
       backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: AppBar(
         actions: [
-          if (myRole == 'admin' ||
-              (myRole == 'admin' &&
-                  widget.issueRequest.status.toLowerCase() == 'pending'))
+          if (widget.issueRequest.status.toLowerCase() == 'pending' &&
+              myRole == 'user')
             IconButton(
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => UpdateIssueRequestScreen(
-                    issueRequest: widget.issueRequest,
-                    bloc: bloc,
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => UpdateIssueRequestScreen(
+                      issueRequest: widget.issueRequest,
+                      bloc: bloc,
+                    ),
                   ),
-                ));
+                );
               },
               icon: Icon(
                 Icons.edit,

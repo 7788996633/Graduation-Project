@@ -91,10 +91,10 @@ class _HomeWebPageState extends State<HomeWebPage> {
       create: (context) => SessionTypeBloc(),
       child: const  ListSessionTypesScreen(),
     ),
-    BlocProvider(
-      create: (context) => RequiredDocumentsBloc(),
-      child: const  ListRequiredDocumentsScreen(),
-    ),
+    // BlocProvider(
+    //   create: (context) => RequiredDocumentsBloc(),
+    //   child: const  ListRequiredDocumentsScreen(),
+    // ),
     BlocProvider(
       create: (context) => ConsultationRequestBloc(),
       child: const  AllConsultationRequestsPage(),

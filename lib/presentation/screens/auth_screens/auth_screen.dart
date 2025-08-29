@@ -5,7 +5,7 @@ import 'package:graduation/presentation/screens/user_screens/user_profile_screen
 import '../../../blocs/auth_bloc/auth_bloc.dart';
 import '../../../blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
 import '../../../blocs/user_bloc/user_bloc.dart';
-import '../../../blocs/user_profile_bloc/user_profile_bloc.dart'; // استيراد البلوك الجديد
+import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../../constant.dart';
 import '../../../themes.dart';
 import '../../widgets/auth_widgets/auth_form.dart';
@@ -23,97 +23,92 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<AuthBloc, AuthState>(
-          listener: (context, state) {
-            if (state is AuthSuccess) {
-              setState(() {
-                myToken = state.token;
-              });
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) async {
+        if (state is AuthSuccess) {
+          // خزّن التوكن
+          myToken = state.token;
 
-              BlocProvider.of<UserBloc>(context).add(GetUserRole());
+          // 1) جيب الدور
+          final userBloc = BlocProvider.of<UserBloc>(context);
+          userBloc.add(GetUserRole());
 
-              BlocProvider.of<UserProfileBloc>(context)
-                  .add(ShowUserProfileEvent());
+          final userState = await userBloc.stream.firstWhere(
+            (s) => s is UserSuccess || s is UserFail,
+          );
 
-              BlocProvider.of<LawyerProfileBloc>(context)
-                  .add(ShowLawyerProfileEvent());
-            } else if (state is AuthFail) {
-              Navigator.of(context).pop();
-              showDialog(
-                context: context,
-                builder: (context) => CustomErrorDialog(
-                  errorMsg: state.errmsg,
-                ),
-              );
-            } else if (state is AuthLoading) {
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) => const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-          },
-        ),
-        BlocListener<UserBloc, UserState>(
-          listener: (context, state) {
-            if (state is UserSuccess) {
-              setState(() {
-                myRole = state.successmsg;
-              });
-            }
-          },
-        ),
-        BlocListener<UserProfileBloc, UserProfileState>(
-          listener: (context, state) {
-            if (state is UserProfileLoadedSuccessfully) {
-              setState(() {
-                myUserId = state.userProfileModel.userId;
-              });
+          if (userState is UserSuccess) {
+            myRole = userState.successmsg;
+
+            // 2) جيب البروفايل
+            final userProfileBloc = BlocProvider.of<UserProfileBloc>(context);
+            userProfileBloc.add(ShowUserProfileEvent());
+
+            final profileState = await userProfileBloc.stream.firstWhere(
+              (s) => s is UserProfileLoadedSuccessfully || s is UserProfileFail,
+            );
+
+            if (profileState is UserProfileLoadedSuccessfully) {
+              myUserId = profileState.userProfileModel.userId;
+
+              // 3) إذا محامي → جيب بروفايل المحامي
+              if (myRole == "lawyer") {
+                final lawyerBloc = BlocProvider.of<LawyerProfileBloc>(context);
+                lawyerBloc.add(ShowLawyerProfileEvent());
+
+                final lawyerState = await lawyerBloc.stream.firstWhere((s) =>
+                    s is LawyerProfileLoadedSuccessfully ||
+                    s is LawyerProfileFail);
+
+                if (lawyerState is LawyerProfileLoadedSuccessfully) {
+                  myLicenesNumber = lawyerState.lawyerModel.licenseNumber;
+                }
+              }
+
+              // 🚀 بعد اكتمال كل شي → التنقّل
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (_) => const HomePage()),
                 (route) => false,
               );
-            } else if (state is UserProfileFail) {
+            } else if (profileState is UserProfileFail && myRole == "user") {
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
                     builder: (_) => const CreateUserProfileScreen()),
                 (route) => false,
               );
             }
-          },
-        ),
-        BlocListener<LawyerProfileBloc, LawyerProfileState>(
-          listener: (context, state) {
-            if (state is LawyerProfileLoadedSuccessfully) {
-              if (myRole == 'lawyer') {
-                print('object  $myLicenesNumber');
-                myLicenesNumber = state.lawyerModel.licenseNumber;
-                setState(() {});
-              }
-            }
-          },
-          child: Container(),
-        ),
-      ],
-      child: BlocBuilder<AuthBloc, AuthState>(
-        builder: (context, state) => Scaffold(
-          backgroundColor: AppColors.scaffold,
-          body: Stack(
-            children: [
-              AuthTopBlueCurvedContainor(),
-              Align(
-                alignment: Alignment.center,
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0),
-                  child: AuthForm(),
-                ),
+          }
+        } else if (state is AuthFail) {
+          Navigator.of(context).pop();
+          showDialog(
+            context: context,
+            builder: (context) => CustomErrorDialog(
+              errorMsg: state.errmsg,
+            ),
+          );
+        } else if (state is AuthLoading) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+      },
+      builder: (context, state) => Scaffold(
+        backgroundColor: AppColors.scaffold,
+        body: Stack(
+          children: [
+            AuthTopBlueCurvedContainor(),
+            Align(
+              alignment: Alignment.center,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: const AuthForm(),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -31,9 +31,9 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
       TextEditingController();
 
   // Dropdown values
-  final List<String> categories = ['Civil', 'Criminal', 'Commercial', 'Other'];
-  final List<String> statuses = ['Open', 'Closed', 'Pending', 'In Progress'];
-  final List<String> priorities = ['Low', 'Medium', 'High', 'Urgent'];
+  // final List<String> categories = ['Civil', 'Criminal', 'Commercial', 'Other'];
+  final List<String> statuses = ['Open', 'Closed', 'Pending', 'In_Progress'];
+  final List<String> priorities = ['Low', 'Medium', 'High', 'Critical'];
 
   // CategoriesModel selectedCategory = CategoriesModel(
   //   id: -1,
@@ -45,7 +45,6 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
 
   // Dates
   DateTime? startDate;
-  DateTime? endDate;
 
   // Selected client userId
   int? selectedUserId;
@@ -99,8 +98,7 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
 
     final pickedDate = await showDatePicker(
       context: context,
-      initialDate:
-          isStartDate ? (startDate ?? initialDate) : (endDate ?? initialDate),
+      initialDate: startDate ?? initialDate,
       firstDate: firstDate,
       lastDate: lastDate,
     );
@@ -110,16 +108,7 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
         if (isStartDate) {
           startDate = pickedDate;
           // Ensure endDate is not before startDate
-          if (endDate != null && endDate!.isBefore(startDate!)) {
-            endDate = startDate;
-          }
-        } else {
-          endDate = pickedDate;
-          // Ensure endDate is not before startDate
-          if (startDate != null && endDate!.isBefore(startDate!)) {
-            startDate = endDate;
-          }
-        }
+        } else {}
       });
     }
   }
@@ -147,7 +136,7 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
           );
           return;
         }
-        if (startDate == null || endDate == null) {
+        if (startDate == null) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text("Please select start and end dates."),
@@ -178,7 +167,7 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
             status: selectedStatus!.toLowerCase(),
             priority: selectedPriority!.toLowerCase(),
             startDate: startDate!.toIso8601String(),
-            endDate: endDate!.toIso8601String(),
+            endDate: '',
             totalCost: totalcostController.text,
             numberOfPayments:
                 int.tryParse(numberofpaymentsController.text) ?? 0,
@@ -210,213 +199,246 @@ class _CreateIssueScreenState extends State<CreateIssueScreen> {
         padding: const EdgeInsets.all(12),
         child: Form(
           key: _formKey,
-          child: Stepper(
-            currentStep: _currentStep,
-            onStepContinue: _onStepContinue,
-            onStepCancel: _onStepCancel,
-            controlsBuilder: (context, details) {
-              final isLastStep = _currentStep == 2;
-              return Row(
-                children: [
-                  ElevatedButton(
-                    onPressed: details.onStepContinue,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: mainColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 14),
+          child: BlocConsumer<IssuesBloc, IssuesState>(
+            listener: (context, state) {
+              if (state is IssuesSuccess) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      state.successmsg,
+                      style: const TextStyle(fontSize: 16),
                     ),
-                    child: Text(
-                      isLastStep ? 'Submit' : 'Next',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
+                    backgroundColor: Colors.green,
+                  ),
+                );
+                Navigator.pop(context);
+              } else if (state is IssuesFail) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      state.errmsg,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
+            builder: (context, state) {
+              return Stepper(
+                currentStep: _currentStep,
+                onStepContinue: _onStepContinue,
+                onStepCancel: _onStepCancel,
+                controlsBuilder: (context, details) {
+                  final isLastStep = _currentStep == 2;
+                  return Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: details.onStepContinue,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: mainColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 14),
+                        ),
+                        child: Text(
+                          isLastStep ? 'Submit' : 'Next',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
+                      const SizedBox(width: 20),
+                      if (_currentStep > 0)
+                        TextButton(
+                          onPressed: details.onStepCancel,
+                          child: const Text("Back",
+                              style: TextStyle(fontSize: 16)),
+                        ),
+                    ],
+                  );
+                },
+                steps: [
+                  Step(
+                    isActive: _currentStep >= 0,
+                    state: _currentStep > 0
+                        ? StepState.complete
+                        : StepState.indexed,
+                    title: const Text('Basic Info'),
+                    content: Column(
+                      children: [
+                        _buildTextField(
+                          controller: titleController,
+                          label: 'Title',
+                          icon: Icons.title,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        _buildTextField(
+                          controller: issuenumberController,
+                          label: 'Case Number',
+                          icon: Icons.confirmation_number_outlined,
+                          inputType: TextInputType.number,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        _buildTextField(
+                          controller: courtnameController,
+                          label: 'Court Name',
+                          icon: Icons.account_balance,
+                        ),
+                        const SizedBox(height: 10),
+                        _buildTextField(
+                          inputType: TextInputType.number,
+                          controller: lawyerPercentageController,
+                          label: 'Lawyers Percentage',
+                          icon: Icons.percent,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        GestureDetector(
+                          onTap: _showCategorySelector,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.blue,
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                8,
+                              ),
+                            ),
+                            padding: EdgeInsets.all(15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  selectedCategoryName ??
+                                      "Selcet Case category",
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        _buildDropdown(
+                          label: 'Status',
+                          value: selectedStatus,
+                          items: statuses,
+                          onChanged: (val) =>
+                              setState(() => selectedStatus = val),
+                        ),
+                        const SizedBox(height: 10),
+                        _buildDropdown(
+                          label: 'Priority',
+                          value: selectedPriority,
+                          items: priorities,
+                          onChanged: (val) =>
+                              setState(() => selectedPriority = val),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: 20),
-                  if (_currentStep > 0)
-                    TextButton(
-                      onPressed: details.onStepCancel,
-                      child: const Text("Back", style: TextStyle(fontSize: 16)),
+                  Step(
+                    isActive: _currentStep >= 1,
+                    state: _currentStep > 1
+                        ? StepState.complete
+                        : StepState.indexed,
+                    title: const Text('Dates & Costs'),
+                    content: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 10),
+
+                        _buildDatePicker(
+                          label: 'Start Date',
+                          selectedDate: startDate,
+                          onTap: () => _pickDate(context, true),
+                        ),
+                        // const SizedBox(height: 12),
+                        // _buildDatePicker(
+                        //   label: 'End Date',
+                        //   selectedDate: endDate,
+                        //   onTap: () => _pickDate(context, false),
+                        // ),
+                        const SizedBox(height: 10),
+                        _buildTextField(
+                          controller: totalcostController,
+                          label: 'Total Cost',
+                          icon: Icons.monetization_on_outlined,
+                          inputType: TextInputType.number,
+                        ),
+                        const SizedBox(height: 10),
+
+                        _buildTextField(
+                          controller: numberofpaymentsController,
+                          label: 'Number of Payments',
+                          icon: Icons.payments_outlined,
+                          inputType: TextInputType.number,
+                        ),
+                        const SizedBox(height: 10),
+                      ],
                     ),
+                  ),
+                  Step(
+                    isActive: _currentStep >= 2,
+                    title: const Text('Client & Opponent'),
+                    content: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Select a Client:",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                        const SizedBox(height: 12),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.07),
+                                blurRadius: 15,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 10),
+                          height: 150,
+                          child: BlocProvider(
+                            create: (context) => UserBloc(),
+                            child: ClientsList(
+                              onUserSelected: (userId) {
+                                setState(() {
+                                  selectedUserId = userId;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        _buildTextField(
+                          controller: opponentnameController,
+                          label: 'Opponent Name',
+                          icon: Icons.person_outline,
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
+                  ),
                 ],
               );
             },
-            steps: [
-              Step(
-                isActive: _currentStep >= 0,
-                state:
-                    _currentStep > 0 ? StepState.complete : StepState.indexed,
-                title: const Text('Basic Info'),
-                content: Column(
-                  children: [
-                    _buildTextField(
-                      controller: titleController,
-                      label: 'Title',
-                      icon: Icons.title,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    _buildTextField(
-                      controller: issuenumberController,
-                      label: 'Case Number',
-                      icon: Icons.confirmation_number_outlined,
-                      inputType: TextInputType.number,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    _buildTextField(
-                      controller: courtnameController,
-                      label: 'Court Name',
-                      icon: Icons.account_balance,
-                    ),
-                    const SizedBox(height: 10),
-                    _buildTextField(
-                      inputType: TextInputType.number,
-                      controller: lawyerPercentageController,
-                      label: 'Lawyers Percentage',
-                      icon: Icons.percent,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    GestureDetector(
-                      onTap: _showCategorySelector,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.blue,
-                          ),
-                          borderRadius: BorderRadius.circular(
-                            8,
-                          ),
-                        ),
-                        padding: EdgeInsets.all(15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              selectedCategoryName ?? "Selcet Case category",
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    _buildDropdown(
-                      label: 'Status',
-                      value: selectedStatus,
-                      items: statuses,
-                      onChanged: (val) => setState(() => selectedStatus = val),
-                    ),
-                    const SizedBox(height: 10),
-                    _buildDropdown(
-                      label: 'Priority',
-                      value: selectedPriority,
-                      items: priorities,
-                      onChanged: (val) =>
-                          setState(() => selectedPriority = val),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                  ],
-                ),
-              ),
-              Step(
-                isActive: _currentStep >= 1,
-                state:
-                    _currentStep > 1 ? StepState.complete : StepState.indexed,
-                title: const Text('Dates & Costs'),
-                content: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10),
-
-                    _buildDatePicker(
-                      label: 'Start Date',
-                      selectedDate: startDate,
-                      onTap: () => _pickDate(context, true),
-                    ),
-                    // const SizedBox(height: 12),
-                    // _buildDatePicker(
-                    //   label: 'End Date',
-                    //   selectedDate: endDate,
-                    //   onTap: () => _pickDate(context, false),
-                    // ),
-                    const SizedBox(height: 10),
-                    _buildTextField(
-                      controller: totalcostController,
-                      label: 'Total Cost',
-                      icon: Icons.monetization_on_outlined,
-                      inputType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 10),
-
-                    _buildTextField(
-                      controller: numberofpaymentsController,
-                      label: 'Number of Payments',
-                      icon: Icons.payments_outlined,
-                      inputType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 10),
-                  ],
-                ),
-              ),
-              Step(
-                isActive: _currentStep >= 2,
-                title: const Text('Client & Opponent'),
-                content: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Select a Client:",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                    const SizedBox(height: 12),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.07),
-                            blurRadius: 15,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 15, horizontal: 10),
-                      height: 150,
-                      child: BlocProvider(
-                        create: (context) => UserBloc(),
-                        child: ClientsList(
-                          onUserSelected: (userId) {
-                            setState(() {
-                              selectedUserId = userId;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    _buildTextField(
-                      controller: opponentnameController,
-                      label: 'Opponent Name',
-                      icon: Icons.person_outline,
-                    ),
-                    const SizedBox(height: 10),
-                  ],
-                ),
-              ),
-            ],
           ),
         ),
       ),

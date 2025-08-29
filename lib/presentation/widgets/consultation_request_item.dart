@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/responsive.dart';
 
 import 'package:intl/intl.dart';
 
@@ -166,6 +167,16 @@ class _ConsultationRequestItemState extends State<ConsultationRequestItem> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          Expanded(
+                            child: SizedBox(
+                              width: s303,
+                              child: Text(
+                                widget.consReqModel.subject,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 14),
+                              ),
+                            ),
+                          ),
                           Icon(
                             widget.consReqModel.isLocked == 0
                                 ? Icons.lock_open
@@ -173,11 +184,6 @@ class _ConsultationRequestItemState extends State<ConsultationRequestItem> {
                             color: widget.consReqModel.isLocked == 0
                                 ? Colors.greenAccent
                                 : Colors.redAccent,
-                          ),
-                          Text(
-                            widget.consReqModel.subject,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 14),
                           ),
                         ],
                       ),
@@ -195,13 +201,19 @@ class _ConsultationRequestItemState extends State<ConsultationRequestItem> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          Expanded(
+                            child: SizedBox(
+                              width: s303,
+                              child: Text(
+                                overflow: TextOverflow.ellipsis,
+                                widget.consReqModel.details,
+                              ),
+                            ),
+                          ),
                           Text(
                             formatDate(
                               widget.consReqModel.date,
                             ),
-                          ),
-                          Text(
-                            widget.consReqModel.details,
                           ),
                         ],
                       ),

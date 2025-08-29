@@ -42,9 +42,35 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             AuthLoading(),
           );
           try {
-            String value = await AuthServices()
-                .register(event.name, event.password, event.email,event.confirmPassword);
+            String value = await AuthServices().register(
+                event.name, event.password, event.email, event.confirmPassword);
             if (!value.contains('failed')) {
+              emit(
+                AuthSuccess(
+                  token: value,
+                ),
+              );
+            } else {
+              emit(
+                AuthFail(
+                  errmsg: value,
+                ),
+              );
+            }
+          } on Exception catch (e) {
+            emit(
+              AuthFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is LogoutEvent) {
+          emit(
+            AuthLoading(),
+          );
+          try {
+            String value = await AuthServices().logOut();
+            if (!value.contains('success')) {
               emit(
                 AuthSuccess(
                   token: value,

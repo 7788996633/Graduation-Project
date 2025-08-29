@@ -38,7 +38,7 @@ class _ListDelegationsScreenState extends State<ListDelegationsScreen> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            DelegationList(bloc: bloc),
+            // DelegationList(bloc: bloc),
           ],
         ),
       ),

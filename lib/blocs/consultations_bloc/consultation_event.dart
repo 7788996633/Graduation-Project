@@ -26,7 +26,9 @@ class GetConsultationByIdEvent extends ConsultationEvent {
 }
 
 class GetAllConsultationsEvent extends ConsultationEvent {}
+
 class GetMyConsultationsLawyer extends ConsultationEvent {}
+
 class EndConsultationRequestReview extends ConsultationEvent {
   final int consultationRequestId;
 
@@ -37,4 +39,10 @@ class StartConsultationRequestReview extends ConsultationEvent {
   final int consultationRequestId;
 
   StartConsultationRequestReview({required this.consultationRequestId});
+}
+
+class GetConsultationsByRequestIdEvent extends ConsultationEvent {
+  final int reqId;
+
+  GetConsultationsByRequestIdEvent({required this.reqId});
 }

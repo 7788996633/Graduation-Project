@@ -11,7 +11,6 @@ import '../../../themes.dart';
 import '../../widgets/custom_appbar_add.dart';
 import '../../widgets/custom_text_field.dart';
 import '../../widgets/lawyer_radio_item.dart';
-import '../../widgets/select_lawyer_for_session_list.dart';
 
 class DelegationDetailsScreen extends StatefulWidget {
   const DelegationDetailsScreen({super.key, required this.delegation});
@@ -24,355 +23,354 @@ class DelegationDetailsScreen extends StatefulWidget {
 
 class _DelegationDetailsScreenState extends State<DelegationDetailsScreen> {
   late int selectedLawyerId;
+  late int delegatedLawyerId;
 
   bool isAddingNote = false;
+  bool isSelectingLawyer = false;
+
+  List<LawyerModel> lawyers = [];
   TextEditingController noteController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     selectedLawyerId = widget.delegation.originalLawyerId;
+    delegatedLawyerId =
+        widget.delegation.originalLawyerId; // 👈 افتراضياً نفس المحامي الأصلي
 
     BlocProvider.of<LawyerInIssuesBloc>(context).add(
-      GetAllLawyersInIssuesEvent(
-        issueId: widget.delegation.issueId,
-      ),
+      GetAllLawyersInIssuesEvent(issueId: widget.delegation.issueId),
     );
   }
 
-  late int delegatedLawyerId;
-  List<LawyerModel> lawyers = [];
-  bool isSelectingLawyer = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: getCurrentTheme()['BackGorund'],
-      appBar: CustomActionAppBar(
-        title: 'Delegation Details',
-      ),
+      appBar: CustomActionAppBar(title: 'Delegation Details'),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        padding: const EdgeInsets.all(20),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _infoText('ID', widget.delegation.id.toString()),
-            _infoText('Status', widget.delegation.status),
-            GestureDetector(
-                onTap: () {
-                  isAddingNote = !isAddingNote;
-                  setState(() {});
-                },
-                child: _infoText(
-                    'Admin Note', widget.delegation.adminNote ?? '-')),
-            if (isAddingNote ) ...[
-              CustomTextFeild(
-                text: "Add outcome...",
-                controller: noteController,
-                color: Colors.white,
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                  ),
-                  onPressed: () {
-                    // BlocProvider.of<SessionsBloc>(context).add(
-                    //   UpdateSessionEvent(
-                    //     outcome: '',
-                    //     isAttend: widget.sessionModel.isAttend,
-                    //     sessionId: widget.sessionModel.issueId,
-                    //   ),
-                    // );
-                  },
-                  child: Text(
-                    "Confirm",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-            _infoText('Session ID', widget.delegation.sessionId.toString()),
-            _infoText('Original Lawyer ID',
-                widget.delegation.originalLawyerId.toString()),
-            _infoText('Delegate Lawyer ID',
-                widget.delegation.delegateLawyerId.toString()),
-            _infoText(
-                'Delegation File', widget.delegation.delegationFile ?? '-'),
-            Container(
-              padding: EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: isSelectingLawyer
-                      ? getCurrentTheme()['Border']!
-                      : Colors.transparent,
-                ),
-              ),
-              child: Column(
-                children: [
-                  Center(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                      ),
-                      onPressed: () {
-                        isSelectingLawyer = !isSelectingLawyer;
-                        setState(() {});
-                      },
-                      child: Text(
-                        "Select new lawyer",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (isSelectingLawyer &&widget.delegation.status=='pending') ...[
-                    SizedBox(
-                      height: 10,
-                    ),
-                    BlocBuilder<LawyerInIssuesBloc, LawyerInIssuesState>(
-                      builder: (context, state) {
-                        if (state is LawyerInIssuesListLoadedSuccessfully) {
-                          lawyers = state.lawyerInissues;
-                          if (lawyers.isEmpty) {
-                            return const Center(
-                              child: Text("No lawyers found."),
-                            );
-                          } else {
-                            return ListView.separated(
-                              shrinkWrap: true,
-                              itemCount: lawyers.length,
-                              separatorBuilder: (_, i) => SizedBox(
-                                height: 12,
-                              ),
-                              itemBuilder: (context, index) {
-                                return LawyerRadioItem(
-                                  lawyerModel: lawyers[index],
-                                  onChanged: (value) {
-                                    setState(
-                                      () {
-                                        selectedLawyerId = value!;
-                                      },
-                                    );
-                                    // widget.onLawyerSelected?.call(value);
-                                  },
-                                  groupValue: selectedLawyerId,
-                                );
-                              },
-                            );
-                          }
-                        } else if (state is LawyerInIssuesFail) {
-                          return Text(
-                            state.errmsg,
-                            style: TextStyle(
-                              color: getCurrentTheme()['NormalText'],
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24,
-                            ),
-                          );
-                        } else {
-                          return CircularProgressIndicator();
-                        }
-                      },
-                    ),
-                    Center(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                        ),
-                        onPressed: () {
-                          delegatedLawyerId = selectedLawyerId;
-                          setState(() {});
-                          print("delegatedLawyerId $delegatedLawyerId");
-                        },
-                        child: Text(
-                          "Confirm",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
+            _buildStatusCard(widget.delegation.status),
+            const SizedBox(height: 15),
+            _buildInfoCard(
+              icon: Icons.sticky_note_2_outlined,
+              title: "Admin Note",
+              value: widget.delegation.adminNote ?? "-",
+              onTap: () => setState(() => isAddingNote = !isAddingNote),
             ),
-            SizedBox(
-              height: 10,
+            if (isAddingNote) _noteInput(),
+            const SizedBox(height: 15),
+            _buildInfoCard(
+              icon: Icons.insert_drive_file_outlined,
+              title: "Delegation File",
+              value: widget.delegation.delegationFile ?? "-",
             ),
-            BlocConsumer<DelegationBloc, DelegationState>(
-              listener: (context, state) {
-                if (state is DelegationSuccess) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.successMsg),
-                      backgroundColor: Colors.greenAccent,
-                    ),
-                  );
-                } else if (state is DelegationFail) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.errMsg),
-                      backgroundColor: Colors.redAccent,
-                    ),
-                  );
-                }
-              },
-              builder: (context, state) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.greenAccent,
-                      ),
-                      onPressed: () {
-                        BlocProvider.of<DelegationBloc>(context).add(
-                          AddApproveDelegationEvent(
-                            delegationId: widget.delegation.id,
-                            adminNote: noteController.text,
-                            delegateLawyerId: delegatedLawyerId,
-                          ),
-                        );
-                      },
-                      child: Text(
-                        "Approve",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.redAccent,
-                      ),
-                      onPressed: () {
-                        BlocProvider.of<DelegationBloc>(context).add(
-                          AddRejectDelegationEvent(
-                            delegationId: widget.delegation.id,
-                            adminNote: noteController.text,
-                            originalLawyerId:
-                                widget.delegation.originalLawyerId,
-                            sessionId: widget.delegation.issueId,
-                          ),
-                        );
-                      },
-                      child: Text(
-                        "Reject",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
+            const SizedBox(height: 20),
+            _selectLawyerSection(),
+            const SizedBox(height: 20),
+            _actionButtons(),
             const SizedBox(height: 30),
-            if (widget.delegation.delegationFile.isNotEmpty) ...[
-              Text(
-                'Attached File',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.deepPurple.shade700,
-                ),
-              ),
-              const SizedBox(height: 16),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ImageFullScreen(
-                          url: widget.delegation.delegationFile),
-                    ),
-                  );
-                },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Image.network(
-                    widget.delegation.delegationFile,
-                    fit: BoxFit.cover,
-                    height: 250,
-                    width: double.infinity,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes!
-                              : null,
-                        ),
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      height: 250,
-                      alignment: Alignment.center,
-                      child: const Text(
-                        'Failed to load file',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ] else
-              Text(
-                'No attached file',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey.shade600,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
+            _attachedFileSection(),
           ],
         ),
       ),
     );
   }
 
-  Widget _infoText(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: RichText(
-        text: TextSpan(
-          text: '$label: ',
+  /// 🟢 كرت الحالة
+  Widget _buildStatusCard(String status) {
+    Color color;
+    IconData icon;
+    switch (status.toLowerCase()) {
+      case "approved":
+        color = Colors.green;
+        icon = Icons.check_circle;
+        break;
+      case "rejected":
+        color = Colors.red;
+        icon = Icons.cancel;
+        break;
+      default:
+        color = Colors.orange;
+        icon = Icons.hourglass_empty;
+    }
+
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: ListTile(
+        leading: Icon(icon, color: color, size: 32),
+        title: const Text("Status",
+            style:
+                TextStyle(fontWeight: FontWeight.bold, color: Colors.black54)),
+        subtitle: Text(
+          status,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
-            color: Colors.deepPurple.shade700,
+            color: color,
           ),
-          children: [
-            TextSpan(
-              text: value,
-              style: const TextStyle(
-                fontWeight: FontWeight.normal,
-                color: Colors.black87,
-              ),
-            ),
-          ],
         ),
       ),
     );
+  }
+
+  /// 🟢 كرت معلومات
+  Widget _buildInfoCard({
+    required IconData icon,
+    required String title,
+    required String value,
+    VoidCallback? onTap,
+  }) {
+    return Card(
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ListTile(
+        leading: Icon(icon, color: Colors.deepPurple),
+        title: Text(title,
+            style: const TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.black54)),
+        subtitle: Text(value,
+            style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.black)),
+        trailing:
+            onTap != null ? const Icon(Icons.edit, color: Colors.grey) : null,
+        onTap: onTap,
+      ),
+    );
+  }
+
+  /// 🟢 إدخال الملاحظة
+  Widget _noteInput() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: Column(
+        children: [
+          CustomTextFeild(
+            text: "Add note...",
+            controller: noteController,
+            color: Colors.white,
+          ),
+          const SizedBox(height: 10),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.deepPurple,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+            ),
+            onPressed: () => setState(() => isAddingNote = false),
+            child: const Text(
+              "Save Note",
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 🟢 اختيار محامي جديد
+  Widget _selectLawyerSection() {
+    return ExpansionTile(
+      leading: const Icon(Icons.people_alt, color: Colors.deepPurple),
+      title: const Text("Select new lawyer",
+          style: TextStyle(fontWeight: FontWeight.bold)),
+      children: [
+        BlocBuilder<LawyerInIssuesBloc, LawyerInIssuesState>(
+          builder: (context, state) {
+            if (state is LawyerInIssuesListLoadedSuccessfully) {
+              lawyers = state.lawyerInissues;
+              if (lawyers.isEmpty) {
+                return const Padding(
+                  padding: EdgeInsets.all(12),
+                  child: Text("No lawyers found."),
+                );
+              }
+              return ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: lawyers.length,
+                separatorBuilder: (_, i) => const Divider(),
+                itemBuilder: (context, index) {
+                  return LawyerRadioItem(
+                    lawyerModel: lawyers[index],
+                    onChanged: (value) =>
+                        setState(() => selectedLawyerId = value!),
+                    groupValue: selectedLawyerId,
+                  );
+                },
+              );
+            } else if (state is LawyerInIssuesFail) {
+              return Text(state.errmsg,
+                  style: const TextStyle(color: Colors.red));
+            } else {
+              return const Padding(
+                padding: EdgeInsets.all(12),
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
+        ),
+        const SizedBox(height: 10),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
+          onPressed: () {
+            if (selectedLawyerId == widget.delegation.originalLawyerId) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Please select a different lawyer"),
+                  backgroundColor: Colors.orange,
+                ),
+              );
+              return;
+            }
+            delegatedLawyerId = selectedLawyerId;
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("New lawyer selected successfully"),
+                backgroundColor: Colors.blue,
+              ),
+            );
+          },
+          child: const Text("Confirm Lawyer",
+              style: TextStyle(color: Colors.white)),
+        ),
+      ],
+    );
+  }
+
+  /// 🟢 أزرار الموافقة / الرفض
+  Widget _actionButtons() {
+    return BlocConsumer<DelegationBloc, DelegationState>(
+      listener: (context, state) {
+        if (state is DelegationSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(state.successMsg), backgroundColor: Colors.green),
+          );
+        } else if (state is DelegationFail) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.errMsg), backgroundColor: Colors.red),
+          );
+        }
+      },
+      builder: (context, state) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton.icon(
+              icon: const Icon(Icons.check, color: Colors.white),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12))),
+              onPressed: () {
+                if (delegatedLawyerId == widget.delegation.originalLawyerId) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                          "You must choose a different lawyer before approving"),
+                      backgroundColor: Colors.orange,
+                    ),
+                  );
+                  return;
+                }
+                BlocProvider.of<DelegationBloc>(context).add(
+                  AddApproveDelegationEvent(
+                    delegationId: widget.delegation.id,
+                    adminNote: noteController.text,
+                    delegateLawyerId: delegatedLawyerId,
+                  ),
+                );
+              },
+              label: const Text("Approve",
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.close, color: Colors.white),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12))),
+              onPressed: () {
+                BlocProvider.of<DelegationBloc>(context).add(
+                  AddRejectDelegationEvent(
+                    delegationId: widget.delegation.id,
+                    adminNote: noteController.text,
+                    originalLawyerId: widget.delegation.originalLawyerId,
+                    sessionId: widget.delegation.issueId,
+                  ),
+                );
+              },
+              label: const Text("Reject",
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// 🟢 الملف المرفق
+  Widget _attachedFileSection() {
+    if (widget.delegation.delegationFile.isNotEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Attached File",
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.deepPurple.shade700)),
+          const SizedBox(height: 12),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      ImageFullScreen(url: widget.delegation.delegationFile),
+                ),
+              );
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                widget.delegation.delegationFile,
+                fit: BoxFit.cover,
+                height: 220,
+                width: double.infinity,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const Center(child: CircularProgressIndicator());
+                },
+                errorBuilder: (context, error, stackTrace) => Container(
+                  height: 220,
+                  alignment: Alignment.center,
+                  child: const Text('Failed to load file',
+                      style: TextStyle(color: Colors.red)),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return const Text('No attached file',
+          style: TextStyle(
+              fontSize: 16, color: Colors.grey, fontStyle: FontStyle.italic));
+    }
   }
 }
 
@@ -385,13 +383,9 @@ class ImageFullScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: const Text('View Image'),
-      ),
+          backgroundColor: Colors.black, title: const Text('View Image')),
       body: Center(
-        child: InteractiveViewer(
-          child: Image.network(url),
-        ),
+        child: InteractiveViewer(child: Image.network(url)),
       ),
     );
   }

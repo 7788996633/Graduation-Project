@@ -35,6 +35,29 @@ class RequiredDocumentServices {
     }
   }
 
+  Future<List> getRequiredDocumentsByIssueId(int issueId) async {
+    var url = Uri.parse('${myUrl}issues/$issueId/required-documents');
+    http.Response response;
+
+    if (kIsWeb) {
+      var request = http.Request('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    } else {
+      response = await http.get(url, headers: baseHeaders);
+    }
+
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return jsonResponse['data'];
+    } else {
+      return [];
+    }
+  }
+
   Future<RequiredDocumentModel> getRequiredDocumentById(
       int requiredDocumentId) async {
     var url = Uri.parse('${myUrl}required-documents/$requiredDocumentId');

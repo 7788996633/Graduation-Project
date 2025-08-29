@@ -6,13 +6,15 @@ import '../../data/services/required_document_services.dart';
 import 'required_document_event.dart';
 import 'required_document_state.dart';
 
-class RequiredDocumentsBloc extends Bloc<RequiredDocumentsEvent, RequiredDocumentsState> {
+class RequiredDocumentsBloc
+    extends Bloc<RequiredDocumentsEvent, RequiredDocumentsState> {
   RequiredDocumentsBloc() : super(RequiredDocumentsInitial()) {
     on<RequiredDocumentsEvent>((event, emit) async {
       if (event is CreateRequiredDocumentsEvent) {
         emit(RequiredDocumentsLoading());
         try {
-          String value = await RequiredDocumentServices(). addRequiredDocument(event.issueId,
+          String value = await RequiredDocumentServices().addRequiredDocument(
+            event.issueId,
             event.requireFileType,
             event.note,
           );
@@ -25,8 +27,9 @@ class RequiredDocumentsBloc extends Bloc<RequiredDocumentsEvent, RequiredDocumen
         emit(RequiredDocumentsLoading());
         try {
           List<RequiredDocumentModel> requiredDocumentsList =
-          await RequiredDocumentRepository().getRequiredDocuments();
-          emit(RequiredDocumentsListLoaded(requiredDocumentsList: requiredDocumentsList));
+              await RequiredDocumentRepository().getRequiredDocuments();
+          emit(RequiredDocumentsListLoaded(
+              requiredDocumentsList: requiredDocumentsList));
         } catch (e) {
           emit(RequiredDocumentsFail(errmsg: e.toString()));
         }
@@ -34,21 +37,22 @@ class RequiredDocumentsBloc extends Bloc<RequiredDocumentsEvent, RequiredDocumen
         emit(RequiredDocumentsLoading());
         try {
           String result = await RequiredDocumentServices()
-              .updateRequiredDocument(event.requiredDocumentId,event.status,event.note);
+              .updateRequiredDocument(
+                  event.requiredDocumentId, event.status, event.note);
           emit(RequiredDocumentsSuccess(successmsg: result));
         } catch (e) {
           emit(RequiredDocumentsFail(errmsg: e.toString()));
         }
-      }else if (event is DeleteRequiredDocumentsEvent) {
+      } else if (event is DeleteRequiredDocumentsEvent) {
         emit(RequiredDocumentsLoading());
         try {
-          String result =
-          await RequiredDocumentServices().deleteRequiredDocument(event.requiredDocumentId);
+          String result = await RequiredDocumentServices()
+              .deleteRequiredDocument(event.requiredDocumentId);
           emit(RequiredDocumentsSuccess(successmsg: result));
         } catch (e) {
           emit(RequiredDocumentsFail(errmsg: e.toString()));
         }
-      }else if (event is UploadRequiredDocumentEvent) {
+      } else if (event is UploadRequiredDocumentEvent) {
         emit(RequiredDocumentsLoading());
         try {
           String result = await RequiredDocumentServices()
@@ -57,28 +61,49 @@ class RequiredDocumentsBloc extends Bloc<RequiredDocumentsEvent, RequiredDocumen
         } catch (e) {
           emit(RequiredDocumentsFail(errmsg: e.toString()));
         }
-      }
-
-      else if (event is GetRequiredDocumentsById) {
+      } else if (event is GetRequiredDocumentsById) {
         emit(RequiredDocumentsLoading());
         try {
           RequiredDocumentModel requiredDocumentId =
-          await RequiredDocumentServices().getRequiredDocumentById(event.requiredDocumentId);
+              await RequiredDocumentServices()
+                  .getRequiredDocumentById(event.requiredDocumentId);
 
-          emit(RequiredDocumentsLoadedSuccessfully(requiredDocumentModel: requiredDocumentId));
+          emit(RequiredDocumentsLoadedSuccessfully(
+              requiredDocumentModel: requiredDocumentId));
+        } catch (e) {
+          emit(RequiredDocumentsFail(errmsg: e.toString()));
+        }
+      } else if (event is GetMyRequiredDocUp) {
+        emit(RequiredDocumentsLoading());
+        try {
+          RequiredDocumentModel requiredDocumentId =
+              await RequiredDocumentServices()
+                  .getMyRequiredDocUp(event.issueId);
+
+          emit(RequiredDocumentsLoadedSuccessfully(
+              requiredDocumentModel: requiredDocumentId));
         } catch (e) {
           emit(RequiredDocumentsFail(errmsg: e.toString()));
         }
       }
-      else if (event is GetMyRequiredDocUp) {
+      if (event is GetissueRequiredDocuments) {
         emit(RequiredDocumentsLoading());
         try {
-          RequiredDocumentModel requiredDocumentId =
-          await RequiredDocumentServices().getMyRequiredDocUp(event.issueId);
-
-          emit(RequiredDocumentsLoadedSuccessfully(requiredDocumentModel: requiredDocumentId));
+          List<RequiredDocumentModel> requiredDocumentsList =
+              await RequiredDocumentRepository().getRequiredDocumentsByissueId(
+            event.issueId,
+          );
+          emit(
+            RequiredDocumentsListLoaded(
+              requiredDocumentsList: requiredDocumentsList,
+            ),
+          );
         } catch (e) {
-          emit(RequiredDocumentsFail(errmsg: e.toString()));
+          emit(
+            RequiredDocumentsFail(
+              errmsg: e.toString(),
+            ),
+          );
         }
       }
     });

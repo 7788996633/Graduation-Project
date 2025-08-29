@@ -166,3 +166,15 @@ class DeleteArchivedIssuesEvent extends IssuesEvent {
     required this.archiveId,
   });
 }
+
+class GetLawyerIssuesById extends IssuesEvent {
+  final int lawyerId;
+
+  GetLawyerIssuesById({required this.lawyerId});
+}
+
+class GetClientIssuesById extends IssuesEvent {
+  final int clientId;
+
+  GetClientIssuesById({required this.clientId});
+}

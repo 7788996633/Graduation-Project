@@ -71,8 +71,6 @@ class InvoiceServices {
     }
   }
 
-
-
   Future<InvoiceModel> getInvoiceByUserId(int userId) async {
     try {
       var url = Uri.parse('${myUrl}invoices/user/$userId');
@@ -103,9 +101,7 @@ class InvoiceServices {
     }
   }
 
-
-
-  Future<InvoiceModel> getInvoiceByIssueId(int issueId) async {
+  Future<List> getInvoicesByIssueId(int issueId) async {
     try {
       var url = Uri.parse('${myUrl}invoices/issue/$issueId');
       http.Response response;
@@ -126,16 +122,21 @@ class InvoiceServices {
       print(jsonResponse);
 
       if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-        return InvoiceModel.fromJson(jsonResponse['data']);
+        return jsonResponse['data'];
       } else {
-        throw Exception('failed: ${jsonResponse['message']}');
+        return [];
       }
     } catch (e) {
       throw Exception('Error in getInvoiceById: $e');
     }
   }
 
-  Future<String> addInvoice(int issueId,int userId,String status, int amount,) async {
+  Future<String> addInvoice(
+    int issueId,
+    int userId,
+    String status,
+    int amount,
+  ) async {
     try {
       var request = http.MultipartRequest(
         'POST',
@@ -145,7 +146,6 @@ class InvoiceServices {
       request.fields.addAll({
         'status': status,
         'amount': amount.toString(),
-
       });
 
       request.headers.addAll(baseHeaders);
@@ -165,7 +165,7 @@ class InvoiceServices {
     }
   }
 
-  Future<String> updateInvoice(int invoiceId, String status,int amount) async {
+  Future<String> updateInvoice(int invoiceId, String status, int amount) async {
     try {
       var url = Uri.parse('${myUrl}invoices/$invoiceId');
       var body = {

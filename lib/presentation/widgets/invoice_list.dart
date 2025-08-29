@@ -7,8 +7,9 @@ import '../../data/models/invoice_model.dart';
 import 'invoice_item.dart';
 
 class InvoiceList extends StatefulWidget {
-  const InvoiceList({super.key, required this.bloc});
+  const InvoiceList({super.key, required this.bloc, required this.issueId});
   final InvoiceBloc bloc;
+  final int issueId;
 
   @override
   State<InvoiceList> createState() => _InvoiceListState();
@@ -20,7 +21,7 @@ class _InvoiceListState extends State<InvoiceList> {
   @override
   void initState() {
     super.initState();
-    widget.bloc.add(GetAllInvoicesEvent());
+    widget.bloc.add(GetInvoiceByIssueIdEvent(issueId: widget.issueId));
   }
 
   @override
@@ -37,7 +38,7 @@ class _InvoiceListState extends State<InvoiceList> {
               backgroundColor: Colors.green,
             ),
           );
-          widget.bloc.add(GetAllInvoicesEvent());
+          widget.bloc.add(GetInvoiceByIssueIdEvent(issueId: widget.issueId));
         } else if (state is InvoiceFail) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -55,16 +56,22 @@ class _InvoiceListState extends State<InvoiceList> {
           if (state is InvoiceListLoaded) {
             invoiceList = state.list;
             if (invoiceList.isEmpty) {
-              return const Center(child: Text('There are no invoices'));
-            }
-            return Expanded(
-              child: ListView.builder(
+              return const Center(
+                child: Text(
+                  'There are no invoices',
+                ),
+              );
+            } else {
+              return ListView.builder(
+                shrinkWrap: true,
                 itemCount: invoiceList.length,
                 itemBuilder: (context, index) {
-                  return InvoiceItem(invoiceModel: invoiceList[index]);
+                  return InvoiceItem(
+                    invoiceModel: invoiceList[index],
+                  );
                 },
-              ),
-            );
+              );
+            }
           } else if (state is InvoiceFail) {
             return Column(
               children: [

@@ -33,18 +33,23 @@ class SessionPointsChart extends StatelessWidget {
 
             final hasNonZero = data.any((item) => item.percentage > 0);
 
-            final topThree = hasNonZero
+            final sortedData = hasNonZero
                 ? (data..sort((a, b) => b.percentage.compareTo(a.percentage)))
                     .where((e) => e.percentage > 0)
-                    .take(3)
                     .toList()
                 : [];
 
-            final colors = [Colors.blue, Colors.orange, Colors.green];
+            final colors = [
+              Colors.blue,
+              Colors.orange,
+              Colors.green,
+              Colors.purple,
+              Colors.red
+            ];
 
             // Pie sections
             final sections = hasNonZero
-                ? topThree.asMap().entries.map((entry) {
+                ? sortedData.asMap().entries.map((entry) {
                     final index = entry.key;
                     final item = entry.value;
 
@@ -83,12 +88,13 @@ class SessionPointsChart extends StatelessWidget {
                       Text(
                         'Points Percentage',
                         style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: getCurrentTheme()['NormalText']),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: getCurrentTheme()['NormalText'],
+                        ),
                       ),
                       Container(
-                        margin: EdgeInsets.symmetric(vertical: 40),
+                        margin: const EdgeInsets.symmetric(vertical: 40),
                         height: constraints.maxHeight * 0.4,
                         child: PieChart(
                           PieChartData(
@@ -99,9 +105,9 @@ class SessionPointsChart extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      if (hasNonZero && topThree.isNotEmpty) ...[
+                      if (hasNonZero && sortedData.isNotEmpty) ...[
                         Text(
-                          'Top 3 Lawyers:',
+                          'All Lawyers:',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -109,10 +115,9 @@ class SessionPointsChart extends StatelessWidget {
                           ),
                         ),
                         Column(
-                          children: topThree.asMap().entries.map((entry) {
+                          children: sortedData.asMap().entries.map((entry) {
                             final index = entry.key;
                             final item = entry.value;
-
                             return Padding(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 6.0),

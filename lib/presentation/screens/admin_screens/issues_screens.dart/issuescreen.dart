@@ -2,10 +2,17 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/required_document_bloc/required_document_bloc.dart';
+import 'package:graduation/blocs/required_document_bloc/required_document_state.dart';
+import 'package:graduation/constant.dart';
+import 'package:graduation/data/models/required_document_model.dart';
+import 'package:graduation/presentation/screens/required_documents/add_required_documents.dart';
 import 'package:graduation/responsive.dart';
 
 import '../../../../blocs/invoices_bloc/invoices_bloc.dart';
 import '../../../../blocs/lawyer_in_issues_bloc/lawyer_in_issues_bloc.dart';
+import '../../../../blocs/required_document_bloc/required_document_event.dart';
+import '../../../../blocs/session_points_bloc/session_points_bloc.dart';
 import '../../../../blocs/sessions_bloc/sessions_bloc.dart';
 import '../../../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../../../data/models/issues_model.dart';
@@ -14,7 +21,9 @@ import '../../../../themes.dart';
 import '../../../widgets/lawyers_in_issue_list.dart';
 import '../../AttendDemand/all_attend_demand_screen.dart';
 import '../../invoice_screen/invoice_by_issue_id_screen.dart';
+import '../../required_documents/list_required_document_screen.dart';
 import '../../session/list_session_screen.dart';
+import '../../session/session_points_chart.dart';
 
 class IssueScreen extends StatefulWidget {
   final IssuesModel issuesModel;
@@ -33,10 +42,19 @@ class _IssueScreenState extends State<IssueScreen> {
     BlocProvider.of<UserProfileBloc>(context).add(
       ShowUserProfileByIdEvent(userId: widget.issuesModel.user.id),
     );
+    // BlocProvider.of<RequiredDocumentsBloc>(context).add(
+    //   GetissueRequiredDocuments(
+    //     issueId: widget.issuesModel.id,
+    //   ),
+    // );
+    print("docs ${widget.issuesModel.id}");
+
     date = DateFormat('d/M/yy')
         .format(DateTime.parse(widget.issuesModel.startDate));
     setState(() {});
   }
+
+  var consultationstatus = 'pending';
 
   Widget buildProfileCard(UserProfileModel user) {
     return Container(
@@ -120,7 +138,7 @@ class _IssueScreenState extends State<IssueScreen> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       animationDuration: Duration(milliseconds: 500),
-      length: 4,
+      length: 6,
       child: Scaffold(
         backgroundColor: getCurrentTheme()['BackGorund'],
         appBar: AppBar(
@@ -166,6 +184,20 @@ class _IssueScreenState extends State<IssueScreen> {
                   size: s25,
                 ),
               ),
+              Tab(
+                icon: Icon(
+                  Icons.analytics_rounded,
+                  color: Colors.white,
+                  size: s25,
+                ),
+              ),
+              Tab(
+                icon: Icon(
+                  Icons.file_copy_rounded,
+                  color: Colors.white,
+                  size: s25,
+                ),
+              ),
             ],
           ),
         ),
@@ -185,8 +217,182 @@ class _IssueScreenState extends State<IssueScreen> {
               create: (context) => InvoiceBloc(),
               child: ListInvoicesByIssueScreen(
                 issueId: widget.issuesModel.id,
+                userId: widget.issuesModel.user.id,
               ),
             ),
+            SizedBox(
+              height: 350,
+              child: BlocProvider(
+                create: (context) => SessionPointsBloc(),
+                child: SessionPointsChart(
+                  issueId: widget.issuesModel.id,
+                ),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => RequiredDocumentsBloc(),
+              child: ListRequiredDocumentsScreen(
+                issueId: widget.issuesModel.id,
+              ),
+            ),
+            /*  Container(
+              padding: EdgeInsets.all(
+                s12,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      "The required documents in this case:",
+                      style: TextStyle(
+                          color: getCurrentTheme()['NormalText'],
+                          fontSize: s20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  SizedBox(
+                    height: s10,
+                  ),
+                  BlocBuilder<RequiredDocumentsBloc, RequiredDocumentsState>(
+                    builder: (context, state) {
+                      if (state is RequiredDocumentsListLoaded) {
+                        List<RequiredDocumentModel> docs =
+                            state.requiredDocumentsList;
+                        print("docs ${state.requiredDocumentsList}");
+                        return docs.isEmpty
+                            ? Text("There is no documents yet")
+                            : ListView.separated(
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) => Container(
+                                      padding: EdgeInsets.all(s15),
+                                      decoration: BoxDecoration(
+                                        gradient: RadialGradient(
+                                          center: Alignment.center,
+                                          radius: s10,
+                                          colors: isLight
+                                              ? [
+                                                  AppColors.darkBlue,
+                                                  AppColors.softGray,
+                                                  AppColors.white,
+                                                ]
+                                              : [
+                                                  Colors.black,
+                                                  AppColors.softGray,
+                                                  AppColors.white,
+                                                ],
+                                        ),
+                                        borderRadius:
+                                            BorderRadius.circular(s10),
+                                        border: Border.all(
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                    margin:
+                                                        EdgeInsetsDirectional
+                                                            .only(end: s8),
+                                                    child: Icon(
+                                                      Icons.file_copy_outlined,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    docs[index].requireFileType,
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: s16,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    docs[index].status,
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: s16,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  Container(
+                                                    margin:
+                                                        EdgeInsetsDirectional
+                                                            .only(start: s8),
+                                                    child: Icon(
+                                                      docs[index]
+                                                                  .status
+                                                                  .toLowerCase() ==
+                                                              'approved'
+                                                          ? Icons.check_circle
+                                                          : consultationstatus
+                                                                      .toLowerCase() ==
+                                                                  'pending'
+                                                              ? Icons
+                                                                  .hourglass_empty
+                                                              : Icons.cancel,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                separatorBuilder: (context, index) => SizedBox(
+                                      height: s10,
+                                    ),
+                                itemCount: docs.length);
+                      } else if (state is RequiredDocumentsFail) {
+                        return Text(state.errmsg);
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    },
+                  ),
+                  if (myRole == 'admin')
+                    Center(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => BlocProvider(
+                                create: (context) => RequiredDocumentsBloc(),
+                                child: AddRequiredDocumentScreen(
+                                    issueId: widget.issuesModel.id),
+                              ),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Add required document",
+                          style: TextStyle(
+                              fontSize: s16,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ), */
           ],
         ),
       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:graduation/responsive.dart';
 
 import '../../blocs/delegations_bloc/delegations_bloc.dart';
 import '../../blocs/delegations_bloc/delegations_event.dart';
@@ -9,9 +9,8 @@ import '../../data/models/delegations_model.dart';
 import 'delegation_item.dart';
 
 class DelegationList extends StatefulWidget {
-  const DelegationList({super.key, required this.bloc});
-  final DelegationBloc bloc;
-
+  const DelegationList({super.key, required this.sessionId});
+  final int sessionId;
   @override
   State<DelegationList> createState() => _DelegationListState();
 }
@@ -19,19 +18,25 @@ class DelegationList extends StatefulWidget {
 class _DelegationListState extends State<DelegationList> {
   @override
   void initState() {
-    widget.bloc.add(GetAllDelegationsEvent());
+    BlocProvider.of<DelegationBloc>(context)
+        .add(GetAllDelegationsBySessionEvent(
+      sessionId: widget.sessionId,
+    ));
     super.initState();
   }
 
   List<DelegationModel> delegationList = [];
 
   Widget buildDelegationListView() {
-    return ListView.builder(
-      itemCount: delegationList.length,
-      shrinkWrap: true,
-      physics: const ClampingScrollPhysics(),
-      itemBuilder: (context, index) => DelegationItem(
-        delegation: delegationList[index],
+    return Container(
+      padding: EdgeInsets.all(s12),
+      child: ListView.builder(
+        itemCount: delegationList.length,
+        shrinkWrap: true,
+        physics: const ClampingScrollPhysics(),
+        itemBuilder: (context, index) => DelegationItem(
+          delegation: delegationList[index],
+        ),
       ),
     );
   }
@@ -50,7 +55,8 @@ class _DelegationListState extends State<DelegationList> {
               backgroundColor: Colors.green,
             ),
           );
-          widget.bloc.add(GetAllDelegationsEvent());
+          BlocProvider.of<DelegationBloc>(context)
+              .add(GetAllDelegationsEvent());
         } else if (state is DelegationFail) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

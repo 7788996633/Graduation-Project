@@ -9,8 +9,8 @@ class DelegationModel {
   final String status;
   final String? adminNote;
   final String delegationFile;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  // final DateTime createdAt;
+  // final DateTime updatedAt;
   final int issueId;
   // final LawyerModel originalLawyer;
   // final LawyerModel? delegateLawyer;
@@ -24,8 +24,8 @@ class DelegationModel {
     required this.status,
     required this.adminNote,
     required this.delegationFile,
-    required this.createdAt,
-    required this.updatedAt,
+    // required this.createdAt,
+    // required this.updatedAt,
     required this.issueId,
     // required this.originalLawyer,
     // required this.delegateLawyer,
@@ -37,12 +37,12 @@ class DelegationModel {
       id: json['id'],
       sessionId: json['session_id'],
       originalLawyerId: json['original_lawyer_id'],
-      delegateLawyerId: json['delegate_lawyer_id'],
+      delegateLawyerId: json['delegate_lawyer_id'] ?? -100,
       status: json['status'] ?? '',
       adminNote: json['admin_note'] ?? '',
       delegationFile: json['delegation_file'] ?? '',
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      // createdAt: DateTime.parse(json['created_at']),
+      // updatedAt: DateTime.parse(json['updated_at']),
       issueId: json['session']['issue_id'],
       // originalLawyer: LawyerModel.fromJson(json['original_lawyer']),
       // delegateLawyer: LawyerModel.fromJson(json['delegate_lawyer']),

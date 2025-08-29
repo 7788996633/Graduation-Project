@@ -1,4 +1,3 @@
-
 import 'lawyer_model.dart';
 
 class SessionModel {
@@ -12,6 +11,7 @@ class SessionModel {
     required this.sessionTypeId,
     this.createdAt,
     required this.lawyer,
+    required this.lawyerName,
   });
 
   final int sessionId;
@@ -23,6 +23,7 @@ class SessionModel {
   final int sessionTypeId;
   final DateTime? createdAt;
   final LawyerModel lawyer;
+  final String? lawyerName;
 
   factory SessionModel.fromJson(Map<String, dynamic> json) {
     return SessionModel(
@@ -39,6 +40,7 @@ class SessionModel {
       lawyer: LawyerModel.fromJson(
         json['lawyer'],
       ),
+      lawyerName: json['lawyer']['user']['name'] ?? 'Unknown',
     );
   }
 }

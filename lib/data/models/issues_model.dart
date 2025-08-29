@@ -14,7 +14,6 @@ class IssuesModel {
   final String status;
   final String priority;
   final String startDate;
-  final String endDate;
   final String createdAt;
   final String updatedAt;
 
@@ -32,7 +31,6 @@ class IssuesModel {
     required this.status,
     required this.priority,
     required this.startDate,
-    required this.endDate,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -54,7 +52,6 @@ class IssuesModel {
       status: json['status'],
       priority: json['priority'],
       startDate: json['start_date'],
-      endDate: json['end_date'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
     );

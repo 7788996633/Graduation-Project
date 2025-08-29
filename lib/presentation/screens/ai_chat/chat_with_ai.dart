@@ -59,6 +59,7 @@ class _ChatWithAiState extends State<ChatWithAi> {
             //   ),
             // ),
             Container(
+            
               width: double.infinity,
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 80),
               decoration: BoxDecoration(

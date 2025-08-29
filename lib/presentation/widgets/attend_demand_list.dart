@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/themes.dart';
 
 import '../../blocs/attend_Demand_bloc/attend_demand_bloc.dart';
+import '../../constant.dart';
 import '../../data/models/demand_model.dart';
+import '../../responsive.dart';
+import '../screens/AttendDemand/add_attend_demand_screen.dart';
 import 'demand_item.dart';
 
 class AttendDemandList extends StatefulWidget {
@@ -41,9 +45,39 @@ class _AttendDemandListState extends State<AttendDemandList> {
           builder: (context, state) {
             if (state is DemandListLoadedSuccessfully) {
               attendDemandList = state.listdemand;
-              return attendDemandList.isEmpty
-                  ? const Text('There is no Demands')
-                  : buildDemandList();
+              return Column(
+                children: [
+                  attendDemandList.isEmpty
+                      ? Center(
+                          child: const Text('There is no Demands'),
+                        )
+                      : buildDemandList(),
+                  if (myRole == 'lawyer')
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => BlocProvider(
+                              create: (context) => AttendDemandBloc(),
+                              child: AttendDemandScreen(
+                                issueId: widget.issueId,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "Add Demand",
+                        style: TextStyle(
+                            fontSize: s18,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                ],
+              );
             } else if (state is DemandFail) {
               return Column(
                 children: [

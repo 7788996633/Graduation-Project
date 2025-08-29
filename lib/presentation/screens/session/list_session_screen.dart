@@ -66,58 +66,49 @@ class _ListSessionsScreenState extends State<ListSessionsScreen> {
                 bloc: bloc,
                 issueId: widget.issueId,
               ),
-              if (myRole == 'admin') ...[
-                SizedBox(
-                  height: 10,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    isShowingAnalytics = !isShowingAnalytics;
-                    setState(() {});
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(
-                      10,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(),
-                      borderRadius: BorderRadius.circular(
-                        8,
-                      ),
-                      color: Colors.white,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.analytics_outlined,
-                          size: 26,
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          "${isShowingAnalytics ? "Hide" : "Show"} Analytics",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                if (isShowingAnalytics)
-                  SizedBox(
-                    height: 350,
-                    child: BlocProvider(
-                      create: (context) => SessionPointsBloc(),
-                      child: SessionPointsChart(
-                        issueId: widget.issueId,
-                      ),
-                    ),
-                  ),
-              ],
+              // if (myRole == 'admin') ...[
+              //   SizedBox(
+              //     height: 10,
+              //   ),
+              //   GestureDetector(
+              //     onTap: () {
+              //       isShowingAnalytics = !isShowingAnalytics;
+              //       setState(() {});
+              //     },
+              //     child: Container(
+              //       padding: EdgeInsets.all(
+              //         10,
+              //       ),
+              //       decoration: BoxDecoration(
+              //         border: Border.all(),
+              //         borderRadius: BorderRadius.circular(
+              //           8,
+              //         ),
+              //         color: Colors.white,
+              //       ),
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.center,
+              //         children: [
+              //           Icon(
+              //             Icons.analytics_outlined,
+              //             size: 26,
+              //           ),
+              //           SizedBox(
+              //             width: 5,
+              //           ),
+              //           Text(
+              //             "${isShowingAnalytics ? "Hide" : "Show"} Analytics",
+              //             style: TextStyle(
+              //               fontSize: 20,
+              //               fontWeight: FontWeight.bold,
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+
+              // ],
             ],
           ),
         ),

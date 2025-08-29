@@ -19,6 +19,12 @@ class ShowRequiredDocumentsEvent extends RequiredDocumentsEvent {}
 
 class GetAllRequiredDocuments extends RequiredDocumentsEvent {}
 
+class GetissueRequiredDocuments extends RequiredDocumentsEvent {
+  final int issueId;
+
+  GetissueRequiredDocuments({required this.issueId});
+}
+
 class GetRequiredDocumentsById extends RequiredDocumentsEvent {
   final int requiredDocumentId;
 

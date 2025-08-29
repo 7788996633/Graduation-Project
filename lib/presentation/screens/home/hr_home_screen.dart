@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../blocs/auth_bloc/auth_bloc.dart';
 import '../../../blocs/employee_bloc/employee_bloc.dart';
 import '../../../blocs/hiring_requests/hiring_requests_block.dart';
 import '../../../blocs/lawyer_bloc/lawyer_bloc.dart';
@@ -140,11 +141,16 @@ class _HrHomeScreenState extends State<HrHomeScreen> {
     return Scaffold(
       backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: CustomHomeAppBar(title: tr('hr_panel')),
-      drawer: BlocProvider(
-        create: (context) => UserProfileBloc()..add(ShowUserProfileEvent()),
-        child: CustomAppDrawer(
-          onSettingsClosed: refresh,
-        ),
+      drawer: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => UserProfileBloc()..add(ShowUserProfileEvent()),
+          ),
+          BlocProvider(
+            create: (context) => AuthBloc(),
+          ),
+        ],
+        child: const CustomAppDrawer(),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

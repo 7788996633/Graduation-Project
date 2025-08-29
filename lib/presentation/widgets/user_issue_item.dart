@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/required_document_bloc/required_document_bloc.dart';
+import 'package:graduation/blocs/required_document_bloc/required_document_event.dart';
 
 import '../../blocs/issue_bloc/issues_bloc.dart';
 import '../../blocs/user_profile_bloc/user_profile_bloc.dart';
@@ -43,7 +45,7 @@ class _UserIssueItemState extends State<UserIssueItem>
     animationController = AnimationController(
       vsync: this,
       duration: Duration(
-        milliseconds: 1000,
+        milliseconds: 1300,
       ),
     );
     animation = Tween<double>(begin: 0, end: 1).animate(animationController);
@@ -69,8 +71,12 @@ class _UserIssueItemState extends State<UserIssueItem>
             if (!isEditing) {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => BlocProvider(
-                    create: (context) => UserProfileBloc(),
+                  builder: (context) => MultiBlocProvider(
+                    providers: [
+                      BlocProvider(
+                        create: (context) => UserProfileBloc(),
+                      ),
+                    ],
                     child: IssueScreen(
                       issuesModel: widget.issuesModel,
                     ),

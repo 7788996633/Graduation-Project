@@ -1,6 +1,6 @@
 class InvoiceModel {
   final int id;
-  final String amount;
+  final int amount;
   final String status;
   final int issueId;
   final int userId;

@@ -299,7 +299,41 @@ class IssuesBloc extends Bloc<IssuesEvent, IssuesState> {
               ),
             );
           }
-        }
+        } /* else if (event is GetLawyerIssuesById) {
+          emit(
+            IssuesLoading(),
+          );
+          try {
+            List<IssuesModel> value =
+                await IssuesRepository().getAllClientissues();
+            emit(
+              IssuesListLoadedSuccessFully(issues: value),
+            );
+          } catch (e) {
+            emit(
+              IssuesFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        } else if (event is GetClientIssuesById) {
+          emit(
+            IssuesLoading(),
+          );
+          try {
+            List<IssuesModel> value =
+                await IssuesRepository().getAllClientissues();
+            emit(
+              IssuesListLoadedSuccessFully(issues: value),
+            );
+          } catch (e) {
+            emit(
+              IssuesFail(
+                errmsg: e.toString(),
+              ),
+            );
+          }
+        } */
       },
     );
   }

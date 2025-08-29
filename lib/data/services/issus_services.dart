@@ -41,7 +41,7 @@ class IssusServices {
         'status': status,
         'priority': priority,
         'start_date': startDate,
-        'end_date': endDate,
+        'end_date': "",
         'total_cost': totalCost,
         'number_of_payments': numberOfPayments.toString(),
         'opponent_name': opponentName,
