@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -12,6 +14,7 @@ import 'blocs/auth_bloc/auth_bloc.dart';
 import 'blocs/user_profile_bloc/user_profile_bloc.dart';
 import 'data/services/notifications_services.dart';
 
+import 'firebase_options.dart';
 import 'presentation/screens/auth_screens/auth_screen.dart';
 import 'presentation/widgets/auth_web_wedgets/auth_web_screen.dart';
 
@@ -22,25 +25,39 @@ import 'presentation/widgets/auth_web_wedgets/auth_web_screen.dart';
 //   print("Handling a background message: ${message.messageId}");
 // }
 
+final navigatorKey=GlobalKey<NavigatorState>();
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
   Bloc.observer = MyBlocObserver();
   //
-  // // تهيئة Firebase
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
-  //
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   // // تهيئة إشعارات Firebase Messaging
   // FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   // تهيئة الإشعارات المحلية
- // await NotificationsServices().initNotifications();
+ await NotificationsServices().initNotifications();
 
   // تهيئة EasyLocalization
   await EasyLocalization.ensureInitialized();
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message){
+    if(message.notification!=null){
+      print("Background Notification Tapped");
+      navigatorKey.currentState!.pushNamed("/message",arguments: message);
+    }
+  });
 
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    String payloadData = jsonEncode(message.data);
+    print("Got a message in foreground");
+    if (message.data.isNotEmpty) {
+    //   showNotification(
+    //       title: message.data["title"]!,
+    //       body: message.data["body"]!);
+     }
+  });
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('ar')],

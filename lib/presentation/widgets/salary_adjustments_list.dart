@@ -39,7 +39,7 @@ class _SalaryAdjustmentsListState extends State<SalaryAdjustmentsList> {
               backgroundColor: Colors.green,
             ),
           );
-          widget.bloc.add(GetAllSalaryAdjustmentsEvent(userId: widget.userId));
+        return widget.bloc.add(GetAllSalaryAdjustmentsEvent(userId: widget.userId));
         } else if (state is SalaryAdjustmentsFail) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

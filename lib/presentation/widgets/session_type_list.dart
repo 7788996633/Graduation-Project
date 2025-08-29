@@ -16,13 +16,13 @@ class SessionTypeList extends StatefulWidget {
 }
 
 class _SessionTypeListState extends State<SessionTypeList> {
+  List<SessionTypeModel> sessionTypeList = [];
+
   @override
   void initState() {
     super.initState();
     widget.bloc.add(GetAllSessionTypesEvent());
   }
-
-  List<SessionTypeModel> sessionTypeList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -56,18 +56,21 @@ class _SessionTypeListState extends State<SessionTypeList> {
           if (state is SessionTypeListLoaded) {
             sessionTypeList = state.list;
             if (sessionTypeList.isEmpty) {
-              return const Center(child: Text('There are no session types'));
+              return const Center(child: Text('There are no session types.'));
             }
-            return Expanded(
-              child: ListView.builder(
+            return
+              ListView.builder(
                 itemCount: sessionTypeList.length,
                 itemBuilder: (context, index) {
-                  return SessionTypeItem(sessionTypeModel: sessionTypeList[index]);
+                  return SessionTypeItem(
+                    sessionTypeModel: sessionTypeList[index],
+                  );
                 },
-              ),
+
             );
           } else if (state is SessionTypeFail) {
             return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
                   "There is an error:",

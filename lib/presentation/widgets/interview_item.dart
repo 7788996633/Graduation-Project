@@ -1,85 +1,132 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../blocs/interview_bloc/interview_bloc.dart';
 import '../../blocs/interview_bloc/interview_event.dart';
+
+import '../../blocs/interview_bloc/interviews_state.dart';
 import '../../blocs/job_application/job_application_bloc.dart';
+import '../../constant.dart';
 import '../../data/models/interview_model.dart';
 import '../../themes.dart';
 import '../screens/hr_screen/interview/interview_details_screen.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-class InterviewItem extends StatelessWidget {
+class InterviewItem extends StatefulWidget {
   const InterviewItem({super.key, required this.interviewModel});
   final InterviewModel interviewModel;
 
   @override
+  State<InterviewItem> createState() => _InterviewItemState();
+}
+
+class _InterviewItemState extends State<InterviewItem> {
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.blueAccent.withOpacity(0.5), width: 1.2),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        elevation: 6,
-        shadowColor: Colors.blueAccent.withOpacity(0.3),
-        child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-          onTap: () {
-            Navigator.push(
-              context,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: BlocConsumer<InterviewBloc, InterviewState>(
+        listener: (context, state) {
+          if (state is InterviewSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.green,
+                content: Text(state.successMsg),
+              ),
+            );
+          } else if (state is InterviewFail) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.redAccent,
+                content: Text(state.errMsg),
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          return InkWell(
+            borderRadius: BorderRadius.circular(20),
+            onTap: () {
+              Navigator.push(
+                context,
                 MaterialPageRoute(
-                  builder: (_) =>  BlocProvider(
+                  builder: (_) => BlocProvider(
                     create: (_) => JobApplicationBloc(),
-                    child: InterviewDetailsScreen(interviewModel: interviewModel),
+                    child: InterviewDetailsScreen(
+                      interviewModel: widget.interviewModel,
+                      myRole: myRole,
+                    ),
                   ),
                 ),
-
-
-            );
-          },
-          leading: Container(
-            decoration: BoxDecoration(
-              color: Colors.red.withOpacity(0.1),
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
-              onPressed: () {
-                BlocProvider.of<InterviewBloc>(context).add(
-                  DeleteInterviewEvent(interviewId: interviewModel.id),
-                );
-              },
-              icon: const Icon(Icons.delete, color: Colors.redAccent),
-              tooltip: 'Delete Interview',
-            ),
-          ),
-          title: const Text(
-            "Interview",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              color:  AppColors.darkBlue,
-            ),
-          ),
-          subtitle: Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Text(
-              "Date: ${interviewModel.date.toLocal().toString().split(' ')[0]}",
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.black54,
-                fontWeight: FontWeight.w500,
+              );
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(13),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(14.0),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: AppColors.darkBlue.withOpacity(0.2),
+                      child: const Icon(
+                        Icons.person_search,
+                        color: AppColors.darkBlue,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Interview",
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.darkBlue,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            "Date: ${widget.interviewModel.date.toLocal().toString().split(' ')[0]}",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (myRole != null && myRole.toLowerCase() == 'hr')
+                    IconButton(
+                      onPressed: () {
+                        context.read<InterviewBloc>().add(
+                          DeleteInterviewEvent(
+                            interviewId: widget.interviewModel.id,
+                          ),
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.delete,
+                        color: AppColors.darkBlue,
+                        size: 20,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          trailing: const Icon(
-            Icons.chevron_right,
-            size: 28,
-            color: AppColors.darkBlue,
-          ),
-        ),
+          );
+        },
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:law/blocs/company_info_bloc/company_info_bloc.dart';
 import 'package:law/presentation/screens/company_info_screen/company_info_details.dart';
 
 import '../../../themes.dart';
+import '../../widgets/custom_appbar_add.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -56,19 +57,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          tr('settings'), // تأكد من وجود هذا المفتاح في ملفات الترجمة
-          style:
-              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        backgroundColor: !isLight ? Colors.black : AppColors.darkBlue,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
+      appBar:CustomActionAppBar(
+        title: 'Setting',),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
@@ -126,8 +116,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _buildCard(
               icon: Icons.business,
               title: tr('company_name_logo'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => Scaffold(
+                      appBar: AppBar(
+                        title: Text(tr('company_name_logo')),
+                        backgroundColor: AppColors.darkBlue,
+                      ),
+                      body: Center(
+                        child: Image.asset(
+                          'assets/images/grad.jpg',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
+
             _buildCard(
               icon: Icons.contact_mail,
               title: tr('official_contact_info'),

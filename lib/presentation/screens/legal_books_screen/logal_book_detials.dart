@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../../../blocs/legal_books_bloc/legal_books_bloc.dart';
 import '../../../data/models/legal_book_model.dart';
 import '../../../themes.dart';
-import '../../widgets/custom_appbar_add.dart';
-import 'update_logal_book.dart';
 
 class LegalBookDetailsScreen extends StatefulWidget {
   final LegalBookModel legalBook;
@@ -14,29 +9,64 @@ class LegalBookDetailsScreen extends StatefulWidget {
   const LegalBookDetailsScreen({super.key, required this.legalBook});
 
   @override
-  State<LegalBookDetailsScreen> createState() =>
-      _LegalBookDetailsScreenState();
+  State<LegalBookDetailsScreen> createState() => _LegalBookDetailsScreenState();
 }
 
 class _LegalBookDetailsScreenState extends State<LegalBookDetailsScreen> {
-  late LegalBookModel book;
+  bool _loading = false;
+  Map<String, dynamic>? _bookData;
+  String? _error;
 
   @override
   void initState() {
     super.initState();
-    book = widget.legalBook;
+    _openBook(); // استدعاء الكتاب مباشرة عند فتح الشاشة
   }
 
-  void refreshData(LegalBookModel updated) {
+  Future<void> _openBook() async {
     setState(() {
-      book = updated;
+      _loading = true;
+      _error = null;
+      _bookData = null;
     });
+
+    try {
+      final data = {
+        'عنوان الكتاب': widget.legalBook.bookTitle,
+        'رابط الكتاب': widget.legalBook.book,
+        'تاريخ الإنشاء': widget.legalBook.createdAt,
+        'آخر تعديل': widget.legalBook.updatedAt,
+      };
+
+      final pdfLink = widget.legalBook.book;
+      if (pdfLink.isNotEmpty) {
+        final uri = Uri.parse(prepareFullUrl(pdfLink));
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('لا يمكن فتح الرابط')),
+          );
+        }
+      }
+
+      setState(() {
+        _bookData = data;
+      });
+    } catch (e) {
+      setState(() {
+        _error = 'حدث خطأ أثناء تحميل الكتاب: $e';
+      });
+    } finally {
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   String prepareFullUrl(String value) {
-    const String baseUrl = 'http://192.168.137.130/LawCompany/public/';
-    if (value.startsWith('http')) return value;
-    return '$baseUrl$value';
+    const String baseUrl = 'http://127.0.0.1:8000/storage/LawCompany/public/';
+    return value.startsWith('http') ? value : '$baseUrl$value';
   }
 
   Widget _buildInfoRow({
@@ -46,7 +76,7 @@ class _LegalBookDetailsScreenState extends State<LegalBookDetailsScreen> {
     bool isLink = false,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -72,8 +102,7 @@ class _LegalBookDetailsScreenState extends State<LegalBookDetailsScreen> {
                       mode: LaunchMode.externalApplication);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('❌ Could not open URL')),
+                    const SnackBar(content: Text('لا يمكن فتح الرابط')),
                   );
                 }
               },
@@ -101,84 +130,83 @@ class _LegalBookDetailsScreenState extends State<LegalBookDetailsScreen> {
     );
   }
 
+  Widget _buildBookCard() {
+    if (_bookData == null) return const SizedBox.shrink();
+
+    return Card(
+      elevation: 8,
+      margin: const EdgeInsets.only(top: 20),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Center(
+              child: Icon(
+                Icons.menu_book_rounded,
+                size: 72,
+                color: AppColors.darkBlue,
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'تفاصيل الكتاب القانوني',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.darkBlue,
+              ),
+            ),
+            const Divider(height: 30, thickness: 1.2),
+            ..._bookData!.entries.map((entry) {
+              return _buildInfoRow(
+                icon: Icons.info_outline,
+                label: entry.key,
+                value: entry.value?.toString() ?? '',
+                isLink: (entry.value?.toString().contains('.pdf') ?? false) ||
+                    (entry.value?.toString().startsWith('http') ?? false),
+              );
+            }).toList(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildError() {
+    if (_error == null) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: 16),
+      child: Text(
+        _error!,
+        style: const TextStyle(color: Colors.red, fontSize: 16),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.lightBlue.shade50,
-      appBar: const CustomActionAppBar(title: 'Legal Book Details'),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
-        child: Card(
-          elevation: 10,
-          color: Colors.white,
-          shadowColor: Colors.blueGrey.shade100,
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Center(
-                  child: Icon(
-                    Icons.menu_book_rounded,
-                    size: 72,
-                    color: AppColors.darkBlue,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                _buildInfoRow(
-                  icon: Icons.badge_outlined,
-                  label: 'ID',
-                  value: book.id.toString(),
-                ),
-                _buildInfoRow(
-                  icon: Icons.book,
-                  label: 'Book Title',
-                  value: book.bookTitle,
-                ),
-                _buildInfoRow(
-                  icon: Icons.link,
-                  label: 'Attached File',
-                  value: book.book ?? '',
-                  isLink: (book.book ?? '').isNotEmpty,
-                ),
-                _buildInfoRow(
-                  icon: Icons.date_range_outlined,
-                  label: 'Created At',
-                  value: book.createdAt,
-                ),
-                _buildInfoRow(
-                  icon: Icons.update,
-                  label: 'Updated At',
-                  value: book.updatedAt,
-                ),
-              ],
-            ),
-          ),
-        ),
+      appBar: AppBar(
+        title: const Text('تفاصيل الكتاب القانوني'),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          final updatedBook = await Navigator.push<LegalBookModel>(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (_) => LegalBookBloc(),
-                child: UpdateLegalBookScreen(legalBook: book),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (_loading)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: CircularProgressIndicator(),
+                ),
               ),
-            ),
-          );
-          if (updatedBook != null) {
-            refreshData(updatedBook);
-          }
-        },
-        icon: const Icon(Icons.edit, color: Colors.white),
-        label: const Text(
-          'Edit',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            _buildBookCard(),
+            _buildError(),
+          ],
         ),
-        backgroundColor: AppColors.darkBlue,
       ),
     );
   }

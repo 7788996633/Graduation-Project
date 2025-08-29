@@ -11,7 +11,6 @@ import '../../../../data/models/hiring_request_model.dart';
 import '../../../widgets/custom_appbar_add.dart';
 import '../../../widgets/hiring_request_item.dart';
 
-
 class ListHiringRequestsPublishScreen extends StatefulWidget {
   const ListHiringRequestsPublishScreen({super.key});
 
@@ -45,33 +44,37 @@ class _ListHiringRequestsPublishScreenState
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: RefreshIndicator(
-          onRefresh: _onRefresh,
-          child: BlocBuilder<HiringRequestsBloc, HiringRequestsState>(
-            builder: (context, state) {
-              if (state is HiringRequestsLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is HiringRequestsFail) {
-                return Center(child: Text(state.errmsg));
-              } else if (state is HiringRequestsListLoaded) {
-                final List<HiringRequestModel> requests =
-                    state.hiringRequestsList;
-                if (requests.isEmpty) {
-                  return const Center(
-                      child: Text('No Published Hiring Requests'));
-                }
-                return ListView.builder(
+        child: BlocBuilder<HiringRequestsBloc, HiringRequestsState>(
+          builder: (context, state) {
+            if (state is HiringRequestsLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is HiringRequestsFail) {
+              return Center(child: Text(state.errmsg));
+            } else if (state is HiringRequestsListLoaded) {
+              final List<HiringRequestModel> requests =
+                  state.hiringRequestsList;
+              return RefreshIndicator(
+                onRefresh: _onRefresh,
+                child: requests.isEmpty
+                    ? ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: const [
+                    SizedBox(height: 200),
+                    Center(child: Text('No Published Hiring Requests')),
+                  ],
+                )
+                    : ListView.builder(
                   padding: const EdgeInsets.all(12),
                   itemCount: requests.length,
                   itemBuilder: (context, index) {
                     return HiringRequestItem(
                         hiringRequestModel: requests[index]);
                   },
-                );
-              }
-              return const SizedBox();
-            },
-          ),
+                ),
+              );
+            }
+            return const SizedBox();
+          },
         ),
       ),
     );

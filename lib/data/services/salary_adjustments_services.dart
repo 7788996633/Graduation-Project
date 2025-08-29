@@ -12,36 +12,33 @@ class SalaryAdjustmentServices {
 
 
 
-  Future<List> getSalaryAdjustments(int userId) async {
-    try {
-      var url = Uri.parse('${myUrl}salary-adjustments/$userId');
-      http.Response response;
 
-      if (kIsWeb) {
-        var request = http.Request('GET', url);
-        request.headers.addAll(baseHeaders);
-        var streamedResponse = await request.send();
-        response = await http.Response.fromStream(streamedResponse);
-      } else {
-        var request = http.MultipartRequest('GET', url);
-        request.headers.addAll(baseHeaders);
-        var streamedResponse = await request.send();
-        response = await http.Response.fromStream(streamedResponse);
-      }
+  Future<Map<String, dynamic>?> getSalaryAdjustments(int userId) async {
+    var url = Uri.parse('${myUrl}salary-adjustments/$userId');
+    http.Response response;
 
-      var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
+    if (kIsWeb) {
+      var request = http.Request('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    } else {
+      var request = http.MultipartRequest('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    }
 
-      if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
-        return jsonResponse['data'];
-      } else {
-        return [];
-      }
-    } catch (e) {
-      print('Error in getSessionTypes: $e');
-      return [];
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return jsonResponse['data']; // هنا نعيد Map وليس List
+    } else {
+      return null;
     }
   }
+
 
 
   Future<SalaryAdjustment> getSalaryAdjustmentById(int id) async {

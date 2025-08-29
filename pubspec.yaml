@@ -27,11 +27,10 @@ dependencies:
   curved_navigation_bar: ^1.0.6
   salomon_bottom_bar: ^3.3.2
   flutter_pdfview: ^1.4.0+1
-  flutter_svg:
-  camera:
-  path_provider:
-  video_player:
-  socket_io_client:
+  flutter_svg: ^2.0.7
+  path_provider: ^2.0.17
+  video_player: ^2.6.0
+  socket_io_client: ^2.0.0
   flutter_local_notifications: ^19.2.0
   intl: ^0.20.0
   open_filex: ^4.7.0
@@ -46,11 +45,12 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
-  flutter_launcher_icons: ^0.14.1   # ✅ باكيج الأيقونة
+  flutter_launcher_icons: ^0.14.1
 
 flutter:
 
   uses-material-design: true
+
   assets:
     - assets/translations/ar.json
     - assets/translations/en.json
@@ -58,7 +58,6 @@ flutter:
     - assets/images/person.png
     - assets/images/download.jpeg
 
-# ✅ إعدادات الأيقونة
 flutter_launcher_icons:
   android: true
   ios: true

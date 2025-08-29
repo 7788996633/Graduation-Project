@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../blocs/hiring_requests/hiring_requests_block.dart';
-import '../../../../blocs/job_application/job_application_bloc.dart';
 import '../../../../constant.dart';
 import '../../../../data/models/hiring_request_model.dart';
 import '../../../../themes.dart';
@@ -10,6 +9,7 @@ import '../../../widgets/custom_appbar_add.dart';
 import '../job_application/job_application_list_screen.dart';
 import '../job_application/add_job_application.dart';
 import 'update_hiring_requests_screen.dart';
+import '../../../../blocs/job_application/job_application_bloc.dart';
 
 class HiringRequestDetailsScreen extends StatefulWidget {
   final HiringRequestModel hiringRequestModel;
@@ -108,14 +108,12 @@ class _HiringRequestDetailsScreenState extends State<HiringRequestDetailsScreen>
                 const SizedBox(height: 30),
 
                 // زر مختلف حسب الدور
-
-                  if(myRole != null &&
-        (myRole.toLowerCase() == 'user'))
+                if (myRole != null && (myRole.toLowerCase() == 'user'))
                   Center(
                     child: Container(
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Colors.blue, Colors.purple], // الألوان المموجة
+                          colors: [Colors.blue, Colors.purple],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -131,100 +129,101 @@ class _HiringRequestDetailsScreenState extends State<HiringRequestDetailsScreen>
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent, // شفاف
-                          shadowColor: Colors.transparent, // بدون ظل أسود
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
                           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => BlocProvider(
-                              create: (_) => JobApplicationBloc(),
-                              child: AddJobApplicationScreen(
-                                hiringReqId: hiringRequest.id,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => BlocProvider(
+                                create: (_) => JobApplicationBloc(),
+                                child: AddJobApplicationScreen(
+                                  hiringReqId: hiringRequest.id,
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   )
-                ,)else
-                    if(myRole != null &&
-                        (myRole.toLowerCase() == 'hr'))
+                else if (myRole != null && (myRole.toLowerCase() == 'hr'))
                   Center(
                     child: Container(
-                decoration: BoxDecoration(
-              gradient: const LinearGradient(
-               colors: [Colors.blue, Colors.purple], // الألوان المموجة
-                 begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                    ),
-                   borderRadius: BorderRadius.circular(12),
-    ),
-              child: ElevatedButton.icon(
-              icon: const Icon(Icons.list, color: Colors.white),
-              label: const Text(
-              "View Applications",
-              style: TextStyle(
-               color: Colors.white,
-                   fontWeight: FontWeight.bold,
-                ),
-    ),
-             style: ElevatedButton.styleFrom(
-               backgroundColor: Colors.transparent, // شفاف
-                 shadowColor: Colors.transparent, // بدون ظل أسود
-             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-             shape: RoundedRectangleBorder(
-               borderRadius: BorderRadius.circular(12),
-    ),
-    ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => BlocProvider(
-                              create: (_) => JobApplicationBloc(),
-                              child: ListJobApplicationsScreen(
-                                hiringReqId: hiringRequest.id,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Colors.blue, Colors.purple],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.list, color: Colors.white),
+                        label: const Text(
+                          "View Applications",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => BlocProvider(
+                                create: (_) => JobApplicationBloc(),
+                                child: ListJobApplicationsScreen(
+                                  hiringReqId: hiringRequest.id,
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ),
-    )],
+              ],
             ),
           ),
         ),
       ),
 
-
+      /// FloatingActionButton مثل LegalNewsDetailsScreen
       floatingActionButton: (myRole != null &&
           (myRole!.toLowerCase() == 'admin' || myRole!.toLowerCase() == 'hr'))
           ? FloatingActionButton.extended(
         onPressed: () async {
-          final result = await Navigator.push<HiringRequestModel>(
+          final updatedReq = await Navigator.push<HiringRequestModel>(
             context,
             MaterialPageRoute(
               builder: (_) => BlocProvider(
                 create: (_) => HiringRequestsBloc(),
-                child: UpdateHiringRequestStatusScreen(hiringRequest: hiringRequest),
+                child: UpdateHiringRequestStatusScreen(
+                  hiringRequest: hiringRequest,
+                ),
               ),
             ),
           );
 
-          if (result != null) {
-            refreshData(result);
+          if (updatedReq != null) {
+            refreshData(updatedReq);
           }
         },
-        icon: const Icon(Icons.edit),
+        icon: const Icon(Icons.edit, color: Colors.white),
         label: const Text(
           'Edit',
           style: TextStyle(

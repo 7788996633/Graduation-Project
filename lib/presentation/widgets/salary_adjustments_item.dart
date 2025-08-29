@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../blocs/salary_adjustments_bloc/salary_adjustments_bloc.dart';
 
 import '../../data/models/salary_adjustments_model.dart';
 import '../../themes.dart';
+
+import '../screens/salary_adjustments_screen/salary_details_screen.dart';
 
 class SalaryAdjustmentsItem extends StatelessWidget {
   const SalaryAdjustmentsItem({super.key, required this.salaryAdjustmentsModel});
@@ -19,6 +24,19 @@ class SalaryAdjustmentsItem extends StatelessWidget {
         shadowColor: AppColors.darkBlue.withOpacity(0.3),
         child: InkWell(
           borderRadius: BorderRadius.circular(24),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => BlocProvider(
+                  create: (_) => SalaryAdjustmentsBloc(),
+                  child: SalaryAdjustmentsDetailsScreen (
+                    salaryAdjustment: salaryAdjustmentsModel,
+                  ),
+                ),
+              ),
+            );
+          },
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
             child: Row(
@@ -34,18 +52,7 @@ class SalaryAdjustmentsItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: AppColors.darkBlue.withOpacity(0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    color: AppColors.darkBlue,
-                    size: 20,
-                  ),
-                ),
+
               ],
             ),
           ),

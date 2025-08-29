@@ -30,15 +30,21 @@ class SalaryAdjustmentsBloc extends Bloc<SalaryAdjustmentsEvent, SalaryAdjustmen
         } catch (e) {
           emit(SalaryAdjustmentsFail(errMsg: e.toString()));
         }
-      } else if (event is GetAllSalaryAdjustmentsEvent) {
+      } else
+      if (event is GetAllSalaryAdjustmentsEvent) {
         emit(SalaryAdjustmentsLoading());
         try {
-          allSalaryAdjustments = await SalaryAdjustmentRepository().getSalaryAdjustments(event.userId);
+          final salaryAdjustment = await SalaryAdjustmentRepository().getSalaryAdjustments(event.userId);
+
+
+          allSalaryAdjustments = salaryAdjustment != null ? [salaryAdjustment] : [];
+
           emit(SalaryAdjustmentsListLoaded(list: allSalaryAdjustments));
         } catch (e) {
           emit(SalaryAdjustmentsFail(errMsg: e.toString()));
         }
-      } else if (event is SearchSalaryAdjustmentsByTypeEvent) {
+      }
+      else if (event is SearchSalaryAdjustmentsByTypeEvent) {
         emit(SalaryAdjustmentsLoading());
         try {
           final typeLower = event.type.trim().toLowerCase();

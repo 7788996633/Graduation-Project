@@ -1,77 +1,135 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
+import '../../../data/models/issue_request_model.dart';
+import '../issue_request/issue_request_detials_screen.dart';
 
-class RecentActivity extends StatelessWidget {
-  const RecentActivity({super.key});
+class IssueRequestActivityList extends StatelessWidget {
+  final List<IssueRequestModel> requests;
 
-  final List<Activity> activities = const [
-    Activity(
-      time: '30 mins ago',
-      title: 'Case Filed',
-      description: 'Attorney Ahmad filed a new civil case',
-      color: Colors.blue,
-    ),
-    Activity(
-      time: '2 hours ago',
-      title: 'Client Meeting',
-      description: 'Lawyer Laila met with a new client',
-      color: Colors.red,
-    ),
-    Activity(
-      time: '3 hours ago',
-      title: 'Contract Reviewed',
-      description: 'Mr. Samir reviewed a business contract',
-      color: Colors.orange,
-    ),
-    Activity(
-      time: 'Yesterday',
-      title: 'Hearing Scheduled',
-      description: 'Court hearing added for Case #1452',
-      color: Colors.purple,
-    ),
-    Activity(
-      time: '2 days ago',
-      title: 'Legal Advice Sent',
-      description: 'Legal assistant Rana responded to a client inquiry',
-      color: Colors.green,
-    ),
-  ];
+  const IssueRequestActivityList({super.key, required this.requests});
+
+  String formatDate(DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inMinutes < 60) {
+      return '${difference.inMinutes} mins ago';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours} hours ago';
+    } else if (difference.inDays == 1) {
+      return 'Yesterday';
+    } else {
+      return DateFormat('dd MMM yyyy').format(dateTime);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Recent Activities', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-          const SizedBox(height: 10),
-          ...activities.map((activity) => activityWidget(activity)).toList(),
-        ],
-      ),
+    if (requests.isEmpty) {
+      return const Center(child: Text("No issue requests found."));
+    }
+
+    // عرض آخر 3 عناصر فقط
+    final lastRequests = requests.length <= 3
+        ? requests
+        : requests.sublist(requests.length - 3);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+          child: Text(
+            "Latest Issue Requests",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+        ),
+        Expanded(
+          child: ListView.separated(
+            itemCount: lastRequests.length,
+            separatorBuilder: (context, index) => const Divider(
+              color: Colors.grey, // لون الخط الفاصل
+              thickness: 0.7,     // سماكة الخط
+              height: 20,         // المسافة بين العناصر
+            ),
+            itemBuilder: (context, index) {
+              final request = lastRequests[index];
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => BlocProvider.value(
+                        value: BlocProvider.of<IssueRequestsBloc>(context),
+                        child: IssueRequestDetailsScreen(
+                          userModel: request.userModel,
+                          issueRequest: request,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CircleAvatar(
+                        radius: 24,
+                        backgroundColor: Colors.grey.shade400,
+                        child: const Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 26,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              request.userModel.name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              request.description,
+                              style: const TextStyle(
+                                color: Colors.grey,
+                                fontSize: 13,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: Text(
+                                formatDate(request.createdAt),
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
-
-  Widget activityWidget(Activity activity) {
-    return ListTile(
-      leading: CircleAvatar(backgroundColor: activity.color),
-      title: Text(activity.title),
-      subtitle: Text(activity.description),
-      trailing: Text(activity.time, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-    );
-  }
-}
-
-class Activity {
-  final String time;
-  final String title;
-  final String description;
-  final Color color;
-
-  const Activity({
-    required this.time,
-    required this.title,
-    required this.description,
-    required this.color,
-  });
 }

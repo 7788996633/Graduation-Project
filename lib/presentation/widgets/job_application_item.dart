@@ -38,7 +38,7 @@ class JobApplicationItem extends StatelessWidget {
             if (updatedJob != null) {
               // أعِد تحميل بيانات القائمة بعد التحديث
               context.read<JobApplicationBloc>().add(
-                GetAllJobApplicationsEvent(hiringReqId: jobApplication.hiringRequestId),
+                GetAllJobApplicationsEvent(hiringReqId: jobApplication.id),
               );
             }
           },

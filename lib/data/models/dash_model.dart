@@ -10,10 +10,26 @@ class DashCount {
   });
 
   factory DashCount.fromJson(Map<String, dynamic> json) {
+    double parseDouble(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is int) return value.toDouble();
+      if (value is double) return value;
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
     return DashCount(
       month: json['month'] ?? '',
-      totalRevenue: (json['total_revenue'] ?? 0).toDouble(),
-      totalCost: (json['total_cost'] ?? 0).toDouble(),
+      totalRevenue: parseDouble(json['total_revenue']),
+      totalCost: parseDouble(json['total_cost']),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'month': month,
+      'total_revenue': totalRevenue,
+      'total_cost': totalCost,
+    };
   }
 }

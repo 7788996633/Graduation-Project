@@ -11,7 +11,6 @@ class CaseTypePercentagesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Dispatch event to fetch data when the screen builds
     context.read<CaseTypeBloc>().add(FetchCaseTypePercentages());
 
     return Padding(
@@ -32,7 +31,8 @@ class CaseTypePercentagesScreen extends StatelessWidget {
             final hasNonZero = data.any((item) => item.percentage > 0);
 
             final topThree = hasNonZero
-                ? (data..sort((a, b) => b.percentage.compareTo(a.percentage)))
+                ? (data
+              ..sort((a, b) => b.percentage.compareTo(a.percentage)))
                 .where((e) => e.percentage > 0)
                 .take(3)
                 .toList()
@@ -48,7 +48,7 @@ class CaseTypePercentagesScreen extends StatelessWidget {
 
               return PieChartSectionData(
                 color: colors[index % colors.length],
-                value: item.percentage.toDouble(),
+                value: item.percentage,
                 title: '${item.percentage.toStringAsFixed(1)}%',
                 radius: 50,
                 titleStyle: const TextStyle(
@@ -80,8 +80,7 @@ class CaseTypePercentagesScreen extends StatelessWidget {
                   children: [
                     const Text(
                       'Case Type Percentages',
-                      style:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 5),
                     SizedBox(
@@ -98,8 +97,7 @@ class CaseTypePercentagesScreen extends StatelessWidget {
                     if (hasNonZero && topThree.isNotEmpty) ...[
                       const Text(
                         'Top 3 Types:',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                       const SizedBox(height: 10),
                       Wrap(

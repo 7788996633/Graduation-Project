@@ -67,7 +67,7 @@ class _UpdateComplaintStatusScreenState
                   id: widget.complaint.id,
                   description: widget.complaint.description,
                   status: _selectedStatus,
-
+  date: widget.complaint.date,
                   userName: widget.complaint.userName,
                 ),
               );

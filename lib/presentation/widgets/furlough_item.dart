@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../blocs/furlough_request_bloc/furlough_request_bloc.dart';
 import '../../blocs/furlough_request_bloc/furlough_request_event.dart';
+import '../../constant.dart';
 import '../../data/models/furlough_request_model.dart';
 
 import '../screens/furloughs/furlough_detials_screen.dart';
@@ -20,7 +21,7 @@ class FurloughRequestItem extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => FurloughDetailsScreen(
-                furloughModel: furloughModel,
+                furloughModel: furloughModel,  myRole: myRole,
               ),
             ),
           );

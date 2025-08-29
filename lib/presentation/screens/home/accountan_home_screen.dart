@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:law/presentation/screens/pyroll_screen/all_payroll_screen.dart';
@@ -10,6 +11,8 @@ import '../../widgets/user_list.dart';
 import '../all_users_list.dart';
 import '../legal_books_screen/logal_book_list.dart';
 import '../legal_news_screen/list_legal_news_screen.dart';
+import '../report_screen/report_financial_screen.dart';
+import '../report_screen/report_invoices_screen.dart';
 import '../settings/setting_screen.dart';
 import '../../widgets/custom_home_appbar.dart';
 
@@ -106,6 +109,45 @@ class AccountanHomeScreen extends StatelessWidget {
           );
         },
       },
+      {
+        'icon': Icons.receipt_long,
+        'title': tr('invoices_report'),
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const ReportInvoicesScreen(),
+            ),
+          );
+        },
+      },
+
+      {
+        'icon': Icons.receipt_long,
+        'title': tr('report-finance'),
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const ReportFinancialScreen (),
+            ),
+          );
+        },
+      },
+      {
+        'icon': Icons.receipt_long,
+        'title': tr('report-salaries'),
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const ReportFinancialScreen (),
+            ),
+          );
+        },
+      },
+
+
     ];
 
     return Scaffold(

@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../blocs/interview_bloc/interview_bloc.dart';
 import '../../../../blocs/job_application/job_application_bloc.dart';
+import '../../../../constant.dart';
 import '../../../../data/models/job_application_model.dart';
 import '../../../../themes.dart';
 import '../../../widgets/custom_appbar_add.dart';
@@ -138,11 +139,8 @@ class _JobApplicationDetailsScreenState extends State<JobApplicationDetailsScree
                   label: 'Name',
                   value: jobApplication.userName,
                 ),
-                _buildInfoRow(
-                  icon: Icons.work_outline,
-                  label: 'Job Title',
-                  value: jobApplication.jobTitle,
-                ),
+
+
                 _buildInfoRow(
                   icon: Icons.date_range_outlined,
                   label: 'Date',
@@ -184,7 +182,8 @@ class _JobApplicationDetailsScreenState extends State<JobApplicationDetailsScree
                   ),
                 ),
                 const SizedBox(height: 12),
-                ElevatedButton.icon(
+                if (myRole != null && myRole.toLowerCase() == 'hr')
+                  ElevatedButton.icon(
                   onPressed: () {
                     Navigator.push(
                       context,

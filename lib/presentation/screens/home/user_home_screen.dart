@@ -9,6 +9,7 @@ import '../../../blocs/complaints_bloc/complaint_bloc.dart';
 import '../../../blocs/hiring_requests/hiring_requests_block.dart';
 import '../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
+import '../../../blocs/job_application/job_application_bloc.dart';
 import '../../../blocs/legal_books_bloc/legal_books_bloc.dart';
 import '../../../blocs/legal_news_bloc/legal_news_bloc.dart';
 import '../../../blocs/sessions_bloc/sessions_bloc.dart';
@@ -22,6 +23,7 @@ import '../complaint_screen/my_list_complaints_screen.dart';
 import '../consultation_request/all_consultation_requests_page.dart';
 import '../consultation_request/submit_consultation_request_screen.dart';
 import '../hr_screen/hiring_request/hiring_requests_published_screen.dart';
+import '../hr_screen/job_application/my_application_job_list.dart';
 import '../issue_request/add_issue_request.dart';
 import '../issue_request/user_issue_requests_screen.dart';
 import '../legal_books_screen/logal_book_list.dart';
@@ -122,6 +124,22 @@ class UserHomeScreen extends StatelessWidget {
               builder: (_) => BlocProvider(
                 create: (_) => HiringRequestsBloc(),
                 child: const ListHiringRequestsPublishScreen(),
+              ),
+            ),
+          );
+        },
+      },
+
+      {
+        'icon': Icons.work_outline,
+        'title': tr('my_job_application'),
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => JobApplicationBloc(),
+                child: const MyListJobApplicationsScreen(),
               ),
             ),
           );

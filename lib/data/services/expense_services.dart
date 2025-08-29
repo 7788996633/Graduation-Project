@@ -110,7 +110,7 @@ class ExpenseServices {
         var request = http.Request('PUT', url);
         request.headers.addAll({
           ...baseHeaders,
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
         });
         request.bodyFields = body;
         var streamedResponse = await request.send();

@@ -6,12 +6,16 @@ import 'package:law/presentation/screens/home_web/page_navigation_screen.dart';
 
 import '../../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
 import '../../../blocs/categories/categories_bloc.dart';
+import '../../../blocs/complaints_bloc/complaint_bloc.dart';
 import '../../../blocs/dash_bloc/dash_bloc.dart';
 import '../../../blocs/dash_bloc/dash_event.dart';
 import '../../../blocs/dashboard_bloc/dashboard_bloc.dart';
 import '../../../blocs/case_type_percentages_bloc/case_type_percentages_bloc.dart';
 
 import '../../../blocs/employee_bloc/employee_bloc.dart';
+import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
+import '../../../blocs/issue_requests_bloc/issue_requests_event.dart';
+import '../../../blocs/issue_requests_bloc/issue_requests_state.dart';
 import '../../../blocs/lawyer_bloc/lawyer_bloc.dart';
 import '../../../blocs/permission_bloc/permission_bloc.dart';
 import '../../../blocs/role_bloc/role_bloc.dart';
@@ -26,6 +30,7 @@ import '../permission_screen/list_permission_screen.dart';
 import '../role_screen/all_role_screen.dart';
 import '../session_type/list_session_type_screen.dart';
 import 'client_requests_table.dart';
+import 'complaint_table.dart';
 import 'custom_main_app_bar.dart';
 import 'revenue_bar_chart.dart';
 import 'consultation_request_table.dart';
@@ -190,9 +195,11 @@ class _MainScreenState extends State<MainScreen> {
             Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: ClientRequestsTable(cardColor: cardBackgroundColor),
-              ),
-            ),
+                child: BlocProvider(
+           create: (_) => ComplaintBloc(),
+            child: ComplaintTable(cardColor: AppColors.white,),
+      ),
+      )  ),
           ],
         );
       } else {
@@ -208,8 +215,12 @@ class _MainScreenState extends State<MainScreen> {
             const SizedBox(height: 20),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: ClientRequestsTable(cardColor: cardBackgroundColor),
-            ),
+              child: BlocProvider(
+      create: (_) => ComplaintBloc(),
+      child:  ComplaintTable(
+        cardColor: AppColors.white,
+      ),
+      ),)
           ],
         );
       }
@@ -253,37 +264,52 @@ class _MainScreenState extends State<MainScreen> {
             const SizedBox(height: 20),
             chartSection(),
             const SizedBox(height: 20),
-            const RecentActivity(),
+            BlocProvider(
+              create: (_) => IssueRequestsBloc()..add(GetAllIssueRequestsEvent()),
+              child: Container(
+                height: 400, // ارتفاع مناسب لقائمة النشاطات
+                padding: const EdgeInsets.all(12), // مسافة داخلية
+                decoration: BoxDecoration(
+                  color: AppColors.scaffold,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3), // موضع الظل
+                    ),
+                  ],
+                ),
+                child: BlocBuilder<IssueRequestsBloc, IssueRequestsState>(
+                  builder: (context, state) {
+                    if (state is IssueRequestsLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is IssueRequestsFail) {
+                      return Center(child: Text(state.errmsg));
+                    } else if (state is IssueRequestsListLoaded) {
+                      // هنا ممكن تعرض آخر 3 عناصر فقط
+                      final lastThree = state.issueRequestsList.length >= 3
+                          ? state.issueRequestsList.sublist(
+                          state.issueRequestsList.length - 3,
+                          state.issueRequestsList.length)
+                          : state.issueRequestsList;
+
+                      return IssueRequestActivityList(
+                        requests: lastThree,
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
+              ),
+            ),
+
             const SizedBox(height: 20),
             tablesSection(),
           ],
         ),
       ),
-    );
-  }
-}
-
-// صفحات فرعية ثابتة
-class SessionTypePage extends StatelessWidget {
-  const SessionTypePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Session Type Page")),
-      body: const Center(child: Text("This is the Session Type Page")),
-    );
-  }
-}
-
-class IssueCategoryPage extends StatelessWidget {
-  const IssueCategoryPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Issue Category Page")),
-      body: const Center(child: Text("This is the Issue Category Page")),
     );
   }
 }

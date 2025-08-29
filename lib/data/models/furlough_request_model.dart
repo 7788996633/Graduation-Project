@@ -8,6 +8,7 @@ class FurloughRequestModel {
     required this.covetByType,
     required this.covetById,
 
+
   });
 
   final int id;
@@ -27,6 +28,7 @@ class FurloughRequestModel {
       status: json["status"] ?? "",
       covetByType: json["covet_by_type"] ?? "",
       covetById: json["covet_by_id"] ?? 0,
+
 
     );
   }

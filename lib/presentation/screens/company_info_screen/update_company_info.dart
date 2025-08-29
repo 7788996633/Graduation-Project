@@ -30,6 +30,9 @@ class _UpdateCompanyInfoScreenState extends State<UpdateCompanyInfoScreen> {
 
   late CompanyInfoBloc _bloc;
 
+  String? _statusMessage; // رسالة النجاح أو الفشل
+  Color? _statusColor;
+
   @override
   void initState() {
     super.initState();
@@ -84,12 +87,10 @@ class _UpdateCompanyInfoScreenState extends State<UpdateCompanyInfoScreen> {
         foundationDate: _foundationDate!,
       ));
     } else if (_foundationDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select foundation date'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      setState(() {
+        _statusMessage = 'Please select foundation date';
+        _statusColor = Colors.red;
+      });
     }
   }
 
@@ -102,14 +103,17 @@ class _UpdateCompanyInfoScreenState extends State<UpdateCompanyInfoScreen> {
         body: BlocConsumer<CompanyInfoBloc, CompanyInfoState>(
           listener: (context, state) {
             if (state is CompanyInfoLoaded) {
-              Navigator.pop(
-                context,
-                state.company,
-              );
+              setState(() {
+                _statusMessage = '✅ Company info updated successfully';
+                _statusColor = Colors.green;
+              });
+              // يمكن إعادة التوجيه إذا أردت بعد التحديث
+              // Navigator.pop(context, state.company);
             } else if (state is CompanyInfoFail) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('❌ ${state.errorMsg}')),
-              );
+              setState(() {
+                _statusMessage = '❌ ${state.errorMsg}';
+                _statusColor = Colors.red;
+              });
             }
           },
           builder: (context, state) {
@@ -140,7 +144,8 @@ class _UpdateCompanyInfoScreenState extends State<UpdateCompanyInfoScreen> {
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: _descriptionController,
-                        decoration: const InputDecoration(labelText: 'Description'),
+                        decoration:
+                        const InputDecoration(labelText: 'Description'),
                         maxLines: 3,
                         validator: (value) =>
                         value == null || value.isEmpty ? 'Required' : null,
@@ -168,10 +173,11 @@ class _UpdateCompanyInfoScreenState extends State<UpdateCompanyInfoScreen> {
                       InkWell(
                         onTap: isLoading ? null : _pickFoundationDate,
                         child: InputDecorator(
-                          decoration: const InputDecoration(labelText: 'Foundation Date'),
+                          decoration: const InputDecoration(
+                              labelText: 'Foundation Date'),
                           child: Text(
                             _foundationDate != null
-                                ? "${_foundationDate!.year}-${_foundationDate!.month.toString().padLeft(2,'0')}-${_foundationDate!.day.toString().padLeft(2,'0')}"
+                                ? "${_foundationDate!.year}-${_foundationDate!.month.toString().padLeft(2, '0')}-${_foundationDate!.day.toString().padLeft(2, '0')}"
                                 : 'Select Date',
                             style: TextStyle(
                               fontSize: 16,
@@ -198,6 +204,15 @@ class _UpdateCompanyInfoScreenState extends State<UpdateCompanyInfoScreen> {
                               color: Colors.white, fontSize: 18),
                         ),
                       ),
+                      const SizedBox(height: 20),
+                      if (_statusMessage != null)
+                        Text(
+                          _statusMessage!,
+                          style: TextStyle(
+                              color: _statusColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
                     ],
                   ),
                 ),

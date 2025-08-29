@@ -108,7 +108,7 @@ class InterviewServices {
       http.Response response;
 
       if (kIsWeb) {
-        var request = http.Request('PUT', url);
+        var request = http.Request('POST', url);
         request.headers.addAll({
           ...baseHeaders,
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -138,7 +138,7 @@ class InterviewServices {
   }
   Future<String> updateInterviewResult(int interviewId,String result) async {
     try {
-      var url = Uri.parse('${myUrl}interviews/$interviewId');
+      var url = Uri.parse('${myUrl}interviews/result/$interviewId');
       var body = {
         'result': result,
       };
@@ -146,7 +146,7 @@ class InterviewServices {
       http.Response response;
 
       if (kIsWeb) {
-        var request = http.Request('PUT', url);
+        var request = http.Request('POST', url);
         request.headers.addAll({
           ...baseHeaders,
           'Content-Type': 'application/x-www-form-urlencoded',

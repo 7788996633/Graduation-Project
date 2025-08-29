@@ -60,15 +60,12 @@ class _UpdateJobApplicationScreenState extends State<UpdateJobApplicationScreen>
                 JobApplicationModel(
                   id: widget.jobApplication.id,
                   result: widget.jobApplication.result,
-                  note: widget.jobApplication.note,
                   date: widget.jobApplication.date,
-                  hiringRequestId: widget.jobApplication.hiringRequestId,
-                  jobTitle: widget.jobApplication.jobTitle,
                   cvLink: widget.jobApplication.cvLink,
                   userId: widget.jobApplication.userId,
                   userName: widget.jobApplication.userName,
                   status: selectedStatus, // هنا ترجع الحالة الجديدة
-                  submittedAt: widget.jobApplication.submittedAt,
+                  submittedAt: widget.jobApplication.submittedAt, hiringRequestId: widget.jobApplication.hiringRequestId, 
                 ),
               );
             } else if (state is JobApplicationFail) {

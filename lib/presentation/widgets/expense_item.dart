@@ -8,135 +8,123 @@ import '../../data/models/expenses_model.dart';
 import '../../themes.dart';
 import '../screens/expenses_screen/expense_details_screen.dart';
 
-class ExpenseItem extends StatelessWidget {
+class ExpenseItem extends StatefulWidget {
   const ExpenseItem({super.key, required this.expenseModel});
   final ExpenseModel expenseModel;
 
   @override
+  State<ExpenseItem> createState() => _ExpenseItemState();
+}
+
+class _ExpenseItemState extends State<ExpenseItem> {
+  @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8), // تقليل الـ horizontal padding لعرض أوسع
-      child: SizedBox(
-        width: double.infinity,
-        child: BlocConsumer<ExpenseBloc, ExpenseState>(
-          listener: (context, state) {
-            if (state is ExpenseSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: Colors.green,
-                  content: Text(state.successMsg),
-                ),
-              );
-            } else if (state is ExpenseFail) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: Colors.redAccent,
-                  content: Text(state.errMsg),
-                ),
-              );
-            }
-          },
-          builder: (context, state) {
-            return Card(
-              color: Colors.grey.shade200,
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(24),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => BlocProvider.value(
-                        value: BlocProvider.of<ExpenseBloc>(context),
-                        child: ExpenseDetailsScreen(expenseModel: expenseModel),
-                      ),
-                    ),
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 28,
-                        backgroundColor: AppColors.darkBlue.withOpacity(0.1),
-                        child: const Icon(
-                          Icons.attach_money_rounded,
-                          color: AppColors.darkBlue,
-                          size: 30,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              expenseModel.description,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.darkBlue,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              "Type: ${expenseModel.type}",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: AppColors.darkBlue.withOpacity(0.8),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          InkWell(
-                            borderRadius: BorderRadius.circular(12),
-                            onTap: () {
-                              context.read<ExpenseBloc>().add(
-                                DeleteExpenseEvent(expenseId: expenseModel.id),
-                              );
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: AppColors.darkBlue.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Icon(
-                                Icons.delete,
-                                color: AppColors.darkBlue,
-                                size: 20,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: AppColors.darkBlue.withOpacity(0.1),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              color: AppColors.darkBlue,
-                              size: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: BlocConsumer<ExpenseBloc, ExpenseState>(
+        listener: (context, state) {
+          if (state is ExpenseSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.green,
+                content: Text(state.successMsg),
               ),
             );
-          },
-        ),
+          } else if (state is ExpenseFail) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.redAccent,
+                content: Text(state.errMsg),
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          return InkWell(
+            borderRadius: BorderRadius.circular(20),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider.value(
+                    value: BlocProvider.of<ExpenseBloc>(context),
+                    child: ExpenseDetailsScreen(expenseModel: widget.expenseModel),
+                  ),
+                ),
+              );
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(13),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(14.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // وصف المصروف + زر الحذف
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: AppColors.darkBlue.withOpacity(0.2),
+                          child: const Icon(
+                            Icons.attach_money_rounded,
+                            color: AppColors.darkBlue,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.expenseModel.description,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.darkBlue,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                "Type: ${widget.expenseModel.type}",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            context.read<ExpenseBloc>().add(
+                              DeleteExpenseEvent(
+                                  expenseId: widget.expenseModel.id),
+                            );
+                          },
+                          icon: const Icon(
+                            Icons.delete,
+                            color: AppColors.darkBlue,
+                            size: 20,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

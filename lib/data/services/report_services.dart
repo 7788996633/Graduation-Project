@@ -41,6 +41,37 @@ class ReportService {
     );
   }
 
+  Future<Map<String, dynamic>> reportSalaries() async {
+    return _sendRequest(
+      method: 'POST',
+      endpoint: 'report-salaries',
+      failMessage: 'فشل إنشاء تقرير الدفعات المالية',
+    );
+  }
+
+  Future<Map<String, dynamic>> reportUser(int userId) async {
+    return _sendRequest(
+      method: 'GET',
+      endpoint: 'user-report/$userId',
+      failMessage: 'فشل إنشاء تقرير المستخدم',
+    );
+  }
+
+  Future<Map<String, dynamic>> reportIssue(int issueId) async {
+    return _sendRequest(
+      method: 'GET',
+      endpoint: 'user-report/$issueId',
+      failMessage: 'فشل إنشاء تقرير المستخدم',
+    );
+  }
+
+  Future<Map<String, dynamic>> reportLawyer() async {
+    return _sendRequest(
+      method: 'POST',
+      endpoint: 'lawyer/report',
+      failMessage: 'فشل إنشاء تقرير المحامي ',
+    );
+  }
   Future<Map<String, dynamic>> _sendRequest({
     required String method,
     required String endpoint,

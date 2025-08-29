@@ -26,15 +26,16 @@ class _LegalNewsItemState extends State<LegalNewsItem> {
   }
 
   String _formatDate(DateTime date) {
-    // صيغة التاريخ والوقت: يوم/شهر/سنة - ساعة:دقيقة
     String day = date.day.toString().padLeft(2, '0');
     String month = date.month.toString().padLeft(2, '0');
     String year = date.year.toString();
 
-    String hour = date.hour.toString().padLeft(2, '0');
+    int hour = date.hour;
     String minute = date.minute.toString().padLeft(2, '0');
+    String period = hour >= 12 ? "مساءً" : "صباحاً";
+    int formattedHour = hour % 12 == 0 ? 12 : hour % 12;
 
-    return "$day/$month/$year - $hour:$minute";
+    return "$day/$month/$year - ${formattedHour.toString().padLeft(2, '0')}:$minute $period";
   }
 
   @override

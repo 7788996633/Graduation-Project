@@ -69,6 +69,13 @@ class _ConsultationRequestTableState extends State<ConsultationRequestTable> {
     final isLight = widget.cardColor.computeLuminance() > 0.5;
     final textColor = isLight ? Colors.black : Colors.white;
 
+    // خذ آخر 3 طلبات والأحدث أولاً
+    final latestRequests = (requests.length > 3
+        ? requests.sublist(requests.length - 3)
+        : requests)
+        .reversed
+        .toList();
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -127,7 +134,7 @@ class _ConsultationRequestTableState extends State<ConsultationRequestTable> {
                   ),
                 ),
               ],
-              rows: requests.map((req) {
+              rows: latestRequests.map((req) {
                 final statusColor = req.status == 'pending'
                     ? Colors.orange
                     : req.status == 'approved'
@@ -158,7 +165,8 @@ class _ConsultationRequestTableState extends State<ConsultationRequestTable> {
                     ),
                     DataCell(
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: statusColor.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(6),
@@ -176,7 +184,10 @@ class _ConsultationRequestTableState extends State<ConsultationRequestTable> {
                     DataCell(
                       SizedBox(
                         width: 100,
-                        child: Text(formatDate(req.date), style: TextStyle(color: textColor)),
+                        child: Text(
+                          formatDate(req.date),
+                          style: TextStyle(color: textColor),
+                        ),
                       ),
                     ),
                   ],

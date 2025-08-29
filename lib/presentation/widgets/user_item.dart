@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-
 import '../../../blocs/user_bloc/user_bloc.dart';
 import '../../../blocs/payroll_bloc/payroll_bloc.dart';
 import '../../../blocs/salary_adjustments_bloc/salary_adjustments_bloc.dart';
 import '../../../data/models/user_model.dart';
 import '../../blocs/payroll_bloc/payroll_event.dart';
+import '../../constant.dart';
 import '../../themes.dart';
 
+import '../screens/hr_screen/employee_screens/user_detials_screen.dart';
+import '../screens/report_screen/repoort_user.dart';
 import '../screens/salary_adjustments_screen/add_salary.dart';
 import '../screens/salary_adjustments_screen/all_salary_adjustments_screen.dart';
-import 'custom_user_item.dart';
+
+
 
 class UserItem extends StatefulWidget {
   const UserItem({super.key, required this.userModel});
@@ -79,134 +82,164 @@ class _UserItemState extends State<UserItem> {
           );
         }
       },
-      child: Card(
-        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 2,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // السطر الأول: الاسم + الدور فقط
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 24,
-                    child: const Icon(Icons.person),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.userModel.name,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        widget.userModel.roleName,
-                        style: TextStyle(
-                          color: getCurrentTheme()['NormalText'],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              // السطر الثاني: جميع الأيقونات والأزرار
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.attach_money, color: getCurrentTheme()['Icons']),
-                    tooltip: tr("add_payroll"),
-                    onPressed: () {
-                      if (widget.userModel.id != null) {
-                        BlocProvider.of<PayrollBloc>(context).add(
-                          AddPayrollEvent(userId: widget.userModel.id),
-                        );
-                      }
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.edit, color: getCurrentTheme()['Icons']),
-                    tooltip: tr("add_salary_adjustment"),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => BlocProvider(
-                            create: (_) => SalaryAdjustmentsBloc(),
-                            child: AddSalaryAdjustmentsScreen(userId: widget.userModel.id),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => UserDetailsScreen(userModel: widget.userModel),
+            ),
+          );
+        },
+        child: Card(
+          margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          elevation: 2,
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // السطر الأول: الاسم + الدور فقط
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 24,
+                      child: const Icon(Icons.person),
+                    ),
+                    const SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.userModel.name,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      );
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.list, color: getCurrentTheme()['Icons']),
-                    tooltip: tr("list_salary_adjustments"),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => BlocProvider(
-                            create: (_) => SalaryAdjustmentsBloc(),
-                            child: ListSalaryAdjustmentsScreen(userId: widget.userModel.id),
+                        Text(
+                          widget.userModel.roleName,
+                          style: TextStyle(
+                            color: getCurrentTheme()['NormalText'],
                           ),
                         ),
-                      );
-                    },
-                  ),
-                  widget.userModel.id == 1
-                      ? const SizedBox()
-                      : PopupMenuButton<String>(
-                    onSelected: (value) async {
-                      final confirmed = await showDialog<bool>(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text(tr("confirm_role_change")),
-                          content: Text(tr("are_you_sure_change_role", args: [value])),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, false),
-                              child: Text(tr("cancel")),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, true),
-                              child: Text(tr("confirm")),
-                            ),
-                          ],
-                        ),
-                      );
-
-                      if (!context.mounted) return;
-
-                      if (confirmed == true) {
-                        if (value == 'Delete') {
-                          BlocProvider.of<UserBloc>(context).add(
-                            DeleteUserById(userId: widget.userModel.id),
-                          );
-                        } else {
-                          BlocProvider.of<UserBloc>(context).add(
-                            ChangeUserRole(
-                              userId: widget.userModel.id,
-                              role: value.toLowerCase(),
-                            ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                // السطر الثاني: جميع الأيقونات والأزرار
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.attach_money, color: getCurrentTheme()['Icons']),
+                      tooltip: tr("add_payroll"),
+                      onPressed: () {
+                        if (widget.userModel.id != null) {
+                          BlocProvider.of<PayrollBloc>(context).add(
+                            AddPayrollEvent(userId: widget.userModel.id),
                           );
                         }
-                      }
-                    },
-                    icon: Icon(Icons.settings, color: getCurrentTheme()['Icons']),
-                    itemBuilder: (context) => getPopupItems(widget.userModel.roleName),
-                  ),
-                ],
-              ),
-            ],
+                      },
+                    ),
+                    if (myRole != null && myRole.toLowerCase() == 'admin')
+                      IconButton(
+                        icon: Icon(Icons.picture_as_pdf, color: getCurrentTheme()['Icons']),
+                        tooltip: tr("user_report"),
+                        onPressed: () {
+                          if (widget.userModel.id != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ReportUserScreen(userId: widget.userModel.id),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    // ✅ شرط إخفاء أزرار التعديلات إذا كان roleName = User
+                    if (widget.userModel.roleName.toUpperCase() != "USER") ...[
+                      IconButton(
+                        icon: Icon(Icons.edit, color: getCurrentTheme()['Icons']),
+                        tooltip: tr("add_salary_adjustment"),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => BlocProvider(
+                                create: (_) => SalaryAdjustmentsBloc(),
+                                child: AddSalaryAdjustmentsScreen(userId: widget.userModel.id),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.list, color: getCurrentTheme()['Icons']),
+                        tooltip: tr("list_salary_adjustments"),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => BlocProvider(
+                                create: (_) => SalaryAdjustmentsBloc(),
+                                child: ListSalaryAdjustmentsScreen(userId: widget.userModel.id),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+
+                    widget.userModel.id == 1
+                        ? const SizedBox()
+                        : PopupMenuButton<String>(
+                      onSelected: (value) async {
+                        final confirmed = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text(tr("confirm_role_change")),
+                            content: Text(tr("are_you_sure_change_role", args: [value])),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: Text(tr("cancel")),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                child: Text(tr("confirm")),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        if (!context.mounted) return;
+
+                        if (confirmed == true) {
+                          if (value == 'Delete') {
+                            BlocProvider.of<UserBloc>(context).add(
+                              DeleteUserById(userId: widget.userModel.id),
+                            );
+                          } else {
+                            BlocProvider.of<UserBloc>(context).add(
+                              ChangeUserRole(
+                                userId: widget.userModel.id,
+                                role: value.toLowerCase(),
+                              ),
+                            );
+                          }
+                        }
+                      },
+                      icon: Icon(Icons.settings, color: getCurrentTheme()['Icons']),
+                      itemBuilder: (context) => getPopupItems(widget.userModel.roleName),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

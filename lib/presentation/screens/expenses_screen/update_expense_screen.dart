@@ -69,8 +69,12 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
           listener: (context, state) {
             if (state is ExpenseSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('✅ ${state.successMsg}')),
+                SnackBar(
+                  content: Text('✅ ${state.successMsg}'),
+                  backgroundColor: Colors.green,
+                ),
               );
+
               Navigator.pop(
                 context,
                 ExpenseModel(
@@ -82,7 +86,10 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
               );
             } else if (state is ExpenseFail) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('❌ ${state.errMsg}')),
+                SnackBar(
+                  content: Text('❌ ${state.errMsg}'),
+                  backgroundColor: Colors.red,
+                ),
               );
             }
           },

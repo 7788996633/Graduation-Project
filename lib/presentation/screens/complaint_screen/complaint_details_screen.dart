@@ -98,21 +98,17 @@ class _ComplaintDetailsScreenState extends State<ComplaintDetailsScreen> {
                   label: 'User Name',
                   value: complaint.userName,
                 ),
-                _buildInfoRow(
-                  icon: Icons.info,
-                  label: 'Status',
-                  value: complaint.status,
-                  valueColor: complaint.status.toLowerCase() == 'approved'
-                      ? Colors.green
-                      : complaint.status.toLowerCase() == 'rejected'
-                      ? Colors.red
-                      : Colors.orange, // pending أو أي حالة أخرى
-                ),
 
                 _buildInfoRow(
                   icon: Icons.description,
                   label: 'Description',
                   value: complaint.description,
+                ),
+
+                _buildInfoRow(
+                  icon: Icons.description,
+                  label: 'Status',
+                  value: complaint.status,
                 ),
 
 

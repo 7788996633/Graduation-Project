@@ -19,9 +19,7 @@ class LegalNewsBloc extends Bloc<LegalNewsEvent, LegalNewsState> {
         } catch (e) {
           emit(LegalNewsFail(errMsg: e.toString()));
         }
-      }
-else
-      if (event is GetAllLegalNewsEvent) {
+      } else if (event is GetAllLegalNewsEvent) {
         emit(LegalNewsLoading());
         try {
           List<LegalNewsModel> data = await LegalNewsRepository().getLegalNews();
@@ -37,9 +35,7 @@ else
         } catch (e) {
           emit(LegalNewsFail(errMsg: e.toString()));
         }
-      }
-      else
-      if (event is MySavedLegalNewsEvent) {
+      } else if (event is MySavedLegalNewsEvent) {
         emit(LegalNewsLoading());
         try {
           List<LegalNewsModel> data = await LegalNewsRepository().getMySavedLegalNews();
@@ -47,9 +43,7 @@ else
         } catch (e) {
           emit(LegalNewsFail(errMsg: e.toString()));
         }
-      }
-      else
-      if (event is LegalNewsLatestEvent) {
+      } else if (event is LegalNewsLatestEvent) {
         emit(LegalNewsLoading());
         try {
           List<LegalNewsModel> data = await LegalNewsRepository().getLegalNewsLatest();
@@ -57,7 +51,7 @@ else
         } catch (e) {
           emit(LegalNewsFail(errMsg: e.toString()));
         }
-      }else if (event is UpdateLegalNewsEvent) {
+      } else if (event is UpdateLegalNewsEvent) {
         emit(LegalNewsLoading());
         try {
           String result = await LegalNewsServices().updateLegalNews(
@@ -69,32 +63,29 @@ else
         } catch (e) {
           emit(LegalNewsFail(errMsg: e.toString()));
         }
-      }
-      else if (event is DeleteLegalNewsEvent) {
+      } else if (event is DeleteLegalNewsEvent) {
         emit(LegalNewsLoading());
         try {
-          String result =
-          await LegalNewsServices().deleteLegalNews(event.legalNewsId);
+          String result = await LegalNewsServices().deleteLegalNews(event.legalNewsId);
           emit(LegalNewsSuccess(successMsg: result));
         } catch (e) {
           emit(LegalNewsFail(errMsg: e.toString()));
         }
-      }
-      else if (event is UnSaveLegalNewsEvent) {
+      } else if (event is UnSaveLegalNewsEvent) {
         emit(LegalNewsLoading());
         try {
-          String result = await LegalNewsServices()
-              .unSaveLegalNews(event.legalNewsId);
+          String result = await LegalNewsServices().unSaveLegalNews(event.legalNewsId);
           emit(LegalNewsSuccess(successMsg: result));
         } catch (e) {
           emit(LegalNewsFail(errMsg: e.toString()));
         }
-      }
-      else if (event is SaveLegalNewsEvent) {
+      } else if (event is SaveLegalNewsEvent) {
         emit(LegalNewsLoading());
         try {
-          LegalNewsModel news = await LegalNewsServices().getLegalNewsById(event.legalNewsId);
-          emit(LegalNewsLoaded(news: news));
+          String result = await LegalNewsServices().saveLegalNews(event.legalNewsId);
+          emit(LegalNewsSuccess(successMsg: result));
+          add(MySavedLegalNewsEvent()); // ← إعادة تحميل الأخبار المحفوظة
+
         } catch (e) {
           emit(LegalNewsFail(errMsg: e.toString()));
         }

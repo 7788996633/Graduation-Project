@@ -8,16 +8,18 @@ import '../../../data/models/furlough_request_model.dart';
 import '../../../themes.dart';
 import '../../widgets/custom_appbar_add.dart';
 
-class UpdateFurloughScreen extends StatefulWidget {
+class UpdateFurloughCauseScreen extends StatefulWidget {
   final FurloughRequestModel furlough;
 
-  const UpdateFurloughScreen({super.key, required this.furlough});
+  const UpdateFurloughCauseScreen({super.key, required this.furlough});
 
   @override
-  State<UpdateFurloughScreen> createState() => _UpdateFurloughScreenState();
+  State<UpdateFurloughCauseScreen> createState() =>
+      _UpdateFurloughCauseScreenState();
 }
 
-class _UpdateFurloughScreenState extends State<UpdateFurloughScreen> {
+class _UpdateFurloughCauseScreenState
+    extends State<UpdateFurloughCauseScreen> {
   late String _cause;
   late FurloughRequestsBloc _bloc;
 

@@ -2,15 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/furlough_request_bloc/furlough_request_bloc.dart';
- import '../../../data/models/furlough_request_model.dart';
+import '../../../data/models/furlough_request_model.dart';
 import '../../../themes.dart';
 import '../../widgets/custom_appbar_add.dart';
 import 'update_furloughs_screen.dart';
 import 'update_furloughs_status_screen.dart';
 
 class FurloughDetailsScreen extends StatefulWidget {
-  const FurloughDetailsScreen({super.key, required this.furloughModel});
+  const FurloughDetailsScreen({
+    super.key,
+    required this.furloughModel,
+    required this.myRole,
+  });
+
   final FurloughRequestModel furloughModel;
+  final String myRole;
 
   @override
   State<FurloughDetailsScreen> createState() => _FurloughDetailsScreenState();
@@ -63,9 +69,6 @@ class _FurloughDetailsScreenState extends State<FurloughDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    String myToken = 'user';
-
     return Scaffold(
       backgroundColor: Colors.deepPurple.shade50,
       appBar: CustomActionAppBar(
@@ -99,7 +102,7 @@ class _FurloughDetailsScreenState extends State<FurloughDetailsScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                _buildInfoRow('ID', furlough.id.toString()),
+
                 Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
                 _buildInfoRow('Start Date', furlough.startDate.toString()),
                 Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
@@ -107,12 +110,8 @@ class _FurloughDetailsScreenState extends State<FurloughDetailsScreen> {
                 Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
                 _buildInfoRow('Cause', furlough.cause),
                 Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
-                _buildInfoRow('Status', furlough.status, valueColor: AppColors.darkBlue),
+                _buildInfoRow('Status', furlough.status),
                 Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
-                _buildInfoRow('Requested By Type', furlough.covetByType),
-                Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
-                _buildInfoRow('Requested By ID', furlough.covetById.toString()),
-
               ],
             ),
           ),
@@ -122,29 +121,19 @@ class _FurloughDetailsScreenState extends State<FurloughDetailsScreen> {
         onPressed: () async {
           FurloughRequestModel? result;
 
-          if (myToken == 'user') {
-            // المستخدم العادي يعدل السبب
-            result = await Navigator.push<FurloughRequestModel>(
-              context,
-              MaterialPageRoute(
-                builder: (context) => BlocProvider(
-                  create: (context) => FurloughRequestsBloc(),
-                  child: UpdateFurloughScreen(furlough: furlough),
-                ),
+          result = await Navigator.push<FurloughRequestModel>(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BlocProvider(
+                create: (context) => FurloughRequestsBloc(),
+                child: widget.myRole.toLowerCase() == 'admin'
+                    ? UpdateFurloughStatusScreen(furlough: furlough)
+                    : widget.myRole.toLowerCase() == 'lawyer'
+                    ? UpdateFurloughCauseScreen(furlough: furlough)
+                    : Container(), // شاشة افتراضية إذا لم يطابق أي دور
               ),
-            );
-          } else {
-            // المدير يعدل الحالة
-            result = await Navigator.push<FurloughRequestModel>(
-              context,
-              MaterialPageRoute(
-                builder: (context) => BlocProvider(
-                  create: (context) => FurloughRequestsBloc(),
-                  child: UpdateFurloughStatusScreen(furlough: furlough),
-                ),
-              ),
-            );
-          }
+            ),
+          );
 
           if (result != null) {
             refreshData(result);
@@ -166,8 +155,7 @@ class _FurloughDetailsScreenState extends State<FurloughDetailsScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-
-    ),
+      ),
     );
   }
 }

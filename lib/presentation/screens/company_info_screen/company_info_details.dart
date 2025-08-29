@@ -10,9 +10,9 @@ import '../../widgets/custom_appbar_add.dart';
 import 'update_company_info.dart';
 
 class CompanyInfoDetailsScreen extends StatefulWidget {
+  final CompanyInfoModel? companyInfo; // الآن يمكن أن يكون null
 
-
-  const CompanyInfoDetailsScreen({super.key});
+  const CompanyInfoDetailsScreen({super.key, this.companyInfo});
 
   @override
   State<CompanyInfoDetailsScreen> createState() =>
@@ -20,6 +20,28 @@ class CompanyInfoDetailsScreen extends StatefulWidget {
 }
 
 class _CompanyInfoDetailsScreenState extends State<CompanyInfoDetailsScreen> {
+  CompanyInfoModel? info;
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    info = widget.companyInfo;
+
+    if (info == null) {
+      // إذا لم يتم تمرير معلومات الشركة، نحملها من Bloc
+      final bloc = context.read<CompanyInfoBloc>();
+      bloc.add(GetCompanyEvent());
+      isLoading = true;
+    }
+  }
+
+  void refreshData(CompanyInfoModel updated) {
+    setState(() {
+      info = updated;
+    });
+  }
+
   Widget _buildInfoRow(String label, String value, {Color? valueColor}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -31,7 +53,7 @@ class _CompanyInfoDetailsScreenState extends State<CompanyInfoDetailsScreen> {
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
-              color: Colors.deepPurple,
+              color: AppColors.darkBlue,
             ),
           ),
           const SizedBox(width: 12),
@@ -39,7 +61,7 @@ class _CompanyInfoDetailsScreenState extends State<CompanyInfoDetailsScreen> {
             child: Text(
               value,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 color: valueColor ?? Colors.black87,
                 height: 1.3,
               ),
@@ -51,136 +73,96 @@ class _CompanyInfoDetailsScreenState extends State<CompanyInfoDetailsScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    BlocProvider.of<CompanyInfoBloc>(context).add(GetCompanyEvent());
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.deepPurple.shade50,
       appBar: const CustomActionAppBar(
         title: 'Company Info Details',
       ),
-      body: BlocBuilder<CompanyInfoBloc, CompanyInfoState>(
-        builder: (context, state) {
-          if (state is CompanyInfoLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is CompanyInfoLoaded) {
-            final companyInfo = state.company;
-            final company = companyInfo.company;
-
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // ===== بطاقة بيانات الشركة =====
-                  Card(
-                    elevation: 12,
-                    shadowColor: Colors.deepPurple.shade100,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 32, horizontal: 24),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Center(
-                            child: Icon(
-                              Icons.business_outlined,
-                              size: 80,
-                              color: AppColors.darkBlue,
-                              shadows: [
-                                Shadow(
-                                  color: Colors.blueAccent.shade200
-                                      .withOpacity(0.6),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          Divider(
-                              color: Colors.deepPurple.shade100, thickness: 1.5),
-                          _buildInfoRow('Name', company.name),
-                          Divider(
-                              color: Colors.deepPurple.shade100, thickness: 1.5),
-                          _buildInfoRow('Address', company.address),
-                          Divider(
-                              color: Colors.deepPurple.shade100, thickness: 1.5),
-                          _buildInfoRow('Foundation Date', company.foundationDate),
-                          Divider(
-                              color: Colors.deepPurple.shade100, thickness: 1.5),
-                          _buildInfoRow('Description', company.description),
-                          Divider(
-                              color: Colors.deepPurple.shade100, thickness: 1.5),
-                          _buildInfoRow('Goals', company.goals),
-                          Divider(
-                              color: Colors.deepPurple.shade100, thickness: 1.5),
-                          _buildInfoRow('Vision', company.vision),
-
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
+      body: BlocConsumer<CompanyInfoBloc, CompanyInfoState>(
+        listener: (context, state) {
+          if (state is CompanyInfoLoaded) {
+            setState(() {
+              info = state.company;
+              isLoading = false;
+            });
           } else if (state is CompanyInfoFail) {
-            return Center(child: Text('Error: ${state.errorMsg}'));
-          } else {
-            return const SizedBox.shrink();
+            setState(() {
+              isLoading = false;
+            });
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.errorMsg)));
           }
         },
-      ),
-      floatingActionButton: BlocBuilder<CompanyInfoBloc, CompanyInfoState>(
         builder: (context, state) {
-          if (state is CompanyInfoLoaded) {
-            return FloatingActionButton.extended(
-              onPressed: () async {
-                final result = await Navigator.push<CompanyInfoModel>(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => BlocProvider(
-                      create: (_) => CompanyInfoBloc(),
-                      child: UpdateCompanyInfoScreen(
-                        companyInfo: state.company,
+          if (info == null || isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final company = info!.company;
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(24.0),
+            child: Card(
+              elevation: 12,
+              shadowColor: Colors.deepPurple.shade100,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Padding(
+                padding:
+                const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Icon(
+                        Icons.business_outlined,
+                        size: 80,
+                        color: AppColors.darkBlue,
                       ),
                     ),
-                  ),
-                );
-
-                if (result != null) {
-                  BlocProvider.of<CompanyInfoBloc>(context)
-                      .add(GetCompanyEvent());
-                }
-              },
-              icon: const Icon(Icons.edit),
-              label: const Text(
-                'Edit',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                    const SizedBox(height: 24),
+                    _buildInfoRow('Name', company.name),
+                    _buildInfoRow('Address', company.address),
+                    _buildInfoRow('Foundation Date', company.foundationDate),
+                    _buildInfoRow('Description', company.description),
+                    _buildInfoRow('Goals', company.goals),
+                    _buildInfoRow('Vision', company.vision),
+                  ],
                 ),
               ),
-              backgroundColor: AppColors.darkBlue,
-              elevation: 6,
-              hoverElevation: 12,
-              extendedPadding: const EdgeInsets.symmetric(horizontal: 20),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          if (info == null) return;
+
+          final updatedInfo = await Navigator.push<CompanyInfoModel>(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider.value(
+                value: context.read<CompanyInfoBloc>(),
+                child: UpdateCompanyInfoScreen(companyInfo: info!),
               ),
-            );
-          } else {
-            return const SizedBox.shrink();
+            ),
+          );
+
+          if (updatedInfo != null) {
+            refreshData(updatedInfo);
           }
         },
+        icon: const Icon(Icons.edit, color: Colors.white),
+        label: const Text(
+          'Edit',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: AppColors.darkBlue,
       ),
     );
   }

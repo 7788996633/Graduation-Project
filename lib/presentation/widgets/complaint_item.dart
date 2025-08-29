@@ -136,7 +136,10 @@ class _ComplaintItemState extends State<ComplaintItem> {
                     ),
 
                     const SizedBox(height: 10),
+                    Divider(color: Colors.grey.shade300, thickness: 1, height: 1),
+                    const SizedBox(height: 12),
 
+                    // وصف الشكوى
                     Text(
                       widget.complaintModel.description.length > 100
                           ? '${widget.complaintModel.description.substring(0, 100)}...'
