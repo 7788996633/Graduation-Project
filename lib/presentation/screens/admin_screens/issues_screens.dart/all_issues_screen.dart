@@ -30,6 +30,7 @@ class _AllIssuesScreenState extends State<AllIssuesScreen> {
 
   Widget buildIssuesList() {
     return ListView.separated(
+      physics: ClampingScrollPhysics(),
       separatorBuilder: (context, index) => SizedBox(
         height: 10,
       ),

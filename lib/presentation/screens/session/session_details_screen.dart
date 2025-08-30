@@ -326,7 +326,7 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
                                         gradient: RadialGradient(
                                           center: Alignment.center,
                                           radius: s8,
-                                          colors: isLight
+                                          colors: isLight.value
                                               ? [
                                                   AppColors.darkBlue,
                                                   AppColors.softGray,
@@ -654,7 +654,7 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
                                                         center:
                                                             Alignment.center,
                                                         radius: 5,
-                                                        colors: isLight
+                                                        colors: isLight.value
                                                             ? [
                                                                 AppColors
                                                                     .darkBlue,

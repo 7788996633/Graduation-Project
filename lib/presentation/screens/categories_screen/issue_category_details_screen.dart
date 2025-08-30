@@ -62,7 +62,7 @@ class _IssueCategoryDetailsScreenState
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: isLight ? AppColors.darkBlue : AppColors.white,
+                      color: isLight.value ? AppColors.darkBlue : AppColors.white,
                     ),
                   ),
                   const SizedBox(height: 12),

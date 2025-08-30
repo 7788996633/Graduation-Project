@@ -11,7 +11,7 @@ Widget buildInfoTile(IconData icon, String label, String value,
     margin: const EdgeInsets.symmetric(vertical: 8),
     child: Row(
       children: [
-        Icon(icon, color: !isLight ? getCurrentTheme()['Icons'] : customColor),
+        Icon(icon, color: !isLight.value ? getCurrentTheme()['Icons'] : customColor),
         const SizedBox(width: 10),
         Expanded(
           child: customWidget ??
@@ -23,14 +23,14 @@ Widget buildInfoTile(IconData icon, String label, String value,
                     TextSpan(
                       text: "$label: ",
                       style: TextStyle(
-                          color: !isLight
+                          color: !isLight.value
                               ? getCurrentTheme()['Icons']
                               : customColor),
                     ),
                     TextSpan(
                       text: value,
                       style: TextStyle(
-                          color: !isLight
+                          color: !isLight.value
                               ? getCurrentTheme()['Icons']
                               : valueColor),
                     ),

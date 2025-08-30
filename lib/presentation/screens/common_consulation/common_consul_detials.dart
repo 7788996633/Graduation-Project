@@ -51,7 +51,7 @@ class _CommonConsultationDetailsScreenState
                 color: getCurrentTheme()['BackGorund'],
                 elevation: 2,
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(color: Colors.grey, width: isLight ? 0 : 1),
+                  side: BorderSide(color: Colors.grey, width: isLight.value ? 0 : 1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Padding(
@@ -73,7 +73,7 @@ class _CommonConsultationDetailsScreenState
                             child: Text(
                               'General Consultation',
                               style: TextStyle(
-                                color: !isLight
+                                color: !isLight.value
                                     ? AppColors.white
                                     : AppColors.darkBlue,
                                 fontSize: 14,
@@ -107,7 +107,7 @@ class _CommonConsultationDetailsScreenState
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: !isLight
+                                    color: !isLight.value
                                         ? AppColors.white
                                         : AppColors.darkBlue,
                                   ),
@@ -163,7 +163,7 @@ class _CommonConsultationDetailsScreenState
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: !isLight
+                                    color: !isLight.value
                                         ? AppColors.white
                                         : AppColors.darkBlue,
                                   ),

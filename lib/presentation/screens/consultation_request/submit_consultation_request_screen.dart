@@ -49,7 +49,7 @@ class _SubmitConsultationRequestScreenState
                 gradient: RadialGradient(
                   center: Alignment.center,
                   radius: 2,
-                  colors: isLight
+                  colors: isLight.value
                       ? [
                           AppColors.darkBlue,
                           AppColors.softGray,

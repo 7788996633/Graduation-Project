@@ -55,8 +55,8 @@ Map<String, Color> darkTheme = {
   'CommonConsultationText': AppColors.white,
   'Icons': AppColors.white,
 };
-bool isLight = true;
+ValueNotifier<bool> isLight  = ValueNotifier(true);
 
 Map<String, Color> getCurrentTheme() {
-  return isLight ? currentTheme : darkTheme;
+  return isLight.value ? currentTheme : darkTheme;
 }

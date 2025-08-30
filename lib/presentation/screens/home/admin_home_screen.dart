@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/ai_chat_bloc/ai_chat_bloc.dart';
 import 'package:graduation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:graduation/blocs/payroll_bloc/payroll_bloc.dart';
 import '../../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
@@ -238,7 +239,10 @@ class AdminHomeScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => const ChatWithAi(),
+              builder: (_) => BlocProvider(
+                create: (context) => AiChatBloc(),
+                child: const ChatWithAi(),
+              ),
             ),
           );
         },

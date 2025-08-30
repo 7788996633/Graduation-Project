@@ -69,7 +69,7 @@ String priorityToString(IssuePriority p) {
 }
 
 String statusToString(IssueStatus s) {
-  return s.name[0].toUpperCase() + s.name.substring(1).replaceAll('_', ' ');
+  return s.name[0].toUpperCase() + s.name.substring(1);
 }
 
 IssuePriority stringToPriority(String s) {
@@ -80,7 +80,7 @@ IssuePriority stringToPriority(String s) {
 }
 
 IssueStatus stringToStatus(String s) {
-  final normalized = s.toLowerCase().replaceAll(' ', '_');
+  final normalized = s.toLowerCase();
   return IssueStatus.values.firstWhere(
     (e) => e.name == normalized,
     orElse: () => IssueStatus.in_progress,

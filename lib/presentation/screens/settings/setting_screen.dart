@@ -62,7 +62,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: !isLight ? Colors.black : AppColors.darkBlue,
+        backgroundColor: !isLight.value ? Colors.black : AppColors.darkBlue,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -99,9 +99,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               icon: Icons.brightness_6,
               title: tr('dark_mode'),
               trailing: Switch(
-                value: !isLight,
+                value: !isLight.value,
                 onChanged: (val) {
-                  isLight = !isLight;
+                  isLight.value = !isLight.value;
                   setState(() {});
                 },
               ),

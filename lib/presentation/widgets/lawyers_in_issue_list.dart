@@ -62,7 +62,7 @@ class _LawyersInIssueListState extends State<LawyersInIssueList> {
                       gradient: RadialGradient(
                         center: Alignment.center,
                         radius: 2,
-                        colors: isLight
+                        colors: isLight.value
                             ? [
                                 AppColors.darkBlue,
                                 AppColors.softGray,
@@ -121,7 +121,7 @@ class _LawyersInIssueListState extends State<LawyersInIssueList> {
                           gradient: RadialGradient(
                             center: Alignment.center,
                             radius: 2,
-                            colors: isLight
+                            colors: isLight.value
                                 ? [
                                     AppColors.darkBlue,
                                     AppColors.softGray,

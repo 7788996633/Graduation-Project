@@ -29,7 +29,7 @@ class SessionItem extends StatelessWidget {
           gradient: RadialGradient(
             center: Alignment.center,
             radius: s10,
-            colors: isLight
+            colors: isLight.value
                 ? [AppColors.darkBlue, AppColors.softGray, AppColors.white]
                 : [Colors.black, AppColors.softGray, AppColors.white],
           ),

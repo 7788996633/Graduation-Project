@@ -13,17 +13,15 @@ final class AiChatFail extends AiChatState {
   AiChatFail({required this.errmsg});
 }
 
-final class AiChatSuccess extends AiChatState {
+class AiChatSuccess extends AiChatState {
+  final String question;
+  final String answer;
 
-  final String successmsg;
-
-  AiChatSuccess({required this.successmsg});
-
+  AiChatSuccess({required this.question, required this.answer});
 }
 
 final class AiChatLoadedSuccessfully extends AiChatState {
   final String aimsg;
 
   AiChatLoadedSuccessfully({required this.aimsg});
-  
 }

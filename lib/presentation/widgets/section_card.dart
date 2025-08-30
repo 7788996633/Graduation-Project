@@ -20,7 +20,7 @@ class SectionCard extends StatelessWidget {
       child: Card(
         elevation: 6,
         shape: RoundedRectangleBorder(
-          side: BorderSide(color: Colors.grey, width: isLight ? 0 : 1),
+          side: BorderSide(color: Colors.grey, width: isLight.value ? 0 : 1),
           borderRadius: BorderRadius.circular(16),
         ),
         color: getCurrentTheme()['HomeCards'],

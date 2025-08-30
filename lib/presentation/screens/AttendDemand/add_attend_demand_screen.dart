@@ -58,7 +58,7 @@ class _AttendDemandScreenState extends State<AttendDemandScreen> {
             gradient: RadialGradient(
               center: Alignment.center,
               radius: 2,
-              colors: isLight
+              colors: isLight.value
                   ? [
                       AppColors.darkBlue,
                       AppColors.softGray,

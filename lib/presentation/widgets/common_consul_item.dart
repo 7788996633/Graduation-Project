@@ -19,7 +19,7 @@ class CommonConsultationItem extends StatelessWidget {
       elevation: 3,
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: Colors.grey, width: isLight ? 0 : 1),
+        side: BorderSide(color: Colors.grey, width: isLight.value ? 0 : 1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: InkWell(
@@ -135,7 +135,7 @@ class CommonConsultationItem extends StatelessWidget {
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                             color:
-                                isLight ? AppColors.darkBlue : AppColors.white,
+                                isLight.value ? AppColors.darkBlue : AppColors.white,
                           ),
                         ),
                         const SizedBox(height: 4),

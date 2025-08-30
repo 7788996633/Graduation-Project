@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation/presentation/screens/user_screens/user_profile_screens/create_user_profile_screen.dart';
+import 'package:graduation/presentation/screens/lawyer_screens/lawyer_profile_screens/create_lawyer_profile_screen.dart';
 
 import '../../../blocs/auth_bloc/auth_bloc.dart';
 import '../../../blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
@@ -62,15 +63,29 @@ class _AuthScreenState extends State<AuthScreen> {
 
                 if (lawyerState is LawyerProfileLoadedSuccessfully) {
                   myLicenesNumber = lawyerState.lawyerModel.licenseNumber;
-                }
-              }
 
-              // 🚀 بعد اكتمال كل شي → التنقّل
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const HomePage()),
-                (route) => false,
-              );
+                  // 🚀 بعد اكتمال كل شي → التنقّل
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => const HomePage()),
+                    (route) => false,
+                  );
+                } else if (lawyerState is LawyerProfileFail) {
+                  // إذا المحامي ما عندو بروفايل → خدو على شاشة إنشاء بروفايل محامي
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                        builder: (_) => const CreateLawyerProfileScreen()),
+                    (route) => false,
+                  );
+                }
+              } else {
+                // 🚀 باقي الأدوار (user, admin) → روح عالهوم
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const HomePage()),
+                  (route) => false,
+                );
+              }
             } else if (profileState is UserProfileFail && myRole == "user") {
+              // إذا مستخدم عادي وما عندو بروفايل → روح ع شاشة إنشاء بروفايل يوزر
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
                     builder: (_) => const CreateUserProfileScreen()),

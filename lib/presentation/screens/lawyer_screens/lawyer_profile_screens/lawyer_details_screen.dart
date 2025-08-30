@@ -34,7 +34,7 @@ class _LawyerDetailsScreenState extends State<LawyerDetailsScreen> {
       child: Row(
         children: [
           Icon(icon,
-              color: !isLight ? getCurrentTheme()['Icons'] : customColor),
+              color: !isLight.value ? getCurrentTheme()['Icons'] : customColor),
           const SizedBox(width: 10),
           Expanded(
             child: customWidget ??
@@ -46,13 +46,13 @@ class _LawyerDetailsScreenState extends State<LawyerDetailsScreen> {
                       TextSpan(
                           text: "$label: ",
                           style: TextStyle(
-                              color: !isLight
+                              color: !isLight.value
                                   ? getCurrentTheme()['BoldText']
                                   : customColor)),
                       TextSpan(
                           text: value,
                           style: TextStyle(
-                              color: !isLight
+                              color: !isLight.value
                                   ? getCurrentTheme()['BoldText']
                                   : valueColor)),
                     ],
@@ -153,7 +153,7 @@ class _LawyerDetailsScreenState extends State<LawyerDetailsScreen> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor:
-            !isLight ? getCurrentTheme()['BackGorund'] : customColor,
+            !isLight.value ? getCurrentTheme()['BackGorund'] : customColor,
         title: const Text(
           "Lawyer Profile",
           style: TextStyle(

@@ -10,18 +10,18 @@ class ProfileModel {
 
   ProfileModel(
       {required this.id,
-        required this.address,
-        required this.phone,
-        required this.scientificLevel,
-        required this.age,
-        required this.image});
+      required this.address,
+      required this.phone,
+      required this.scientificLevel,
+      required this.age,
+      required this.image});
 
   factory ProfileModel.fromjson(data) {
     return ProfileModel(
       id: data['id'],
       address: data['address'],
       age: data['age'],
-      image: 'http://$ip:8000/${data['image']}',
+      image: 'https://azhri.net/${data['image']}',
       phone: data['phone'],
       scientificLevel: data['scientificLevel'],
     );
