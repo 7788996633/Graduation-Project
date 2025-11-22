@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
+import '../../../../themes.dart';
+import '../../../blocs/legal_news_bloc/legal_news_bloc.dart';
 import '../factories/role_screen.dart';
+import '../legal_news_screen/latest_news_list.dart';
 import 'admin_home_screen.dart';
 
 class AdminHomePage extends StatefulWidget implements RoleScreen {
@@ -22,11 +26,18 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
   final List<Widget> _pages = [
     // الصفحة الرئيسية
-    AdminHomeScreen(),
+    const AdminHomeScreen(),
     // المفضلات
-    const Center(child: Text('مفضلتي')),
+    BlocProvider(
+      create: (context) => LegalNewsBloc(),
+      child: const LatestNewsListScreen(),
+    ),
+
     // المواعيد
-    const Center(child: Text('مواعيدي')),
+    BlocProvider(
+      create: (context) => LegalNewsBloc(),
+      child: const LatestNewsListScreen(),
+    ),
     // الأخبار القانونية
     const Center(child: Text('الأخبار القانونية')),
   ];
@@ -47,25 +58,26 @@ class _AdminHomePageState extends State<AdminHomePage> {
           SalomonBottomBarItem(
             icon: const Icon(Icons.home),
             title: const Text("الرئيسية"),
-            selectedColor: const Color(0XFF472A0C),
+            selectedColor: AppColors.darkBlue,
           ),
           // المفضلات
           SalomonBottomBarItem(
             icon: const Icon(Icons.favorite),
             title: const Text("المفضلة"),
-            selectedColor: const Color(0XFF472A0C),
+            selectedColor: AppColors.darkBlue,
           ),
           // المواعيد
           SalomonBottomBarItem(
-            icon: const Icon(Icons.schedule),
-            title: const Text("مواعيدي"),
-            selectedColor: const Color(0XFF472A0C),
+            icon: const Icon(Icons.article), // أيقونة مناسبة للأخبار
+            title: const Text("آخر الأخبار"),
+            selectedColor: AppColors.darkBlue,
           ),
+
 
           SalomonBottomBarItem(
             icon: const Icon(Icons.new_releases),
             title: const Text("الأخبار القانونية"),
-            selectedColor: const Color(0XFF472A0C),
+            selectedColor: AppColors.darkBlue,
           ),
         ],
       ),

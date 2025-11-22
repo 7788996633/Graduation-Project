@@ -1,118 +1,267 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../blocs/user_bloc/user_bloc.dart';
-import '../../../data/models/user_model.dart';
+import 'package:easy_localization/easy_localization.dart';
 
-class UserItem extends StatelessWidget {
+import '../../../blocs/user_bloc/user_bloc.dart';
+import '../../../blocs/payroll_bloc/payroll_bloc.dart';
+import '../../../blocs/salary_adjustments_bloc/salary_adjustments_bloc.dart';
+import '../../../data/models/user_model.dart';
+import '../../blocs/payroll_bloc/payroll_event.dart';
+import '../../themes.dart';
+
+import '../screens/salary_adjustments_screen/add_salary.dart';
+import '../screens/salary_adjustments_screen/all_salary_adjustments_screen.dart';
+import 'custom_user_item.dart';
+
+class UserItem extends StatefulWidget {
   const UserItem({super.key, required this.userModel});
   final UserModel userModel;
 
   @override
+  State<UserItem> createState() => _UserItemState();
+}
+
+class _UserItemState extends State<UserItem> {
+  @override
   Widget build(BuildContext context) {
-    return Card(
-      color: const Color.fromARGB(255, 216, 214, 214),
-      child: ListTile(
-        leading: userModel.id == 1
-            ? const Text("")
-            : IconButton(
-                onPressed: () {
-                  BlocProvider.of<UserBloc>(context).add(
-                    DeleteUserById(userId: userModel.id),
-                  );
-                },
-                icon: const Icon(
-                  Icons.delete,
-                  color: Colors.redAccent,
+    return BlocListener<PayrollBloc, PayrollState>(
+      listener: (context, state) {
+        if (state is PayrollLoaded) {
+          final payroll = state.payroll;
+          showDialog(
+            context: context,
+            builder: (context) => Center(
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
                 ),
-              ),
-        trailing: userModel.id == 1
-            ? const Text("")
-            : PopupMenuButton<String>(
-                onSelected: (value) async {
-                  final confirmed = await showDialog<bool>(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text("Confirm Role Change"),
-                      content: Text(
-                          "Are you sure you want to change the role to '$value'?"),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, false),
-                          child: const Text("Cancel"),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        tr("payroll_details"),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, true),
-                          child: const Text("Confirm"),
-                        ),
-                      ],
-                    ),
-                  );
-
-                  // التأكد إذا كان الـ context لسه موجود
-                  if (!context.mounted) return;
-
-                  if (confirmed == true) {
-                    BlocProvider.of<UserBloc>(context).add(
-                      ChangeUserRole(
-                        userId: userModel.id,
-                        role: value.toLowerCase(),
                       ),
-                    );
-                  }
-                },
-                icon: const Icon(
-                  Icons.settings,
-                  color: Colors.black,
+                      const SizedBox(height: 10),
+                      Text("✔ ${tr("payroll_added")}"),
+                      Text("${tr("payment")}: ${payroll.payment}"),
+                      Text("${tr("allowances")}: ${payroll.allowances}"),
+                      Text("${tr("deductions")}: ${payroll.deductions}"),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(tr("back")),
+                      ),
+                    ],
+                  ),
                 ),
-                itemBuilder: (context) => getPopupItems(userModel.roleName),
               ),
-        title: Text(
-          userModel.name,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          );
+        } else if (state is PayrollFail) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text(tr("error")),
+              content: Text(state.errMsg),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(tr("back")),
+                ),
+              ],
+            ),
+          );
+        }
+      },
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 2,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // السطر الأول: الاسم + الدور فقط
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 24,
+                    child: const Icon(Icons.person),
+                  ),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.userModel.name,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        widget.userModel.roleName,
+                        style: TextStyle(
+                          color: getCurrentTheme()['NormalText'],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              // السطر الثاني: جميع الأيقونات والأزرار
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.attach_money,
+                        color: getCurrentTheme()['Icons']),
+                    tooltip: tr("add_payroll"),
+                    onPressed: () {
+                      if (widget.userModel.id != null) {
+                        BlocProvider.of<PayrollBloc>(context).add(
+                          AddPayrollEvent(userId: widget.userModel.id),
+                        );
+                      }
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.edit, color: getCurrentTheme()['Icons']),
+                    tooltip: tr("add_salary_adjustment"),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => BlocProvider(
+                            create: (_) => SalaryAdjustmentsBloc(),
+                            child: AddSalaryAdjustmentsScreen(
+                                userId: widget.userModel.id),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.list, color: getCurrentTheme()['Icons']),
+                    tooltip: tr("list_salary_adjustments"),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => BlocProvider(
+                            create: (_) => SalaryAdjustmentsBloc(),
+                            child: ListSalaryAdjustmentsScreen(
+                                userId: widget.userModel.id),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  widget.userModel.id == 1
+                      ? const SizedBox()
+                      : PopupMenuButton<String>(
+                          onSelected: (value) async {
+                            final confirmed = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text(tr("confirm_role_change")),
+                                content: Text(tr("are_you_sure_change_role",
+                                    args: [value])),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, false),
+                                    child: Text(tr("cancel")),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, true),
+                                    child: Text(tr("confirm")),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            if (!context.mounted) return;
+
+                            if (confirmed == true) {
+                              if (value == 'Delete') {
+                                BlocProvider.of<UserBloc>(context).add(
+                                  DeleteUserById(userId: widget.userModel.id),
+                                );
+                              } else {
+                                BlocProvider.of<UserBloc>(context).add(
+                                  ChangeUserRole(
+                                    userId: widget.userModel.id,
+                                    role: value.toLowerCase(),
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                          icon: Icon(Icons.settings,
+                              color: getCurrentTheme()['Icons']),
+                          itemBuilder: (context) =>
+                              getPopupItems(widget.userModel.roleName),
+                        ),
+                ],
+              ),
+            ],
+          ),
         ),
-        subtitle: Text(userModel.roleName),
       ),
     );
   }
 
   List<PopupMenuEntry<String>> getPopupItems(String currentRole) {
     final roleOptions = <String, PopupMenuItem<String>>{
-      'Lawyer': const PopupMenuItem<String>(
+      'Lawyer': PopupMenuItem<String>(
         value: 'Lawyer',
-        child: Text("Change Role To Lawyer",
-            style: TextStyle(color: Colors.brown)),
+        child: Text(tr("change_role_to_lawyer"),
+            style: const TextStyle(color: Colors.brown)),
       ),
-      'Intern': const PopupMenuItem<String>(
+      'Intern': PopupMenuItem<String>(
         value: 'Intern',
-        child: Text("Change Role To Intern",
-            style: TextStyle(color: Colors.orange)),
+        child: Text(tr("change_role_to_intern"),
+            style: const TextStyle(color: Colors.orange)),
       ),
-      'HR': const PopupMenuItem<String>(
+      'HR': PopupMenuItem<String>(
         value: 'HR',
-        child: Text("Change Role To HR",
-            style: TextStyle(color: Colors.yellowAccent)),
+        child: Text(tr("change_role_to_hr"),
+            style: const TextStyle(color: Colors.yellowAccent)),
       ),
-      'Accountant': const PopupMenuItem<String>(
+      'Accountant': PopupMenuItem<String>(
         value: 'Accountant',
-        child: Text("Change Role To Accountant",
-            style: TextStyle(color: Colors.green)),
+        child: Text(tr("change_role_to_accountant"),
+            style: const TextStyle(color: Colors.green)),
       ),
-      'User': const PopupMenuItem<String>(
+      'User': PopupMenuItem<String>(
         value: 'User',
-        child: Text("Change Role To User",
-            style: TextStyle(color: Colors.blueGrey)),
+        child: Text(tr("change_role_to_user"),
+            style: const TextStyle(color: Colors.blueGrey)),
       ),
-      'Admin': const PopupMenuItem<String>(
-          value: 'Admin',
-          child: Text("You are the admin",
-              style: TextStyle(color: Color.fromARGB(255, 179, 34, 106)))),
+      'Admin': PopupMenuItem<String>(
+        value: 'Admin',
+        child: Text(tr("you_are_admin"),
+            style: const TextStyle(color: Color.fromARGB(255, 179, 34, 106))),
+      ),
+      'Delete': PopupMenuItem<String>(
+        value: 'Delete',
+        child: Text(tr("delete_this_user"),
+            style: const TextStyle(color: Color.fromARGB(255, 179, 34, 106))),
+      ),
     };
 
     final current = currentRole.toUpperCase();
-
-    if (current == 'ADMIN') {
-      return [roleOptions['Admin']!];
-    }
+    if (current == 'ADMIN') return [roleOptions['Admin']!];
 
     final allowedTransitions = <String, List<String>>{
       'LAWYER': ['User'],
@@ -124,9 +273,6 @@ class UserItem extends StatelessWidget {
 
     final allowed = allowedTransitions[current];
     if (allowed == null) return [];
-
     return allowed.map((r) => roleOptions[r]!).toList();
   }
-
-  String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 }

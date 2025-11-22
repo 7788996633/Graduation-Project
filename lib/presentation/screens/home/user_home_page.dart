@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+
+import '../../../../themes.dart';
 import 'user_home_screen.dart';
+
 
 class UserHomePage extends StatefulWidget {
   const UserHomePage({super.key});
@@ -13,7 +16,7 @@ class _MainClientPageState extends State<UserHomePage> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = [
-    UserHomeScreen(),
+    const UserHomeScreen(),
     const FavoritesScreen(),
     const LegalNewsScreen(),
   ];
@@ -29,9 +32,9 @@ class _MainClientPageState extends State<UserHomePage> {
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: const Color(0XFF472A0C),
-        color: Colors.blue,
-        buttonBackgroundColor: Colors.white,
+        backgroundColor:AppColors.white,
+        color: AppColors.darkBlue ,
+        buttonBackgroundColor: AppColors.white,
         height: 60,
         items: _items,
         index: _currentIndex,

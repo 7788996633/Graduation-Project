@@ -1,222 +1,358 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation/presentation/screens/admin_screens/issues_screens.dart/all_issues_screen.dart';
-import 'package:graduation/presentation/screens/lawyers_list_screen.dart';
+import 'package:graduation/blocs/ai_chat_bloc/ai_chat_bloc.dart';
+import 'package:graduation/blocs/auth_bloc/auth_bloc.dart';
+import 'package:graduation/blocs/payroll_bloc/payroll_bloc.dart';
+import '../../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
+import '../../../blocs/categories/categories_bloc.dart';
+import '../../../blocs/common_consultation_bloc/common _consultation_bloc.dart';
+import '../../../blocs/complaints_bloc/complaint_bloc.dart';
+import '../../../blocs/delegations_bloc/delegations_bloc.dart';
+import '../../../blocs/expenses_bloc/expenses_bloc.dart';
+import '../../../blocs/furlough_request_bloc/furlough_request_bloc.dart';
 import '../../../blocs/issue_bloc/issues_bloc.dart';
 import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
 import '../../../blocs/lawyer_bloc/lawyer_bloc.dart';
+import '../../../blocs/legal_books_bloc/legal_books_bloc.dart';
+import '../../../blocs/legal_news_bloc/legal_news_bloc.dart';
+import '../../../blocs/required_document_bloc/required_document_bloc.dart';
+import '../../../blocs/role_bloc/role_bloc.dart';
+import '../../../blocs/session_type_bloc/session_type_bloc.dart';
 import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
-import '../../widgets/custom_app_bar.dart';
-import '../admin_screens/issues_screens.dart/create_issue_screen.dart';
+import '../../../themes.dart';
+import '../../widgets/custom_app_drawer.dart';
+import '../../widgets/custom_home_appbar.dart';
+import '../../widgets/section_card.dart';
+import '../admin_screens/issues_screens.dart/all_issues_screen.dart';
+import '../admin_screens/issues_screens.dart/archived_issues_screen.dart';
 import '../admin_screens/users_management_screens/modify_users_permissions_screen.dart';
+import '../ai_chat/chat_with_ai.dart';
+import '../all_lawyers_screen.dart';
+import '../categories_screen/issue_categories_screen.dart';
+import '../common_consulation/list_common_consul.dart';
+import '../complaint_screen/add_complaint_screen.dart';
+import '../complaint_screen/list_complaint_screen.dart';
+import '../consultation_request/all_consultation_requests_page.dart';
+import '../delegations_screen/list_delegation_screen.dart';
+import '../expenses_screen/expenses_list_screen.dart';
+import '../furloughs/list_furloughs_screen.dart';
 import '../issue_request/list_issue_requests_screen.dart';
-import '../notifications_screen.dart';
-import '../settings/setting_screen.dart';
+import '../legal_books_screen/logal_book_list.dart';
+import '../legal_books_screen/my_saved_book_list.dart';
+import '../legal_news_screen/latest_news_list.dart';
+import '../legal_news_screen/list_legal_news_screen.dart';
+import '../legal_news_screen/my_saved_news_list.dart';
+import '../required_documents/list_required_document_screen.dart';
+import '../role_screen/all_role_screen.dart';
+
+import '../session_type/list_session_type_screen.dart';
 
 class AdminHomeScreen extends StatelessWidget {
-  AdminHomeScreen({super.key});
-
-  final List<Map<String, dynamic>> sections = [
-    {'title': 'Modify user permissions', 'icon': Icons.admin_panel_settings},
-    {'title': 'Issues', 'icon': Icons.gavel},
-    {'title': 'Issue Requests', 'icon': Icons.assignment},
-    {'title': 'All Lawyers', 'icon': Icons.group},
-    {'title': 'Invoices & Payments', 'icon': Icons.payment},
-    {'title': 'Reports', 'icon': Icons.bar_chart},
-    {'title': 'Vacations', 'icon': Icons.beach_access},
-    {'title': 'User Settings', 'icon': Icons.admin_panel_settings},
-    {'title': 'Legal Library', 'icon': Icons.library_books},
-    {'title': 'Legal News', 'icon': Icons.newspaper},
-    {'title': 'FAQs', 'icon': Icons.help_center},
-    {'title': 'Company Info', 'icon': Icons.info},
-    {
-      'title': 'Lawyers & Trainees',
-      'icon': Icons.group
-    }, //Documents & Request// Icons.description
-    {'title': 'Backup & Restore', 'icon': Icons.backup},
-  ];
-
-  void onCardPressed(BuildContext context, String title) {
-    switch (title) {
-      case 'Modify user permissions':
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => const ModifyUsersPermissionsScreen(),
-          ),
-        );
-        break;
-      case 'Issues':
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => BlocProvider(
-              create: (context) => IssuesBloc(),
-              child: const AllIssuesScreen(),
-            ),
-          ),
-        );
-        break;
-      case 'Issue Requests':
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => BlocProvider(
-              create: (context) => IssueRequestsBloc(),
-              child: const ListIssueRequestsScreen(),
-            ),
-          ),
-        );
-        break;
-      case 'All Lawyers':
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => BlocProvider(
-              create: (context) => LawyerBloc(),
-              child: const LawyersListScreen(),
-            ),
-          ),
-        );
-        break;
-      default:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => SectionPage(title: title),
-          ),
-        );
-    }
-  }
+  const AdminHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final sections = [
+      {
+        'title': 'Modify user permissions',
+        'icon': Icons.admin_panel_settings,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => BlocProvider(
+                      create: (context) => PayrollBloc(),
+                      child: const ModifyUsersPermissionsScreen(),
+                    )),
+          );
+        },
+      },
+      {
+        'title': 'All Cases',
+        'icon': Icons.gavel,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => IssuesBloc(),
+                child: const AllIssuesScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Archived Cases',
+        'icon': Icons.archive_rounded,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => IssuesBloc(),
+                child: const ArchivedIssuesScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'All Delegations',
+        'icon': Icons.switch_access_shortcut_outlined,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => DelegationBloc(),
+                child: const ListDelegationsScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Case Requests',
+        'icon': Icons.assignment,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => IssueRequestsBloc(),
+                child: const ListIssueRequestsScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'All Lawyers',
+        'icon': Icons.group,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => LawyerBloc(),
+                child: const AllLawyersScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'All Consultation Requests',
+        'icon': Icons.chat_rounded,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => ConsultationRequestBloc(),
+                child: const AllConsultationRequestsPage(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Common Consultations',
+        'icon': Icons.question_answer_rounded,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => CommonConsultationBloc(),
+                child: const ListCommonConsultationsScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'All Furloughs',
+        'icon': Icons.group,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => FurloughRequestsBloc(),
+                child: const ListFurloughsScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      // {
+      //   'title': 'All required decoument ',
+      //   'icon': Icons.group,
+      //   'onTap': () {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(
+      //         builder: (_) => BlocProvider(
+      //           create: (_) => RequiredDocumentsBloc(),
+      //           child: const ListRequiredDocumentsScreen(),
+      //         ),
+      //       ),
+      //     );
+      //   },
+      // },
+      {
+        'title': 'All session type ',
+        'icon': Icons.group,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => SessionTypeBloc(),
+                child: const ListSessionTypesScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Cases Categories',
+        'icon': Icons.group,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => CategoriesBloc(),
+                child: const ListIssueCategoriesScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Chat wit AI',
+        'icon': Icons.chat,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => AiChatBloc(),
+                child: const ChatWithAi(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Expenses',
+        'icon': Icons.attach_money_outlined,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => ExpenseBloc(),
+                child: const ListExpensesScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Library',
+        'icon': Icons.book_outlined,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => LegalBookBloc(),
+                child: const ListLegalBooksScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'News',
+        'icon': Icons.newspaper,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => LegalNewsBloc(),
+                child: const ListLegalNewsScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Roles & Permissions',
+        'icon': Icons.admin_panel_settings_outlined,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => RoleBloc(),
+                child: const ListRolesScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Complaints',
+        'icon': Icons.report_problem_outlined,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => ComplaintBloc(),
+                child: const ListComplaintsScreen(),
+              ),
+            ),
+          );
+        },
+      },
+    ];
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Manager of Yaghmour Company ',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: const Color(0XFF472A0C),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings, color: Colors.white),
-            tooltip: 'Settings',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SettingsScreen(),
-                ),
-              );
-            },
+      backgroundColor: getCurrentTheme()['BackGorund'],
+      appBar: const CustomHomeAppBar(title: 'Admin Panel'),
+      drawer: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => UserProfileBloc()..add(ShowUserProfileEvent()),
           ),
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            tooltip: 'Notifications',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const NotificationsScreen(),
-                ),
-              );
-            },
+          BlocProvider(
+            create: (context) => AuthBloc(),
           ),
         ],
-      ),
-      drawer: BlocProvider(
-        create: (context) => UserProfileBloc()..add(ShowUserProfileEvent()),
         child: const CustomAppDrawer(),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => BlocProvider(
-                      create: (context) => IssuesBloc(),
-                      child: const CreateIssueScreen(),
-                    ),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.notifications),
-              label: const Text('انشاء قضية'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
+        padding: const EdgeInsets.all(16.0),
+        child: Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: sections.map((section) {
+            return SizedBox(
+              width: MediaQuery.of(context).size.width / 2 - 24,
+              child: SectionCard(
+                icon: section['icon'] as IconData,
+                title: section['title'] as String,
+                onTap: section['onTap'] as VoidCallback,
               ),
-            ),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: sections.map((section) {
-                return SizedBox(
-                  width: MediaQuery.of(context).size.width / 2 - 18,
-                  child: Card(
-                    elevation: 6,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    color: Colors.blueGrey[50],
-                    child: InkWell(
-                      onTap: () {
-                        onCardPressed(context, section['title']);
-                      },
-                      borderRadius: BorderRadius.circular(16),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              section['icon'],
-                              size: 40,
-                              color: const Color(0XFF472A0C),
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              section['title'],
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0XFF472A0C),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class SectionPage extends StatelessWidget {
-  final String title;
-
-  const SectionPage({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        backgroundColor: Colors.blueGrey[800],
-      ),
-      body: Center(
-        child: Text(
-          'Welcome to $title Page!',
-          style: const TextStyle(fontSize: 22),
+            );
+          }).toList(),
         ),
       ),
     );

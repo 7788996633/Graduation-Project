@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../blocs/user_bloc/user_bloc.dart';
+import '../../blocs/user_profile_bloc/user_profile_bloc.dart';
 import '../../data/models/user_model.dart';
 import 'user_item.dart';
 
@@ -27,8 +28,11 @@ class _UserListState extends State<UsersList> {
       itemCount: usersList.length,
       shrinkWrap: true,
       physics: const ClampingScrollPhysics(),
-      itemBuilder: (context, index) => UserItem(
-        userModel: usersList[index],
+      itemBuilder: (context, index) => BlocProvider(
+        create: (context) => UserProfileBloc(),
+        child: UserItem(
+          userModel: usersList[index],
+        ),
       ),
     );
   }
@@ -59,6 +63,10 @@ class _UserListState extends State<UsersList> {
               ),
               backgroundColor: Colors.red,
             ),
+          );
+        } else {
+          Center(
+            child: CircularProgressIndicator(),
           );
         }
       },
@@ -91,7 +99,9 @@ class _UserListState extends State<UsersList> {
               ],
             );
           } else {
-            return const CircularProgressIndicator();
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
         },
       ),

@@ -4,19 +4,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:file_picker/file_picker.dart';
 
 import '../../../../blocs/user_profile_bloc/user_profile_bloc.dart';
+import '../../../../constant.dart';
 import '../../../../data/models/user_profile_model.dart';
+import '../../../../themes.dart';
 import '../../../widgets/delete_profile_button.dart';
 import '../../../widgets/edit_profile_button.dart';
 
 class UserProfileScreen extends StatefulWidget {
-  const UserProfileScreen({super.key});
-
+  const UserProfileScreen({super.key, required this.userId});
+  final int userId;
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
-  UserProfileModel? userProfileModel;
   late TextEditingController nameController;
   late TextEditingController emailController;
   late TextEditingController phoneController;
@@ -25,18 +26,89 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   late TextEditingController scientificLevelController;
   bool isEditing = false;
 
-  late final UserProfileBloc bloc;
+  late UserProfileBloc bloc;
   File? _pickedImage;
-
+  late UserProfileModel userProfileModel;
   @override
   void initState() {
     super.initState();
     bloc = BlocProvider.of<UserProfileBloc>(context);
-    bloc.add(ShowUserProfileEvent());
+    bloc.add(ShowUserProfileByIdEvent(userId: widget.userId));
+    nameController = TextEditingController();
+    emailController = TextEditingController();
+    phoneController = TextEditingController();
+    addressController = TextEditingController();
+    ageController = TextEditingController();
+    scientificLevelController = TextEditingController();
   }
+
+  bool isMyProfile = false;
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<UserProfileBloc, UserProfileState>(
+      builder: (context, state) {
+        if (state is UserProfileLoadedSuccessfully) {
+          userProfileModel = state.userProfileModel;
+          nameController.text = userProfileModel.name;
+          emailController.text = userProfileModel.email;
+          phoneController.text = userProfileModel.phone;
+          addressController.text = userProfileModel.address;
+          ageController.text = userProfileModel.age.toString();
+          scientificLevelController.text = userProfileModel.scientificLevel;
+          isMyProfile = userProfileModel.userId == myUserId;
+          print(isMyProfile);
+          return profileScaffold();
+        } else if (state is UserProfileSuccess) {
+          return profileScaffold();
+        } else if (state is UserProfileFail) {
+          return Scaffold(
+            backgroundColor: const Color(0xFFF3F4F6),
+            appBar: AppBar(
+              backgroundColor: Colors.blue,
+              title: const Text(
+                "Profile",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              centerTitle: true,
+              elevation: 4,
+              shape: const RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(20)),
+              ),
+            ),
+            body: Text(
+              state.errmsg,
+            ),
+          );
+        } else {
+          return Scaffold(
+            backgroundColor: const Color(0xFFF3F4F6),
+            appBar: AppBar(
+              backgroundColor: Colors.blue,
+              title: const Text(
+                "Profile",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              centerTitle: true,
+              elevation: 4,
+              shape: const RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(20)),
+              ),
+            ),
+            body: Center(
+              child: CircularProgressIndicator(
+                color: AppColors.darkBlue,
+              ),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  Widget profileScaffold() {
     return Scaffold(
       backgroundColor: const Color(0xFFF3F4F6),
       appBar: AppBar(
@@ -51,75 +123,40 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
         ),
         actions: [
-          EditProfileButton(
-            isEditing: isEditing,
-            onTap: () {
-              setState(() {
-                if (isEditing) {
-                  bloc.add(UpdateUserProfileEvent(
-                    phone: phoneController.text,
-                    address: addressController.text,
-                    age: ageController.text,
-                    scientificLevel: scientificLevelController.text,
-                    imagePath: _pickedImage?.path ?? userProfileModel!.image,
-                  ));
-                  bloc.add(ShowUserProfileEvent());
-                }
-                isEditing = !isEditing;
-              });
-            },
-          ),
-          DeleteProfileButton(
-            onDelete: () {
-              bloc.add(DeleteUserProfileEvent());
-            },
-          ),
+          if (isMyProfile)
+            EditProfileButton(
+              isEditing: isEditing,
+              onTap: () {
+                setState(() {
+                  if (isEditing) {
+                    bloc.add(UpdateUserProfileEvent(
+                      phone: phoneController.text,
+                      address: addressController.text,
+                      age: ageController.text,
+                      scientificLevel: scientificLevelController.text,
+                      imagePath: _pickedImage?.path  ,
+                    ));
+                    bloc.add(ShowUserProfileEvent());
+                  }
+                  isEditing = !isEditing;
+                });
+              },
+            ),
+          if (isMyProfile)
+            DeleteProfileButton(
+              onDelete: () {
+                bloc.add(
+                  DeleteUserProfileEvent(),
+                );
+              },
+            ),
         ],
       ),
-      body: BlocConsumer<UserProfileBloc, UserProfileState>(
-        listener: (context, state) {
-          if (state is UserProfileSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.successmsg)),
-            );
-            if (state.successmsg.contains('deleted')) {
-              Navigator.of(context).pop();
-            }
-          } else if (state is UserProfileFail) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Error: ${state.errmsg}')),
-            );
-          }
-        },
-        builder: (context, state) {
-          if (state is UserProfileLoadedSuccessfully) {
-            userProfileModel = state.userProfileModel;
-
-            nameController =
-                TextEditingController(text: userProfileModel!.name);
-            emailController =
-                TextEditingController(text: userProfileModel!.email);
-            phoneController =
-                TextEditingController(text: userProfileModel!.phone);
-            addressController =
-                TextEditingController(text: userProfileModel!.address);
-            ageController =
-                TextEditingController(text: userProfileModel!.age.toString());
-            scientificLevelController =
-                TextEditingController(text: userProfileModel!.scientificLevel);
-
-            return _buildProfileContent();
-          } else if (state is UserProfileFail) {
-            return _buildErrorContent(state.errmsg);
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
+      body: _buildProfileContent(isMyProfile),
     );
   }
 
-  Widget _buildProfileContent() {
+  Widget _buildProfileContent(bool isMyProfile) {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Card(
@@ -139,13 +176,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       radius: 50,
                       backgroundImage: _pickedImage != null
                           ? FileImage(_pickedImage!)
-                          : (userProfileModel!.image.isNotEmpty
-                              ? NetworkImage(userProfileModel!.image)
-                              : const AssetImage(
-                                  'assets/default_image.png')) as ImageProvider,
+                          : NetworkImage(userProfileModel.image),
                       backgroundColor: Colors.grey[300],
                     ),
-                    if (isEditing)
+                    if (isEditing && isMyProfile)
                       Positioned(
                         child: InkWell(
                           onTap: _pickImage,
@@ -161,7 +195,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  "Welcome ${userProfileModel!.name}",
+                  userProfileModel.name,
                   style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -170,12 +204,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
                 const Divider(height: 30, thickness: 1.2),
                 _buildInfoRow(Icons.email, "Email", emailController, false),
-                _buildInfoRow(Icons.phone, "Phone", phoneController, isEditing),
+                _buildInfoRow(Icons.phone, "Phone", phoneController,
+                    isEditing && isMyProfile),
+                _buildInfoRow(Icons.location_on, "Address", addressController,
+                    isEditing && isMyProfile),
                 _buildInfoRow(
-                    Icons.location_on, "Address", addressController, isEditing),
-                _buildInfoRow(Icons.cake, "Age", ageController, isEditing),
+                    Icons.cake, "Age", ageController, isEditing && isMyProfile),
                 _buildInfoRow(Icons.school, "Scientific Level",
-                    scientificLevelController, isEditing),
+                    scientificLevelController, isEditing && isMyProfile),
               ],
             ),
           ),

@@ -1,262 +1,280 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../blocs/Consultation_Request_bloc/consultation_request_bloc.dart';
+import '../../../blocs/attend_Demand_bloc/attend_demand_bloc.dart';
+import '../../../blocs/common_consultation_bloc/common _consultation_bloc.dart';
+import '../../../blocs/complaints_bloc/complaint_bloc.dart';
+import '../../../blocs/hiring_requests/hiring_requests_block.dart';
+import '../../../blocs/issue_bloc/issues_bloc.dart';
+import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
+import '../../../blocs/legal_books_bloc/legal_books_bloc.dart';
+import '../../../blocs/legal_news_bloc/legal_news_bloc.dart';
+import '../../../blocs/sessions_bloc/sessions_bloc.dart';
+import '../../../blocs/user_profile_bloc/user_profile_bloc.dart';
+import '../../widgets/custom_app_drawer.dart';
+import '../../widgets/section_card.dart';
+import '../AttendDemand/my_demands_screen.dart';
+import '../common_consulation/list_common_consul.dart';
+import '../complaint_screen/add_complaint_screen.dart';
+import '../consultation_request/all_consultation_requests_page.dart';
+import '../consultation_request/submit_consultation_request_screen.dart';
+import '../hr_screen/hiring_request/hiring_requests_published_screen.dart';
+import '../issue_request/add_issue_request.dart';
+import '../issue_request/user_issue_requests_screen.dart';
+import '../legal_books_screen/logal_book_list.dart';
+import '../legal_news_screen/list_legal_news_screen.dart';
+import '../settings/setting_screen.dart';
+import '../../widgets/custom_home_appbar.dart';
+import '../user_screens/user_issues_screens/user_issues_screens.dart';
+import '../user_screens/user_sessions_screen/user_session_screens.dart';
 
 class UserHomeScreen extends StatelessWidget {
-  final List<Map<String, dynamic>> gridItems = [
-    {
-      'icon': Icons.add_circle,
-      'title': 'Submit New Case',
-      'page': const NewCaseScreen()
-    },
-    {
-      'icon': Icons.contact_support,
-      'title': 'Request Legal Consultation',
-      'page': const LegalConsultationScreen()
-    },
-    {
-      'icon': Icons.library_books,
-      'title': 'Legal Library',
-      'page': const LegalLibraryScreen()
-    },
-    {
-      'icon': Icons.report_problem,
-      'title': 'Submit Complaint',
-      'page': const SubmitComplaintScreen()
-    },
-    {
-      'icon': Icons.question_answer,
-      'title': 'FAQs & Legal Terms',
-      'page': const FAQsScreen()
-    },
-    {
-      'icon': Icons.school,
-      'title': 'Submit Training Request',
-      'page': const TrainingRequestScreen()
-    },
-  ];
-
-  UserHomeScreen({super.key});
-
-  void _showSettings(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const CircleAvatar(
-                radius: 40,
-                backgroundImage: AssetImage('assets/images/user.png'),
-              ),
-              const SizedBox(height: 10),
-              const Text('Client Name', style: TextStyle(fontSize: 20)),
-              const SizedBox(height: 5),
-              const Text('email@example.com',
-                  style: TextStyle(color: Colors.grey)),
-              const SizedBox(height: 20),
-              ListTile(
-                leading: const Icon(Icons.brightness_6),
-                title: const Text('Toggle Dark/Light Mode'),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.logout),
-                title: const Text('Log Out'),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  const UserHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home Page'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {},
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: CircleAvatar(
-              backgroundImage: AssetImage('assets/images/user.png'),
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () => _showSettings(context),
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: GridView.builder(
-          itemCount: gridItems.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 30,
-            mainAxisSpacing: 12,
-            childAspectRatio: 0.8,
-          ),
-          itemBuilder: (context, index) {
-            return Card(
-              elevation: 6,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
+    final sections = [
+      {
+        'title': 'All Issues',
+        'icon': Icons.gavel,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => IssuesBloc(),
+                child: const UserIssuesScreens(),
               ),
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => gridItems[index]['page']),
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        gridItems[index]['icon'],
-                        size: 50,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        gridItems[index]['title'],
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 16),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                      ),
-                    ],
-                  ),
-                ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'common Consultations',
+        'icon': Icons.question_answer_rounded,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => CommonConsultationBloc(),
+                child: const ListCommonConsultationsScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Sessions',
+        'icon': Icons.assignment,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => SessionsBloc(),
+                child: const UserSessionScreens(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Submit Issue Request',
+        'icon': Icons.add_circle,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => IssueRequestsBloc(),
+                child: const AddIssueRequestScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'My Issue Request',
+        'icon': Icons.add_circle,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => IssueRequestsBloc(),
+                child: const UserIssueRequestsScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'icon': Icons.campaign,
+        'title': tr('hiring_requests_publish'),
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => HiringRequestsBloc(),
+                child: const ListHiringRequestsPublishScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Request Legal Consultation',
+        'icon': Icons.contact_support,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => ConsultationRequestBloc(),
+                child: const SubmitConsultationRequestScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Consultation Requests',
+        'icon': Icons.chat_rounded,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const AllConsultationRequestsPage(),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'My Demnds',
+        'icon': Icons.date_range,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => BlocProvider(
+                      create: (context) => AttendDemandBloc(),
+                      child: const MyDemandsScreen(),
+                    )),
+          );
+        },
+      },
+      {
+        'title': 'Legal Library',
+        'icon': Icons.library_books,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const SettingsScreen()),
+          );
+        },
+      },
+      {
+        'title': 'Submit Complaint',
+        'icon': Icons.report_problem,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const SettingsScreen()),
+          );
+        },
+      },
+      {
+        'title': 'FAQs & Legal Terms',
+        'icon': Icons.question_answer,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const SettingsScreen()),
+          );
+        },
+      },
+      {
+        'title': 'Submit Training Request',
+        'icon': Icons.school,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const SettingsScreen()),
+          );
+        },
+      },
+      {
+        'title': 'Book',
+        'icon': Icons.group,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => LegalBookBloc(),
+                child: const ListLegalBooksScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': ' add complaint',
+        'icon': Icons.report,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => ComplaintBloc(),
+                child: const AddComplaintScreen(),
+              ),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'News',
+        'icon': Icons.newspaper,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => LegalNewsBloc(),
+                child: const ListLegalNewsScreen(),
+              ),
+            ),
+          );
+        },
+      },
+    ];
+
+    return Scaffold(
+      appBar: const CustomHomeAppBar(title: 'User Panel'),
+      drawer: BlocProvider(
+        create: (context) => UserProfileBloc()..add(ShowUserProfileEvent()),
+        child: const CustomAppDrawer(),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: sections.map((section) {
+            return SizedBox(
+              width: MediaQuery.of(context).size.width / 2 - 24,
+              child: SectionCard(
+                icon: section['icon'] as IconData,
+                title: section['title'] as String,
+                onTap: section['onTap'] as VoidCallback,
               ),
             );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-// ------------------ New Case Screen ------------------
-class NewCaseScreen extends StatelessWidget {
-  const NewCaseScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Submit New Case')),
-      body: const Center(
-        child: Text(
-          'Here you can submit a new case.',
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
-    );
-  }
-}
-
-// ------------------ Legal Consultation Screen ------------------
-class LegalConsultationScreen extends StatelessWidget {
-  const LegalConsultationScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Request Legal Consultation')),
-      body: const Center(
-        child: Text(
-          'Here you can request a legal consultation.',
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
-    );
-  }
-}
-
-// ------------------ Legal Library Screen ------------------
-class LegalLibraryScreen extends StatelessWidget {
-  const LegalLibraryScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Legal Library')),
-      body: const Center(
-        child: Text(
-          'Here you can browse legal documents and articles.',
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
-    );
-  }
-}
-
-// ------------------ Submit Complaint Screen ------------------
-class SubmitComplaintScreen extends StatelessWidget {
-  const SubmitComplaintScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Submit Complaint')),
-      body: const Center(
-        child: Text(
-          'Here you can submit a complaint.',
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
-    );
-  }
-}
-
-// ------------------ FAQs Screen ------------------
-class FAQsScreen extends StatelessWidget {
-  const FAQsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('FAQs & Legal Terms')),
-      body: const Center(
-        child: Text(
-          'Here you can read FAQs and legal terms.',
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
-    );
-  }
-}
-
-// ------------------ Training Request Screen ------------------
-class TrainingRequestScreen extends StatelessWidget {
-  const TrainingRequestScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Submit Training Request')),
-      body: const Center(
-        child: Text(
-          'Here you can submit a request for training.',
-          style: TextStyle(fontSize: 18),
+          }).toList(),
         ),
       ),
     );

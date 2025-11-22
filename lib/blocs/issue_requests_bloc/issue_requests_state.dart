@@ -17,9 +17,9 @@ final class IssueRequestsSuccess extends IssueRequestsState {
 }
 
 final class IssueRequestsLoadedSuccessfully extends IssueRequestsState {
-  final IssueRequestModel issueRequestModel;
+  final IssueRequestModel issueRequest;
 
-  IssueRequestsLoadedSuccessfully({required this.issueRequestModel});
+  IssueRequestsLoadedSuccessfully({required this.issueRequest});
 }
 
 final class IssueRequestsFail extends IssueRequestsState {

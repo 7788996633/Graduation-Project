@@ -97,18 +97,43 @@ class LawyerProfileServices {
     String licenseNumber,
     String experienceYears,
     String specialization,
-    String certificatePath,
+    String? certificatePath,
+    String phone,
+    String? imagePath,
+    String address,
+    String age,
   ) async {
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken',
-      'Content-Type': 'application/x-www-form-urlencoded'
     };
-    var request = http.Request('PUT', Uri.parse('${myUrl}lawyers/profile'));
-    request.bodyFields = {
-      'salary': '7899.9',
-      'certificate': 'updated/certificate.pdf'
-    };
+    var request =
+        http.MultipartRequest('POST', Uri.parse('${myUrl}lawyer/profile'));
+    request.fields.addAll(
+      {
+        'age': age,
+        'specialization': specialization,
+        'phone': phone,
+        'experience_years': experienceYears,
+        'address': address,
+        'license_number': licenseNumber,
+      },
+    );
+    if (imagePath != null) {
+      request.files.add(await http.MultipartFile.fromPath(
+        'image',
+        imagePath,
+      ));
+      print(
+          '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++imagePath: $imagePath');
+    }
+
+    if (certificatePath != null) {
+      request.files.add(
+          await http.MultipartFile.fromPath('certificate', certificatePath));
+      print(
+          '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++certificatePath: $certificatePath');
+    }
 
     request.headers.addAll(headers);
 
@@ -151,4 +176,6 @@ class LawyerProfileServices {
       return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
     }
   }
+
+  Future getLawyerTotalPoints() async {}
 }

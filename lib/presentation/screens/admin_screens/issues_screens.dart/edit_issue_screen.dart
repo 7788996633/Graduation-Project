@@ -32,8 +32,7 @@ class _EditIssueScreenState extends State<EditIssueScreen> {
     titleController = TextEditingController(text: widget.issue.title);
     issuenumberController =
         TextEditingController(text: widget.issue.issueNumber);
-    categoryController = TextEditingController(text: widget.issue.category);
-    courtnameController = TextEditingController(text: widget.issue.courtName);
+     courtnameController = TextEditingController(text: widget.issue.courtName);
     statusController = TextEditingController(text: widget.issue.status);
     priorityController = TextEditingController(text: widget.issue.priority);
     startdateController = TextEditingController(text: widget.issue.startDate);

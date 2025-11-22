@@ -10,9 +10,11 @@ class HiringRequestRepository {
         .toList();
   }
 
-  Future<HiringRequestModel> getHiringRequestById(int hiringRequestId) async {
-    var hiringRequestData = await HiringRequestsServices().getHiringRequestById(hiringRequestId);
-    return HiringRequestModel.fromJson(hiringRequestData);
-
+  Future<List<HiringRequestModel>> getHiringRequestsPublish() async {
+    var hiringRequestsList = await HiringRequestsServices ().getHiringRequestsPublished();
+    return  hiringRequestsList
+        .map(
+          (e) => HiringRequestModel.fromJson(e),)
+        .toList();
   }
 }

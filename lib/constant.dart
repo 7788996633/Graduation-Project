@@ -1,3 +1,6 @@
 String myToken = '';
-String myUrl = 'http://192.168.228.86:8000/api/';
+String myUrl = 'https://azhri.net/api/';
 String myRole = '';
+String myLicenesNumber = '';
+String ip = "192.168.137.11";
+int myUserId = -1;

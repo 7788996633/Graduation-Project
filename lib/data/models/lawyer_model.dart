@@ -2,53 +2,58 @@ class LawyerModel {
   final int id;
   final String licenseNumber;
   final int experienceYears;
-  final String salary;
   final String certificate;
-  final String type;
   final String specialization;
-  final int userId;
-  final String createdAt;
   final String name;
   final String email;
-  final String age;
+  final int age;
   final String address;
   final String phone;
   final String image;
+
+  LawyerModel({
+    required this.id,
+    required this.licenseNumber,
+    required this.experienceYears,
+    required this.certificate,
+    required this.specialization,
+    required this.name,
+    required this.email,
+    required this.age,
+    required this.address,
+    required this.phone,
+    required this.image,
+  });
+
   factory LawyerModel.fromJson(Map<String, dynamic> json) {
     return LawyerModel(
-      id: json['id'],
-      licenseNumber: json['license_number'],
-      experienceYears: json['experience_years'],
-      salary: json['salary'].toString(),
-      certificate: json['certificate'],
-      type: json['type'],
-      specialization: json['specialization'],
-      userId: json['user_id'],
-      createdAt: json['created_at'],
-      address: json['address'],
-      name: json['name'],
-      email: json['email'],
-      age: json['age'],
-      phone: json['phone'],
-      image: json['image'],
-
+      id: json['id'] ?? 0,
+      licenseNumber: json['license_number']?.toString() ?? '',
+      experienceYears: json['experience_years'] ?? 0,
+      certificate: json['certificate']?.toString() ?? '',
+      specialization: json['specialization']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      email: json['email']?.toString() ?? '',
+      age: json['age'] ?? 0,
+      address: json['address']?.toString() ?? '',
+      phone: json['phone']?.toString() ?? '',
+      image: json['image']?.toString() ?? '',
     );
   }
 
-  LawyerModel(
-      {required this.id,
-      required this.licenseNumber,
-      required this.experienceYears,
-      required this.salary,
-      required this.certificate,
-      required this.type,
-      required this.specialization,
-      required this.userId,
-      required this.createdAt,
-      required this.name,
-      required this.email,
-      required this.age,
-      required this.address,
-      required this.phone,
-      required this.image});
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'license_number': licenseNumber,
+      'experience_years': experienceYears,
+      'certificate': certificate,
+      'specialization': specialization,
+      'name': name,
+      'email': email,
+      'age': age,
+      'address': address,
+      'phone': phone,
+      'image': image,
+    };
+  }
 }

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:graduation/presentation/screens/factories/role_screen.dart';
-import 'package:graduation/presentation/screens/home/lawyer_home_screen.dart';
+
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+
+import '../../../../themes.dart';
+import '../factories/role_screen.dart';
+import 'lawyer_home_screen.dart';
 
 class LawyerHomePage extends StatefulWidget implements RoleScreen {
   const LawyerHomePage({super.key});
@@ -45,25 +48,25 @@ class _LawyerHomePageState extends State<LawyerHomePage> {
           SalomonBottomBarItem(
             icon: const Icon(Icons.home),
             title: const Text("الرئيسية"),
-            selectedColor: const Color(0xFF1E9AD8),
+            selectedColor: AppColors.darkBlue ,
           ),
           // المفضلات
           SalomonBottomBarItem(
             icon: const Icon(Icons.favorite),
             title: const Text("المفضلة"),
-            selectedColor: const Color(0xFF1E9AD8),
+            selectedColor: AppColors.darkBlue ,
           ),
           // المواعيد
           SalomonBottomBarItem(
             icon: const Icon(Icons.schedule),
             title: const Text("مواعيدي"),
-            selectedColor: const Color(0xFF1E9AD8),
+            selectedColor: AppColors.darkBlue ,
           ),
 
           SalomonBottomBarItem(
             icon: const Icon(Icons.new_releases),
             title: const Text("الأخبار القانونية"),
-            selectedColor: const Color(0xFF1E9AD8),
+            selectedColor: AppColors.darkBlue ,
           ),
         ],
       ),

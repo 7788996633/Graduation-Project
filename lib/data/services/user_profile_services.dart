@@ -1,5 +1,5 @@
+import 'dart:core';
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 
 import '../../constant.dart';
@@ -11,80 +11,81 @@ class UserProfileServices {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken'
     };
-    var request = http.Request('GET', Uri.parse('${myUrl}myprofile'));
-    request.headers.addAll(headers);
+
+    var url = Uri.parse('${myUrl}myprofile');
+    var request = http.Request('GET', url)..headers.addAll(headers);
+
     var streamedResponse = await request.send();
     var response = await http.Response.fromStream(streamedResponse);
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
-    if (response.statusCode == 200) {
-      if (jsonResponse['status'] == 'success') {
-        return UserProfileModel.fromJson(
-          jsonResponse['data'],
-        );
-      } else {
-        throw Exception('failed: ${jsonResponse['message']}');
-        //زبط بحيث اذا فشل يرجع ايدي سالب وخزن السبب واعرضو لا تنسى
-      }
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return UserProfileModel.fromJson(jsonResponse['data']);
     } else {
       throw Exception(
-          'failed: ${response.statusCode} - ${response.reasonPhrase}');
+          'failed: ${jsonResponse['message'] ?? response.reasonPhrase}');
     }
   }
+
   Future<UserProfileModel> showProfileById(int userId) async {
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken'
     };
-    var request = http.Request('GET', Uri.parse('${myUrl}profile/$userId'));
-    request.headers.addAll(headers);
+
+    var url = Uri.parse('${myUrl}profile/$userId');
+    var request = http.Request('GET', url)..headers.addAll(headers);
+
     var streamedResponse = await request.send();
     var response = await http.Response.fromStream(streamedResponse);
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
-    if (response.statusCode == 200) {
-      if (jsonResponse['status'] == 'success') {
-        return UserProfileModel.fromJson(
-          jsonResponse['data'],
-        );
-      } else {
-        throw Exception('failed: ${jsonResponse['message']}');
-        //زبط بحيث اذا فشل يرجع ايدي سالب وخزن السبب واعرضو لا تنسى
-      }
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return UserProfileModel.fromJson(jsonResponse['data']);
     } else {
       throw Exception(
-          'failed: ${response.statusCode} - ${response.reasonPhrase}');
+          'failed: ${jsonResponse['message'] ?? response.reasonPhrase}');
     }
   }
 
-
-  Future<dynamic> updateProfile(
-      String phone, String address, String age, String scientificLevel) async {
+  Future<String> updateProfile(String phone, String address, String age,
+      String scientificLevel, String? imagePath) async {
     var headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': 'Bearer $myToken'
     };
-    var request = http.Request('POST', Uri.parse('${myUrl}profile/update'));
-    request.bodyFields = {
+
+    var url = Uri.parse('${myUrl}profile/update');
+
+    var request = http.MultipartRequest('POST', url);
+    request.headers.addAll(headers);
+    request.fields.addAll({
       'phone': phone,
       'address': address,
       'age': age,
-      'scientificLevel': scientificLevel
-    };
+      'scientificLevel': scientificLevel,
+    });
+    if (imagePath != null) {
+      request.files.add(await http.MultipartFile.fromPath(
+        'image',
+        imagePath,
+      ));
+      print(
+          '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++imagePath: $imagePath');
+    }
     request.headers.addAll(headers);
     var streamedResponse = await request.send();
     var response = await http.Response.fromStream(streamedResponse);
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
-    if (response.statusCode == 200) {
-      if (jsonResponse['status'] == 'success') {
-        return jsonResponse['message'];
-      } else {
-        return 'failed: ${jsonResponse['message']}';
-      }
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return jsonResponse['message'];
     } else {
-      return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+      return 'failed: ${jsonResponse['message'] ?? response.reasonPhrase}';
     }
   }
 
@@ -94,31 +95,27 @@ class UserProfileServices {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken'
     };
-    var request =
-        http.MultipartRequest('POST', Uri.parse('${myUrl}profiles/create'));
-    request.fields.addAll(
-      {
+
+    var url = Uri.parse('${myUrl}profiles/create');
+    var request = http.MultipartRequest('POST', url)
+      ..fields.addAll({
         'phone': phone,
         'address': address,
         'age': age,
-        'scientificLevel': scientificLevel
-      },
-    );
-    request.files.add(await http.MultipartFile.fromPath('image', imagePath));
+        'scientificLevel': scientificLevel,
+      })
+      ..headers.addAll(headers)
+      ..files.add(await http.MultipartFile.fromPath('image', imagePath));
 
-    request.headers.addAll(headers);
     var streamedResponse = await request.send();
     var response = await http.Response.fromStream(streamedResponse);
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
-    if (response.statusCode == 200) {
-      if (jsonResponse['status'] == 'success') {
-        return jsonResponse['message'];
-      } else {
-        return 'failed: ${jsonResponse['message']}';
-      }
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return jsonResponse['message'];
     } else {
-      return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+      return 'failed: ${jsonResponse['message'] ?? response.reasonPhrase}';
     }
   }
 
@@ -127,20 +124,19 @@ class UserProfileServices {
       'Accept': 'application/json',
       'Authorization': 'Bearer $myToken'
     };
-    var request = http.Request('DELETE', Uri.parse('${myUrl}profile'));
-    request.headers.addAll(headers);
+
+    var url = Uri.parse('${myUrl}profile');
+    var request = http.Request('DELETE', url)..headers.addAll(headers);
+
     var streamedResponse = await request.send();
     var response = await http.Response.fromStream(streamedResponse);
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
-    if (response.statusCode == 200) {
-      if (jsonResponse['status'] == 'success') {
-        return jsonResponse['message'];
-      } else {
-        return 'failed: ${jsonResponse['message']}';
-      }
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return jsonResponse['message'];
     } else {
-      return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+      return 'failed: ${jsonResponse['message'] ?? response.reasonPhrase}';
     }
   }
 }

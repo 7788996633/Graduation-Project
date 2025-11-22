@@ -27,8 +27,8 @@ final class LawyersListLoaded extends LawyerState {
   LawyersListLoaded({required this.lawyersList});
 }
 
-final class LawyerInfoByIdLoaded extends LawyerState {
+final class LawyerLoadedSuccessfully extends LawyerState {
   final LawyerModel lawyerModel;
 
-  LawyerInfoByIdLoaded({required this.lawyerModel});
+  LawyerLoadedSuccessfully({required this.lawyerModel});
 }

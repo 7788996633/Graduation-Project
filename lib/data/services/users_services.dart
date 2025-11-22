@@ -1,109 +1,149 @@
 import 'dart:convert';
-
-import '../../../constant.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
+import '../../constant.dart';
+import '../models/user_model.dart';
+
 class UsersServices {
+  final Map<String, String> baseHeaders = {
+    'Accept': 'application/json',
+    'Authorization': 'Bearer $myToken',
+  };
+
   Future<String> deleteUserById(int userId) async {
-    var headers = {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $myToken'
-    };
-    var request = http.MultipartRequest(
-        'DELETE', Uri.parse('${myUrl}users/delete/$userId'));
+    var url = Uri.parse('${myUrl}users/delete/$userId');
+    http.Response response;
 
-    request.headers.addAll(headers);
+    if (kIsWeb) {
+      var request = http.Request('DELETE', url);
+      request.headers.addAll(baseHeaders);
+      var streamed = await request.send();
+      response = await http.Response.fromStream(streamed);
+    } else {
+      var request = http.MultipartRequest('DELETE', url);
+      request.headers.addAll(baseHeaders);
+      var streamed = await request.send();
+      response = await http.Response.fromStream(streamed);
+    }
 
-    var streamedResponse = await request.send();
-
-    var response = await http.Response.fromStream(streamedResponse);
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
 
-    if (response.statusCode == 200) {
-      if (jsonResponse['status'] == 'success') {
-        return jsonResponse['message'];
-      } else {
-        return 'failed: ${jsonResponse['message']}';
-      }
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return jsonResponse['message'];
     } else {
-      return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+      return 'failed: ${jsonResponse['message'] ?? response.reasonPhrase}';
     }
   }
 
   Future<List> getAllUsers() async {
-    var headers = {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $myToken'
-    };
-    var request = http.MultipartRequest('GET', Uri.parse('${myUrl}users'));
+    var url = Uri.parse('${myUrl}users');
+    http.Response response;
 
-    request.headers.addAll(headers);
-    var streamedResponse = await request.send();
+    if (kIsWeb) {
+      var request = http.Request('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamed = await request.send();
+      response = await http.Response.fromStream(streamed);
+    } else {
+      var request = http.MultipartRequest('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamed = await request.send();
+      response = await http.Response.fromStream(streamed);
+    }
 
-    var response = await http.Response.fromStream(streamedResponse);
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
 
-    if (response.statusCode == 200) {
-      if (jsonResponse['status'] == 'success') {
-        return jsonResponse['data'];
-      } else {
-        return [];
-      }
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return jsonResponse['data'];
     } else {
       return [];
     }
   }
 
   Future<String> changeUserRole(int userId, String role) async {
-    var headers = {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $myToken',
-      'Content-Type': 'application/x-www-form-urlencoded'
-    };
-    var request =
-        http.Request('PUT', Uri.parse('${myUrl}users/change-role/$userId'));
-    request.bodyFields = {'role_name': role};
-    request.headers.addAll(headers);
+    var url = Uri.parse('${myUrl}users/change-role/$userId');
+    http.Response response;
+    var body = {'role_name': role};
+    if (kIsWeb) {
+      var request = http.Request('PUT', url);
+      request.headers.addAll({
+        ...baseHeaders,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      });
+      request.bodyFields = body;
+      var streamed = await request.send();
+      response = await http.Response.fromStream(streamed);
+    } else {
+      var request = http.Request('PUT', url);
+      request.headers.addAll(baseHeaders);
+      request.bodyFields = body;
+      var streamed = await request.send();
+      response = await http.Response.fromStream(streamed);
+    }
 
-    var streamedResponse = await request.send();
-
-    var response = await http.Response.fromStream(streamedResponse);
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
 
-    if (response.statusCode == 200) {
-      if (jsonResponse['status'] == 'success') {
-        return jsonResponse['message'];
-      } else {
-        return 'failed: ${jsonResponse['message']}';
-      }
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return jsonResponse['message'];
     } else {
-      return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+      return 'failed: ${jsonResponse['message'] ?? response.reasonPhrase}';
     }
   }
 
   Future<String> getMyRole() async {
-    var headers = {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $myToken'
-    };
-    var request = http.MultipartRequest('GET', Uri.parse('${myUrl}getRole'));
+    var url = Uri.parse('${myUrl}getRole');
+    http.Response response;
 
-    request.headers.addAll(headers);
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
+    if (kIsWeb) {
+      var request = http.Request('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamed = await request.send();
+      response = await http.Response.fromStream(streamed);
+    } else {
+      var request = http.MultipartRequest('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamed = await request.send();
+      response = await http.Response.fromStream(streamed);
+    }
+
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
-    if (response.statusCode == 200) {
-      if (jsonResponse['status'] == 'success') {
-        return jsonResponse['data'];
-      } else {
-        return 'failed: ${jsonResponse['message']}';
-      }
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return jsonResponse['data'];
     } else {
-      return 'failed: ${response.statusCode} - ${response.reasonPhrase}';
+      return 'failed: ${jsonResponse['message'] ?? response.reasonPhrase}';
+    }
+  }
+
+  Future<UserModel> getUserById(int userId) async {
+    var url = Uri.parse('${myUrl}users/$userId');
+    http.Response response;
+
+    if (kIsWeb) {
+      var request = http.Request('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamed = await request.send();
+      response = await http.Response.fromStream(streamed);
+    } else {
+      var request = http.MultipartRequest('GET', url);
+      request.headers.addAll(baseHeaders);
+      var streamed = await request.send();
+      response = await http.Response.fromStream(streamed);
+    }
+
+    var jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode == 200 && jsonResponse['status'] == 'success') {
+      return UserModel.fromJson(jsonResponse['data']);
+    } else {
+      throw Exception(
+          'failed: ${jsonResponse['message'] ?? response.reasonPhrase}');
     }
   }
 }

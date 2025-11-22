@@ -13,10 +13,15 @@ class LoginEvent extends AuthEvent {
 class RegisterEvent extends AuthEvent {
   final String email;
   final String password;
-    final String confirmPassword;
+  final String confirmPassword;
 
   final String name;
 
-  RegisterEvent({required this.email, required this.password, required this.confirmPassword, required this.name});
-
+  RegisterEvent(
+      {required this.email,
+      required this.password,
+      required this.confirmPassword,
+      required this.name});
 }
+
+class LogoutEvent extends AuthEvent {}

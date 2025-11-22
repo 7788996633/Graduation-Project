@@ -31,6 +31,11 @@ final class UserInfoByIdLoaded extends UserState {
 
   UserInfoByIdLoaded({required this.userModel});
 }
+final class UserLoadedSuccessfully extends UserState {
+  final UserModel userModel;
+
+  UserLoadedSuccessfully({required this.userModel});
+}
 
 final class UserRoleIsAdmin extends UserState {}
 

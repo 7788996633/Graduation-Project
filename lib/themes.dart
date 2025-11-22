@@ -1,0 +1,62 @@
+import 'package:flutter/material.dart';
+
+class AppColors {
+  static const Color white = Colors.white;
+  static const Color black = Colors.black;
+  static const Color success = Colors.green;
+  static const Color danger = Colors.red;
+  static const Color darkBlue = Color(0xFF0D47A1);
+  static const Color softGray = Color(0xFFC4D7FF);
+  static const Color scaffold = Color(0xFFE6ECF5);
+  static const Color textGrey = Color(0xFF6B7280);
+  static const Color cardColor = Color(0xFFF0F0F0);
+}
+
+Map<String, Color> currentTheme = {
+  'BackGorund': AppColors.white,
+  'AppBar': AppColors.darkBlue,
+  'Border': AppColors.softGray,
+  'AppBarTitle': AppColors.white,
+  'AppBarIcons': AppColors.white,
+  'HomeCards': AppColors.softGray,
+  'HomeCardsIcons': AppColors.darkBlue,
+  'HomeCardsText': AppColors.darkBlue,
+  'BoldText': AppColors.black,
+  'NormalText': AppColors.black,
+  'Icons': AppColors.black,
+};
+
+Map<String, Color> lightTheme = {
+  'BackGorund': AppColors.white,
+  'AppBar': AppColors.darkBlue,
+  'Border': AppColors.softGray,
+  'AppBarTitle': AppColors.white,
+  'AppBarIcons': AppColors.white,
+  'HomeCards': AppColors.softGray,
+  'HomeCardsIcons': AppColors.darkBlue,
+  'HomeCardsText': AppColors.darkBlue,
+  'BoldText': AppColors.black,
+  'CommonConsultationText': AppColors.darkBlue,
+  'NormalText': AppColors.black,
+  'Icons': AppColors.black,
+};
+
+Map<String, Color> darkTheme = {
+  'BackGorund': AppColors.black,
+  'AppBar': AppColors.black,
+  'Border': AppColors.softGray,
+  'AppBarTitle': AppColors.white,
+  'AppBarIcons': AppColors.white,
+  'HomeCards': AppColors.black,
+  'HomeCardsIcons': AppColors.white,
+  'HomeCardsText': AppColors.white,
+  'BoldText': AppColors.white,
+  'NormalText': AppColors.white,
+  'CommonConsultationText': AppColors.white,
+  'Icons': AppColors.white,
+};
+ValueNotifier<bool> isLight  = ValueNotifier(true);
+
+Map<String, Color> getCurrentTheme() {
+  return isLight.value ? currentTheme : darkTheme;
+}

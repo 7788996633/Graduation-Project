@@ -5,6 +5,8 @@ sealed class UserEvent {}
 
 class GetAllUsers extends UserEvent {}
 
+class GetAllClients extends UserEvent {}
+class GetAllEmployees extends UserEvent {}
 class DeleteUserById extends UserEvent {
   final int userId;
 
@@ -18,10 +20,10 @@ class ChangeUserRole extends UserEvent {
   ChangeUserRole({required this.userId, required this.role});
 }
 
-// class GetUserById extends UserEvent {
-//   final int userId;
+ class GetUserById extends UserEvent {
+   final int userId;
 
-//   GetUserById({required this.userId});
-// }
+   GetUserById({required this.userId});
+ }
 
 class GetUserRole extends UserEvent {}

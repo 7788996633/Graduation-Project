@@ -12,6 +12,7 @@ final class NotificationsListLoaded extends NotificationState {
 
   NotificationsListLoaded({required this.notificationsList});
 }
+
 final class NotificationSuccess extends NotificationState {
   final String successmsg;
 
@@ -22,4 +23,10 @@ final class NotificationFail extends NotificationState {
   final String errmsg;
 
   NotificationFail({required this.errmsg});
+}
+
+final class UnreadNotificationsListLoaded extends NotificationState {
+  final List<NotificationModel> notificationsList;
+
+  UnreadNotificationsListLoaded({required this.notificationsList});
 }

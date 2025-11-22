@@ -1,61 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation/blocs/issue_requests_bloc/issue_requests_state.dart';
+
 import '../../../blocs/issue_requests_bloc/issue_requests_bloc.dart';
 import '../../../blocs/issue_requests_bloc/issue_requests_event.dart';
-import '../../../blocs/issue_requests_bloc/issue_requests_state.dart';
+import '../../../constant.dart';
 import '../../../data/models/issue_request_model.dart';
+import '../../../data/models/user_model.dart';
+import '../../../themes.dart';
+import '../../widgets/build_info_title.dart';
+import 'update_issue_request_screen.dart';
 
 class IssueRequestDetailsScreen extends StatefulWidget {
-  final int issueRequestId;
+  final IssueRequestModel issueRequest;
+  final UserModel userModel;
+  const IssueRequestDetailsScreen(
+      {super.key, required this.issueRequest, required this.userModel});
 
-  const IssueRequestDetailsScreen({super.key, required this.issueRequestId});
   @override
   State<IssueRequestDetailsScreen> createState() =>
       _IssueRequestDetailsScreenState();
 }
 
 class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
-  final Color customColor = const Color(0xFFB8820E);
-  final Color valueColor = const Color(0xFF0F6829);
+  late IssueRequestsBloc bloc;
 
   @override
   void initState() {
     super.initState();
+    bloc = context.read<IssueRequestsBloc>();
+    print(myRole);
 
-    BlocProvider.of<IssueRequestsBloc>(context).add(
-      GetIssueRequestsByIdEvent(
-        issueRequestsId: widget.issueRequestId,
-      ),
-    );
+    if (myRole == 'admin' && widget.issueRequest.status == 'pending') {
+      bloc.add(
+          StartIssueRequestReviewEvent(issueRequestId: widget.issueRequest.id));
+      print(myRole);
+    }
   }
 
-  Widget buildInfoTile(IconData icon, String label, String value,
-      {Widget? customWidget}) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Icon(icon, color: customColor),
-          const SizedBox(width: 10),
-          Expanded(
-            child: customWidget ??
-                RichText(
-                  text: TextSpan(
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w500),
-                    children: [
-                      TextSpan(
-                          text: "$label: ",
-                          style: TextStyle(color: customColor)),
-                      TextSpan(
-                          text: value, style: TextStyle(color: valueColor)),
-                    ],
-                  ),
-                ),
-          ),
-        ],
-      ),
-    );
+  @override
+  void dispose() {
+    if (myRole == 'admin' && widget.issueRequest.status == 'pending') {
+      bloc.add(
+          EndIssueRequestReviewEvent(issueRequestId: widget.issueRequest.id));
+    }
+    super.dispose();
   }
 
   Widget buildProfileUI(IssueRequestModel request, BuildContext context) {
@@ -65,7 +54,7 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
           margin: const EdgeInsets.all(20),
           padding: const EdgeInsets.all(25),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: getCurrentTheme()['BackGorund'],
             borderRadius: BorderRadius.circular(25),
             boxShadow: [
               BoxShadow(
@@ -75,12 +64,75 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
               ),
             ],
           ),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const SizedBox(height: 20),
-            buildInfoTile(Icons.person, "title", request.title),
-            buildInfoTile(Icons.email, "description", request.description),
-            buildInfoTile(Icons.location_on, "status", request.status),
-          ]),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                widget.userModel.name,
+                style: TextStyle(
+                  color: getCurrentTheme()['BoldText'],
+                ),
+              ),
+              CircleAvatar(
+                backgroundImage: NetworkImage(
+                  widget.userModel.profileModel.image,
+                ),
+              ),
+              const SizedBox(height: 20),
+              buildInfoTile(
+                Icons.subject,
+                "title",
+                request.title,
+              ),
+              buildInfoTile(
+                  Icons.description, "description", request.description),
+              buildInfoTile(Icons.verified, "status", request.status),
+              if (request.adminNote != null)
+                buildInfoTile(
+                  Icons.note_rounded,
+                  "Admin note",
+                  request.adminNote!,
+                ),
+              if (widget.issueRequest.status.toLowerCase() == 'pending')
+                BlocConsumer<IssueRequestsBloc, IssueRequestsState>(
+                  listener: (context, state) {
+                    if (state is IssueRequestsSuccess) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Success: ${state.successmsg}"),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    } else if (state is IssueRequestsFail) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Success: ${state.errmsg}"),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  },
+                  builder: (context, state) {
+                    return IconButton(
+                      onPressed: () {
+                        BlocProvider.of<IssueRequestsBloc>(context).add(
+                          DeleteIssueRequestEvent(
+                            issueRequestId: widget.issueRequest.id,
+                          ),
+                        );
+                        if (state is IssueRequestsSuccess) {
+                          Navigator.pop(context);
+                        }
+                      },
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                    );
+                  },
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -89,12 +141,33 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
+      backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: AppBar(
-        backgroundColor: customColor,
-        title: const Text(
-          "Issue Request",
-          style: TextStyle(
+        actions: [
+          if (widget.issueRequest.status.toLowerCase() == 'pending' &&
+              myRole == 'user')
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => UpdateIssueRequestScreen(
+                      issueRequest: widget.issueRequest,
+                      bloc: bloc,
+                    ),
+                  ),
+                );
+              },
+              icon: Icon(
+                Icons.edit,
+                color: getCurrentTheme()['Icons'],
+              ),
+            ),
+        ],
+        backgroundColor: getCurrentTheme()['BackGorund'],
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text(
+          widget.issueRequest.title,
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 22,
             color: Colors.white,
@@ -103,45 +176,7 @@ class _IssueRequestDetailsScreenState extends State<IssueRequestDetailsScreen> {
         centerTitle: true,
         elevation: 4,
       ),
-      body: BlocConsumer<IssueRequestsBloc, IssueRequestsState>(
-        listener: (context, state) {
-          if (state is IssueRequestsFail) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errmsg),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
-        },
-        builder: (context, state) {
-          if (state is IssueRequestsLoadedSuccessfully) {
-            return buildProfileUI(state.issueRequestModel, context);
-          } else if (state is IssueRequestsFail) {
-            // عرض رسالة الخطأ فقط داخل الواجهة بدون SnackBar إضافي
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text("There is an error:",
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 10),
-                  Text(state.errmsg,
-                      style: const TextStyle(fontSize: 16, color: Colors.black),
-                      textAlign: TextAlign.center),
-                ],
-              ),
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
-      ),
+      body: buildProfileUI(widget.issueRequest, context),
     );
   }
 }

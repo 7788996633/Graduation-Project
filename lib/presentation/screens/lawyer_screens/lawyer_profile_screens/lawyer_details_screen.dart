@@ -5,6 +5,7 @@ import '../../../../blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
 import '../../../../constant.dart';
 import '../../../../data/models/lawyer_model.dart';
 import '../../../pdf_viewer_page.dart';
+import '../../../../themes.dart';
 
 class LawyerDetailsScreen extends StatefulWidget {
   const LawyerDetailsScreen({super.key, required this.lawyerId});
@@ -14,7 +15,7 @@ class LawyerDetailsScreen extends StatefulWidget {
 }
 
 class _LawyerDetailsScreenState extends State<LawyerDetailsScreen> {
-  final Color customColor = const Color(0xFF472A0C);
+  final Color customColor = AppColors.darkBlue;
   final Color valueColor = const Color(0xFF0F6829);
 
   @override
@@ -32,7 +33,8 @@ class _LawyerDetailsScreenState extends State<LawyerDetailsScreen> {
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          Icon(icon, color: customColor),
+          Icon(icon,
+              color: !isLight.value ? getCurrentTheme()['Icons'] : customColor),
           const SizedBox(width: 10),
           Expanded(
             child: customWidget ??
@@ -43,9 +45,16 @@ class _LawyerDetailsScreenState extends State<LawyerDetailsScreen> {
                     children: [
                       TextSpan(
                           text: "$label: ",
-                          style: TextStyle(color: customColor)),
+                          style: TextStyle(
+                              color: !isLight.value
+                                  ? getCurrentTheme()['BoldText']
+                                  : customColor)),
                       TextSpan(
-                          text: value, style: TextStyle(color: valueColor)),
+                          text: value,
+                          style: TextStyle(
+                              color: !isLight.value
+                                  ? getCurrentTheme()['BoldText']
+                                  : valueColor)),
                     ],
                   ),
                 ),
@@ -83,7 +92,7 @@ class _LawyerDetailsScreenState extends State<LawyerDetailsScreen> {
           margin: const EdgeInsets.all(20),
           padding: const EdgeInsets.all(25),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: getCurrentTheme()['BackGorund'],
             borderRadius: BorderRadius.circular(25),
             boxShadow: [
               BoxShadow(
@@ -97,13 +106,17 @@ class _LawyerDetailsScreenState extends State<LawyerDetailsScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               CircleAvatar(
-                  radius: 45, backgroundImage: NetworkImage(lawyer.image)),
+                radius: 45,
+                backgroundImage: NetworkImage(
+                  '${lawyer.image}?v=${DateTime.now().millisecondsSinceEpoch}',
+                ),
+              ),
               const SizedBox(height: 10),
               Text("Lawyer ${lawyer.name}",
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black)),
+                      color: getCurrentTheme()['BoldText'])),
               const SizedBox(height: 20),
               buildInfoTile(Icons.person, "Name", lawyer.name),
               buildInfoTile(Icons.email, "Email", lawyer.email),
@@ -136,9 +149,11 @@ class _LawyerDetailsScreenState extends State<LawyerDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
+      backgroundColor: getCurrentTheme()['BackGorund'],
       appBar: AppBar(
-        backgroundColor: customColor,
+        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor:
+            !isLight.value ? getCurrentTheme()['BackGorund'] : customColor,
         title: const Text(
           "Lawyer Profile",
           style: TextStyle(

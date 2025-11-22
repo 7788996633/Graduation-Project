@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http; // استيراد مكتبة http لتحميل الملفات
+
+import 'package:http/http.dart' as http;
 import '../../../../blocs/lawyer_profile_bloc/lawyer_profiel_bloc.dart';
 import '../../../../constant.dart';
 import '../../../../data/models/lawyer_model.dart';
 import '../../../pdf_viewer_page.dart';
+import '../../../widgets/custom_appbar_add.dart';
+import 'edit_lawyer_profile_screen.dart';
 
 class LawyerProfileScreen extends StatefulWidget {
-  const LawyerProfileScreen({super.key});
-
+  const LawyerProfileScreen({super.key, required this.lawyerModel});
+  final LawyerModel lawyerModel;
   @override
   State<LawyerProfileScreen> createState() => _LawyerProfileScreenState();
 }
@@ -70,7 +73,7 @@ class _LawyerProfileScreenState extends State<LawyerProfileScreen> {
     }
   }
 
-  Widget buildProfileUI(LawyerModel lawyer, BuildContext context) {
+  Widget buildProfileUI(BuildContext context) {
     return Center(
       child: SingleChildScrollView(
         child: Container(
@@ -91,31 +94,38 @@ class _LawyerProfileScreenState extends State<LawyerProfileScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               CircleAvatar(
-                  radius: 45, backgroundImage: NetworkImage(lawyer.image)),
+                radius: 45,
+                backgroundImage: NetworkImage(
+                  '${widget.lawyerModel.image}?v=${DateTime.now().millisecondsSinceEpoch}',
+                ),
+              ),
               const SizedBox(height: 10),
-              Text("Lawyer ${lawyer.name}",
+              Text("Lawyer ${widget.lawyerModel.name}",
                   style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Colors.black)),
               const SizedBox(height: 20),
-              buildInfoTile(Icons.person, "Name", lawyer.name),
-              buildInfoTile(Icons.email, "Email", lawyer.email),
-              buildInfoTile(Icons.location_on, "Address", lawyer.address),
-              buildInfoTile(Icons.phone, "Phone", lawyer.phone),
-              buildInfoTile(Icons.cake, "Age", lawyer.age.toString()),
+              buildInfoTile(Icons.person, "Name", widget.lawyerModel.name),
+              buildInfoTile(Icons.email, "Email", widget.lawyerModel.email),
               buildInfoTile(
-                  Icons.gavel, "Specialization", lawyer.specialization),
+                  Icons.location_on, "Address", widget.lawyerModel.address),
+              buildInfoTile(Icons.phone, "Phone", widget.lawyerModel.phone),
               buildInfoTile(
-                  Icons.badge, "License Number", lawyer.licenseNumber),
+                  Icons.cake, "Age", widget.lawyerModel.age.toString()),
+              buildInfoTile(Icons.gavel, "Specialization",
+                  widget.lawyerModel.specialization),
+              buildInfoTile(Icons.badge, "License Number",
+                  widget.lawyerModel.licenseNumber),
               buildInfoTile(Icons.work, "Experience Years",
-                  lawyer.experienceYears.toString()),
+                  widget.lawyerModel.experienceYears.toString()),
               buildInfoTile(
                 Icons.work,
                 "Certificate",
-                lawyer.certificate,
+                widget.lawyerModel.certificate,
                 customWidget: ElevatedButton(
-                  onPressed: () => openPDF(context, lawyer.certificate),
+                  onPressed: () =>
+                      openPDF(context, widget.lawyerModel.certificate),
                   child: const Text("View Certificate",
                       style: TextStyle(fontSize: 16)),
                 ),
@@ -130,52 +140,22 @@ class _LawyerProfileScreenState extends State<LawyerProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () {
-              // Navigate to Edit Lawyer Profile Screen
-            },
-            icon: const Icon(Icons.edit, color: Colors.white),
-          ),
-        ],
-        backgroundColor: customColor,
-        title: const Text("Lawyer Profile",
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 22,
-                color: Colors.white)),
-        centerTitle: true,
-        elevation: 4,
-      ),
-      body: BlocBuilder<LawyerProfileBloc, LawyerProfileState>(
-        builder: (context, state) {
-          if (state is LawyerProfileLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is LawyerProfileLoadedSuccessfully) {
-            return buildProfileUI(state.lawyerModel, context);
-          } else if (state is LawyerProfileFail) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text("There is an error:",
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 10),
-                  Text(state.errmsg,
-                      style: const TextStyle(fontSize: 16, color: Colors.black),
-                      textAlign: TextAlign.center),
-                ],
+        backgroundColor: const Color(0xFFF5F6FA),
+        appBar: CustomActionAppBar(
+          title: 'Lawyer Profile',
+          secondaryIcon: Icons.edit,
+          secondaryTooltip: 'Edit Lawyer Profile',
+          onSecondaryPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => BlocProvider(
+                  create: (context) => LawyerProfileBloc(),
+                  child: EditLawyerProfileScreen(lawyer: widget.lawyerModel),
+                ),
               ),
             );
-          }
-          return const Center(child: Text('Something went wrong'));
-        },
-      ),
-    );
+          },
+        ),
+        body: buildProfileUI(context));
   }
 }

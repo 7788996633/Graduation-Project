@@ -57,11 +57,15 @@ class LawyerProfileBloc extends Bloc<LawyerProfileEvent, LawyerProfileState> {
             LawyerProfileLoading(),
           );
           try {
-            String value = await LawyerProfileServices().creatLawyerProrile(
+            String value = await LawyerProfileServices().updateLawyerProrile(
                 event.licenseNumber,
                 event.experienceYears,
                 event.specialization,
-                event.certificatePath);
+                event.certificatePath,
+                event.phone,
+                event.imagePath,
+                event.address,
+                event.age);
             emit(
               LawyerProfileSuccess(
                 successmsg: value,
