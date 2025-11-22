@@ -58,25 +58,26 @@ class _ConsultationRequestItemState extends State<ConsultationRequestItem> {
       builder: (context, state) {
         return GestureDetector(
           onTap: () async {
-            if (widget.consReqModel.isLocked == 1) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                    content:
-                        Text("⚠️ هذه الاستشارة قيد المراجعة من محامي آخر")),
-              );
-            } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => BlocProvider(
-                    create: (context) => ConsultationBloc(),
-                    child: AddConsultationScreen(
-                      consultationRequestModel: widget.consReqModel,
-                    ),
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => BlocProvider(
+                  create: (context) => ConsultationBloc(),
+                  child: AddConsultationScreen(
+                    consultationRequestModel: widget.consReqModel,
                   ),
                 ),
-              );
-            }
+              ),
+            );
+            // if (widget.consReqModel.isLocked == 1) {
+            //   ScaffoldMessenger.of(context).showSnackBar(
+            //     SnackBar(
+            //         content:
+            //             Text("⚠️ هذه الاستشارة قيد المراجعة من محامي آخر")),
+            //   );
+            // } else {
+
+            // }
           },
           child: Container(
             padding: EdgeInsets.all(

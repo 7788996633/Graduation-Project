@@ -44,7 +44,7 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
     consultationBloc = BlocProvider.of<ConsultationBloc>(context);
     consultationBloc.add(GetConsultationsByRequestIdEvent(
         reqId: widget.consultationRequestModel.id));
-    if (myRole == 'lawyer') {
+    if (myRole == 'lawyer' && widget.consultationRequestModel.isLocked == 0) {
       consultationBloc.add(
         StartConsultationRequestReview(
           consultationRequestId: widget.consultationRequestModel.id,
@@ -58,7 +58,7 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
   @override
   void dispose() {
     _resaultController.dispose();
-    if (myRole == 'lawyer') {
+    if (myRole == 'lawyer' && widget.consultationRequestModel.isLocked == 1) {
       consultationBloc.add(
         EndConsultationRequestReview(
           consultationRequestId: widget.consultationRequestModel.id,
@@ -117,63 +117,63 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
         ),
         margin: const EdgeInsets.all(20),
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Column(
-              children: [
-                Container(
-                  clipBehavior: Clip.hardEdge,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                      40,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Column(
+                children: [
+                  Container(
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                        40,
+                      ),
+                    ),
+                    child: Image.network(
+                      height: 200,
+                      fit: BoxFit.fill,
+                      widget.consultationRequestModel.user.profileModel.image,
                     ),
                   ),
-                  child: Image.network(
-                    height: 200,
-                    fit: BoxFit.fill,
-                    widget.consultationRequestModel.user.profileModel.image,
-                  ),
-                ),
-                Text(
-                  widget.consultationRequestModel.user.name,
-                  style: TextStyle(
-                    color: getCurrentTheme()['NormalText'],
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      width: 2,
-                      color: getCurrentTheme()['Border']!,
+                  Text(
+                    widget.consultationRequestModel.user.name,
+                    style: TextStyle(
+                      color: getCurrentTheme()['NormalText'],
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.consultationRequestModel.subject,
-                        style: TextStyle(
-                            color: getCurrentTheme()['NormalText'],
-                            fontSize: 18),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        width: 2,
+                        color: getCurrentTheme()['Border']!,
                       ),
-                      Text(
-                        widget.consultationRequestModel.details,
-                        style: TextStyle(
-                            color: getCurrentTheme()['NormalText'],
-                            fontSize: 18),
-                      ),
-                    ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.consultationRequestModel.subject,
+                          style: TextStyle(
+                              color: getCurrentTheme()['NormalText'],
+                              fontSize: 18),
+                        ),
+                        Text(
+                          widget.consultationRequestModel.details,
+                          style: TextStyle(
+                              color: getCurrentTheme()['NormalText'],
+                              fontSize: 18),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Expanded(
-              child: BlocBuilder<ConsultationBloc, ConsultationState>(
+                ],
+              ),
+              BlocBuilder<ConsultationBloc, ConsultationState>(
                 builder: (context, state) {
                   if (state is ConsultationLoading) {
                     return const Center(child: CircularProgressIndicator());
@@ -182,76 +182,74 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                   } else if (state is ConsultationsListLoadedSuccessfully) {
                     final consultations = state.consultations;
 
-                    if (true) {
-                      return Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: consultations.length,
-                              itemBuilder: (context, index) {
-                                final consultation = consultations[index];
-                                return Card(
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 8),
-                                  child: ListTile(
-                                    title: Text(
-                                      consultation.resault,
+                    return Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          consultations.isEmpty
+                              ? Text("There is no conultations yet")
+                              : ListView.builder(
+                                  physics: ClampingScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: consultations.length,
+                                  itemBuilder: (context, index) {
+                                    final consultation = consultations[index];
+                                    return Card(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 8),
+                                      child: ListTile(
+                                        title: Text(
+                                          consultation.resault,
+                                          style: TextStyle(
+                                            color:
+                                                getCurrentTheme()['NormalText'],
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          if (myRole == 'lawyer' &&
+                              widget.consultationRequestModel.status
+                                      .toLowerCase() ==
+                                  'approved' &&
+                              widget.consultationRequestModel.isLocked ==
+                                  0) ...[
+                            CustomTextFeild(
+                              color: Colors.white,
+                              text: "Consultation",
+                              controller: _resaultController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'يرجى إدخال نتيجة الاستشارة';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            state is ConsultationLoading
+                                ? const CircularProgressIndicator()
+                                : ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                    ),
+                                    onPressed: _onSubmit,
+                                    child: const Text(
+                                      'Submit',
                                       style: TextStyle(
-                                        color: getCurrentTheme()['NormalText'],
+                                        color: Colors.black,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
-                                );
-                              },
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            if (myRole == 'lawyer' &&
-                                widget.consultationRequestModel.status
-                                        .toLowerCase() ==
-                                    'approved' &&
-                                widget.consultationRequestModel.isLocked ==
-                                    0) ...[
-                              CustomTextFeild(
-                                color: Colors.white,
-                                text: "Consultation",
-                                controller: _resaultController,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'يرجى إدخال نتيجة الاستشارة';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 16),
-                              state is ConsultationLoading
-                                  ? const CircularProgressIndicator()
-                                  : ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                      ),
-                                      onPressed: _onSubmit,
-                                      child: const Text(
-                                        'Submit',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                            ]
-                          ],
-                        ),
-                      );
-                    } else {
-                      return const Center(
-                        child: Text('لا توجد استشارات بعد'),
-                      );
-                    }
+                          ]
+                        ],
+                      ),
+                    );
 
                     return ListView.builder(
                       shrinkWrap: true,
@@ -276,8 +274,8 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                   return const SizedBox();
                 },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

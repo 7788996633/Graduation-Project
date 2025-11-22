@@ -126,7 +126,6 @@ class UserHomeScreen extends StatelessWidget {
           );
         },
       },
-
       {
         'title': 'Request Legal Consultation',
         'icon': Icons.contact_support,
@@ -223,23 +222,24 @@ class UserHomeScreen extends StatelessWidget {
           );
         },
       },
-    {
-    'title': ' add complaint',
-    'icon': Icons.report,
-    'onTap': () {
-    Navigator.push(
-    context,
-    MaterialPageRoute(
-    builder: (_) => BlocProvider(
-    create: (context) => ComplaintBloc(),
-    child: const AddComplaintScreen(),
-    ),
-    ),
-    );
-    },},
+      {
+        'title': ' add complaint',
+        'icon': Icons.report,
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (context) => ComplaintBloc(),
+                child: const AddComplaintScreen(),
+              ),
+            ),
+          );
+        },
+      },
       {
         'title': 'News',
-        'icon':  Icons.newspaper,
+        'icon': Icons.newspaper,
         'onTap': () {
           Navigator.push(
             context,

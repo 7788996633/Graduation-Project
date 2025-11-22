@@ -77,11 +77,6 @@ class _AddInvoiceScreenState extends State<AddInvoiceScreen> {
                     ),
                     const SizedBox(height: 20),
                     CustomTextFieldAdd(
-                      controller: _statusController,
-                      label: 'Status',
-                    ),
-                    const SizedBox(height: 20),
-                    CustomTextFieldAdd(
                       controller: _amountController,
                       label: 'Amount',
                       keyboardType: TextInputType.number,
@@ -98,7 +93,7 @@ class _AddInvoiceScreenState extends State<AddInvoiceScreen> {
                                   AddInvoiceEvent(
                                     issueId: widget.issueId,
                                     userId: widget.userId,
-                                    status: _statusController.text.trim(),
+                                    status: 'pending',
                                     amount: int.tryParse(
                                             _amountController.text.trim()) ??
                                         0,

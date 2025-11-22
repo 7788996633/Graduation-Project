@@ -169,20 +169,11 @@ class InvoiceServices {
     try {
       var url = Uri.parse('${myUrl}invoices/$invoiceId');
       var body = {
-        'status': status,
+        'status': 'paid',
         'amount': amount.toString(),
       };
       http.Response response;
-      if (kIsWeb) {
-        var request = http.Request('PUT', url);
-        request.headers.addAll({
-          ...baseHeaders,
-          'Content-Type': 'application/x-www-form-urlencoded',
-        });
-        request.bodyFields = body;
-        var streamedResponse = await request.send();
-        response = await http.Response.fromStream(streamedResponse);
-      } else {
+      {
         var request = http.MultipartRequest('PUT', url);
         request.fields.addAll(body);
         request.headers.addAll(baseHeaders);
